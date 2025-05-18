@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ChartComponent } from './ChartComponent';
-import { formatCurrency } from '@/lib/utils';
+import { formatCurrency, calculateFullProjection } from '@/lib/utils';
 
 type InvestorProfile = 'conservador' | 'moderado' | 'arrojado';
 
@@ -21,11 +21,13 @@ const DEFAULT_INITIAL_AMOUNT = 15000;
 const DEFAULT_MONTHLY_AMOUNT = 1000;
 const DEFAULT_YEARS = 15;
 const DEFAULT_OBJECTIVE = 'aposentadoria';
+const DEFAULT_LIFE_EXPECTANCY = 100;
 
 export const Calculator = () => {
   const [initialAmount, setInitialAmount] = useState(DEFAULT_INITIAL_AMOUNT);
   const [monthlyAmount, setMonthlyAmount] = useState(DEFAULT_MONTHLY_AMOUNT);
   const [years, setYears] = useState(DEFAULT_YEARS);
+  const [lifeExpectancy, setLifeExpectancy] = useState(DEFAULT_LIFE_EXPECTANCY);
   const [objective, setObjective] = useState(DEFAULT_OBJECTIVE);
   const [investorProfile, setInvestorProfile] = useState<InvestorProfile>('moderado');
   const [calculationResult, setCalculationResult] = useState<CalculationResult | null>(null);
@@ -42,36 +44,28 @@ export const Calculator = () => {
   
   const calculateProjection = () => {
     const annualReturn = getAnnualReturn();
-    const monthlyReturn = Math.pow(1 + annualReturn, 1/12) - 1;
-    let balance = initialAmount;
-    const yearlyValues: number[] = [initialAmount];
+    const monthlyIncomeRate = 0.004; // 0.4% de renda mensal
     
-    for (let month = 1; month <= years * 12; month++) {
-      // Adiciona a contribuição mensal
-      balance += monthlyAmount;
-      // Aplica o rendimento mensal
-      balance *= (1 + monthlyReturn);
-      
-      // Registra o valor ao final de cada ano
-      if (month % 12 === 0) {
-        yearlyValues.push(Math.round(balance));
-      }
-    }
-    
-    // Cálculo da renda mensal estimada (considerando 0.4% mensal)
-    const monthlyIncome = balance * 0.004;
+    const result = calculateFullProjection(
+      initialAmount,
+      monthlyAmount,
+      years,
+      lifeExpectancy,
+      annualReturn,
+      monthlyIncomeRate
+    );
     
     setCalculationResult({
-      finalAmount: balance,
-      yearlyValues: yearlyValues,
-      monthlyIncome: monthlyIncome
+      finalAmount: result.retirementAmount,
+      yearlyValues: result.yearlyValues,
+      monthlyIncome: result.monthlyIncome
     });
   };
   
   // Recalcula sempre que os parâmetros mudarem
   useEffect(() => {
     calculateProjection();
-  }, [initialAmount, monthlyAmount, years, investorProfile]);
+  }, [initialAmount, monthlyAmount, years, investorProfile, lifeExpectancy]);
 
   const handleInitialAmountChange = (value: string) => {
     const numericValue = parseFloat(value.replace(/\D/g, ''));
@@ -81,6 +75,10 @@ export const Calculator = () => {
   const handleMonthlyAmountChange = (value: string) => {
     const numericValue = parseFloat(value.replace(/\D/g, ''));
     setMonthlyAmount(isNaN(numericValue) ? 0 : numericValue);
+  };
+  
+  const handleLifeExpectancyChange = (value: number) => {
+    setLifeExpectancy(value);
   };
   
   return (
@@ -156,7 +154,7 @@ export const Calculator = () => {
                   </Card>
                   
                   <Card className="p-4 bg-gray-50">
-                    <p className="text-sm text-gray-500">Patrimônio acumulado</p>
+                    <p className="text-sm text-gray-500">Patrimônio na aposentadoria</p>
                     <p className="text-2xl font-bold">{formatCurrency(calculationResult.finalAmount)}</p>
                   </Card>
                   
@@ -167,12 +165,17 @@ export const Calculator = () => {
                   
                   <Card className="p-4 bg-gray-50">
                     <p className="text-sm text-gray-500">Duração da renda</p>
-                    <p className="text-2xl font-bold">{years} anos</p>
+                    <p className="text-2xl font-bold">{lifeExpectancy - years} anos</p>
                   </Card>
                 </div>
                 
-                <div className="chart-container">
-                  <ChartComponent data={calculationResult.yearlyValues} years={years} />
+                <div className="chart-container h-[400px]">
+                  <ChartComponent 
+                    data={calculationResult.yearlyValues} 
+                    accumulationYears={years}
+                    lifeExpectancy={lifeExpectancy}
+                    onLifeExpectancyChange={handleLifeExpectancyChange} 
+                  />
                 </div>
               </div>
             )}

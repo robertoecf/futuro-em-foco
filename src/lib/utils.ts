@@ -32,3 +32,54 @@ export function calculateFutureValue(
   
   return futureValue;
 }
+
+export function calculateFullProjection(
+  initialAmount: number,
+  monthlyContribution: number,
+  accumulationYears: number,
+  lifeExpectancyYears: number,
+  annualReturn: number,
+  monthlyIncomeRate: number = 0.004 // Default monthly income rate (0.4%)
+): {
+  yearlyValues: number[],
+  retirementAmount: number,
+  monthlyIncome: number
+} {
+  const monthlyReturn = Math.pow(1 + annualReturn, 1/12) - 1;
+  const totalYears = lifeExpectancyYears;
+  
+  let balance = initialAmount;
+  const yearlyValues: number[] = [initialAmount];
+  
+  // Accumulation phase
+  for (let year = 1; year <= accumulationYears; year++) {
+    for (let month = 1; month <= 12; month++) {
+      // Add monthly contribution and apply return
+      balance += monthlyContribution;
+      balance *= (1 + monthlyReturn);
+    }
+    yearlyValues.push(Math.round(balance));
+  }
+  
+  const retirementAmount = balance;
+  const monthlyIncome = balance * monthlyIncomeRate;
+  
+  // Retirement phase - drawing income
+  for (let year = accumulationYears + 1; year <= totalYears; year++) {
+    for (let month = 1; month <= 12; month++) {
+      // Withdraw monthly income
+      balance -= monthlyIncome;
+      // Apply return to remaining balance
+      balance *= (1 + monthlyReturn);
+    }
+    
+    // Ensure we don't show negative values
+    yearlyValues.push(Math.max(0, Math.round(balance)));
+  }
+  
+  return {
+    yearlyValues,
+    retirementAmount,
+    monthlyIncome
+  };
+}
