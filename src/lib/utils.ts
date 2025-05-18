@@ -37,7 +37,7 @@ export function calculateFullProjection(
   initialAmount: number,
   monthlyContribution: number,
   accumulationYears: number,
-  lifeExpectancyYears: number,
+  totalYears: number,
   annualReturn: number,
   monthlyIncomeRate: number = 0.004 // Default monthly income rate (0.4%)
 ): {
@@ -46,7 +46,6 @@ export function calculateFullProjection(
   monthlyIncome: number
 } {
   const monthlyReturn = Math.pow(1 + annualReturn, 1/12) - 1;
-  const totalYears = lifeExpectancyYears;
   
   let balance = initialAmount;
   const yearlyValues: number[] = [initialAmount];

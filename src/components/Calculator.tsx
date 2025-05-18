@@ -55,7 +55,7 @@ export const Calculator = () => {
       initialAmount,
       monthlyAmount,
       accumulationYears,
-      lifeExpectancy,
+      lifeExpectancy - currentAge, // Total years from current age to life expectancy
       annualReturn,
       monthlyIncomeRate
     );
@@ -67,10 +67,10 @@ export const Calculator = () => {
     });
   };
   
-  // Recalcula sempre que os parâmetros mudarem
+  // Calcular projeção inicial na montagem do componente
   useEffect(() => {
     calculateProjection();
-  }, [initialAmount, monthlyAmount, currentAge, retirementAge, investorProfile, lifeExpectancy]);
+  }, []);
 
   const handleInitialAmountChange = (value: string) => {
     const numericValue = parseFloat(value.replace(/\D/g, ''));
