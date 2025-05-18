@@ -23,6 +23,7 @@ const DEFAULT_CURRENT_AGE = 30;
 const DEFAULT_RETIREMENT_AGE = 65;
 const DEFAULT_OBJECTIVE = 'aposentadoria';
 const DEFAULT_LIFE_EXPECTANCY = 100;
+const DEFAULT_RETIREMENT_INCOME = 0;
 
 export const Calculator = () => {
   const [initialAmount, setInitialAmount] = useState(DEFAULT_INITIAL_AMOUNT);
@@ -30,6 +31,7 @@ export const Calculator = () => {
   const [currentAge, setCurrentAge] = useState(DEFAULT_CURRENT_AGE);
   const [retirementAge, setRetirementAge] = useState(DEFAULT_RETIREMENT_AGE);
   const [lifeExpectancy, setLifeExpectancy] = useState(DEFAULT_LIFE_EXPECTANCY);
+  const [retirementIncome, setRetirementIncome] = useState(DEFAULT_RETIREMENT_INCOME);
   const [objective, setObjective] = useState(DEFAULT_OBJECTIVE);
   const [investorProfile, setInvestorProfile] = useState<InvestorProfile>('moderado');
   const [calculationResult, setCalculationResult] = useState<CalculationResult | null>(null);
@@ -57,7 +59,8 @@ export const Calculator = () => {
       accumulationYears,
       lifeExpectancy - currentAge, // Total years from current age to life expectancy
       annualReturn,
-      monthlyIncomeRate
+      monthlyIncomeRate,
+      retirementIncome
     );
     
     setCalculationResult({
@@ -102,6 +105,11 @@ export const Calculator = () => {
   
   const handleLifeExpectancyChange = (value: number) => {
     setLifeExpectancy(value);
+  };
+  
+  const handleRetirementIncomeChange = (value: string) => {
+    const numericValue = parseFloat(value.replace(/\D/g, ''));
+    setRetirementIncome(isNaN(numericValue) ? 0 : numericValue);
   };
   
   return (
@@ -168,6 +176,22 @@ export const Calculator = () => {
                   onChange={(e) => handleMonthlyAmountChange(e.target.value)}
                 />
               </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="retirement-income">Renda Mensal na Aposentadoria (R$)</Label>
+                <Input
+                  id="retirement-income"
+                  type="text"
+                  value={formatCurrency(retirementIncome)}
+                  onChange={(e) => handleRetirementIncomeChange(e.target.value)}
+                  placeholder="Deixe 0 para cálculo automático"
+                />
+                {retirementIncome === 0 && (
+                  <p className="text-xs text-gray-500 mt-1">
+                    O valor será calculado automaticamente com base no patrimônio acumulado
+                  </p>
+                )}
+              </div>
               
               <Button className="w-full bg-black hover:bg-gray-800" onClick={calculateProjection}>
                 Calcular Projeção
@@ -192,7 +216,7 @@ export const Calculator = () => {
                   </Card>
                   
                   <Card className="p-4 bg-gray-50">
-                    <p className="text-sm text-gray-500">Renda mensal estimada</p>
+                    <p className="text-sm text-gray-500">Renda mensal na aposentadoria</p>
                     <p className="text-2xl font-bold">{formatCurrency(calculationResult.monthlyIncome)}</p>
                   </Card>
                   

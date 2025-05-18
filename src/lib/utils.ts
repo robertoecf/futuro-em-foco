@@ -39,7 +39,8 @@ export function calculateFullProjection(
   accumulationYears: number,
   totalYears: number,
   annualReturn: number,
-  monthlyIncomeRate: number = 0.004 // Default monthly income rate (0.4%)
+  monthlyIncomeRate: number = 0.004, // Default monthly income rate (0.4%)
+  retirementMonthlyIncome: number = 0 // New parameter for fixed monthly retirement income
 ): {
   yearlyValues: number[],
   retirementAmount: number,
@@ -61,7 +62,10 @@ export function calculateFullProjection(
   }
   
   const retirementAmount = balance;
-  const monthlyIncome = balance * monthlyIncomeRate;
+  // If no fixed retirement income is specified, calculate it based on balance
+  const monthlyIncome = retirementMonthlyIncome > 0 ? 
+    retirementMonthlyIncome : 
+    balance * monthlyIncomeRate;
   
   // Retirement phase - drawing income
   for (let year = accumulationYears + 1; year <= totalYears; year++) {
