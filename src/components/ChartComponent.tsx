@@ -10,6 +10,7 @@ interface ChartComponentProps {
   data: number[];
   accumulationYears: number;
   lifeExpectancy: number;
+  currentAge: number;
   onLifeExpectancyChange?: (value: number) => void;
 }
 
@@ -17,6 +18,7 @@ export const ChartComponent = ({
   data, 
   accumulationYears, 
   lifeExpectancy = 100,
+  currentAge = 30,
   onLifeExpectancyChange 
 }: ChartComponentProps) => {
   const [localLifeExpectancy, setLocalLifeExpectancy] = useState(lifeExpectancy);
@@ -31,11 +33,16 @@ export const ChartComponent = ({
     }
   };
 
-  const chartData = data.map((value, index) => ({
-    year: index,
-    patrimonio: value,
-    fase: index <= accumulationYears ? "Acumulação" : "Aposentadoria"
-  }));
+  const chartData = data.map((value, index) => {
+    const age = currentAge + index;
+    return {
+      age,
+      patrimonio: value,
+      fase: age < (currentAge + accumulationYears) ? "Acumulação" : "Aposentadoria"
+    };
+  });
+
+  const retirementAge = currentAge + accumulationYears;
 
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
@@ -43,7 +50,7 @@ export const ChartComponent = ({
       return (
         <Card className="p-0 border shadow-md">
           <CardContent className="p-3">
-            <p className="text-sm font-bold">{`Ano ${label}`}</p>
+            <p className="text-sm font-bold">{`Idade: ${label} anos`}</p>
             <p className="text-sm">
               {`Patrimônio: ${formatCurrency(payload[0].value)}`}
             </p>
@@ -67,7 +74,7 @@ export const ChartComponent = ({
           value={localLifeExpectancy}
           onChange={handleLifeExpectancyChange}
           className="w-20"
-          min={accumulationYears + 1}
+          min={retirementAge + 1}
         />
       </div>
       
@@ -90,8 +97,8 @@ export const ChartComponent = ({
             
             <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
             <XAxis 
-              dataKey="year" 
-              label={{ value: 'Anos', position: 'insideBottom', offset: -10 }}
+              dataKey="age" 
+              label={{ value: 'Idade', position: 'insideBottom', offset: -10 }}
               tickFormatter={(value) => `${value}`}
             />
             <YAxis 
@@ -101,9 +108,9 @@ export const ChartComponent = ({
             <Tooltip content={<CustomTooltip />} />
             <Legend />
             
-            {/* Reference line for retirement year */}
+            {/* Reference line for retirement age */}
             <ReferenceLine 
-              x={accumulationYears} 
+              x={retirementAge} 
               stroke="#FF6B00" 
               strokeDasharray="5 5" 
               label={{ 

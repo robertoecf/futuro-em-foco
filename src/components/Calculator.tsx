@@ -19,18 +19,23 @@ interface CalculationResult {
 
 const DEFAULT_INITIAL_AMOUNT = 15000;
 const DEFAULT_MONTHLY_AMOUNT = 1000;
-const DEFAULT_YEARS = 15;
+const DEFAULT_CURRENT_AGE = 30;
+const DEFAULT_RETIREMENT_AGE = 65;
 const DEFAULT_OBJECTIVE = 'aposentadoria';
 const DEFAULT_LIFE_EXPECTANCY = 100;
 
 export const Calculator = () => {
   const [initialAmount, setInitialAmount] = useState(DEFAULT_INITIAL_AMOUNT);
   const [monthlyAmount, setMonthlyAmount] = useState(DEFAULT_MONTHLY_AMOUNT);
-  const [years, setYears] = useState(DEFAULT_YEARS);
+  const [currentAge, setCurrentAge] = useState(DEFAULT_CURRENT_AGE);
+  const [retirementAge, setRetirementAge] = useState(DEFAULT_RETIREMENT_AGE);
   const [lifeExpectancy, setLifeExpectancy] = useState(DEFAULT_LIFE_EXPECTANCY);
   const [objective, setObjective] = useState(DEFAULT_OBJECTIVE);
   const [investorProfile, setInvestorProfile] = useState<InvestorProfile>('moderado');
   const [calculationResult, setCalculationResult] = useState<CalculationResult | null>(null);
+  
+  // Calculate accumulation years based on current and retirement age
+  const accumulationYears = retirementAge - currentAge;
   
   // Taxa de retorno anual com base no perfil do investidor
   const getAnnualReturn = () => {
@@ -49,7 +54,7 @@ export const Calculator = () => {
     const result = calculateFullProjection(
       initialAmount,
       monthlyAmount,
-      years,
+      accumulationYears,
       lifeExpectancy,
       annualReturn,
       monthlyIncomeRate
@@ -65,7 +70,7 @@ export const Calculator = () => {
   // Recalcula sempre que os parâmetros mudarem
   useEffect(() => {
     calculateProjection();
-  }, [initialAmount, monthlyAmount, years, investorProfile, lifeExpectancy]);
+  }, [initialAmount, monthlyAmount, currentAge, retirementAge, investorProfile, lifeExpectancy]);
 
   const handleInitialAmountChange = (value: string) => {
     const numericValue = parseFloat(value.replace(/\D/g, ''));
@@ -75,6 +80,24 @@ export const Calculator = () => {
   const handleMonthlyAmountChange = (value: string) => {
     const numericValue = parseFloat(value.replace(/\D/g, ''));
     setMonthlyAmount(isNaN(numericValue) ? 0 : numericValue);
+  };
+
+  const handleCurrentAgeChange = (value: string) => {
+    const numericValue = parseInt(value);
+    if (!isNaN(numericValue) && numericValue > 0) {
+      setCurrentAge(numericValue);
+      // If retirement age is less than or equal to current age, adjust it
+      if (retirementAge <= numericValue) {
+        setRetirementAge(numericValue + 1);
+      }
+    }
+  };
+
+  const handleRetirementAgeChange = (value: string) => {
+    const numericValue = parseInt(value);
+    if (!isNaN(numericValue) && numericValue > currentAge) {
+      setRetirementAge(numericValue);
+    }
   };
   
   const handleLifeExpectancyChange = (value: number) => {
@@ -105,6 +128,28 @@ export const Calculator = () => {
               </div>
               
               <div className="space-y-2">
+                <Label htmlFor="current-age">Idade Atual</Label>
+                <Input
+                  id="current-age"
+                  type="number"
+                  value={currentAge}
+                  onChange={(e) => handleCurrentAgeChange(e.target.value)}
+                  min={1}
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="retirement-age">Idade de Aposentadoria</Label>
+                <Input
+                  id="retirement-age"
+                  type="number"
+                  value={retirementAge}
+                  onChange={(e) => handleRetirementAgeChange(e.target.value)}
+                  min={currentAge + 1}
+                />
+              </div>
+              
+              <div className="space-y-2">
                 <Label htmlFor="initial-amount">Investimento Inicial (R$)</Label>
                 <Input
                   id="initial-amount"
@@ -121,18 +166,6 @@ export const Calculator = () => {
                   type="text"
                   value={formatCurrency(monthlyAmount)}
                   onChange={(e) => handleMonthlyAmountChange(e.target.value)}
-                />
-              </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="years">Período de Acumulação: {years} anos</Label>
-                <Slider
-                  id="years"
-                  min={1}
-                  max={40}
-                  step={1}
-                  value={[years]}
-                  onValueChange={([value]) => setYears(value)}
                 />
               </div>
               
@@ -165,15 +198,16 @@ export const Calculator = () => {
                   
                   <Card className="p-4 bg-gray-50">
                     <p className="text-sm text-gray-500">Duração da renda</p>
-                    <p className="text-2xl font-bold">{lifeExpectancy - years} anos</p>
+                    <p className="text-2xl font-bold">{lifeExpectancy - retirementAge} anos</p>
                   </Card>
                 </div>
                 
                 <div className="chart-container h-[400px]">
                   <ChartComponent 
                     data={calculationResult.yearlyValues} 
-                    accumulationYears={years}
+                    accumulationYears={accumulationYears}
                     lifeExpectancy={lifeExpectancy}
+                    currentAge={currentAge}
                     onLifeExpectancyChange={handleLifeExpectancyChange} 
                   />
                 </div>
