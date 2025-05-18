@@ -1,0 +1,184 @@
+
+import { useState, useEffect } from 'react';
+import { Card } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Button } from '@/components/ui/button';
+import { Slider } from '@/components/ui/slider';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { ChartComponent } from './ChartComponent';
+import { formatCurrency } from '@/lib/utils';
+
+type InvestorProfile = 'conservador' | 'moderado' | 'arrojado';
+
+interface CalculationResult {
+  finalAmount: number;
+  yearlyValues: number[];
+  monthlyIncome: number;
+}
+
+const DEFAULT_INITIAL_AMOUNT = 15000;
+const DEFAULT_MONTHLY_AMOUNT = 1000;
+const DEFAULT_YEARS = 15;
+const DEFAULT_OBJECTIVE = 'aposentadoria';
+
+export const Calculator = () => {
+  const [initialAmount, setInitialAmount] = useState(DEFAULT_INITIAL_AMOUNT);
+  const [monthlyAmount, setMonthlyAmount] = useState(DEFAULT_MONTHLY_AMOUNT);
+  const [years, setYears] = useState(DEFAULT_YEARS);
+  const [objective, setObjective] = useState(DEFAULT_OBJECTIVE);
+  const [investorProfile, setInvestorProfile] = useState<InvestorProfile>('moderado');
+  const [calculationResult, setCalculationResult] = useState<CalculationResult | null>(null);
+  
+  // Taxa de retorno anual com base no perfil do investidor
+  const getAnnualReturn = () => {
+    switch (investorProfile) {
+      case 'conservador': return 0.06; // 6% a.a.
+      case 'moderado': return 0.09; // 9% a.a.
+      case 'arrojado': return 0.12; // 12% a.a.
+      default: return 0.09;
+    }
+  };
+  
+  const calculateProjection = () => {
+    const annualReturn = getAnnualReturn();
+    const monthlyReturn = Math.pow(1 + annualReturn, 1/12) - 1;
+    let balance = initialAmount;
+    const yearlyValues: number[] = [initialAmount];
+    
+    for (let month = 1; month <= years * 12; month++) {
+      // Adiciona a contribuição mensal
+      balance += monthlyAmount;
+      // Aplica o rendimento mensal
+      balance *= (1 + monthlyReturn);
+      
+      // Registra o valor ao final de cada ano
+      if (month % 12 === 0) {
+        yearlyValues.push(Math.round(balance));
+      }
+    }
+    
+    // Cálculo da renda mensal estimada (considerando 0.4% mensal)
+    const monthlyIncome = balance * 0.004;
+    
+    setCalculationResult({
+      finalAmount: balance,
+      yearlyValues: yearlyValues,
+      monthlyIncome: monthlyIncome
+    });
+  };
+  
+  // Recalcula sempre que os parâmetros mudarem
+  useEffect(() => {
+    calculateProjection();
+  }, [initialAmount, monthlyAmount, years, investorProfile]);
+
+  const handleInitialAmountChange = (value: string) => {
+    const numericValue = parseFloat(value.replace(/\D/g, ''));
+    setInitialAmount(isNaN(numericValue) ? 0 : numericValue);
+  };
+
+  const handleMonthlyAmountChange = (value: string) => {
+    const numericValue = parseFloat(value.replace(/\D/g, ''));
+    setMonthlyAmount(isNaN(numericValue) ? 0 : numericValue);
+  };
+  
+  return (
+    <div className="w-full max-w-6xl mx-auto">
+      <Card className="p-6 shadow-lg">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div>
+            <h3 className="text-xl font-semibold mb-6">Defina seus parâmetros</h3>
+            
+            <div className="space-y-6">
+              <div className="space-y-2">
+                <Label htmlFor="objective">Objetivo</Label>
+                <Select value={objective} onValueChange={setObjective}>
+                  <SelectTrigger id="objective">
+                    <SelectValue placeholder="Selecione um objetivo" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="aposentadoria">Aposentadoria</SelectItem>
+                    <SelectItem value="preservar">Preservar Patrimônio</SelectItem>
+                    <SelectItem value="usufruir">Usufruir do Patrimônio</SelectItem>
+                    <SelectItem value="outro">Outro objetivo</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="initial-amount">Investimento Inicial (R$)</Label>
+                <Input
+                  id="initial-amount"
+                  type="text"
+                  value={formatCurrency(initialAmount)}
+                  onChange={(e) => handleInitialAmountChange(e.target.value)}
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="monthly-amount">Aporte Mensal (R$)</Label>
+                <Input
+                  id="monthly-amount"
+                  type="text"
+                  value={formatCurrency(monthlyAmount)}
+                  onChange={(e) => handleMonthlyAmountChange(e.target.value)}
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="years">Período de Acumulação: {years} anos</Label>
+                <Slider
+                  id="years"
+                  min={1}
+                  max={40}
+                  step={1}
+                  value={[years]}
+                  onValueChange={([value]) => setYears(value)}
+                />
+              </div>
+              
+              <Button className="w-full bg-black hover:bg-gray-800" onClick={calculateProjection}>
+                Calcular Projeção
+              </Button>
+            </div>
+          </div>
+          
+          <div>
+            <h3 className="text-xl font-semibold mb-6">Resultados da Projeção</h3>
+            
+            {calculationResult && (
+              <div className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <Card className="p-4 bg-gray-50">
+                    <p className="text-sm text-gray-500">Investimento inicial</p>
+                    <p className="text-2xl font-bold">{formatCurrency(initialAmount)}</p>
+                  </Card>
+                  
+                  <Card className="p-4 bg-gray-50">
+                    <p className="text-sm text-gray-500">Patrimônio acumulado</p>
+                    <p className="text-2xl font-bold">{formatCurrency(calculationResult.finalAmount)}</p>
+                  </Card>
+                  
+                  <Card className="p-4 bg-gray-50">
+                    <p className="text-sm text-gray-500">Renda mensal estimada</p>
+                    <p className="text-2xl font-bold">{formatCurrency(calculationResult.monthlyIncome)}</p>
+                  </Card>
+                  
+                  <Card className="p-4 bg-gray-50">
+                    <p className="text-sm text-gray-500">Duração da renda</p>
+                    <p className="text-2xl font-bold">{years} anos</p>
+                  </Card>
+                </div>
+                
+                <div className="chart-container">
+                  <ChartComponent data={calculationResult.yearlyValues} years={years} />
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </Card>
+    </div>
+  );
+};
