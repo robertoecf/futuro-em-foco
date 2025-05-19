@@ -46,17 +46,22 @@ export function calculateFullProjection(
   retirementAmount: number,
   monthlyIncome: number
 } {
-  const monthlyReturn = Math.pow(1 + annualReturn, 1/12) - 1;
+  // Monthly return rate for accumulation phase based on selected profile
+  const accumulationMonthlyReturn = Math.pow(1 + annualReturn, 1/12) - 1;
+  
+  // Monthly return rate for retirement phase - always using conservative profile (4%)
+  const conservativeAnnualReturn = 0.04; // 4% a.a.
+  const retirementMonthlyReturn = Math.pow(1 + conservativeAnnualReturn, 1/12) - 1;
   
   let balance = initialAmount;
   const yearlyValues: number[] = [initialAmount];
   
-  // Accumulation phase
+  // Accumulation phase - using selected investor profile return
   for (let year = 1; year <= accumulationYears; year++) {
     for (let month = 1; month <= 12; month++) {
       // Add monthly contribution and apply return
       balance += monthlyContribution;
-      balance *= (1 + monthlyReturn);
+      balance *= (1 + accumulationMonthlyReturn);
     }
     yearlyValues.push(Math.round(balance));
   }
@@ -67,13 +72,13 @@ export function calculateFullProjection(
     retirementMonthlyIncome : 
     balance * monthlyIncomeRate;
   
-  // Retirement phase - drawing income
+  // Retirement phase - drawing income using CONSERVATIVE profile return
   for (let year = accumulationYears + 1; year <= totalYears; year++) {
     for (let month = 1; month <= 12; month++) {
       // Withdraw monthly income
       balance -= monthlyIncome;
-      // Apply return to remaining balance
-      balance *= (1 + monthlyReturn);
+      // Apply CONSERVATIVE return to remaining balance
+      balance *= (1 + retirementMonthlyReturn);
     }
     
     // Ensure we don't show negative values

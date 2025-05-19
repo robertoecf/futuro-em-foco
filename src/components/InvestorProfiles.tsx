@@ -15,34 +15,34 @@ export const InvestorProfiles = ({ onProfileSelect, selectedProfile }: InvestorP
       id: 'conservador',
       title: 'Conservador',
       description: 'Investidor com pouca tolerância ao risco, busca segurança e menor volatilidade.',
-      annualReturn: 0.06, // 6% a.a.
+      annualReturn: 0.04, // 4% a.a.
       monthlyContribution: 1000,
       initialAmount: 15000,
       years: 15,
-      finalAmount: 378421,
-      monthlyIncome: 1513
+      finalAmount: 266177,
+      monthlyIncome: 1064
     },
     {
       id: 'moderado',
       title: 'Moderado',
       description: 'Investidor que equilibra segurança e risco, está disposto a enfrentar alguma volatilidade.',
-      annualReturn: 0.09, // 9% a.a.
+      annualReturn: 0.05, // 5% a.a.
       monthlyContribution: 1000,
       initialAmount: 15000,
       years: 15,
-      finalAmount: 479861,
-      monthlyIncome: 1919
+      finalAmount: 290028,
+      monthlyIncome: 1160
     },
     {
       id: 'arrojado',
       title: 'Arrojado',
       description: 'Investidor mais tolerante ao risco, disposto a assumir mais volatilidade em busca de maiores retornos.',
-      annualReturn: 0.12, // 12% a.a.
+      annualReturn: 0.06, // 6% a.a.
       monthlyContribution: 1000,
       initialAmount: 15000,
       years: 15,
-      finalAmount: 611597,
-      monthlyIncome: 2446
+      finalAmount: 316242,
+      monthlyIncome: 1264
     }
   ];
 

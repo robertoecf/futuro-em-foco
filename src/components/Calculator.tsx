@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -42,10 +41,10 @@ export const Calculator = () => {
   // Taxa de retorno anual com base no perfil do investidor
   const getAnnualReturn = () => {
     switch (investorProfile) {
-      case 'conservador': return 0.06; // 6% a.a.
-      case 'moderado': return 0.09; // 9% a.a.
-      case 'arrojado': return 0.12; // 12% a.a.
-      default: return 0.09;
+      case 'conservador': return 0.04; // 4% a.a.
+      case 'moderado': return 0.05; // 5% a.a.
+      case 'arrojado': return 0.06; // 6% a.a.
+      default: return 0.05;
     }
   };
   
