@@ -2,9 +2,9 @@
 import { useState, useEffect } from 'react';
 import { calculateFullProjection } from '@/lib/utils';
 
-type InvestorProfile = 'conservador' | 'moderado' | 'arrojado';
+export type InvestorProfile = 'conservador' | 'moderado' | 'arrojado';
 
-interface CalculationResult {
+export interface CalculationResult {
   finalAmount: number;
   yearlyValues: number[];
   monthlyIncome: number;
@@ -71,11 +71,13 @@ export const useCalculator = () => {
   }, []);
 
   const handleInitialAmountChange = (value: string) => {
+    // Remove all non-numeric characters and convert to number
     const numericValue = parseFloat(value.replace(/\D/g, ''));
     setInitialAmount(isNaN(numericValue) ? 0 : numericValue);
   };
 
   const handleMonthlyAmountChange = (value: string) => {
+    // Remove all non-numeric characters and convert to number
     const numericValue = parseFloat(value.replace(/\D/g, ''));
     setMonthlyAmount(isNaN(numericValue) ? 0 : numericValue);
   };
@@ -103,6 +105,7 @@ export const useCalculator = () => {
   };
   
   const handleRetirementIncomeChange = (value: string) => {
+    // Remove all non-numeric characters and convert to number
     const numericValue = parseFloat(value.replace(/\D/g, ''));
     setRetirementIncome(isNaN(numericValue) ? 0 : numericValue);
   };
@@ -129,5 +132,3 @@ export const useCalculator = () => {
     calculateProjection
   };
 };
-
-export type { CalculationResult, InvestorProfile };

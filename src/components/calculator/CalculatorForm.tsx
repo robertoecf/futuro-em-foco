@@ -4,7 +4,6 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { formatCurrency } from '@/lib/utils';
 import { InvestorProfile } from './useCalculator';
 
 interface CalculatorFormProps {
@@ -42,6 +41,15 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({
   setInvestorProfile,
   calculateProjection
 }) => {
+  // Format numbers for display in inputs
+  const formatInputCurrency = (value: number) => {
+    if (value === 0) return '';
+    return new Intl.NumberFormat('pt-BR', {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
+    }).format(value);
+  };
+
   return (
     <div>
       <h3 className="text-xl font-semibold mb-6">Defina seus parâmetros</h3>
@@ -89,7 +97,7 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({
           <Input
             id="initial-amount"
             type="text"
-            value={formatCurrency(initialAmount)}
+            value={formatInputCurrency(initialAmount)}
             onChange={(e) => handleInitialAmountChange(e.target.value)}
           />
         </div>
@@ -99,7 +107,7 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({
           <Input
             id="monthly-amount"
             type="text"
-            value={formatCurrency(monthlyAmount)}
+            value={formatInputCurrency(monthlyAmount)}
             onChange={(e) => handleMonthlyAmountChange(e.target.value)}
           />
         </div>
@@ -109,7 +117,7 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({
           <Input
             id="retirement-income"
             type="text"
-            value={formatCurrency(retirementIncome)}
+            value={formatInputCurrency(retirementIncome)}
             onChange={(e) => handleRetirementIncomeChange(e.target.value)}
             placeholder="Deixe 0 para cálculo automático"
           />
