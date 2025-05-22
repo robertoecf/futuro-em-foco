@@ -64,6 +64,16 @@ export const ChartComponent = ({
     return null;
   };
 
+  // Create a custom formatter for the Y-axis that uses Intl.NumberFormat
+  const formatYAxis = (value: number) => {
+    return new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL',
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    }).format(value);
+  };
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-end space-x-2">
@@ -82,7 +92,7 @@ export const ChartComponent = ({
         <ResponsiveContainer width="100%" height="100%">
           <LineChart
             data={chartData}
-            margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
+            margin={{ top: 20, right: 30, left: 80, bottom: 20 }}
           >
             <defs>
               <linearGradient id="accumulationGradient" x1="0" y1="0" x2="0" y2="1">
@@ -102,11 +112,16 @@ export const ChartComponent = ({
               tickFormatter={(value) => `${value}`}
             />
             <YAxis 
-              tickFormatter={(value) => `R$${Math.floor(value/1000)}k`}
-              label={{ value: 'Valor (R$)', angle: -90, position: 'insideLeft' }}
+              tickFormatter={formatYAxis}
+              // Removed the label as requested
+              width={80}
             />
             <Tooltip content={<CustomTooltip />} />
-            <Legend />
+            <Legend 
+              verticalAlign="top" 
+              align="left"
+              wrapperStyle={{ paddingBottom: '10px' }}
+            />
             
             {/* Reference line for retirement age */}
             <ReferenceLine 
