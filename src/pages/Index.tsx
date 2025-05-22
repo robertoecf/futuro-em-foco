@@ -1,7 +1,7 @@
 
 import { useState } from 'react';
 import { HeroSection } from '@/components/HeroSection';
-import { Calculator } from '@/components/Calculator';
+import { Calculator } from '@/components/calculator/Calculator';
 import { InvestorProfiles } from '@/components/InvestorProfiles';
 import { Recommendations } from '@/components/Recommendations';
 import { Button } from '@/components/ui/button';
