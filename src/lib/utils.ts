@@ -1,3 +1,4 @@
+
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 
@@ -37,20 +38,20 @@ export function calculateFullProjection(
   monthlyContribution: number,
   accumulationYears: number,
   totalYears: number,
-  annualReturn: number,
+  accumulationAnnualReturn: number,
   monthlyIncomeRate: number = 0.004, // Default monthly income rate (0.4%)
-  retirementMonthlyIncome: number = 0 // New parameter for fixed monthly retirement income
+  retirementMonthlyIncome: number = 0, // Fixed monthly retirement income
+  retirementAnnualReturn: number = 0.04 // Default to 4% if not provided
 ): {
   yearlyValues: number[],
   retirementAmount: number,
   monthlyIncome: number
 } {
-  // Monthly return rate for accumulation phase based on selected profile
-  const accumulationMonthlyReturn = Math.pow(1 + annualReturn, 1/12) - 1;
+  // Monthly return rate for accumulation phase
+  const accumulationMonthlyReturn = Math.pow(1 + accumulationAnnualReturn, 1/12) - 1;
   
-  // Monthly return rate for retirement phase - always using conservative profile (4%)
-  const conservativeAnnualReturn = 0.04; // 4% a.a.
-  const retirementMonthlyReturn = Math.pow(1 + conservativeAnnualReturn, 1/12) - 1;
+  // Monthly return rate for retirement phase - using user-defined portfolio return
+  const retirementMonthlyReturn = Math.pow(1 + retirementAnnualReturn, 1/12) - 1;
   
   let balance = initialAmount;
   const yearlyValues: number[] = [initialAmount];
@@ -71,12 +72,12 @@ export function calculateFullProjection(
     retirementMonthlyIncome : 
     balance * monthlyIncomeRate;
   
-  // Retirement phase - drawing income using CONSERVATIVE profile return
+  // Retirement phase - drawing income using user-defined portfolio return
   for (let year = accumulationYears + 1; year <= totalYears; year++) {
     for (let month = 1; month <= 12; month++) {
       // Withdraw monthly income
       balance -= monthlyIncome;
-      // Apply CONSERVATIVE return to remaining balance
+      // Apply user-defined return to remaining balance
       balance *= (1 + retirementMonthlyReturn);
     }
     

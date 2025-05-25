@@ -3,7 +3,8 @@ import React from 'react';
 import { Card } from '@/components/ui/card';
 import { useCalculator } from './useCalculator';
 import { CalculatorForm } from './CalculatorForm';
-import { CalculatorResults } from './CalculatorResults';
+import { ResultsCards } from './ResultsCards';
+import { ChartComponent } from '@/components/ChartComponent';
 
 export const Calculator: React.FC = () => {
   const {
@@ -13,51 +14,57 @@ export const Calculator: React.FC = () => {
     retirementAge,
     lifeExpectancy,
     retirementIncome,
-    objective,
+    portfolioReturn,
     investorProfile,
     calculationResult,
     accumulationYears,
-    handleInitialAmountChange,
-    handleMonthlyAmountChange,
-    handleCurrentAgeChange,
-    handleRetirementAgeChange,
+    handleInitialAmountBlur,
+    handleMonthlyAmountBlur,
+    handleCurrentAgeBlur,
+    handleRetirementAgeBlur,
     handleLifeExpectancyChange,
-    handleRetirementIncomeChange,
-    setObjective,
-    setInvestorProfile,
-    calculateProjection
+    handleRetirementIncomeBlur,
+    handlePortfolioReturnBlur,
+    setInvestorProfile
   } = useCalculator();
   
   return (
     <div className="w-full max-w-6xl mx-auto">
       <Card className="p-6 shadow-lg">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <CalculatorForm
-            initialAmount={initialAmount}
-            monthlyAmount={monthlyAmount}
-            currentAge={currentAge}
-            retirementAge={retirementAge}
-            retirementIncome={retirementIncome}
-            objective={objective}
-            investorProfile={investorProfile}
-            handleInitialAmountChange={handleInitialAmountChange}
-            handleMonthlyAmountChange={handleMonthlyAmountChange}
-            handleCurrentAgeChange={handleCurrentAgeChange}
-            handleRetirementAgeChange={handleRetirementAgeChange}
-            handleRetirementIncomeChange={handleRetirementIncomeChange}
-            setObjective={setObjective}
-            setInvestorProfile={setInvestorProfile}
-            calculateProjection={calculateProjection}
-          />
-          
-          <CalculatorResults
-            calculationResult={calculationResult}
+        {/* Input Form - Two Panels Side by Side */}
+        <CalculatorForm
+          initialAmount={initialAmount}
+          monthlyAmount={monthlyAmount}
+          currentAge={currentAge}
+          retirementAge={retirementAge}
+          retirementIncome={retirementIncome}
+          portfolioReturn={portfolioReturn}
+          investorProfile={investorProfile}
+          handleInitialAmountBlur={handleInitialAmountBlur}
+          handleMonthlyAmountBlur={handleMonthlyAmountBlur}
+          handleCurrentAgeBlur={handleCurrentAgeBlur}
+          handleRetirementAgeBlur={handleRetirementAgeBlur}
+          handleRetirementIncomeBlur={handleRetirementIncomeBlur}
+          handlePortfolioReturnBlur={handlePortfolioReturnBlur}
+          setInvestorProfile={setInvestorProfile}
+        />
+        
+        {/* Results Cards - Horizontal Layout */}
+        <ResultsCards
+          calculationResult={calculationResult}
+          retirementAge={retirementAge}
+          lifeExpectancy={lifeExpectancy}
+          initialAmount={initialAmount}
+        />
+        
+        {/* Chart - Full Width */}
+        <div className="chart-container h-[400px]">
+          <ChartComponent 
+            data={calculationResult?.yearlyValues || []} 
             accumulationYears={accumulationYears}
             lifeExpectancy={lifeExpectancy}
             currentAge={currentAge}
-            retirementAge={retirementAge}
-            initialAmount={initialAmount}
-            handleLifeExpectancyChange={handleLifeExpectancyChange}
+            onLifeExpectancyChange={handleLifeExpectancyChange} 
           />
         </div>
       </Card>

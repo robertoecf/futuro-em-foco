@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 import { calculateFullProjection } from '@/lib/utils';
 
 export type InvestorProfile = 'conservador' | 'moderado' | 'arrojado';
@@ -16,9 +16,9 @@ export const useCalculator = () => {
   const DEFAULT_MONTHLY_AMOUNT = 1000;
   const DEFAULT_CURRENT_AGE = 30;
   const DEFAULT_RETIREMENT_AGE = 65;
-  const DEFAULT_OBJECTIVE = 'aposentadoria';
   const DEFAULT_LIFE_EXPECTANCY = 100;
   const DEFAULT_RETIREMENT_INCOME = 0;
+  const DEFAULT_PORTFOLIO_RETURN = 4; // 4% default
 
   // State variables
   const [initialAmount, setInitialAmount] = useState(DEFAULT_INITIAL_AMOUNT);
@@ -27,15 +27,15 @@ export const useCalculator = () => {
   const [retirementAge, setRetirementAge] = useState(DEFAULT_RETIREMENT_AGE);
   const [lifeExpectancy, setLifeExpectancy] = useState(DEFAULT_LIFE_EXPECTANCY);
   const [retirementIncome, setRetirementIncome] = useState(DEFAULT_RETIREMENT_INCOME);
-  const [objective, setObjective] = useState(DEFAULT_OBJECTIVE);
+  const [portfolioReturn, setPortfolioReturn] = useState(DEFAULT_PORTFOLIO_RETURN);
   const [investorProfile, setInvestorProfile] = useState<InvestorProfile>('moderado');
   const [calculationResult, setCalculationResult] = useState<CalculationResult | null>(null);
   
   // Calculate accumulation years based on current and retirement age
   const accumulationYears = retirementAge - currentAge;
   
-  // Taxa de retorno anual com base no perfil do investidor
-  const getAnnualReturn = () => {
+  // Taxa de retorno anual com base no perfil do investidor (para fase de acumulação)
+  const getAccumulationAnnualReturn = () => {
     switch (investorProfile) {
       case 'conservador': return 0.04; // 4% a.a.
       case 'moderado': return 0.05; // 5% a.a.
@@ -44,8 +44,9 @@ export const useCalculator = () => {
     }
   };
   
-  const calculateProjection = () => {
-    const annualReturn = getAnnualReturn();
+  const calculateProjection = useCallback(() => {
+    const accumulationAnnualReturn = getAccumulationAnnualReturn();
+    const retirementAnnualReturn = portfolioReturn / 100; // Convert percentage to decimal
     const monthlyIncomeRate = 0.004; // 0.4% de renda mensal
     
     const result = calculateFullProjection(
@@ -53,9 +54,10 @@ export const useCalculator = () => {
       monthlyAmount,
       accumulationYears,
       lifeExpectancy - currentAge, // Total years from current age to life expectancy
-      annualReturn,
+      accumulationAnnualReturn,
       monthlyIncomeRate,
-      retirementIncome
+      retirementIncome,
+      retirementAnnualReturn // Pass the retirement return rate
     );
     
     setCalculationResult({
@@ -63,52 +65,62 @@ export const useCalculator = () => {
       yearlyValues: result.yearlyValues,
       monthlyIncome: result.monthlyIncome
     });
-  };
-  
-  // Calcular projeção inicial na montagem do componente
-  useEffect(() => {
-    calculateProjection();
-  }, []);
+  }, [initialAmount, monthlyAmount, accumulationYears, lifeExpectancy, currentAge, retirementIncome, portfolioReturn, investorProfile]);
 
-  const handleInitialAmountChange = (value: string) => {
-    // Remove all non-numeric characters and convert to number
+  const handleInitialAmountBlur = (value: string) => {
     const numericValue = parseFloat(value.replace(/\D/g, ''));
     setInitialAmount(isNaN(numericValue) ? 0 : numericValue);
+    calculateProjection();
   };
 
-  const handleMonthlyAmountChange = (value: string) => {
-    // Remove all non-numeric characters and convert to number
+  const handleMonthlyAmountBlur = (value: string) => {
     const numericValue = parseFloat(value.replace(/\D/g, ''));
     setMonthlyAmount(isNaN(numericValue) ? 0 : numericValue);
+    calculateProjection();
   };
 
-  const handleCurrentAgeChange = (value: string) => {
+  const handleCurrentAgeBlur = (value: string) => {
     const numericValue = parseInt(value);
     if (!isNaN(numericValue) && numericValue > 0) {
       setCurrentAge(numericValue);
-      // If retirement age is less than or equal to current age, adjust it
       if (retirementAge <= numericValue) {
         setRetirementAge(numericValue + 1);
       }
+      calculateProjection();
     }
   };
 
-  const handleRetirementAgeChange = (value: string) => {
+  const handleRetirementAgeBlur = (value: string) => {
     const numericValue = parseInt(value);
     if (!isNaN(numericValue) && numericValue > currentAge) {
       setRetirementAge(numericValue);
+      calculateProjection();
     }
   };
   
   const handleLifeExpectancyChange = (value: number) => {
     setLifeExpectancy(value);
+    calculateProjection();
   };
   
-  const handleRetirementIncomeChange = (value: string) => {
-    // Remove all non-numeric characters and convert to number
+  const handleRetirementIncomeBlur = (value: string) => {
     const numericValue = parseFloat(value.replace(/\D/g, ''));
     setRetirementIncome(isNaN(numericValue) ? 0 : numericValue);
+    calculateProjection();
   };
+
+  const handlePortfolioReturnBlur = (value: string) => {
+    const numericValue = parseFloat(value);
+    if (!isNaN(numericValue) && numericValue > 0) {
+      setPortfolioReturn(numericValue);
+      calculateProjection();
+    }
+  };
+
+  // Initial calculation
+  useState(() => {
+    calculateProjection();
+  });
 
   return {
     initialAmount,
@@ -117,17 +129,17 @@ export const useCalculator = () => {
     retirementAge,
     lifeExpectancy,
     retirementIncome,
-    objective,
+    portfolioReturn,
     investorProfile,
     calculationResult,
     accumulationYears,
-    handleInitialAmountChange,
-    handleMonthlyAmountChange,
-    handleCurrentAgeChange,
-    handleRetirementAgeChange,
+    handleInitialAmountBlur,
+    handleMonthlyAmountBlur,
+    handleCurrentAgeBlur,
+    handleRetirementAgeBlur,
     handleLifeExpectancyChange,
-    handleRetirementIncomeChange,
-    setObjective,
+    handleRetirementIncomeBlur,
+    handlePortfolioReturnBlur,
     setInvestorProfile,
     calculateProjection
   };
