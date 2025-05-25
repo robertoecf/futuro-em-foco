@@ -17,6 +17,14 @@ const Index = () => {
         <Button className="bg-black hover:bg-gray-800">Conheça o planner</Button>
       </header>
 
+      {/* Investor Profile Section - Moved to top */}
+      <section className="px-4 sm:px-6 lg:px-8 py-16">
+        <div className="max-w-7xl mx-auto">
+          <InvestorProfiles onProfileSelect={setInvestorProfile} selectedProfile={investorProfile} />
+          <Recommendations investorProfile={investorProfile} />
+        </div>
+      </section>
+
       {/* Hero Section */}
       <section className="px-4 sm:px-6 lg:px-8 pt-8 pb-16">
         <HeroSection />
@@ -30,14 +38,6 @@ const Index = () => {
             <h2 className="text-3xl font-bold">Análise do seu investimento para aposentadoria</h2>
           </div>
           <Calculator />
-        </div>
-      </section>
-
-      {/* Investor Profile Section */}
-      <section className="px-4 sm:px-6 lg:px-8 py-16">
-        <div className="max-w-7xl mx-auto">
-          <InvestorProfiles onProfileSelect={setInvestorProfile} selectedProfile={investorProfile} />
-          <Recommendations investorProfile={investorProfile} />
         </div>
       </section>
 
