@@ -58,14 +58,35 @@ export const Calculator: React.FC = () => {
         />
         
         {/* Chart - Full Width */}
-        <div className="chart-container h-[400px]">
+        <div className="chart-container h-[400px] mb-4">
           <ChartComponent 
             data={calculationResult?.yearlyValues || []} 
             accumulationYears={accumulationYears}
             lifeExpectancy={lifeExpectancy}
             currentAge={currentAge}
             onLifeExpectancyChange={handleLifeExpectancyChange} 
+            showLifeExpectancyControl={false}
           />
+        </div>
+        
+        {/* Life Expectancy Control - Below Chart */}
+        <div className="bg-gray-50 p-4 rounded-lg">
+          <div className="flex items-center justify-end space-x-2">
+            <label htmlFor="life-expectancy" className="text-sm">Expectativa de vida (anos):</label>
+            <input
+              id="life-expectancy"
+              type="number"
+              value={lifeExpectancy}
+              onChange={(e) => {
+                const value = parseInt(e.target.value);
+                if (!isNaN(value) && value > 0) {
+                  handleLifeExpectancyChange(value);
+                }
+              }}
+              className="w-20 px-2 py-1 border border-gray-300 rounded text-sm"
+              min={retirementAge + 1}
+            />
+          </div>
         </div>
       </Card>
     </div>

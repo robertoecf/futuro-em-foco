@@ -1,5 +1,5 @@
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { calculateFullProjection } from '@/lib/utils';
 
 export type InvestorProfile = 'conservador' | 'moderado' | 'arrojado';
@@ -45,6 +45,16 @@ export const useCalculator = () => {
   };
   
   const calculateProjection = useCallback(() => {
+    console.log('Calculating projection with:', {
+      initialAmount,
+      monthlyAmount,
+      currentAge,
+      retirementAge,
+      lifeExpectancy,
+      portfolioReturn,
+      investorProfile
+    });
+    
     const accumulationAnnualReturn = getAccumulationAnnualReturn();
     const retirementAnnualReturn = portfolioReturn / 100; // Convert percentage to decimal
     const monthlyIncomeRate = 0.004; // 0.4% de renda mensal
@@ -60,67 +70,69 @@ export const useCalculator = () => {
       retirementAnnualReturn // Pass the retirement return rate
     );
     
+    console.log('Calculation result:', result);
+    
     setCalculationResult({
       finalAmount: result.retirementAmount,
       yearlyValues: result.yearlyValues,
       monthlyIncome: result.monthlyIncome
     });
-  }, [initialAmount, monthlyAmount, accumulationYears, lifeExpectancy, currentAge, retirementIncome, portfolioReturn, investorProfile]);
+  }, [initialAmount, monthlyAmount, currentAge, retirementAge, lifeExpectancy, retirementIncome, portfolioReturn, investorProfile, accumulationYears]);
 
   const handleInitialAmountBlur = (value: string) => {
     const numericValue = parseFloat(value.replace(/\D/g, ''));
+    console.log('Initial amount blur:', value, 'parsed:', numericValue);
     setInitialAmount(isNaN(numericValue) ? 0 : numericValue);
-    calculateProjection();
   };
 
   const handleMonthlyAmountBlur = (value: string) => {
     const numericValue = parseFloat(value.replace(/\D/g, ''));
+    console.log('Monthly amount blur:', value, 'parsed:', numericValue);
     setMonthlyAmount(isNaN(numericValue) ? 0 : numericValue);
-    calculateProjection();
   };
 
   const handleCurrentAgeBlur = (value: string) => {
     const numericValue = parseInt(value);
+    console.log('Current age blur:', value, 'parsed:', numericValue);
     if (!isNaN(numericValue) && numericValue > 0) {
       setCurrentAge(numericValue);
       if (retirementAge <= numericValue) {
         setRetirementAge(numericValue + 1);
       }
-      calculateProjection();
     }
   };
 
   const handleRetirementAgeBlur = (value: string) => {
     const numericValue = parseInt(value);
+    console.log('Retirement age blur:', value, 'parsed:', numericValue);
     if (!isNaN(numericValue) && numericValue > currentAge) {
       setRetirementAge(numericValue);
-      calculateProjection();
     }
   };
   
   const handleLifeExpectancyChange = (value: number) => {
+    console.log('Life expectancy change:', value);
     setLifeExpectancy(value);
-    calculateProjection();
   };
   
   const handleRetirementIncomeBlur = (value: string) => {
     const numericValue = parseFloat(value.replace(/\D/g, ''));
+    console.log('Retirement income blur:', value, 'parsed:', numericValue);
     setRetirementIncome(isNaN(numericValue) ? 0 : numericValue);
-    calculateProjection();
   };
 
   const handlePortfolioReturnBlur = (value: string) => {
     const numericValue = parseFloat(value);
+    console.log('Portfolio return blur:', value, 'parsed:', numericValue);
     if (!isNaN(numericValue) && numericValue > 0) {
       setPortfolioReturn(numericValue);
-      calculateProjection();
     }
   };
 
-  // Initial calculation
-  useState(() => {
+  // Calculate on state changes
+  useEffect(() => {
     calculateProjection();
-  });
+  }, [calculateProjection]);
 
   return {
     initialAmount,
