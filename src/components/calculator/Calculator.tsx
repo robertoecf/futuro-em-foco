@@ -6,6 +6,8 @@ import { CalculatorForm } from './CalculatorForm';
 import { ResultsCards } from './ResultsCards';
 import { InsightsCards } from './InsightsCards';
 import { ChartComponent } from '@/components/ChartComponent';
+import { InvestorProfiles } from '@/components/InvestorProfiles';
+import { Recommendations } from '@/components/Recommendations';
 
 export const Calculator: React.FC = () => {
   const {
@@ -30,7 +32,12 @@ export const Calculator: React.FC = () => {
   } = useCalculator();
   
   return (
-    <div className="w-full max-w-6xl mx-auto">
+    <div className="w-full max-w-6xl mx-auto space-y-16">
+      {/* Investor Profile Section */}
+      <div>
+        <InvestorProfiles onProfileSelect={setInvestorProfile} selectedProfile={investorProfile} />
+      </div>
+
       <Card className="p-6 shadow-lg">
         {/* Input Form - Two Panels Side by Side */}
         <CalculatorForm
@@ -102,6 +109,11 @@ export const Calculator: React.FC = () => {
           investorProfile={investorProfile}
         />
       </Card>
+
+      {/* Recommendations Section */}
+      <div>
+        <Recommendations investorProfile={investorProfile} />
+      </div>
     </div>
   );
 };

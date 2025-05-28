@@ -1,3 +1,4 @@
+
 import { useState, useCallback, useEffect } from 'react';
 import { calculateFullProjection } from '@/lib/utils';
 
@@ -35,6 +36,7 @@ export const useCalculator = () => {
   
   // Taxa de retorno anual com base no perfil do investidor (para fase de acumulação)
   const getAccumulationAnnualReturn = () => {
+    console.log('Getting accumulation return for profile:', investorProfile);
     switch (investorProfile) {
       case 'conservador': return 0.04; // 4% a.a.
       case 'moderado': return 0.05; // 5% a.a.
@@ -55,6 +57,7 @@ export const useCalculator = () => {
     });
     
     const accumulationAnnualReturn = getAccumulationAnnualReturn();
+    console.log('Using accumulation return:', accumulationAnnualReturn);
     const retirementAnnualReturn = portfolioReturn / 100; // Convert percentage to decimal
     const monthlyIncomeRate = 0.004; // 0.4% de renda mensal
     
@@ -135,6 +138,7 @@ export const useCalculator = () => {
 
   // Calculate on state changes
   useEffect(() => {
+    console.log('useEffect triggered, recalculating projection');
     calculateProjection();
   }, [calculateProjection]);
 
