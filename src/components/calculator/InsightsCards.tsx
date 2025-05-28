@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card } from '@/components/ui/card';
 import { formatCurrency } from '@/lib/utils';
@@ -24,13 +23,13 @@ export const InsightsCards: React.FC<InsightsCardsProps> = ({
   portfolioReturn,
   investorProfile
 }) => {
-  // Taxa de retorno anual com base no perfil do investidor (para fase de acumulação)
+  // Taxa de retorno anual com base no perfil do investidor (para fase de acumulação) - ATUALIZADA
   const getAccumulationAnnualReturn = () => {
     switch (investorProfile) {
-      case 'conservador': return 0.04;
-      case 'moderado': return 0.05;
-      case 'arrojado': return 0.06;
-      default: return 0.05;
+      case 'conservador': return 0.04; // 4% a.a.
+      case 'moderado': return 0.055; // 5.5% a.a. (ATUALIZADO)
+      case 'arrojado': return 0.065; // 6.5% a.a. (ATUALIZADO)
+      default: return 0.055;
     }
   };
 

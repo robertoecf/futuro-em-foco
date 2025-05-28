@@ -26,23 +26,23 @@ export const InvestorProfiles = ({ onProfileSelect, selectedProfile }: InvestorP
       id: 'moderado',
       title: 'Moderado',
       description: 'Investidor que equilibra segurança e risco, está disposto a enfrentar alguma volatilidade.',
-      annualReturn: 0.05, // 5% a.a.
+      annualReturn: 0.055, // 5.5% a.a. (ATUALIZADO)
       monthlyContribution: 1000,
       initialAmount: 15000,
       years: 15,
-      finalAmount: 290028,
-      monthlyIncome: 1160
+      finalAmount: 296500, // Valor atualizado para 5.5%
+      monthlyIncome: 1186
     },
     {
       id: 'arrojado',
       title: 'Arrojado',
       description: 'Investidor mais tolerante ao risco, disposto a assumir mais volatilidade em busca de maiores retornos.',
-      annualReturn: 0.06, // 6% a.a.
+      annualReturn: 0.065, // 6.5% a.a. (ATUALIZADO)
       monthlyContribution: 1000,
       initialAmount: 15000,
       years: 15,
-      finalAmount: 316242,
-      monthlyIncome: 1264
+      finalAmount: 340800, // Valor atualizado para 6.5%
+      monthlyIncome: 1363
     }
   ];
 
