@@ -4,6 +4,7 @@ import { Card } from '@/components/ui/card';
 import { useCalculator } from './useCalculator';
 import { CalculatorForm } from './CalculatorForm';
 import { ResultsCards } from './ResultsCards';
+import { InsightsCards } from './InsightsCards';
 import { ChartComponent } from '@/components/ChartComponent';
 
 export const Calculator: React.FC = () => {
@@ -70,7 +71,7 @@ export const Calculator: React.FC = () => {
         </div>
         
         {/* Life Expectancy Control - Below Chart */}
-        <div className="bg-gray-50 p-4 rounded-lg">
+        <div className="bg-gray-50 p-4 rounded-lg mb-8">
           <div className="flex items-center justify-end space-x-2">
             <label htmlFor="life-expectancy" className="text-sm">Expectativa de vida (anos):</label>
             <input
@@ -88,6 +89,18 @@ export const Calculator: React.FC = () => {
             />
           </div>
         </div>
+        
+        {/* Insights Section */}
+        <InsightsCards
+          initialAmount={initialAmount}
+          monthlyAmount={monthlyAmount}
+          currentAge={currentAge}
+          retirementAge={retirementAge}
+          lifeExpectancy={lifeExpectancy}
+          retirementIncome={retirementIncome}
+          portfolioReturn={portfolioReturn}
+          investorProfile={investorProfile}
+        />
       </Card>
     </div>
   );
