@@ -1,4 +1,3 @@
-
 import { useState, useCallback, useEffect } from 'react';
 import { calculateFullProjection } from '@/lib/utils';
 
@@ -129,6 +128,11 @@ export const useCalculator = () => {
     }
   };
 
+  const handleInvestorProfileChange = (profile: InvestorProfile) => {
+    console.log('Investor profile change:', profile);
+    setInvestorProfile(profile);
+  };
+
   // Calculate on state changes
   useEffect(() => {
     calculateProjection();
@@ -152,7 +156,7 @@ export const useCalculator = () => {
     handleLifeExpectancyChange,
     handleRetirementIncomeBlur,
     handlePortfolioReturnBlur,
-    setInvestorProfile,
+    setInvestorProfile: handleInvestorProfileChange,
     calculateProjection
   };
 };

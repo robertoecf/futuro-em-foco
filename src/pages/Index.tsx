@@ -1,13 +1,13 @@
 
-import { useState } from 'react';
-import { HeroSection } from '@/components/HeroSection';
 import { Calculator } from '@/components/calculator/Calculator';
+import { HeroSection } from '@/components/HeroSection';
 import { InvestorProfiles } from '@/components/InvestorProfiles';
 import { Recommendations } from '@/components/Recommendations';
 import { Button } from '@/components/ui/button';
+import { useCalculator } from '@/components/calculator/useCalculator';
 
 const Index = () => {
-  const [investorProfile, setInvestorProfile] = useState('moderado');
+  const { investorProfile, setInvestorProfile } = useCalculator();
 
   return (
     <div className="min-h-screen">
