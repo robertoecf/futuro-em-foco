@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Card } from '@/components/ui/card';
 import { formatCurrency } from '@/lib/utils';
@@ -51,8 +52,15 @@ export const InsightsCards: React.FC<InsightsCardsProps> = ({
     return balance;
   };
 
-  // 1. Patrimônio necessário para gerar a renda desejada
-  const calculateRequiredWealth = () => {
+  // 1. Patrimônio necessário para gerar a renda desejada SEM dilapidar
+  const calculateRequiredWealthSustainable = () => {
+    if (retirementIncome <= 0) return 0;
+    // Fórmula: Patrimônio = (renda mensal * 12) / retorno anual
+    return (retirementIncome * 12) / 0.04; // Usando 4% como fator padrão
+  };
+
+  // 1b. Patrimônio mínimo para consumir até os 100 anos
+  const calculateRequiredWealthDepleting = () => {
     if (retirementIncome <= 0) return 0;
     
     // Usando a fórmula de anuidade para calcular o patrimônio necessário
@@ -72,7 +80,7 @@ export const InsightsCards: React.FC<InsightsCardsProps> = ({
   const calculatePossibleRetirementAge = () => {
     if (retirementIncome <= 0) return retirementAge;
     
-    const requiredWealth = calculateRequiredWealth();
+    const requiredWealth = calculateRequiredWealthDepleting();
     const monthlyReturn = Math.pow(1 + accumulationAnnualReturn, 1/12) - 1;
     
     // Simulação para encontrar quantos anos são necessários
@@ -113,12 +121,33 @@ export const InsightsCards: React.FC<InsightsCardsProps> = ({
     return payment;
   };
 
+  // Cálculo do patrimônio necessário com descrição personalizada
+  const getPatrimonioNecessarioInfo = () => {
+    const sustentavel = calculateRequiredWealthSustainable();
+    const minimo = calculateRequiredWealthDepleting();
+    
+    if (retirementIncome <= 0) {
+      return {
+        value: 0,
+        description: "Defina a renda desejada"
+      };
+    }
+    
+    return {
+      value: sustentavel,
+      description: `Para gerar ${formatCurrency(retirementIncome)} mensais\nSem dilapidar: ${formatCurrency(sustentavel)}\nMínimo (até 100 anos): ${formatCurrency(minimo)}`
+    };
+  };
+
+  const patrimonioInfo = getPatrimonioNecessarioInfo();
+
   const insights = [
     {
       title: "Patrimônio necessário",
-      value: calculateRequiredWealth(),
-      description: `Para gerar R$ ${formatCurrency(retirementIncome)} mensais`,
-      isCurrency: true
+      value: patrimonioInfo.value,
+      description: patrimonioInfo.description,
+      isCurrency: true,
+      isMultiline: true
     },
     {
       title: "Idade possível para aposentadoria",
@@ -156,7 +185,9 @@ export const InsightsCards: React.FC<InsightsCardsProps> = ({
                   : Math.round(insight.value) + (insight.suffix || '')
                 }
               </p>
-              <p className="text-sm text-gray-600">{insight.description}</p>
+              <p className={`text-sm text-gray-600 ${insight.isMultiline ? 'whitespace-pre-line' : ''}`}>
+                {insight.description}
+              </p>
             </div>
           </Card>
         ))}
