@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card } from '@/components/ui/card';
 import { formatCurrency } from '@/lib/utils';
@@ -128,14 +127,14 @@ export const InsightsCards: React.FC<InsightsCardsProps> = ({
     
     if (retirementIncome <= 0) {
       return {
-        value: 0,
+        value: sustentavel,
         description: "Defina a renda desejada"
       };
     }
     
     return {
       value: sustentavel,
-      description: `Para gerar ${formatCurrency(retirementIncome)} mensais\nSem dilapidar: ${formatCurrency(sustentavel)}\nMínimo (até 100 anos): ${formatCurrency(minimo)}`
+      description: `${formatCurrency(sustentavel)}\n(com perpetuidade)\n\n${formatCurrency(minimo)}\n(consumindo até ${lifeExpectancy} anos)`
     };
   };
 
@@ -146,8 +145,9 @@ export const InsightsCards: React.FC<InsightsCardsProps> = ({
       title: "Patrimônio necessário",
       value: patrimonioInfo.value,
       description: patrimonioInfo.description,
-      isCurrency: true,
-      isMultiline: true
+      isCurrency: false,
+      isMultiline: true,
+      showValueAsDescription: true
     },
     {
       title: "Idade possível para aposentadoria",
@@ -179,13 +179,15 @@ export const InsightsCards: React.FC<InsightsCardsProps> = ({
           <Card key={index} className="p-6 bg-white border-l-4 border-l-orange-500">
             <div className="text-center">
               <h3 className="text-lg font-semibold mb-2 text-gray-800">{insight.title}</h3>
-              <p className="text-2xl font-bold text-orange-600 mb-2">
-                {insight.isCurrency 
-                  ? formatCurrency(insight.value) 
-                  : Math.round(insight.value) + (insight.suffix || '')
-                }
-              </p>
-              <p className={`text-sm text-gray-600 ${insight.isMultiline ? 'whitespace-pre-line' : ''}`}>
+              {!insight.showValueAsDescription && (
+                <p className="text-2xl font-bold text-orange-600 mb-2">
+                  {insight.isCurrency 
+                    ? formatCurrency(insight.value) 
+                    : Math.round(insight.value) + (insight.suffix || '')
+                  }
+                </p>
+              )}
+              <p className={`text-sm text-gray-600 ${insight.isMultiline ? 'whitespace-pre-line' : ''} ${insight.showValueAsDescription ? 'text-lg font-semibold text-orange-600' : ''}`}>
                 {insight.description}
               </p>
             </div>
