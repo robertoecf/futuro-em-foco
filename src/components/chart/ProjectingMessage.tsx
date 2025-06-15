@@ -35,18 +35,14 @@ export const ProjectingMessage = ({
               <div>
                 <h3 className="text-sm font-medium text-gray-900">Simulação Probabilística | Método de Monte Carlo</h3>
                 <p className="text-xs text-gray-500">
-                  Mil cenários aleatórios baseados em risco e volatilidade
+                  Calculando mil cenários aleatórios...
                 </p>
               </div>
               <button
-                className={`px-4 py-2 rounded text-sm font-medium ${
-                  isMonteCarloEnabled 
-                    ? "bg-orange-500 hover:bg-orange-600 text-white" 
-                    : "border border-gray-300 bg-white hover:bg-gray-50 text-gray-700"
-                }`}
-                onClick={() => onMonteCarloToggle(!isMonteCarloEnabled)}
+                className="px-4 py-2 rounded text-sm font-medium bg-orange-500 text-white cursor-not-allowed opacity-50"
+                disabled
               >
-                Calcular
+                Calculando...
               </button>
             </div>
 

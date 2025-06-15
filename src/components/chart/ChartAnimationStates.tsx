@@ -15,12 +15,26 @@ export const useChartAnimation = ({
   isMonteCarloEnabled, 
   monteCarloData 
 }: UseChartAnimationProps) => {
-  const [animationPhase, setAnimationPhase] = useState<AnimationPhase>('initial');
+  const [animationPhase, setAnimationPhase] = useState<AnimationPhase>('final');
   const [visiblePaths, setVisiblePaths] = useState<number[]>([]);
   const [pathOpacities, setPathOpacities] = useState<Record<number, number>>({});
 
-  // Reset animation when Monte Carlo starts
+  // Reset animation when Monte Carlo is disabled
   useEffect(() => {
+    if (!isMonteCarloEnabled) {
+      console.log('Monte Carlo disabled - resetting to final phase');
+      setAnimationPhase('final');
+      setVisiblePaths([]);
+      setPathOpacities({});
+      return;
+    }
+  }, [isMonteCarloEnabled]);
+
+  // Handle Monte Carlo animation sequence
+  useEffect(() => {
+    // Clear any existing timers
+    let timer1: NodeJS.Timeout, timer2: NodeJS.Timeout, fadeInterval: NodeJS.Timeout;
+
     if (isCalculating && isMonteCarloEnabled) {
       console.log('Starting Monte Carlo animation...');
       setAnimationPhase('projecting');
@@ -28,7 +42,7 @@ export const useChartAnimation = ({
       setPathOpacities({});
       
       // Show projecting message for exactly 2 seconds
-      const timer1 = setTimeout(() => {
+      timer1 = setTimeout(() => {
         console.log('Moving to paths phase...');
         setAnimationPhase('paths');
         
@@ -44,12 +58,12 @@ export const useChartAnimation = ({
         setPathOpacities(initialOpacities);
         
         // Show all paths for 3 seconds, then start consolidating
-        const timer2 = setTimeout(() => {
+        timer2 = setTimeout(() => {
           console.log('Starting consolidation phase...');
           setAnimationPhase('consolidating');
           
           // Fade out paths gradually over 2 seconds
-          const fadeInterval = setInterval(() => {
+          fadeInterval = setInterval(() => {
             setPathOpacities(prev => {
               const newOpacities = { ...prev };
               let allFaded = true;
@@ -69,13 +83,20 @@ export const useChartAnimation = ({
               
               return newOpacities;
             });
-          }, 40); // Slower fade for better visual effect
-        }, 3000); // Show paths for 3 seconds
-      }, 2000); // Exactly 2 seconds for projecting message
+          }, 40);
+        }, 3000);
+      }, 2000);
     } else if (!isCalculating) {
       setAnimationPhase('final');
     }
-  }, [isCalculating, isMonteCarloEnabled, monteCarloData]);
+
+    // Cleanup function to clear timers
+    return () => {
+      if (timer1) clearTimeout(timer1);
+      if (timer2) clearTimeout(timer2);
+      if (fadeInterval) clearInterval(fadeInterval);
+    };
+  }, [isCalculating, isMonteCarloEnabled]);
 
   return {
     animationPhase,

@@ -138,13 +138,22 @@ export const useCalculator = () => {
         setIsCalculating(false);
       }, 100);
     } else {
+      // Reset Monte Carlo data when disabled
       setMonteCarloResult(null);
+      setIsCalculating(false);
     }
   }, [initialAmount, monthlyAmount, currentAge, retirementAge, lifeExpectancy, retirementIncome, portfolioReturn, investorProfile, accumulationYears, isMonteCarloEnabled]);
 
   const handleMonteCarloToggle = (enabled: boolean) => {
+    console.log('Monte Carlo toggle:', enabled);
     setIsMonteCarloEnabled(enabled);
     saveToStorage(STORAGE_KEYS.MONTE_CARLO_ENABLED, enabled);
+    
+    // If disabling, immediately clear results and stop calculating
+    if (!enabled) {
+      setIsCalculating(false);
+      setMonteCarloResult(null);
+    }
   };
 
   const handleInitialAmountBlur = (value: string) => {

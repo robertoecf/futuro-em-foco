@@ -9,7 +9,7 @@ export const DEFAULT_VALUES = {
   RETIREMENT_INCOME: 0,
   PORTFOLIO_RETURN: 4, // 4% default
   INVESTOR_PROFILE: 'moderado' as const,
-  MONTE_CARLO_ENABLED: false
+  MONTE_CARLO_ENABLED: false // Garantir que inicia como false
 };
 
 // Storage keys for localStorage

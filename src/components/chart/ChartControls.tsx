@@ -24,7 +24,10 @@ export const ChartControls = ({
           <div>
             <h3 className="text-sm font-medium text-gray-900">Simulação Probabilística | Método de Monte Carlo</h3>
             <p className="text-xs text-gray-500">
-              Mil cenários aleatórios baseados em risco e volatilidade
+              {isMonteCarloEnabled 
+                ? "Mil cenários aleatórios sendo exibidos" 
+                : "Mil cenários aleatórios baseados em risco e volatilidade"
+              }
             </p>
           </div>
           <Button
@@ -33,7 +36,7 @@ export const ChartControls = ({
             onClick={() => onMonteCarloToggle(!isMonteCarloEnabled)}
             className={isMonteCarloEnabled ? "bg-orange-500 hover:bg-orange-600" : ""}
           >
-            Calcular
+            {isMonteCarloEnabled ? "Voltar" : "Calcular"}
           </Button>
         </div>
 
