@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -63,18 +62,6 @@ export const Calculator: React.FC = () => {
           setInvestorProfile={setInvestorProfile}
         />
         
-        {/* Results Cards - Now with Three Projections when Monte Carlo is enabled */}
-        <ResultsCards
-          calculationResult={calculationResult}
-          retirementAge={possibleRetirementAge}
-          lifeExpectancy={lifeExpectancy}
-          initialAmount={initialAmount}
-          monteCarloResult={monteCarloResult}
-          isMonteCarloEnabled={isMonteCarloEnabled}
-          currentAge={currentAge}
-          portfolioReturn={portfolioReturn}
-        />
-        
         {/* Chart - Full Width with integrated controls and information */}
         <div className="mb-8">
           <ChartComponent 
@@ -92,6 +79,18 @@ export const Calculator: React.FC = () => {
             onMonteCarloToggle={handleMonteCarloToggle}
           />
         </div>
+
+        {/* Results Cards - Now below the chart and controls */}
+        <ResultsCards
+          calculationResult={calculationResult}
+          retirementAge={possibleRetirementAge}
+          lifeExpectancy={lifeExpectancy}
+          initialAmount={initialAmount}
+          monteCarloResult={monteCarloResult}
+          isMonteCarloEnabled={isMonteCarloEnabled}
+          currentAge={currentAge}
+          portfolioReturn={portfolioReturn}
+        />
         
         {/* Insights Section */}
         <InsightsCards
