@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -79,6 +80,10 @@ export const Calculator: React.FC = () => {
             onMonteCarloToggle={handleMonteCarloToggle}
             initialAmount={initialAmount}
             monthlyAmount={monthlyAmount}
+            retirementAge={possibleRetirementAge}
+            retirementIncome={retirementIncome}
+            investorProfile={investorProfile}
+            calculationResult={calculationResult}
           />
         </div>
 

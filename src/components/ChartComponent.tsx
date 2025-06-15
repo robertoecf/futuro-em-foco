@@ -4,7 +4,9 @@ import { MonteCarloResult } from '@/lib/utils';
 import { CustomTooltip } from './chart/CustomTooltip';
 import { ChartControls } from './chart/ChartControls';
 import { ChartInfo } from './chart/ChartInfo';
+import { ExportButton } from './chart/ExportButton';
 import { calculatePossibleRetirementAge, formatYAxis } from './chart/chartUtils';
+import { InvestorProfile, CalculationResult } from '@/components/calculator/useCalculator';
 
 interface ChartComponentProps {
   data: number[];
@@ -21,6 +23,10 @@ interface ChartComponentProps {
   onMonteCarloToggle?: (enabled: boolean) => void;
   initialAmount?: number;
   monthlyAmount?: number;
+  retirementAge?: number;
+  retirementIncome?: number;
+  investorProfile?: InvestorProfile;
+  calculationResult?: CalculationResult | null;
 }
 
 export const ChartComponent = ({ 
@@ -37,7 +43,11 @@ export const ChartComponent = ({
   isMonteCarloEnabled = false,
   onMonteCarloToggle,
   initialAmount = 0,
-  monthlyAmount = 0
+  monthlyAmount = 0,
+  retirementAge = 65,
+  retirementIncome = 0,
+  investorProfile = 'moderado',
+  calculationResult = null
 }: ChartComponentProps) => {
   console.log('ChartComponent data:', data);
   console.log('ChartComponent Monte Carlo data:', monteCarloData);
@@ -117,10 +127,21 @@ export const ChartComponent = ({
     );
   }
 
+  const planningInputs = {
+    initialAmount,
+    monthlyAmount,
+    currentAge,
+    retirementAge,
+    lifeExpectancy,
+    retirementIncome,
+    portfolioReturn,
+    investorProfile
+  };
+
   return (
     <div className="w-full">
       {/* Chart Section */}
-      <div className="h-[400px] w-full bg-white border border-gray-200 rounded-lg p-4">
+      <div className="relative h-[400px] w-full bg-white border border-gray-200 rounded-lg p-4">
         <ResponsiveContainer width="100%" height="100%">
           <ComposedChart
             data={chartData}
@@ -224,6 +245,15 @@ export const ChartComponent = ({
             )}
           </ComposedChart>
         </ResponsiveContainer>
+        
+        {/* Export Button - positioned at bottom right of chart */}
+        <div className="absolute bottom-4 right-4">
+          <ExportButton
+            chartData={chartData}
+            planningInputs={planningInputs}
+            calculationResult={calculationResult}
+          />
+        </div>
       </div>
 
       {/* Controls Section - Now below the chart */}

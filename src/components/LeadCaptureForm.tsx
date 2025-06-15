@@ -24,13 +24,18 @@ interface LeadCaptureFormProps {
     investorProfile: InvestorProfile;
   };
   calculationResult: CalculationResult | null;
+  exportData?: {
+    chartData: any[];
+    type: 'excel';
+  };
 }
 
 export const LeadCaptureForm = ({
   isOpen,
   onClose,
   planningInputs,
-  calculationResult
+  calculationResult,
+  exportData
 }: LeadCaptureFormProps) => {
   const [formData, setFormData] = useState({
     name: '',
@@ -41,6 +46,49 @@ export const LeadCaptureForm = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
   const { savePlanningData, getPlanningUrl, sendPlanByEmail } = usePlanningData();
+
+  const generateExcelFile = (chartData: any[], userData: any) => {
+    // Create CSV content (Excel-compatible)
+    const headers = ['Idade', 'Patrimonio', 'Total_Poupado', 'Fase'];
+    
+    // Add Monte Carlo headers if available
+    if (chartData[0]?.pessimistic !== undefined) {
+      headers.push('Cenario_Pessimista', 'Cenario_Neutro', 'Cenario_Otimista');
+    }
+    
+    const csvContent = [
+      headers.join(','),
+      ...chartData.map(row => {
+        const basicData = [
+          row.age,
+          row.patrimonio.toFixed(2),
+          row.poupanca.toFixed(2),
+          `"${row.fase}"`
+        ];
+        
+        if (row.pessimistic !== undefined) {
+          basicData.push(
+            row.pessimistic.toFixed(2),
+            row.median.toFixed(2),
+            row.optimistic.toFixed(2)
+          );
+        }
+        
+        return basicData.join(',');
+      })
+    ].join('\n');
+
+    // Create and download file
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `planejamento_aposentadoria_${userData.name.replace(/\s+/g, '_')}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -57,19 +105,27 @@ export const LeadCaptureForm = ({
     setIsSubmitting(true);
 
     try {
-      // Salvar dados do planejamento
-      const planId = savePlanningData(formData, planningInputs, calculationResult);
-      const planUrl = getPlanningUrl(planId);
+      // Generate Excel file if export data is provided
+      if (exportData) {
+        generateExcelFile(exportData.chartData, formData);
+        
+        toast({
+          title: "Arquivo baixado com sucesso!",
+          description: "O arquivo Excel com os dados foi baixado para seu computador.",
+        });
+      } else {
+        // Regular email flow
+        const planId = savePlanningData(formData, planningInputs, calculationResult);
+        const planUrl = getPlanningUrl(planId);
+        await sendPlanByEmail(formData, planUrl);
 
-      // Simular envio do email
-      await sendPlanByEmail(formData, planUrl);
+        toast({
+          title: "Plano enviado com sucesso!",
+          description: `Enviamos seu planejamento para ${formData.email}. Verifique sua caixa de entrada.`,
+        });
+      }
 
-      toast({
-        title: "Plano enviado com sucesso!",
-        description: `Enviamos seu planejamento para ${formData.email}. Verifique sua caixa de entrada.`,
-      });
-
-      // Resetar formulário e fechar modal
+      // Reset form and close modal
       setFormData({
         name: '',
         email: '',
@@ -80,8 +136,8 @@ export const LeadCaptureForm = ({
     } catch (error) {
       console.error('Error submitting form:', error);
       toast({
-        title: "Erro ao enviar",
-        description: "Houve um erro ao enviar seu plano. Tente novamente.",
+        title: "Erro ao processar",
+        description: exportData ? "Houve um erro ao gerar o arquivo." : "Houve um erro ao enviar seu plano. Tente novamente.",
         variant: "destructive",
       });
     } finally {
@@ -89,11 +145,15 @@ export const LeadCaptureForm = ({
     }
   };
 
+  const isExportMode = !!exportData;
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-md">
         <DialogHeader>
-          <DialogTitle>Receber plano por email</DialogTitle>
+          <DialogTitle>
+            {isExportMode ? 'Download dos dados' : 'Receber plano por email'}
+          </DialogTitle>
         </DialogHeader>
         
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -150,7 +210,7 @@ export const LeadCaptureForm = ({
               Cancelar
             </Button>
             <Button type="submit" disabled={isSubmitting} className="flex-1">
-              {isSubmitting ? 'Enviando...' : 'Receber plano'}
+              {isSubmitting ? 'Processando...' : (isExportMode ? 'Baixar Excel' : 'Receber plano')}
             </Button>
           </div>
         </form>
