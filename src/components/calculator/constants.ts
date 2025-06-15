@@ -9,12 +9,12 @@ export const DEFAULT_VALUES = {
   RETIREMENT_INCOME: 0,
   PORTFOLIO_RETURN: 4, // 4% default
   INVESTOR_PROFILE: 'moderado' as const,
-  MONTE_CARLO_ENABLED: false // Garantir que inicia como false
+  MONTE_CARLO_ENABLED: false
 };
 
-// Magic Moment Animation Timers
+// Magic Moment Animation Timers - Ajustado para 3 segundos
 export const MAGIC_MOMENT_TIMERS = {
-  MESSAGE_DURATION: 4000, // 4 seconds - tempo que a mensagem fica na tela
+  MESSAGE_DURATION: 3000, // 3 seconds minimum - ou até os dados ficarem prontos
   PATHS_EVOLUTION_DURATION: 6000, // 6 seconds - tempo que as 50 linhas levam para se desenhar
   CONSOLIDATION_DURATION: 3000 // 3 seconds - tempo para as linhas desaparecerem
 };

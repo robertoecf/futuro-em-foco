@@ -9,7 +9,7 @@ interface UseChartAnimationProps {
   isCalculating: boolean;
   isMonteCarloEnabled: boolean;
   monteCarloData: MonteCarloResult | null;
-  onAnimationComplete?: () => void; // Callback para quando a animação terminar
+  onAnimationComplete?: () => void;
 }
 
 export const useChartAnimation = ({ 
@@ -21,6 +21,7 @@ export const useChartAnimation = ({
   const [animationPhase, setAnimationPhase] = useState<AnimationPhase>('final');
   const [visiblePaths, setVisiblePaths] = useState<number[]>([]);
   const [pathOpacities, setPathOpacities] = useState<Record<number, number>>({});
+  const [calculationStartTime, setCalculationStartTime] = useState<number | null>(null);
 
   // Reset animation when Monte Carlo is disabled
   useEffect(() => {
@@ -29,48 +30,69 @@ export const useChartAnimation = ({
       setAnimationPhase('final');
       setVisiblePaths([]);
       setPathOpacities({});
+      setCalculationStartTime(null);
       return;
     }
   }, [isMonteCarloEnabled]);
 
-  // Handle Monte Carlo animation sequence
+  // Handle calculation start
   useEffect(() => {
-    // Clear any existing timers
+    if (isCalculating && isMonteCarloEnabled && !calculationStartTime) {
+      const startTime = Date.now();
+      console.log('🚀 Calculation started at', new Date().toLocaleTimeString());
+      setCalculationStartTime(startTime);
+      setAnimationPhase('projecting');
+      setVisiblePaths([]);
+      setPathOpacities({});
+    }
+  }, [isCalculating, isMonteCarloEnabled, calculationStartTime]);
+
+  // Handle Monte Carlo animation sequence when data is ready
+  useEffect(() => {
     let messageTimer: NodeJS.Timeout;
     let pathsTimer: NodeJS.Timeout;
     let progressInterval: NodeJS.Timeout;
     let fadeInterval: NodeJS.Timeout;
 
-    if (isCalculating && isMonteCarloEnabled) {
-      const startTime = Date.now();
-      console.log('🎬 Starting Magic Moment animation at', new Date().toLocaleTimeString());
-      console.log(`⏱️ Message will show for ${MAGIC_MOMENT_TIMERS.MESSAGE_DURATION}ms`);
-      console.log(`📈 Paths will evolve over ${MAGIC_MOMENT_TIMERS.PATHS_EVOLUTION_DURATION}ms`);
-      console.log(`✨ Consolidation will take ${MAGIC_MOMENT_TIMERS.CONSOLIDATION_DURATION}ms`);
+    if (isCalculating && isMonteCarloEnabled && calculationStartTime && monteCarloData) {
+      const currentTime = Date.now();
+      const elapsedTime = currentTime - calculationStartTime;
+      const minimumMessageTime = 3000; // 3 seconds minimum
       
-      setAnimationPhase('projecting');
-      setVisiblePaths([]);
-      setPathOpacities({});
+      console.log('📊 Monte Carlo data ready!', {
+        elapsedCalculationTime: elapsedTime,
+        minimumMessageTime,
+        willWait: elapsedTime < minimumMessageTime
+      });
+
+      // Initialize all 50 paths with opacity 0 immediately when data is ready
+      const initialOpacities: Record<number, number> = {};
+      for (let i = 0; i < 50; i++) {
+        initialOpacities[i] = 0;
+      }
+      setPathOpacities(initialOpacities);
+      console.log('🎨 Initialized all 50 paths with opacity 0');
+
+      // Wait minimum 3 seconds, or until calculation is done (whichever is longer)
+      const waitTime = Math.max(0, minimumMessageTime - elapsedTime);
       
-      // Phase 1: Show projecting message
       messageTimer = setTimeout(() => {
-        const messageEndTime = Date.now();
-        console.log(`💭 Message phase completed after ${messageEndTime - startTime}ms`);
-        console.log('📊 Moving to paths evolution phase...');
+        console.log('💭 Message phase completed, moving to paths animation');
         setAnimationPhase('paths');
         
         // Phase 2: Progressive path appearance
         const totalPaths = 50;
-        const pathInterval = MAGIC_MOMENT_TIMERS.PATHS_EVOLUTION_DURATION / totalPaths;
+        const pathEvolutionTime = 6000; // 6 seconds for paths
+        const pathInterval = pathEvolutionTime / totalPaths;
         let currentPathIndex = 0;
         
-        console.log(`🎨 Drawing ${totalPaths} paths over ${MAGIC_MOMENT_TIMERS.PATHS_EVOLUTION_DURATION}ms (${pathInterval.toFixed(1)}ms per path)`);
+        console.log(`🎨 Starting path animation: ${totalPaths} paths over ${pathEvolutionTime}ms`);
         
         progressInterval = setInterval(() => {
           if (currentPathIndex < totalPaths) {
             setVisiblePaths(prev => {
               const newPaths = [...prev, currentPathIndex];
-              console.log(`✏️ Drawing path ${currentPathIndex + 1}/${totalPaths}`);
+              console.log(`✏️ Animating path ${currentPathIndex + 1}/${totalPaths} to opacity 1`);
               return newPaths;
             });
             
@@ -82,7 +104,7 @@ export const useChartAnimation = ({
             currentPathIndex++;
           } else {
             clearInterval(progressInterval);
-            console.log('🎨 All paths drawn! Starting consolidation phase...');
+            console.log('🎨 All paths animated! Starting consolidation...');
             
             // Phase 3: Consolidation - fade out paths
             pathsTimer = setTimeout(() => {
@@ -90,8 +112,8 @@ export const useChartAnimation = ({
               setAnimationPhase('consolidating');
               
               // Fade out all paths gradually
-              const fadeStep = 0.03; // Opacity reduction per step
-              const fadeStepInterval = 40; // 40ms per step
+              const fadeStep = 0.03;
+              const fadeStepInterval = 40;
               
               fadeInterval = setInterval(() => {
                 setPathOpacities(prev => {
@@ -110,11 +132,9 @@ export const useChartAnimation = ({
                     clearInterval(fadeInterval);
                     const endTime = Date.now();
                     console.log('✨ Magic Moment animation completed!');
-                    console.log(`🎯 Total animation time: ${endTime - startTime}ms`);
-                    console.log('🏁 Calling onAnimationComplete callback');
+                    console.log(`🎯 Total time: ${endTime - calculationStartTime}ms`);
                     setAnimationPhase('final');
                     
-                    // Notify that animation is complete
                     if (onAnimationComplete) {
                       onAnimationComplete();
                     }
@@ -123,36 +143,25 @@ export const useChartAnimation = ({
                   return newOpacities;
                 });
               }, fadeStepInterval);
-            }, MAGIC_MOMENT_TIMERS.CONSOLIDATION_DURATION);
+            }, 3000); // 3 seconds consolidation
           }
         }, pathInterval);
         
-      }, MAGIC_MOMENT_TIMERS.MESSAGE_DURATION);
-    } else if (!isCalculating) {
+      }, waitTime);
+    } else if (!isCalculating && animationPhase !== 'final') {
       console.log('🏁 Calculation finished - moving to final phase');
       setAnimationPhase('final');
+      setCalculationStartTime(null);
     }
 
-    // Cleanup function to clear all timers
+    // Cleanup function
     return () => {
-      if (messageTimer) {
-        console.log('🧹 Cleaning up message timer');
-        clearTimeout(messageTimer);
-      }
-      if (pathsTimer) {
-        console.log('🧹 Cleaning up paths timer');
-        clearTimeout(pathsTimer);
-      }
-      if (progressInterval) {
-        console.log('🧹 Cleaning up progress interval');
-        clearInterval(progressInterval);
-      }
-      if (fadeInterval) {
-        console.log('🧹 Cleaning up fade interval');
-        clearInterval(fadeInterval);
-      }
+      if (messageTimer) clearTimeout(messageTimer);
+      if (pathsTimer) clearTimeout(pathsTimer);
+      if (progressInterval) clearInterval(progressInterval);
+      if (fadeInterval) clearInterval(fadeInterval);
     };
-  }, [isCalculating, isMonteCarloEnabled, onAnimationComplete]);
+  }, [isCalculating, isMonteCarloEnabled, calculationStartTime, monteCarloData, onAnimationComplete, animationPhase]);
 
   return {
     animationPhase,
