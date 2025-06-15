@@ -1,3 +1,4 @@
+
 import { ChartControls } from './chart/ChartControls';
 import { ChartInfo } from './chart/ChartInfo';
 import { ExportButton } from './chart/ExportButton';
@@ -28,7 +29,7 @@ interface ChartComponentProps {
   retirementIncome?: number;
   investorProfile?: InvestorProfile;
   calculationResult?: CalculationResult | null;
-  onAnimationComplete?: () => void; // Callback para quando a animação terminar
+  onAnimationComplete?: () => void;
 }
 
 export const ChartComponent = ({ 
@@ -55,6 +56,8 @@ export const ChartComponent = ({
   
   console.log('ChartComponent data:', data);
   console.log('ChartComponent Monte Carlo data:', monteCarloData);
+  console.log('ChartComponent isCalculating:', isCalculating);
+  console.log('ChartComponent isMonteCarloEnabled:', isMonteCarloEnabled);
 
   const { animationPhase, visiblePaths, pathOpacities } = useChartAnimation({
     isCalculating,
@@ -87,7 +90,9 @@ export const ChartComponent = ({
   const perpetuityWealth = monthlyIncomeTarget > 0 ? 
     (monthlyIncomeTarget * 12) / (portfolioReturn / 100) : 0;
 
-  // Show projecting message
+  console.log('ChartComponent animationPhase:', animationPhase);
+
+  // Show projecting message ONLY during projecting phase
   if (animationPhase === 'projecting') {
     return (
       <ProjectingMessage
@@ -112,9 +117,10 @@ export const ChartComponent = ({
     investorProfile
   };
 
+  // For all other phases (initial, paths, consolidating, final), show the chart
   return (
     <div className="w-full">
-      {/* Chart Section */}
+      {/* Chart Section - Always render unless in projecting phase */}
       <ChartRenderer
         chartData={chartData}
         possibleRetirementAge={possibleRetirementAge}

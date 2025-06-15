@@ -23,7 +23,7 @@ export const useChartAnimation = ({
   const [pathOpacities, setPathOpacities] = useState<Record<number, number>>({});
   const [calculationStartTime, setCalculationStartTime] = useState<number | null>(null);
 
-  // Reset animation when Monte Carlo is disabled
+  // Reset animation when Monte Carlo is disabled - always go to final
   useEffect(() => {
     if (!isMonteCarloEnabled) {
       console.log('🔄 Monte Carlo disabled - resetting to final phase');
@@ -44,6 +44,11 @@ export const useChartAnimation = ({
       setAnimationPhase('projecting');
       setVisiblePaths([]);
       setPathOpacities({});
+    } else if (!isCalculating && !isMonteCarloEnabled) {
+      // Se não está calculando e Monte Carlo está desabilitado, vai direto para final
+      console.log('🏁 No calculation needed - going to final phase');
+      setAnimationPhase('final');
+      setCalculationStartTime(null);
     }
   }, [isCalculating, isMonteCarloEnabled, calculationStartTime]);
 
@@ -57,7 +62,7 @@ export const useChartAnimation = ({
     if (isCalculating && isMonteCarloEnabled && calculationStartTime && monteCarloData) {
       const currentTime = Date.now();
       const elapsedTime = currentTime - calculationStartTime;
-      const minimumMessageTime = 3000; // 3 seconds minimum
+      const minimumMessageTime = MAGIC_MOMENT_TIMERS.MESSAGE_DURATION; // 3 seconds
       
       console.log('📊 Monte Carlo data ready!', {
         elapsedCalculationTime: elapsedTime,
@@ -82,7 +87,7 @@ export const useChartAnimation = ({
         
         // Phase 2: Progressive path appearance
         const totalPaths = 50;
-        const pathEvolutionTime = 6000; // 6 seconds for paths
+        const pathEvolutionTime = MAGIC_MOMENT_TIMERS.PATHS_EVOLUTION_DURATION; // 6 seconds
         const pathInterval = pathEvolutionTime / totalPaths;
         let currentPathIndex = 0;
         
@@ -143,13 +148,14 @@ export const useChartAnimation = ({
                   return newOpacities;
                 });
               }, fadeStepInterval);
-            }, 3000); // 3 seconds consolidation
+            }, MAGIC_MOMENT_TIMERS.CONSOLIDATION_DURATION); // 3 seconds consolidation
           }
         }, pathInterval);
         
       }, waitTime);
-    } else if (!isCalculating && animationPhase !== 'final') {
-      console.log('🏁 Calculation finished - moving to final phase');
+    } else if (!isCalculating && calculationStartTime) {
+      // Se a calculação terminou mas não temos dados de Monte Carlo, ir para final
+      console.log('🏁 Calculation finished without Monte Carlo - moving to final phase');
       setAnimationPhase('final');
       setCalculationStartTime(null);
     }
@@ -161,7 +167,17 @@ export const useChartAnimation = ({
       if (progressInterval) clearInterval(progressInterval);
       if (fadeInterval) clearInterval(fadeInterval);
     };
-  }, [isCalculating, isMonteCarloEnabled, calculationStartTime, monteCarloData, onAnimationComplete, animationPhase]);
+  }, [isCalculating, isMonteCarloEnabled, calculationStartTime, monteCarloData, onAnimationComplete]);
+
+  // Fallback: se algo der errado, sempre garantir que termine em 'final'
+  useEffect(() => {
+    if (!isCalculating && animationPhase !== 'final') {
+      console.log('🔄 Fallback: Ensuring final phase when not calculating');
+      setTimeout(() => {
+        setAnimationPhase('final');
+      }, 1000);
+    }
+  }, [isCalculating, animationPhase]);
 
   return {
     animationPhase,
