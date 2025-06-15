@@ -62,7 +62,7 @@ export const ChartComponent = ({
   console.log('ChartComponent isMonteCarloEnabled:', isMonteCarloEnabled);
   console.log('ChartComponent lineDrawingDuration:', lineDrawingDuration);
 
-  const { animationPhase, isShowingLines } = useChartAnimation({
+  const { animationPhase, isShowingLines, isDrawingFinalLines } = useChartAnimation({
     isCalculating,
     isMonteCarloEnabled,
     monteCarloData,
@@ -94,6 +94,7 @@ export const ChartComponent = ({
 
   console.log('ChartComponent animationPhase:', animationPhase);
   console.log('ChartComponent isShowingLines:', isShowingLines);
+  console.log('ChartComponent isDrawingFinalLines:', isDrawingFinalLines);
 
   const planningInputs = {
     initialAmount,
@@ -131,6 +132,7 @@ export const ChartComponent = ({
           perpetuityWealth={perpetuityWealth}
           monteCarloData={monteCarloData}
           isShowingLines={isShowingLines}
+          isDrawingFinalLines={isDrawingFinalLines}
           lineDrawingDuration={lineDrawingDuration}
         />
         

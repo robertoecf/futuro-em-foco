@@ -17,7 +17,8 @@ export const MAGIC_MOMENT_TIMERS = {
   PROJECTING_DURATION: 3000, // 3 seconds - "Projetando futuros possíveis..."
   PATHS_DURATION: 6000, // 6 seconds - Mostra as 50 linhas coloridas
   OPTIMIZING_DURATION: 2000, // 2 seconds - "Otimizando exibição..."
-  TOTAL_ANIMATION_DURATION: 11000 // 11 seconds total
+  DRAWING_FINAL_DURATION: 4000, // 4 seconds - Desenha as 3 linhas finais
+  TOTAL_ANIMATION_DURATION: 15000 // 15 seconds total
 };
 
 // Line Drawing Animation Configuration
@@ -30,6 +31,16 @@ export const LINE_ANIMATION = {
   },
   STROKE_ANIMATION_DURATION: 1500, // Duration for each individual line to draw
   OPACITY_FADE_DURATION: 300 // Quick fade-in after line is drawn
+};
+
+// Final Lines Drawing Animation Configuration
+export const FINAL_LINES_ANIMATION = {
+  DRAWING_DURATION: 4000, // 4 seconds total for final 3 lines
+  DELAY_BETWEEN_LINES: 1200, // 1.2 seconds between each line start
+  STROKE_ANIMATION_DURATION: 2000, // 2 seconds to draw each individual line (slower)
+  ANIMATION_CURVE: 'ease-out' as const,
+  OPACITY_FADE_DURATION: 400, // Slightly longer fade-in
+  LINES: ['pessimistic', 'median', 'optimistic'] as const
 };
 
 // Storage keys for localStorage
