@@ -4,7 +4,7 @@ import { MonteCarloResult } from '@/lib/utils';
 import { CustomTooltip } from './chart/CustomTooltip';
 import { ChartControls } from './chart/ChartControls';
 import { ChartInfo } from './chart/ChartInfo';
-import { calculatePossibleRetirementAge, calculatePerpetuityWealth, formatYAxis } from './chart/chartUtils';
+import { calculatePossibleRetirementAge, formatYAxis } from './chart/chartUtils';
 
 interface ChartComponentProps {
   data: number[];
@@ -69,7 +69,9 @@ export const ChartComponent = ({
     accumulationYears
   );
   
-  const perpetuityWealth = calculatePerpetuityWealth(monthlyIncomeTarget, portfolioReturn);
+  // Calculate perpetuity wealth based on retirement return and desired income
+  const perpetuityWealth = monthlyIncomeTarget > 0 ? 
+    (monthlyIncomeTarget * 12) / (portfolioReturn / 100) : 0;
 
   if (isCalculating) {
     return (
@@ -120,7 +122,7 @@ export const ChartComponent = ({
               stroke="#9CA3AF" 
               strokeDasharray="5 5" 
               label={{ 
-                value: 'Aposentadoria Possível', 
+                value: 'Idade de Aposentadoria', 
                 position: 'top', 
                 fill: '#6B7280',
                 fontSize: 11
@@ -134,7 +136,7 @@ export const ChartComponent = ({
                 stroke="#9CA3AF" 
                 strokeDasharray="8 4" 
                 label={{ 
-                  value: 'Perpetuidade', 
+                  value: 'Patrimônio Perpetuidade', 
                   position: 'insideTopRight', 
                   fill: '#6B7280',
                   fontSize: 11

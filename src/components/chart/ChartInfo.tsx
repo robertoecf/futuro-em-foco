@@ -82,7 +82,7 @@ export const ChartInfo = ({ monteCarloData, perpetuityWealth, possibleRetirement
           <div>
             <div className="flex items-center gap-2 mb-1">
               <div className="w-4 h-0.5 border-t-2 border-dashed border-gray-500"></div>
-              <span className="text-xs text-gray-600">Aposentadoria Possível</span>
+              <span className="text-xs text-gray-600">Idade de Aposentadoria</span>
             </div>
             <p className="text-sm font-semibold text-gray-800">
               {possibleRetirementAge} anos
@@ -93,10 +93,10 @@ export const ChartInfo = ({ monteCarloData, perpetuityWealth, possibleRetirement
             <div>
               <div className="flex items-center gap-2 mb-1">
                 <div className="w-4 h-0.5 border-t-2 border-dashed border-gray-500"></div>
-                <span className="text-xs text-gray-600">Linha Perpetuidade</span>
+                <span className="text-xs text-gray-600">Patrimônio Perpetuidade</span>
               </div>
               <p className="text-xs text-gray-500">
-                Renda indefinida sem esgotar capital
+                {formatCurrency(perpetuityWealth)}
               </p>
             </div>
           )}
