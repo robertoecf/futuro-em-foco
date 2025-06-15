@@ -1,5 +1,6 @@
 
 import { useState, useCallback, useEffect } from 'react';
+import { posthog } from '@/lib/posthog';
 import { calculateFullProjection } from '@/lib/utils';
 
 export type InvestorProfile = 'conservador' | 'moderado' | 'arrojado';
@@ -122,11 +123,14 @@ export const useCalculator = () => {
     
     console.log('Calculation result:', result);
     
-    setCalculationResult({
+    const calculationData = {
       finalAmount: result.retirementAmount,
       yearlyValues: result.yearlyValues,
       monthlyIncome: result.monthlyIncome
-    });
+    };
+
+    setCalculationResult(calculationData);
+    return calculationData; // Return the result
   }, [initialAmount, monthlyAmount, currentAge, retirementAge, lifeExpectancy, retirementIncome, portfolioReturn, investorProfile, accumulationYears]);
 
   const handleInitialAmountBlur = (value: string) => {
@@ -135,6 +139,11 @@ export const useCalculator = () => {
     const finalValue = isNaN(numericValue) ? 0 : numericValue;
     setInitialAmount(finalValue);
     saveToStorage(STORAGE_KEYS.INITIAL_AMOUNT, finalValue);
+    posthog.capture('calculator_input_change', {
+      input_name: 'initialAmount',
+      input_value: finalValue,
+      investor_profile: investorProfile // Capture current profile
+    });
   };
 
   const handleMonthlyAmountBlur = (value: string) => {
@@ -143,6 +152,11 @@ export const useCalculator = () => {
     const finalValue = isNaN(numericValue) ? 0 : numericValue;
     setMonthlyAmount(finalValue);
     saveToStorage(STORAGE_KEYS.MONTHLY_AMOUNT, finalValue);
+    posthog.capture('calculator_input_change', {
+      input_name: 'monthlyAmount',
+      input_value: finalValue,
+      investor_profile: investorProfile
+    });
   };
 
   const handleCurrentAgeBlur = (value: string) => {
@@ -156,6 +170,11 @@ export const useCalculator = () => {
         setRetirementAge(newRetirementAge);
         saveToStorage(STORAGE_KEYS.RETIREMENT_AGE, newRetirementAge);
       }
+      posthog.capture('calculator_input_change', {
+        input_name: 'currentAge',
+        input_value: numericValue, // or updated numericValue if adjustments were made
+        investor_profile: investorProfile
+      });
     }
   };
 
@@ -165,6 +184,11 @@ export const useCalculator = () => {
     if (!isNaN(numericValue) && numericValue > currentAge) {
       setRetirementAge(numericValue);
       saveToStorage(STORAGE_KEYS.RETIREMENT_AGE, numericValue);
+      posthog.capture('calculator_input_change', {
+        input_name: 'retirementAge',
+        input_value: numericValue,
+        investor_profile: investorProfile
+      });
     }
   };
   
@@ -172,6 +196,11 @@ export const useCalculator = () => {
     console.log('Life expectancy change:', value);
     setLifeExpectancy(value);
     saveToStorage(STORAGE_KEYS.LIFE_EXPECTANCY, value);
+    posthog.capture('calculator_input_change', {
+      input_name: 'lifeExpectancy',
+      input_value: value,
+      investor_profile: investorProfile
+    });
   };
   
   const handleRetirementIncomeBlur = (value: string) => {
@@ -180,6 +209,11 @@ export const useCalculator = () => {
     const finalValue = isNaN(numericValue) ? 0 : numericValue;
     setRetirementIncome(finalValue);
     saveToStorage(STORAGE_KEYS.RETIREMENT_INCOME, finalValue);
+    posthog.capture('calculator_input_change', {
+      input_name: 'retirementIncome',
+      input_value: finalValue,
+      investor_profile: investorProfile
+    });
   };
 
   const handlePortfolioReturnBlur = (value: string) => {
@@ -188,6 +222,11 @@ export const useCalculator = () => {
     if (!isNaN(numericValue) && numericValue > 0) {
       setPortfolioReturn(numericValue);
       saveToStorage(STORAGE_KEYS.PORTFOLIO_RETURN, numericValue);
+      posthog.capture('calculator_input_change', {
+        input_name: 'portfolioReturn',
+        input_value: numericValue,
+        investor_profile: investorProfile
+      });
     }
   };
 
@@ -195,13 +234,35 @@ export const useCalculator = () => {
     console.log('Investor profile change:', profile);
     setInvestorProfile(profile);
     saveToStorage(STORAGE_KEYS.INVESTOR_PROFILE, profile);
+    posthog.capture('calculator_profile_selected', {
+      profile_name: profile
+    });
   };
 
   // Calculate on state changes
   useEffect(() => {
     console.log('useEffect triggered, recalculating projection');
-    calculateProjection();
-  }, [calculateProjection]);
+
+    // Assuming calculateProjection will be modified to return the result object
+    // and continue to call setCalculationResult internally.
+    const tempResult = calculateProjection();
+
+    if (tempResult) { // Ensure result is not null
+      posthog.capture('calculator_calculation_updated', {
+        initial_amount: initialAmount,
+        monthly_amount: monthlyAmount,
+        current_age: currentAge,
+        retirement_age: retirementAge,
+        life_expectancy: lifeExpectancy,
+        retirement_income_desired: retirementIncome,
+        portfolio_return_at_retirement: portfolioReturn,
+        investor_profile: investorProfile,
+        calculated_final_amount: tempResult.finalAmount,
+        calculated_monthly_income: tempResult.monthlyIncome
+      });
+    }
+    // Add all dependencies used in the effect and PostHog event
+  }, [calculateProjection, initialAmount, monthlyAmount, currentAge, retirementAge, lifeExpectancy, retirementIncome, portfolioReturn, investorProfile]);
 
   return {
     initialAmount,
