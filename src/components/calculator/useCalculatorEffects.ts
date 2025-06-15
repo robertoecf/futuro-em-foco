@@ -64,92 +64,97 @@ export const useCalculatorEffects = ({
     return currentAge + years;
   }, [retirementIncome, portfolioReturn, investorProfile, initialAmount, monthlyAmount, currentAge, retirementAge]);
 
-  const calculateProjection = useCallback(() => {
-    console.log('Calculating projection with:', {
-      initialAmount,
-      monthlyAmount,
-      currentAge,
-      retirementAge,
-      lifeExpectancy,
-      portfolioReturn,
-      investorProfile,
-      isMonteCarloEnabled
-    });
+  // Deterministic calculation (always runs automatically)
+  const calculateDeterministicProjection = useCallback(() => {
+    console.log('📊 Running deterministic calculation');
     
     const accumulationAnnualReturn = getAccumulationAnnualReturn(investorProfile);
-    console.log('Using accumulation return:', accumulationAnnualReturn);
-    const retirementAnnualReturn = portfolioReturn / 100; // Convert percentage to decimal
-    const monthlyIncomeRate = 0.004; // 0.4% de renda mensal
+    const retirementAnnualReturn = portfolioReturn / 100;
+    const monthlyIncomeRate = 0.004;
     
-    // Deterministic calculation
     const result = calculateFullProjection(
       initialAmount,
       monthlyAmount,
       accumulationYears,
-      lifeExpectancy - currentAge, // Total years from current age to life expectancy
+      lifeExpectancy - currentAge,
       accumulationAnnualReturn,
       monthlyIncomeRate,
       retirementIncome,
-      retirementAnnualReturn // Pass the retirement return rate
+      retirementAnnualReturn
     );
-    
-    console.log('Calculation result:', result);
     
     setCalculationResult({
       finalAmount: result.retirementAmount,
       yearlyValues: result.yearlyValues,
       monthlyIncome: result.monthlyIncome
     });
+  }, [initialAmount, monthlyAmount, currentAge, lifeExpectancy, retirementIncome, portfolioReturn, investorProfile, accumulationYears, setCalculationResult]);
 
-    // Monte Carlo calculation if enabled - now using GBM
+  // Full calculation including Monte Carlo (only runs when explicitly called)
+  const calculateProjection = useCallback(() => {
+    console.log('🚀 Running full calculation with Monte Carlo:', isMonteCarloEnabled);
+    
+    // Always run deterministic first
+    calculateDeterministicProjection();
+
+    // Run Monte Carlo only if enabled
     if (isMonteCarloEnabled) {
-      console.log('🚀 Starting Geometric Brownian Motion Monte Carlo calculation');
+      console.log('🎲 Starting Monte Carlo calculation');
       setIsCalculating(true);
       
+      const accumulationAnnualReturn = getAccumulationAnnualReturn(investorProfile);
       const volatility = getVolatilityByProfile(investorProfile);
+      const retirementAnnualReturn = portfolioReturn / 100;
+      const monthlyIncomeRate = 0.004;
       
-      // Use the new GBM-based Monte Carlo simulation
       const gbmResults = runBrownianMonteCarloSimulation(
         initialAmount,
         monthlyAmount,
         accumulationYears,
         lifeExpectancy - currentAge,
-        accumulationAnnualReturn, // drift rate (μ)
-        volatility, // volatility (σ)
+        accumulationAnnualReturn,
+        volatility,
         monthlyIncomeRate,
         retirementIncome,
         retirementAnnualReturn,
-        100 // Number of simulations
+        100
       );
       
-      console.log('💾 GBM Monte Carlo calculation completed:', gbmResults);
-      
-      // Convert to the format expected by the chart components
       const convertedResults = {
         scenarios: gbmResults.scenarios,
         statistics: gbmResults.statistics
       };
       
       setMonteCarloResult(convertedResults);
-      
-      // Don't set isCalculating to false here - let the animation control it
     } else {
-      // Reset Monte Carlo data when disabled
+      // Clear Monte Carlo data when disabled
       setMonteCarloResult(null);
       setIsCalculating(false);
     }
-  }, [initialAmount, monthlyAmount, currentAge, retirementAge, lifeExpectancy, retirementIncome, portfolioReturn, investorProfile, accumulationYears, isMonteCarloEnabled, setCalculationResult, setIsCalculating, setMonteCarloResult]);
+  }, [
+    isMonteCarloEnabled,
+    calculateDeterministicProjection,
+    initialAmount,
+    monthlyAmount,
+    currentAge,
+    lifeExpectancy,
+    retirementIncome,
+    portfolioReturn,
+    investorProfile,
+    accumulationYears,
+    setIsCalculating,
+    setMonteCarloResult
+  ]);
 
-  // Calculate on state changes
+  // Auto-calculate deterministic projection on input changes
   useEffect(() => {
-    console.log('useEffect triggered, recalculating projection');
-    calculateProjection();
-  }, [calculateProjection]);
+    console.log('📊 Auto-calculating deterministic projection due to input change');
+    calculateDeterministicProjection();
+  }, [calculateDeterministicProjection]);
 
   // Clear URL after loading shared plan
   useEffect(() => {
     if (sharedPlanData) {
-      // Remove parameter from URL without reloading the page
       const url = new URL(window.location.href);
       url.searchParams.delete('plan');
       window.history.replaceState({}, '', url.toString());

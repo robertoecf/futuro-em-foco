@@ -18,6 +18,7 @@ interface UseCalculatorHandlersProps {
   setIsMonteCarloEnabled: (value: boolean) => void;
   setIsCalculating: (value: boolean) => void;
   setMonteCarloResult: (value: any) => void;
+  calculateProjection: () => void;
 }
 
 export const useCalculatorHandlers = ({
@@ -33,8 +34,18 @@ export const useCalculatorHandlers = ({
   setInvestorProfile,
   setIsMonteCarloEnabled,
   setIsCalculating,
-  setMonteCarloResult
+  setMonteCarloResult,
+  calculateProjection
 }: UseCalculatorHandlersProps) => {
+
+  // Function to reset Monte Carlo state when important inputs change
+  const resetToDeteministic = useCallback(() => {
+    console.log('🔄 Resetting to deterministic mode due to input change');
+    setIsMonteCarloEnabled(false);
+    setIsCalculating(false);
+    setMonteCarloResult(null);
+    saveToStorage(STORAGE_KEYS.MONTE_CARLO_ENABLED, false);
+  }, [setIsMonteCarloEnabled, setIsCalculating, setMonteCarloResult]);
 
   const finishCalculation = useCallback(() => {
     console.log('🏁 Calculation animation finished - setting isCalculating to false');
@@ -53,13 +64,19 @@ export const useCalculatorHandlers = ({
     }
   }, [setIsMonteCarloEnabled, setIsCalculating, setMonteCarloResult]);
 
+  const handleCalculateProjection = useCallback(() => {
+    console.log('🚀 Manual calculation triggered');
+    calculateProjection();
+  }, [calculateProjection]);
+
   const handleInitialAmountBlur = useCallback((value: string) => {
     const numericValue = parseFloat(value.replace(/\D/g, ''));
     console.log('Initial amount blur:', value, 'parsed:', numericValue);
     const finalValue = isNaN(numericValue) ? 0 : numericValue;
     setInitialAmount(finalValue);
     saveToStorage(STORAGE_KEYS.INITIAL_AMOUNT, finalValue);
-  }, [setInitialAmount]);
+    resetToDeteministic();
+  }, [setInitialAmount, resetToDeteministic]);
 
   const handleMonthlyAmountBlur = useCallback((value: string) => {
     const numericValue = parseFloat(value.replace(/\D/g, ''));
@@ -67,7 +84,8 @@ export const useCalculatorHandlers = ({
     const finalValue = isNaN(numericValue) ? 0 : numericValue;
     setMonthlyAmount(finalValue);
     saveToStorage(STORAGE_KEYS.MONTHLY_AMOUNT, finalValue);
-  }, [setMonthlyAmount]);
+    resetToDeteministic();
+  }, [setMonthlyAmount, resetToDeteministic]);
 
   const handleCurrentAgeBlur = useCallback((value: string) => {
     const numericValue = parseInt(value);
@@ -80,8 +98,9 @@ export const useCalculatorHandlers = ({
         setRetirementAge(newRetirementAge);
         saveToStorage(STORAGE_KEYS.RETIREMENT_AGE, newRetirementAge);
       }
+      resetToDeteministic();
     }
-  }, [setCurrentAge, retirementAge, setRetirementAge]);
+  }, [setCurrentAge, retirementAge, setRetirementAge, resetToDeteministic]);
 
   const handleRetirementAgeBlur = useCallback((value: string) => {
     const numericValue = parseInt(value);
@@ -89,14 +108,16 @@ export const useCalculatorHandlers = ({
     if (!isNaN(numericValue) && numericValue > currentAge) {
       setRetirementAge(numericValue);
       saveToStorage(STORAGE_KEYS.RETIREMENT_AGE, numericValue);
+      resetToDeteministic();
     }
-  }, [setRetirementAge, currentAge]);
+  }, [setRetirementAge, currentAge, resetToDeteministic]);
   
   const handleLifeExpectancyChange = useCallback((value: number) => {
     console.log('Life expectancy change:', value);
     setLifeExpectancy(value);
     saveToStorage(STORAGE_KEYS.LIFE_EXPECTANCY, value);
-  }, [setLifeExpectancy]);
+    resetToDeteministic();
+  }, [setLifeExpectancy, resetToDeteministic]);
   
   const handleRetirementIncomeBlur = useCallback((value: string) => {
     const numericValue = parseFloat(value.replace(/\D/g, ''));
@@ -104,7 +125,8 @@ export const useCalculatorHandlers = ({
     const finalValue = isNaN(numericValue) ? 0 : numericValue;
     setRetirementIncome(finalValue);
     saveToStorage(STORAGE_KEYS.RETIREMENT_INCOME, finalValue);
-  }, [setRetirementIncome]);
+    resetToDeteministic();
+  }, [setRetirementIncome, resetToDeteministic]);
 
   const handlePortfolioReturnBlur = useCallback((value: string) => {
     const numericValue = parseFloat(value);
@@ -112,18 +134,21 @@ export const useCalculatorHandlers = ({
     if (!isNaN(numericValue) && numericValue > 0) {
       setPortfolioReturn(numericValue);
       saveToStorage(STORAGE_KEYS.PORTFOLIO_RETURN, numericValue);
+      resetToDeteministic();
     }
-  }, [setPortfolioReturn]);
+  }, [setPortfolioReturn, resetToDeteministic]);
 
   const handleInvestorProfileChange = useCallback((profile: InvestorProfile) => {
     console.log('Investor profile change:', profile);
     setInvestorProfile(profile);
     saveToStorage(STORAGE_KEYS.INVESTOR_PROFILE, profile);
-  }, [setInvestorProfile]);
+    resetToDeteministic(); // Reset Monte Carlo when profile changes
+  }, [setInvestorProfile, resetToDeteministic]);
 
   return {
     finishCalculation,
     handleMonteCarloToggle,
+    handleCalculateProjection,
     handleInitialAmountBlur,
     handleMonthlyAmountBlur,
     handleCurrentAgeBlur,

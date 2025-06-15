@@ -6,6 +6,8 @@ import { useCalculator } from './useCalculator';
 import { CalculatorForm } from './CalculatorForm';
 import { ResultsCards } from './ResultsCards';
 import { InsightsCards } from './InsightsCards';
+import { CalculationButton } from './CalculationButton';
+import { CalculationModeIndicator } from './CalculationModeIndicator';
 import { ChartComponent } from '@/components/ChartComponent';
 import { InvestorProfiles } from '@/components/InvestorProfiles';
 import { Recommendations } from '@/components/Recommendations';
@@ -34,7 +36,9 @@ export const Calculator: React.FC = () => {
     handleRetirementIncomeBlur,
     handlePortfolioReturnBlur,
     setInvestorProfile,
-    handleMonteCarloToggle
+    handleMonteCarloToggle,
+    handleCalculateProjection,
+    finishCalculation
   } = useCalculator();
   
   return (
@@ -50,7 +54,7 @@ export const Calculator: React.FC = () => {
           initialAmount={initialAmount}
           monthlyAmount={monthlyAmount}
           currentAge={currentAge}
-          retirementAge={possibleRetirementAge} // Use calculated possible retirement age
+          retirementAge={possibleRetirementAge}
           retirementIncome={retirementIncome}
           portfolioReturn={portfolioReturn}
           investorProfile={investorProfile}
@@ -63,7 +67,7 @@ export const Calculator: React.FC = () => {
           setInvestorProfile={setInvestorProfile}
         />
         
-        {/* Insights Section - Moved above the chart */}
+        {/* Insights Section */}
         <InsightsCards
           initialAmount={initialAmount}
           monthlyAmount={monthlyAmount}
@@ -73,6 +77,19 @@ export const Calculator: React.FC = () => {
           retirementIncome={retirementIncome}
           portfolioReturn={portfolioReturn}
           investorProfile={investorProfile}
+        />
+
+        {/* Calculation Mode Indicator */}
+        <CalculationModeIndicator 
+          isMonteCarloEnabled={isMonteCarloEnabled}
+          isCalculating={isCalculating}
+        />
+
+        {/* Calculation Button */}
+        <CalculationButton
+          isMonteCarloEnabled={isMonteCarloEnabled}
+          isCalculating={isCalculating}
+          onCalculate={handleCalculateProjection}
         />
 
         {/* Chart - Full Width with integrated controls and information */}
@@ -96,6 +113,7 @@ export const Calculator: React.FC = () => {
             retirementIncome={retirementIncome}
             investorProfile={investorProfile}
             calculationResult={calculationResult}
+            onAnimationComplete={finishCalculation}
           />
         </div>
 
