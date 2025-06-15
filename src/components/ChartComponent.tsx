@@ -19,6 +19,8 @@ interface ChartComponentProps {
   isCalculating?: boolean;
   isMonteCarloEnabled?: boolean;
   onMonteCarloToggle?: (enabled: boolean) => void;
+  initialAmount?: number;
+  monthlyAmount?: number;
 }
 
 export const ChartComponent = ({ 
@@ -33,16 +35,47 @@ export const ChartComponent = ({
   monteCarloData,
   isCalculating = false,
   isMonteCarloEnabled = false,
-  onMonteCarloToggle
+  onMonteCarloToggle,
+  initialAmount = 0,
+  monthlyAmount = 0
 }: ChartComponentProps) => {
   console.log('ChartComponent data:', data);
   console.log('ChartComponent Monte Carlo data:', monteCarloData);
+
+  // Calculate savings line (initial + monthly contributions - retirement withdrawals)
+  const calculateSavingsLine = () => {
+    const savingsData: number[] = [];
+    let totalSaved = initialAmount;
+    
+    for (let year = 0; year <= data.length - 1; year++) {
+      const age = currentAge + year;
+      
+      if (year === 0) {
+        // First year - just initial amount
+        savingsData.push(initialAmount);
+      } else if (age <= (currentAge + accumulationYears)) {
+        // Accumulation phase - add monthly contributions
+        totalSaved += monthlyAmount * 12;
+        savingsData.push(totalSaved);
+      } else {
+        // Retirement phase - subtract monthly income
+        const monthlyIncome = monthlyIncomeTarget > 0 ? monthlyIncomeTarget : data[accumulationYears] * 0.004;
+        totalSaved -= monthlyIncome * 12;
+        savingsData.push(Math.max(0, totalSaved));
+      }
+    }
+    
+    return savingsData;
+  };
+
+  const savingsLine = calculateSavingsLine();
 
   const chartData = data.map((value, index) => {
     const age = currentAge + index;
     const baseData = {
       age,
       patrimonio: value,
+      poupanca: savingsLine[index] || 0,
       fase: age < (currentAge + accumulationYears) ? "Acumulação" : "Aposentadoria"
     };
 
@@ -133,7 +166,18 @@ export const ChartComponent = ({
               />
             )}
 
-            {/* Monte Carlo lines */}
+            {/* Savings line - gray continuous line */}
+            <Line 
+              type="monotone" 
+              dataKey="poupanca" 
+              name="Total Poupado"
+              stroke="#6B7280" 
+              strokeWidth={2}
+              dot={false}
+              activeDot={{ r: 6, stroke: '#6B7280', strokeWidth: 2, fill: '#fff' }}
+            />
+
+            {/* Monte Carlo lines or main patrimonio line */}
             {monteCarloData ? (
               <>
                 <Line 

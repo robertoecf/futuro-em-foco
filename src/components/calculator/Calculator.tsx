@@ -77,6 +77,8 @@ export const Calculator: React.FC = () => {
             isCalculating={isCalculating}
             isMonteCarloEnabled={isMonteCarloEnabled}
             onMonteCarloToggle={handleMonteCarloToggle}
+            initialAmount={initialAmount}
+            monthlyAmount={monthlyAmount}
           />
         </div>
 
