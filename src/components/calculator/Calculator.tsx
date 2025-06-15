@@ -48,9 +48,9 @@ export const Calculator: React.FC = () => {
         <div className="mb-6 p-4 bg-gray-50 rounded-lg">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-sm font-medium text-gray-900">Simulação Probabilística</h3>
+              <h3 className="text-sm font-medium text-gray-900">Simulação Probabilística Monte Carlo</h3>
               <p className="text-xs text-gray-500">
-                Ative para ver cenários baseados em risco e volatilidade (100 simulações Monte Carlo)
+                Ative para ver três cenários (pessimista, mediano, otimista) baseados em risco e volatilidade
               </p>
             </div>
             <Button
@@ -82,12 +82,14 @@ export const Calculator: React.FC = () => {
           setInvestorProfile={setInvestorProfile}
         />
         
-        {/* Results Cards - Horizontal Layout */}
+        {/* Results Cards - Now with Three Projections when Monte Carlo is enabled */}
         <ResultsCards
           calculationResult={calculationResult}
           retirementAge={retirementAge}
           lifeExpectancy={lifeExpectancy}
           initialAmount={initialAmount}
+          monteCarloResult={monteCarloResult}
+          isMonteCarloEnabled={isMonteCarloEnabled}
         />
         
         {/* Chart - Full Width */}
