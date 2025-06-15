@@ -22,7 +22,7 @@ export const ChartControls = ({
         {/* Monte Carlo Toggle */}
         <div className="flex items-center space-x-3">
           <div>
-            <h3 className="text-sm font-medium text-gray-900">Simulação Monte Carlo</h3>
+            <h3 className="text-sm font-medium text-gray-900">Simulação Probabilística | Método de Monte Carlo</h3>
             <p className="text-xs text-gray-500">
               Três cenários baseados em risco e volatilidade
             </p>
@@ -33,7 +33,7 @@ export const ChartControls = ({
             onClick={() => onMonteCarloToggle(!isMonteCarloEnabled)}
             className={isMonteCarloEnabled ? "bg-orange-500 hover:bg-orange-600" : ""}
           >
-            {isMonteCarloEnabled ? "Ativado" : "Ativar"}
+            Calcular
           </Button>
         </div>
 
