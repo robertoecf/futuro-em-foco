@@ -63,6 +63,18 @@ export const Calculator: React.FC = () => {
           setInvestorProfile={setInvestorProfile}
         />
         
+        {/* Insights Section - Moved above the chart */}
+        <InsightsCards
+          initialAmount={initialAmount}
+          monthlyAmount={monthlyAmount}
+          currentAge={currentAge}
+          retirementAge={possibleRetirementAge}
+          lifeExpectancy={lifeExpectancy}
+          retirementIncome={retirementIncome}
+          portfolioReturn={portfolioReturn}
+          investorProfile={investorProfile}
+        />
+
         {/* Chart - Full Width with integrated controls and information */}
         <div className="mb-8">
           <ChartComponent 
@@ -87,7 +99,7 @@ export const Calculator: React.FC = () => {
           />
         </div>
 
-        {/* Results Cards - Now below the chart and controls */}
+        {/* Results Cards - Now below the chart */}
         <ResultsCards
           calculationResult={calculationResult}
           retirementAge={possibleRetirementAge}
@@ -97,18 +109,6 @@ export const Calculator: React.FC = () => {
           isMonteCarloEnabled={isMonteCarloEnabled}
           currentAge={currentAge}
           portfolioReturn={portfolioReturn}
-        />
-        
-        {/* Insights Section */}
-        <InsightsCards
-          initialAmount={initialAmount}
-          monthlyAmount={monthlyAmount}
-          currentAge={currentAge}
-          retirementAge={possibleRetirementAge}
-          lifeExpectancy={lifeExpectancy}
-          retirementIncome={retirementIncome}
-          portfolioReturn={portfolioReturn}
-          investorProfile={investorProfile}
         />
       </Card>
 
