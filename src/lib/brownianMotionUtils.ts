@@ -1,6 +1,7 @@
 
 // Geometric Brownian Motion Monte Carlo Simulation
-// Based on the formula: S(t+1) = S(t) * exp((μ - σ²/2) * dt + σ * sqrt(dt) * Z)
+// Based on the Python reference: S[t] = S[t-1] * exp(drift + diff * Z[t])
+// Where: drift = (μ - σ²/2) * dt, diff = σ * sqrt(dt)
 
 export interface BrownianMonteCarloResult {
   scenarios: {
@@ -21,7 +22,7 @@ export interface BrownianMonteCarloResult {
   };
 }
 
-// Gerador Box-Muller para distribuição normal (melhorado)
+// Gerador Box-Muller para distribuição normal
 function generateNormalRandom(): number {
   let u = 0, v = 0;
   while(u === 0) u = Math.random(); // Converting [0,1) to (0,1)
@@ -29,29 +30,72 @@ function generateNormalRandom(): number {
   return Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
 }
 
-// Geometric Brownian Motion simulation for a single path
-function simulateGBMPath(
-  initialValue: number,
-  driftRate: number,
-  volatility: number,
-  timeSteps: number,
-  dt: number = 1/12 // Monthly timesteps
+// Core GBM simulation following the Python reference exactly
+function monteCarloGBM(
+  S0: number,
+  mu: number,
+  sigma: number,
+  T: number,
+  steps: number = 252,
+  sims: number = 100
 ): number[] {
-  const path = [initialValue];
-  let currentValue = initialValue;
+  const dt = T / steps;
+  const drift = (mu - 0.5 * sigma * sigma) * dt;
+  const diff = sigma * Math.sqrt(dt);
   
-  for (let t = 1; t <= timeSteps; t++) {
-    const randomShock = generateNormalRandom();
-    const growthFactor = Math.exp(
-      (driftRate - volatility * volatility / 2) * dt + 
-      volatility * Math.sqrt(dt) * randomShock
-    );
+  const finalValues: number[] = [];
+  
+  for (let sim = 0; sim < sims; sim++) {
+    let S = S0;
     
-    currentValue *= growthFactor;
-    path.push(currentValue);
+    for (let t = 1; t <= steps; t++) {
+      const Z = generateNormalRandom();
+      S = S * Math.exp(drift + diff * Z);
+    }
+    
+    finalValues.push(S);
   }
   
-  return path;
+  return finalValues;
+}
+
+// Enhanced GBM simulation for portfolio with monthly contributions
+function portfolioGBMSimulation(
+  initialAmount: number,
+  monthlyContribution: number,
+  mu: number,
+  sigma: number,
+  years: number,
+  sims: number = 100
+): number[][] {
+  const monthsPerYear = 12;
+  const totalMonths = years * monthsPerYear;
+  const dt = 1 / monthsPerYear; // Monthly timesteps
+  const drift = (mu - 0.5 * sigma * sigma) * dt;
+  const diff = sigma * Math.sqrt(dt);
+  
+  const allPaths: number[][] = [];
+  
+  for (let sim = 0; sim < sims; sim++) {
+    const path: number[] = [initialAmount];
+    let balance = initialAmount;
+    
+    for (let month = 1; month <= totalMonths; month++) {
+      // Add monthly contribution first
+      balance += monthlyContribution;
+      
+      // Apply GBM growth
+      const Z = generateNormalRandom();
+      const growthFactor = Math.exp(drift + diff * Z);
+      balance *= growthFactor;
+      
+      path.push(Math.max(0, balance));
+    }
+    
+    allPaths.push(path);
+  }
+  
+  return allPaths;
 }
 
 // Main Geometric Brownian Motion Monte Carlo simulation
@@ -67,9 +111,6 @@ export function runBrownianMonteCarloSimulation(
   retirementAnnualReturn: number = 0.04,
   simulationCount: number = 100
 ): BrownianMonteCarloResult {
-  const dt = 1/12; // Monthly timesteps
-  const totalMonths = totalYears * 12;
-  const accumulationMonths = accumulationYears * 12;
   const allSimulations: number[][] = [];
   
   console.log('🎲 Starting Geometric Brownian Motion Monte Carlo simulation:', {
@@ -80,63 +121,65 @@ export function runBrownianMonteCarloSimulation(
     accumulationYears
   });
 
+  // Generate accumulation phase simulations using portfolio GBM
+  const accumulationPaths = portfolioGBMSimulation(
+    initialAmount,
+    monthlyContribution,
+    expectedReturn,
+    volatility,
+    accumulationYears,
+    simulationCount
+  );
+  
+  // Process each simulation
   for (let sim = 0; sim < simulationCount; sim++) {
-    const monthlyValues: number[] = [initialAmount];
-    let balance = initialAmount;
+    const accumulationPath = accumulationPaths[sim];
+    const retirementStartValue = accumulationPath[accumulationPath.length - 1];
     
-    // Accumulation phase with GBM
-    for (let month = 1; month <= accumulationMonths; month++) {
-      // Add monthly contribution first
-      balance += monthlyContribution;
-      
-      // Apply Geometric Brownian Motion
-      const randomShock = generateNormalRandom();
-      const monthlyGrowthFactor = Math.exp(
-        (expectedReturn - volatility * volatility / 2) * dt + 
-        volatility * Math.sqrt(dt) * randomShock
-      );
-      
-      balance *= monthlyGrowthFactor;
-      monthlyValues.push(Math.max(0, balance));
-    }
-    
-    // Retirement phase - using GBM for retirement return as well
-    const retirementVolatility = volatility * 0.7; // Reduced volatility in retirement
-    const monthlyIncome = retirementMonthlyIncome > 0 ? 
-      retirementMonthlyIncome : 
-      balance * monthlyIncomeRate;
-    
-    for (let month = accumulationMonths + 1; month <= totalMonths; month++) {
-      // Withdraw monthly income first
-      balance -= monthlyIncome;
-      
-      // Apply GBM to remaining balance
-      if (balance > 0) {
-        const randomShock = generateNormalRandom();
-        const monthlyGrowthFactor = Math.exp(
-          (retirementAnnualReturn - retirementVolatility * retirementVolatility / 2) * dt + 
-          retirementVolatility * Math.sqrt(dt) * randomShock
-        );
-        
-        balance *= monthlyGrowthFactor;
-      }
-      
-      monthlyValues.push(Math.max(0, balance));
-    }
-    
-    // Convert monthly to yearly for compatibility
+    // Convert monthly path to yearly for accumulation phase
     const yearlyValues: number[] = [];
-    for (let year = 0; year <= totalYears; year++) {
+    for (let year = 0; year <= accumulationYears; year++) {
       const monthIndex = year * 12;
-      if (monthIndex < monthlyValues.length) {
-        yearlyValues.push(monthlyValues[monthIndex]);
+      if (monthIndex < accumulationPath.length) {
+        yearlyValues.push(accumulationPath[monthIndex]);
+      }
+    }
+    
+    // Retirement phase using GBM with withdrawals
+    const retirementYears = totalYears - accumulationYears;
+    if (retirementYears > 0) {
+      const retirementVolatility = volatility * 0.7; // Reduced volatility in retirement
+      const monthlyIncome = retirementMonthlyIncome > 0 ? 
+        retirementMonthlyIncome : 
+        retirementStartValue * monthlyIncomeRate;
+      
+      let balance = retirementStartValue;
+      const dt = 1/12; // Monthly timesteps
+      const drift = (retirementAnnualReturn - 0.5 * retirementVolatility * retirementVolatility) * dt;
+      const diff = retirementVolatility * Math.sqrt(dt);
+      
+      for (let year = accumulationYears + 1; year <= totalYears; year++) {
+        // Process 12 months for this year
+        for (let month = 1; month <= 12; month++) {
+          // Withdraw monthly income first
+          balance -= monthlyIncome;
+          
+          // Apply GBM to remaining balance
+          if (balance > 0) {
+            const Z = generateNormalRandom();
+            const growthFactor = Math.exp(drift + diff * Z);
+            balance *= growthFactor;
+          }
+        }
+        
+        yearlyValues.push(Math.max(0, balance));
       }
     }
     
     allSimulations.push(yearlyValues);
   }
   
-  // Calculate percentiles and statistics
+  // Calculate percentiles and statistics using the Python reference approach
   const yearCount = totalYears + 1;
   const percentile5: number[] = [];
   const percentile25: number[] = [];
@@ -152,6 +195,7 @@ export function runBrownianMonteCarloSimulation(
       .sort((a, b) => a - b);
     
     if (yearValues.length > 0) {
+      // Calculate percentiles exactly like numpy.percentile
       percentile5.push(yearValues[Math.floor(yearValues.length * 0.05)]);
       percentile25.push(yearValues[Math.floor(yearValues.length * 0.25)]);
       percentile50.push(yearValues[Math.floor(yearValues.length * 0.50)]);
@@ -179,7 +223,12 @@ export function runBrownianMonteCarloSimulation(
   console.log('✅ GBM Monte Carlo simulation completed:', {
     successProbability,
     averageReturn,
-    volatilityRealized
+    volatilityRealized,
+    percentiles: {
+      p5: percentile5[accumulationYears],
+      p50: percentile50[accumulationYears],
+      p95: percentile95[accumulationYears]
+    }
   });
   
   return {
@@ -204,7 +253,6 @@ export function runBrownianMonteCarloSimulation(
 
 // Utility function to compare simple vs GBM Monte Carlo
 export function compareMonteCarloMethods(
-  // ... same parameters as above
   initialAmount: number,
   monthlyContribution: number,
   accumulationYears: number,
