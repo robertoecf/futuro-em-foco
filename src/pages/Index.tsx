@@ -1,11 +1,34 @@
 
+import { useState } from 'react';
 import { Calculator } from '@/components/calculator/Calculator';
 import { HeroSection } from '@/components/HeroSection';
 import { InvestorProfiles } from '@/components/InvestorProfiles';
 import { Recommendations } from '@/components/Recommendations';
+import { LeadCaptureForm } from '@/components/LeadCaptureForm';
 import { Button } from '@/components/ui/button';
+import { useCalculator } from '@/components/calculator/useCalculator';
 
 const Index = () => {
+  const [isLeadFormOpen, setIsLeadFormOpen] = useState(false);
+  
+  // Usar os dados do calculador para capturar no formulário
+  const calculatorData = useCalculator();
+
+  const handleReceivePlanByEmail = () => {
+    setIsLeadFormOpen(true);
+  };
+
+  const planningInputs = {
+    initialAmount: calculatorData.initialAmount,
+    monthlyAmount: calculatorData.monthlyAmount,
+    currentAge: calculatorData.currentAge,
+    retirementAge: calculatorData.retirementAge,
+    lifeExpectancy: calculatorData.lifeExpectancy,
+    retirementIncome: calculatorData.retirementIncome,
+    portfolioReturn: calculatorData.portfolioReturn,
+    investorProfile: calculatorData.investorProfile
+  };
+
   return (
     <div className="min-h-screen">
       {/* Header */}
@@ -38,7 +61,12 @@ const Index = () => {
           aposentadoria, preservação ou usufruto do seu patrimônio, ajudando você a tomar 
           as melhores decisões financeiras.
         </p>
-        <Button className="bg-black hover:bg-gray-800 text-white">Falar com um especialista</Button>
+        <Button 
+          className="bg-black hover:bg-gray-800 text-white"
+          onClick={handleReceivePlanByEmail}
+        >
+          Receber plano por email
+        </Button>
       </section>
 
       {/* Footer */}
@@ -50,6 +78,14 @@ const Index = () => {
           </p>
         </div>
       </footer>
+
+      {/* Lead Capture Form Modal */}
+      <LeadCaptureForm
+        isOpen={isLeadFormOpen}
+        onClose={() => setIsLeadFormOpen(false)}
+        planningInputs={planningInputs}
+        calculationResult={calculatorData.calculationResult}
+      />
     </div>
   );
 };

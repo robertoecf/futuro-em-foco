@@ -1,7 +1,20 @@
 
 import { Button } from '@/components/ui/button';
 
-export const HeroSection = () => {
+interface HeroSectionProps {
+  onReceivePlan?: () => void;
+}
+
+export const HeroSection = ({ onReceivePlan }: HeroSectionProps) => {
+  const handleClick = () => {
+    if (onReceivePlan) {
+      onReceivePlan();
+    } else {
+      // Comportamento padrão se não houver callback
+      console.log('Fale com um especialista clicked');
+    }
+  };
+
   return (
     <div className="orange-red-gradient text-white p-8 md:p-16 rounded-lg">
       <div className="max-w-3xl">
@@ -13,7 +26,10 @@ export const HeroSection = () => {
           A boa notícia é que definindo metas claras e investindo regularmente, você pode assegurar sua tranquilidade financeira por muitos anos. 
           Vamos entender o seu objetivo e checar a necessidade de ajustes no seu planejamento.
         </p>
-        <Button className="bg-black hover:bg-gray-800 text-white">
+        <Button 
+          className="bg-black hover:bg-gray-800 text-white"
+          onClick={handleClick}
+        >
           Fale com um especialista
         </Button>
       </div>

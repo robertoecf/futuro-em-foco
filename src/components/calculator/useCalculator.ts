@@ -1,4 +1,3 @@
-
 import { useState, useCallback, useEffect } from 'react';
 import { calculateFullProjection } from '@/lib/utils';
 
@@ -41,6 +40,25 @@ const saveToStorage = (key: string, value: any) => {
   }
 };
 
+// Função para carregar dados de um plano compartilhado
+const loadFromSharedPlan = () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const planId = urlParams.get('plan');
+  
+  if (planId) {
+    try {
+      const planData = localStorage.getItem(`planning_${planId}`);
+      if (planData) {
+        const parsed = JSON.parse(planData);
+        return parsed.planningInputs;
+      }
+    } catch (error) {
+      console.error('Error loading shared plan:', error);
+    }
+  }
+  return null;
+};
+
 export const useCalculator = () => {
   // Constants with saved values or defaults
   const DEFAULT_INITIAL_AMOUNT = 15000;
@@ -52,30 +70,33 @@ export const useCalculator = () => {
   const DEFAULT_PORTFOLIO_RETURN = 4; // 4% default
   const DEFAULT_INVESTOR_PROFILE = 'moderado';
 
-  // State variables - carregando do localStorage
+  // Tentar carregar de plano compartilhado primeiro
+  const sharedPlanData = loadFromSharedPlan();
+
+  // State variables - carregando do localStorage ou plano compartilhado
   const [initialAmount, setInitialAmount] = useState(() => 
-    loadFromStorage(STORAGE_KEYS.INITIAL_AMOUNT, DEFAULT_INITIAL_AMOUNT)
+    sharedPlanData?.initialAmount ?? loadFromStorage(STORAGE_KEYS.INITIAL_AMOUNT, DEFAULT_INITIAL_AMOUNT)
   );
   const [monthlyAmount, setMonthlyAmount] = useState(() => 
-    loadFromStorage(STORAGE_KEYS.MONTHLY_AMOUNT, DEFAULT_MONTHLY_AMOUNT)
+    sharedPlanData?.monthlyAmount ?? loadFromStorage(STORAGE_KEYS.MONTHLY_AMOUNT, DEFAULT_MONTHLY_AMOUNT)
   );
   const [currentAge, setCurrentAge] = useState(() => 
-    loadFromStorage(STORAGE_KEYS.CURRENT_AGE, DEFAULT_CURRENT_AGE)
+    sharedPlanData?.currentAge ?? loadFromStorage(STORAGE_KEYS.CURRENT_AGE, DEFAULT_CURRENT_AGE)
   );
   const [retirementAge, setRetirementAge] = useState(() => 
-    loadFromStorage(STORAGE_KEYS.RETIREMENT_AGE, DEFAULT_RETIREMENT_AGE)
+    sharedPlanData?.retirementAge ?? loadFromStorage(STORAGE_KEYS.RETIREMENT_AGE, DEFAULT_RETIREMENT_AGE)
   );
   const [lifeExpectancy, setLifeExpectancy] = useState(() => 
-    loadFromStorage(STORAGE_KEYS.LIFE_EXPECTANCY, DEFAULT_LIFE_EXPECTANCY)
+    sharedPlanData?.lifeExpectancy ?? loadFromStorage(STORAGE_KEYS.LIFE_EXPECTANCY, DEFAULT_LIFE_EXPECTANCY)
   );
   const [retirementIncome, setRetirementIncome] = useState(() => 
-    loadFromStorage(STORAGE_KEYS.RETIREMENT_INCOME, DEFAULT_RETIREMENT_INCOME)
+    sharedPlanData?.retirementIncome ?? loadFromStorage(STORAGE_KEYS.RETIREMENT_INCOME, DEFAULT_RETIREMENT_INCOME)
   );
   const [portfolioReturn, setPortfolioReturn] = useState(() => 
-    loadFromStorage(STORAGE_KEYS.PORTFOLIO_RETURN, DEFAULT_PORTFOLIO_RETURN)
+    sharedPlanData?.portfolioReturn ?? loadFromStorage(STORAGE_KEYS.PORTFOLIO_RETURN, DEFAULT_PORTFOLIO_RETURN)
   );
   const [investorProfile, setInvestorProfile] = useState<InvestorProfile>(() => 
-    loadFromStorage(STORAGE_KEYS.INVESTOR_PROFILE, DEFAULT_INVESTOR_PROFILE)
+    sharedPlanData?.investorProfile ?? loadFromStorage(STORAGE_KEYS.INVESTOR_PROFILE, DEFAULT_INVESTOR_PROFILE)
   );
   const [calculationResult, setCalculationResult] = useState<CalculationResult | null>(null);
   
@@ -202,6 +223,16 @@ export const useCalculator = () => {
     console.log('useEffect triggered, recalculating projection');
     calculateProjection();
   }, [calculateProjection]);
+
+  // Limpar URL após carregar plano compartilhado
+  useEffect(() => {
+    if (sharedPlanData) {
+      // Remover parâmetro da URL sem recarregar a página
+      const url = new URL(window.location.href);
+      url.searchParams.delete('plan');
+      window.history.replaceState({}, '', url.toString());
+    }
+  }, []);
 
   return {
     initialAmount,
