@@ -1,33 +1,44 @@
 
 interface ProjectingMessageProps {
+  phase: 'projecting' | 'optimizing';
   lifeExpectancy: number;
   possibleRetirementAge: number;
-  isMonteCarloEnabled: boolean;
   onLifeExpectancyChange: (value: number) => void;
-  onMonteCarloToggle: (enabled: boolean) => void;
   showLifeExpectancyControl: boolean;
 }
 
 export const ProjectingMessage = ({
+  phase,
   lifeExpectancy,
   possibleRetirementAge,
-  isMonteCarloEnabled,
   onLifeExpectancyChange,
-  onMonteCarloToggle,
   showLifeExpectancyControl
 }: ProjectingMessageProps) => {
+  const messages = {
+    projecting: {
+      title: "Projetando futuros possíveis...",
+      subtitle: "Analisando mil cenários diferentes baseados em risco e volatilidade"
+    },
+    optimizing: {
+      title: "Otimizando exibição...",
+      subtitle: "Preparando visualização dos caminhos mais prováveis"
+    }
+  };
+
+  const currentMessage = messages[phase];
+
   return (
     <div className="w-full">
       <div className="relative h-[400px] w-full bg-white border border-gray-200 rounded-lg p-4 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-orange-500 mx-auto mb-6"></div>
-          <h3 className="text-2xl font-bold text-gray-800 mb-2">Projetando futuros possíveis...</h3>
-          <p className="text-gray-600">Analisando mil cenários diferentes baseados em risco e volatilidade</p>
+          <h3 className="text-2xl font-bold text-gray-800 mb-2">{currentMessage.title}</h3>
+          <p className="text-gray-600">{currentMessage.subtitle}</p>
         </div>
       </div>
       
       {/* Controls Section */}
-      {(showLifeExpectancyControl || onMonteCarloToggle) && (
+      {showLifeExpectancyControl && (
         <div className="bg-gray-50 p-4 rounded-lg mb-6">
           <div className="flex items-center justify-between flex-wrap gap-4">
             {/* Monte Carlo Toggle */}
@@ -35,14 +46,14 @@ export const ProjectingMessage = ({
               <div>
                 <h3 className="text-sm font-medium text-gray-900">Simulação Probabilística | Método de Monte Carlo</h3>
                 <p className="text-xs text-gray-500">
-                  Calculando mil cenários aleatórios...
+                  {phase === 'projecting' ? 'Calculando mil cenários aleatórios...' : 'Otimizando visualização...'}
                 </p>
               </div>
               <button
                 className="px-4 py-2 rounded text-sm font-medium bg-orange-500 text-white cursor-not-allowed opacity-50"
                 disabled
               >
-                Calculando...
+                {phase === 'projecting' ? 'Calculando...' : 'Otimizando...'}
               </button>
             </div>
 

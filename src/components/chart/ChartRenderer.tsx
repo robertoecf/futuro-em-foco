@@ -96,7 +96,7 @@ export const ChartRenderer = ({
             activeDot={{ r: 6, stroke: '#6B7280', strokeWidth: 2, fill: '#fff' }}
           />
 
-          {/* 50 Monte Carlo lines - controlled by opacity */}
+          {/* 50 Monte Carlo lines - progressive animation */}
           {monteCarloData && Array.from({ length: 50 }, (_, i) => (
             <Line
               key={`monte-carlo-line-${i}`}
@@ -104,11 +104,15 @@ export const ChartRenderer = ({
               dataKey={`line${i}`}
               stroke={generateLineColor(i)}
               strokeWidth={1.5}
-              strokeOpacity={isShowingLines ? 0.7 : 0}
+              strokeOpacity={isShowingLines ? 0.8 : 0}
               dot={false}
               activeDot={false}
               connectNulls={false}
               isAnimationActive={false}
+              style={{
+                transition: `stroke-opacity 0.5s ease-in-out`,
+                transitionDelay: isShowingLines ? `${i * 50}ms` : '0ms'
+              }}
             />
           ))}
 

@@ -12,11 +12,12 @@ export const DEFAULT_VALUES = {
   MONTE_CARLO_ENABLED: false
 };
 
-// Magic Moment Animation Timers - Ajustado para 3 segundos
+// Magic Moment Animation Timers - Sistema de 4 fases
 export const MAGIC_MOMENT_TIMERS = {
-  MESSAGE_DURATION: 3000, // 3 seconds minimum - ou até os dados ficarem prontos
-  PATHS_EVOLUTION_DURATION: 6000, // 6 seconds - tempo que as 50 linhas levam para se desenhar
-  CONSOLIDATION_DURATION: 3000 // 3 seconds - tempo para as linhas desaparecerem
+  PROJECTING_DURATION: 3000, // 3 seconds - "Projetando futuros possíveis..."
+  OPTIMIZING_DURATION: 2000, // 2 seconds - "Otimizando exibição..."
+  PATHS_DURATION: 6000, // 6 seconds - Mostrando as 50 linhas coloridas
+  TOTAL_ANIMATION_DURATION: 11000 // 11 seconds total
 };
 
 // Storage keys for localStorage

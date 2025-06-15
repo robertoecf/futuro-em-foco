@@ -9,20 +9,22 @@ interface UseChartAnimationProps {
   onAnimationComplete?: () => void;
 }
 
+export type AnimationPhase = 'projecting' | 'optimizing' | 'paths' | 'final';
+
 export const useChartAnimation = ({ 
   isCalculating, 
   isMonteCarloEnabled, 
   monteCarloData,
   onAnimationComplete
 }: UseChartAnimationProps) => {
-  const [isShowingLines, setIsShowingLines] = useState(false);
+  const [animationPhase, setAnimationPhase] = useState<AnimationPhase>('final');
   const [hasStartedAnimation, setHasStartedAnimation] = useState(false);
 
   console.log('🎬 useChartAnimation state:', {
     isCalculating,
     isMonteCarloEnabled,
     hasMonteCarloData: !!monteCarloData,
-    isShowingLines,
+    animationPhase,
     hasStartedAnimation
   });
 
@@ -30,29 +32,46 @@ export const useChartAnimation = ({
   useEffect(() => {
     if (!isMonteCarloEnabled) {
       console.log('🔄 Monte Carlo disabled - resetting animation');
-      setIsShowingLines(false);
+      setAnimationPhase('final');
       setHasStartedAnimation(false);
       return;
     }
   }, [isMonteCarloEnabled]);
 
-  // Start animation when Monte Carlo data is ready
+  // Start animation sequence when Monte Carlo data is ready
   useEffect(() => {
     if (isMonteCarloEnabled && monteCarloData && !hasStartedAnimation) {
-      console.log('🚀 Starting Monte Carlo animation - showing 50 lines');
-      setIsShowingLines(true);
+      console.log('🚀 Starting Monte Carlo animation sequence');
       setHasStartedAnimation(true);
       
-      // After 6 seconds, hide lines and show final result
-      const timer = setTimeout(() => {
-        console.log('✨ Animation complete - hiding lines, showing final result');
-        setIsShowingLines(false);
-        if (onAnimationComplete) {
-          onAnimationComplete();
-        }
-      }, 6000); // 6 seconds
+      // Phase 1: Projecting (3 seconds minimum)
+      setAnimationPhase('projecting');
       
-      return () => clearTimeout(timer);
+      const timer1 = setTimeout(() => {
+        console.log('🔄 Phase 2: Optimizing display...');
+        setAnimationPhase('optimizing');
+        
+        // Phase 2: Optimizing (2 seconds)
+        const timer2 = setTimeout(() => {
+          console.log('📈 Phase 3: Showing 50 paths...');
+          setAnimationPhase('paths');
+          
+          // Phase 3: Paths (6 seconds)
+          const timer3 = setTimeout(() => {
+            console.log('✨ Phase 4: Final results');
+            setAnimationPhase('final');
+            if (onAnimationComplete) {
+              onAnimationComplete();
+            }
+          }, 6000);
+          
+          return () => clearTimeout(timer3);
+        }, 2000);
+        
+        return () => clearTimeout(timer2);
+      }, 3000);
+      
+      return () => clearTimeout(timer1);
     }
   }, [isMonteCarloEnabled, monteCarloData, hasStartedAnimation, onAnimationComplete]);
 
@@ -61,11 +80,12 @@ export const useChartAnimation = ({
     if (isCalculating && isMonteCarloEnabled) {
       console.log('🔄 Calculation started - resetting animation state');
       setHasStartedAnimation(false);
-      setIsShowingLines(false);
+      setAnimationPhase('projecting');
     }
   }, [isCalculating, isMonteCarloEnabled]);
 
   return {
-    isShowingLines
+    animationPhase,
+    isShowingLines: animationPhase === 'paths'
   };
 };

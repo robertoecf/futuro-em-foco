@@ -1,3 +1,4 @@
+
 import { ChartControls } from './chart/ChartControls';
 import { ChartInfo } from './chart/ChartInfo';
 import { ExportButton } from './chart/ExportButton';
@@ -58,7 +59,7 @@ export const ChartComponent = ({
   console.log('ChartComponent isCalculating:', isCalculating);
   console.log('ChartComponent isMonteCarloEnabled:', isMonteCarloEnabled);
 
-  const { isShowingLines } = useChartAnimation({
+  const { animationPhase, isShowingLines } = useChartAnimation({
     isCalculating,
     isMonteCarloEnabled,
     monteCarloData,
@@ -88,6 +89,7 @@ export const ChartComponent = ({
   const perpetuityWealth = monthlyIncomeTarget > 0 ? 
     (monthlyIncomeTarget * 12) / (portfolioReturn / 100) : 0;
 
+  console.log('ChartComponent animationPhase:', animationPhase);
   console.log('ChartComponent isShowingLines:', isShowingLines);
 
   const planningInputs = {
@@ -100,6 +102,21 @@ export const ChartComponent = ({
     portfolioReturn,
     investorProfile
   };
+
+  // Show projecting/optimizing messages during those phases
+  if (isMonteCarloEnabled && (animationPhase === 'projecting' || animationPhase === 'optimizing')) {
+    return (
+      <div className="w-full">
+        <ProjectingMessage
+          phase={animationPhase}
+          lifeExpectancy={lifeExpectancy}
+          possibleRetirementAge={possibleRetirementAge}
+          onLifeExpectancyChange={onLifeExpectancyChange || (() => {})}
+          showLifeExpectancyControl={showLifeExpectancyControl}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="w-full">
