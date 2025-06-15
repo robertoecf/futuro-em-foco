@@ -12,6 +12,13 @@ export const DEFAULT_VALUES = {
   MONTE_CARLO_ENABLED: false // Garantir que inicia como false
 };
 
+// Magic Moment Animation Timers
+export const MAGIC_MOMENT_TIMERS = {
+  MESSAGE_DURATION: 4000, // 4 seconds - tempo que a mensagem fica na tela
+  PATHS_EVOLUTION_DURATION: 6000, // 6 seconds - tempo que as 50 linhas levam para se desenhar
+  CONSOLIDATION_DURATION: 3000 // 3 seconds - tempo para as linhas desaparecerem
+};
+
 // Storage keys for localStorage
 export const STORAGE_KEYS = {
   INITIAL_AMOUNT: 'calculator_initial_amount',

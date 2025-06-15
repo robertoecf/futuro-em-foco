@@ -1,6 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { MonteCarloResult } from '@/lib/utils';
+import { MAGIC_MOMENT_TIMERS } from '@/components/calculator/constants';
 
 export type AnimationPhase = 'initial' | 'projecting' | 'paths' | 'consolidating' | 'final';
 
@@ -22,7 +23,7 @@ export const useChartAnimation = ({
   // Reset animation when Monte Carlo is disabled
   useEffect(() => {
     if (!isMonteCarloEnabled) {
-      console.log('Monte Carlo disabled - resetting to final phase');
+      console.log('🔄 Monte Carlo disabled - resetting to final phase');
       setAnimationPhase('final');
       setVisiblePaths([]);
       setPathOpacities({});
@@ -33,68 +34,114 @@ export const useChartAnimation = ({
   // Handle Monte Carlo animation sequence
   useEffect(() => {
     // Clear any existing timers
-    let timer1: NodeJS.Timeout, timer2: NodeJS.Timeout, fadeInterval: NodeJS.Timeout;
+    let messageTimer: NodeJS.Timeout;
+    let pathsTimer: NodeJS.Timeout;
+    let progressInterval: NodeJS.Timeout;
+    let fadeInterval: NodeJS.Timeout;
 
     if (isCalculating && isMonteCarloEnabled) {
-      console.log('Starting Monte Carlo animation...');
+      const startTime = Date.now();
+      console.log('🎬 Starting Magic Moment animation at', new Date().toLocaleTimeString());
+      console.log(`⏱️ Message will show for ${MAGIC_MOMENT_TIMERS.MESSAGE_DURATION}ms`);
+      console.log(`📈 Paths will evolve over ${MAGIC_MOMENT_TIMERS.PATHS_EVOLUTION_DURATION}ms`);
+      
       setAnimationPhase('projecting');
       setVisiblePaths([]);
       setPathOpacities({});
       
-      // Show projecting message for exactly 2 seconds
-      timer1 = setTimeout(() => {
-        console.log('Moving to paths phase...');
+      // Phase 1: Show projecting message
+      messageTimer = setTimeout(() => {
+        const messageEndTime = Date.now();
+        console.log(`💭 Message phase completed after ${messageEndTime - startTime}ms`);
+        console.log('📊 Moving to paths evolution phase...');
         setAnimationPhase('paths');
         
-        // Generate 50 random paths for visual effect
-        const pathsToShow = Array.from({ length: 50 }, (_, i) => i);
-        setVisiblePaths(pathsToShow);
+        // Phase 2: Progressive path appearance
+        const totalPaths = 50;
+        const pathInterval = MAGIC_MOMENT_TIMERS.PATHS_EVOLUTION_DURATION / totalPaths;
+        let currentPathIndex = 0;
         
-        // Initialize all paths with full opacity
-        const initialOpacities: Record<number, number> = {};
-        pathsToShow.forEach(path => {
-          initialOpacities[path] = 1;
-        });
-        setPathOpacities(initialOpacities);
+        console.log(`🎨 Drawing ${totalPaths} paths over ${MAGIC_MOMENT_TIMERS.PATHS_EVOLUTION_DURATION}ms (${pathInterval.toFixed(1)}ms per path)`);
         
-        // Show all paths for 3 seconds, then start consolidating
-        timer2 = setTimeout(() => {
-          console.log('Starting consolidation phase...');
-          setAnimationPhase('consolidating');
-          
-          // Fade out paths gradually over 2 seconds
-          fadeInterval = setInterval(() => {
-            setPathOpacities(prev => {
-              const newOpacities = { ...prev };
-              let allFaded = true;
-              
-              pathsToShow.forEach(path => {
-                if (newOpacities[path] > 0) {
-                  newOpacities[path] = Math.max(0, newOpacities[path] - 0.03);
-                  if (newOpacities[path] > 0) allFaded = false;
-                }
-              });
-              
-              if (allFaded) {
-                clearInterval(fadeInterval);
-                console.log('Animation complete - moving to final phase');
-                setAnimationPhase('final');
-              }
-              
-              return newOpacities;
+        progressInterval = setInterval(() => {
+          if (currentPathIndex < totalPaths) {
+            setVisiblePaths(prev => {
+              const newPaths = [...prev, currentPathIndex];
+              console.log(`✏️ Drawing path ${currentPathIndex + 1}/${totalPaths}`);
+              return newPaths;
             });
-          }, 40);
-        }, 3000);
-      }, 2000);
+            
+            setPathOpacities(prev => ({
+              ...prev,
+              [currentPathIndex]: 1
+            }));
+            
+            currentPathIndex++;
+          } else {
+            clearInterval(progressInterval);
+            console.log('🎨 All paths drawn! Starting consolidation phase...');
+            
+            // Phase 3: Consolidation - fade out paths
+            pathsTimer = setTimeout(() => {
+              console.log('🌟 Starting consolidation phase...');
+              setAnimationPhase('consolidating');
+              
+              // Fade out all paths gradually
+              const fadeStep = 0.03; // Opacity reduction per step
+              const fadeStepInterval = 40; // 40ms per step
+              
+              fadeInterval = setInterval(() => {
+                setPathOpacities(prev => {
+                  const newOpacities = { ...prev };
+                  let allFaded = true;
+                  
+                  Object.keys(newOpacities).forEach(pathKey => {
+                    const pathIndex = parseInt(pathKey);
+                    if (newOpacities[pathIndex] > 0) {
+                      newOpacities[pathIndex] = Math.max(0, newOpacities[pathIndex] - fadeStep);
+                      if (newOpacities[pathIndex] > 0) allFaded = false;
+                    }
+                  });
+                  
+                  if (allFaded) {
+                    clearInterval(fadeInterval);
+                    const endTime = Date.now();
+                    console.log('✨ Magic Moment animation completed!');
+                    console.log(`🎯 Total animation time: ${endTime - startTime}ms`);
+                    setAnimationPhase('final');
+                  }
+                  
+                  return newOpacities;
+                });
+              }, fadeStepInterval);
+            }, MAGIC_MOMENT_TIMERS.CONSOLIDATION_DURATION);
+          }
+        }, pathInterval);
+        
+      }, MAGIC_MOMENT_TIMERS.MESSAGE_DURATION);
     } else if (!isCalculating) {
+      console.log('🏁 Calculation finished - moving to final phase');
       setAnimationPhase('final');
     }
 
-    // Cleanup function to clear timers
+    // Cleanup function to clear all timers
     return () => {
-      if (timer1) clearTimeout(timer1);
-      if (timer2) clearTimeout(timer2);
-      if (fadeInterval) clearInterval(fadeInterval);
+      if (messageTimer) {
+        console.log('🧹 Cleaning up message timer');
+        clearTimeout(messageTimer);
+      }
+      if (pathsTimer) {
+        console.log('🧹 Cleaning up paths timer');
+        clearTimeout(pathsTimer);
+      }
+      if (progressInterval) {
+        console.log('🧹 Cleaning up progress interval');
+        clearInterval(progressInterval);
+      }
+      if (fadeInterval) {
+        console.log('🧹 Cleaning up fade interval');
+        clearInterval(fadeInterval);
+      }
     };
   }, [isCalculating, isMonteCarloEnabled]);
 
