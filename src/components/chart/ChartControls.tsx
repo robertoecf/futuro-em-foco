@@ -24,7 +24,7 @@ export const ChartControls = ({
           <div>
             <h3 className="text-sm font-medium text-gray-900">Simulação Probabilística | Método de Monte Carlo</h3>
             <p className="text-xs text-gray-500">
-              Três cenários baseados em risco e volatilidade
+              Mil cenários aleatórios baseados em risco e volatilidade
             </p>
           </div>
           <Button
