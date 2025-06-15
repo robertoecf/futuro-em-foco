@@ -6,7 +6,8 @@ if (typeof window !== 'undefined') {
   posthog.init('phc_lt0ZuK1fMmvEEjuOTU9lHyMDf0FIEZ3iPQ15hPwVNHk', {
     api_host: 'https://us.i.posthog.com',
     person_profiles: 'identified_only',
-    capture_pageview: false // Disable automatic pageview capture, as we capture manually
+    capture_pageview: true, // Changed to true
+    capture_session_replay: true // Added
   })
 }
 
