@@ -1,5 +1,5 @@
 
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ReferenceLine } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
 import { formatCurrency } from '@/lib/utils';
 import { Card, CardContent } from '@/components/ui/card';
 
@@ -104,11 +104,6 @@ export const ChartComponent = ({
             width={80}
           />
           <Tooltip content={<CustomTooltip />} />
-          <Legend 
-            verticalAlign="top" 
-            align="left"
-            wrapperStyle={{ paddingBottom: '10px' }}
-          />
           
           {/* Reference line for retirement age */}
           <ReferenceLine 
@@ -151,13 +146,22 @@ export const ChartComponent = ({
         </LineChart>
       </ResponsiveContainer>
       
-      {/* Perpetuity explanation */}
-      {perpetuityWealth > 0 && (
-        <div className="mt-2 text-xs text-gray-600 flex items-center gap-2">
-          <div className="w-4 h-0.5 bg-green-500" style={{ borderBottom: '2px dashed #10B981' }}></div>
-          <span>Patrimônio para Perpetuidade: {formatCurrency(perpetuityWealth)} (renda indefinida sem esgotar o capital)</span>
+      {/* Custom Legend */}
+      <div className="mt-4 flex flex-col gap-2 text-xs text-gray-600">
+        {/* Perpetuity Legend Item */}
+        {perpetuityWealth > 0 && (
+          <div className="flex items-center gap-2">
+            <div className="w-6 h-0.5 border-t-2 border-dashed border-green-500"></div>
+            <span>Patrimônio para Perpetuidade: {formatCurrency(perpetuityWealth)} (renda indefinida sem esgotar o capital)</span>
+          </div>
+        )}
+        
+        {/* Patrimônio Legend Item */}
+        <div className="flex items-center gap-2">
+          <div className="w-6 h-0.5 bg-orange-500"></div>
+          <span>Patrimônio</span>
         </div>
-      )}
+      </div>
     </div>
   );
 };
