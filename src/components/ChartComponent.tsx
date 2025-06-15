@@ -86,17 +86,6 @@ export const ChartComponent = ({
 
   return (
     <div className="w-full">
-      {/* Controls Section */}
-      {(showLifeExpectancyControl || onMonteCarloToggle) && (
-        <ChartControls
-          lifeExpectancy={lifeExpectancy}
-          possibleRetirementAge={possibleRetirementAge}
-          isMonteCarloEnabled={isMonteCarloEnabled}
-          onLifeExpectancyChange={onLifeExpectancyChange || (() => {})}
-          onMonteCarloToggle={onMonteCarloToggle || (() => {})}
-        />
-      )}
-
       {/* Chart Section */}
       <div className="h-[400px] w-full bg-white border border-gray-200 rounded-lg p-4">
         <ResponsiveContainer width="100%" height="100%">
@@ -192,6 +181,17 @@ export const ChartComponent = ({
           </ComposedChart>
         </ResponsiveContainer>
       </div>
+
+      {/* Controls Section - Now below the chart */}
+      {(showLifeExpectancyControl || onMonteCarloToggle) && (
+        <ChartControls
+          lifeExpectancy={lifeExpectancy}
+          possibleRetirementAge={possibleRetirementAge}
+          isMonteCarloEnabled={isMonteCarloEnabled}
+          onLifeExpectancyChange={onLifeExpectancyChange || (() => {})}
+          onMonteCarloToggle={onMonteCarloToggle || (() => {})}
+        />
+      )}
       
       {/* Information Section */}
       <ChartInfo
