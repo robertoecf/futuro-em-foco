@@ -25,6 +25,19 @@ export const ChartRenderer = ({
   visiblePaths,
   pathOpacities
 }: ChartRendererProps) => {
+  
+  // Debug chartData structure during animation phases
+  if (animationPhase === 'paths' || animationPhase === 'consolidating') {
+    console.log('📊 ChartRenderer received data:', {
+      animationPhase,
+      chartDataLength: chartData.length,
+      visiblePathsCount: visiblePaths.length,
+      pathOpacitiesCount: Object.keys(pathOpacities).length,
+      firstDataPointKeys: chartData[0] ? Object.keys(chartData[0]) : [],
+      pathKeysInData: chartData[0] ? Object.keys(chartData[0]).filter(k => k.startsWith('path')).length : 0
+    });
+  }
+
   return (
     <div className="relative h-[400px] w-full bg-white border border-gray-200 rounded-lg p-4">
       <ResponsiveContainer width="100%" height="100%">

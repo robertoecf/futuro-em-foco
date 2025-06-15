@@ -54,9 +54,16 @@ export const useChartDataProcessor = ({
 
   // Generate random path data for animation with better variation
   const generateRandomPaths = () => {
-    if (!monteCarloData || (animationPhase !== 'paths' && animationPhase !== 'consolidating')) return [];
+    if (!monteCarloData || (animationPhase !== 'paths' && animationPhase !== 'consolidating')) {
+      console.log('❌ Not generating random paths:', { 
+        hasMonteCarloData: !!monteCarloData, 
+        animationPhase,
+        shouldGenerate: animationPhase === 'paths' || animationPhase === 'consolidating'
+      });
+      return [];
+    }
     
-    console.log('Generating random paths for animation...');
+    console.log('🎨 Generating random paths for animation...');
     const paths = [];
     const baseData = monteCarloData.scenarios.median;
     
@@ -75,12 +82,20 @@ export const useChartDataProcessor = ({
       paths.push(pathData);
     }
     
-    console.log('Generated', paths.length, 'random paths');
+    console.log('✅ Generated', paths.length, 'random paths');
     return paths;
   };
 
   const savingsLine = calculateSavingsLine();
   const randomPaths = generateRandomPaths();
+
+  console.log('📊 ChartDataProcessor state:', {
+    animationPhase,
+    visiblePathsCount: visiblePaths.length,
+    randomPathsCount: randomPaths.length,
+    hasMonteCarloData: !!monteCarloData,
+    dataLength: data.length
+  });
 
   const chartData = data.map((value, index) => {
     const age = currentAge + index;
@@ -103,7 +118,7 @@ export const useChartDataProcessor = ({
       };
     }
 
-    // Add random paths data for animation phase
+    // Add random paths data for animation phase - ALWAYS include all paths, control visibility via opacity
     if ((animationPhase === 'paths' || animationPhase === 'consolidating') && randomPaths.length > 0) {
       const pathsData: Record<string, number> = {};
       randomPaths.forEach((path, pathIndex) => {
@@ -111,11 +126,32 @@ export const useChartDataProcessor = ({
           pathsData[`path${pathIndex}`] = path[index];
         }
       });
+      
+      // Debug: Log how many paths we're adding to the first data point
+      if (index === 0) {
+        console.log('🔍 Adding paths to chartData:', {
+          pathCount: Object.keys(pathsData).length,
+          samplePaths: Object.keys(pathsData).slice(0, 5),
+          visiblePathsCount: visiblePaths.length
+        });
+      }
+      
       return { ...baseData, ...pathsData };
     }
 
     return baseData;
   });
+
+  // Debug: Check if paths are in the final chartData
+  if ((animationPhase === 'paths' || animationPhase === 'consolidating') && chartData.length > 0) {
+    const firstDataPoint = chartData[0];
+    const pathKeys = Object.keys(firstDataPoint).filter(key => key.startsWith('path'));
+    console.log('📈 Final chartData contains paths:', {
+      pathKeysCount: pathKeys.length,
+      sampleKeys: pathKeys.slice(0, 5),
+      firstDataPoint: Object.keys(firstDataPoint)
+    });
+  }
 
   return { chartData, savingsLine, randomPaths };
 };

@@ -26,24 +26,50 @@ export const MonteCarloAnimation = ({
   };
 
   if (animationPhase !== 'paths' && animationPhase !== 'consolidating') {
+    console.log('⏸️ MonteCarloAnimation: Not rendering paths, phase:', animationPhase);
     return null;
   }
 
+  console.log('🎬 MonteCarloAnimation: Rendering paths', {
+    animationPhase,
+    visiblePathsCount: visiblePaths.length,
+    pathOpacitiesCount: Object.keys(pathOpacities).length,
+    sampleVisiblePaths: visiblePaths.slice(0, 5),
+    sampleOpacities: Object.entries(pathOpacities).slice(0, 5)
+  });
+
+  // Instead of only rendering visible paths, render all 50 paths but control opacity
+  const allPaths = Array.from({ length: 50 }, (_, i) => i);
+
   return (
     <>
-      {visiblePaths.map((pathIndex) => (
-        <Line
-          key={`path${pathIndex}`}
-          type="monotone"
-          dataKey={`path${pathIndex}`}
-          stroke={generatePathColor(pathIndex)}
-          strokeWidth={1}
-          strokeOpacity={pathOpacities[pathIndex] || 0}
-          dot={false}
-          activeDot={false}
-          connectNulls
-        />
-      ))}
+      {allPaths.map((pathIndex) => {
+        const opacity = pathOpacities[pathIndex] || 0;
+        const isVisible = visiblePaths.includes(pathIndex);
+        
+        // Debug first few paths
+        if (pathIndex < 3) {
+          console.log(`🎨 Rendering path${pathIndex}:`, {
+            opacity,
+            isVisible,
+            color: generatePathColor(pathIndex)
+          });
+        }
+        
+        return (
+          <Line
+            key={`path${pathIndex}`}
+            type="monotone"
+            dataKey={`path${pathIndex}`}
+            stroke={generatePathColor(pathIndex)}
+            strokeWidth={1}
+            strokeOpacity={opacity}
+            dot={false}
+            activeDot={false}
+            connectNulls
+          />
+        );
+      })}
     </>
   );
 };
