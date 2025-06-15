@@ -20,6 +20,18 @@ export const MAGIC_MOMENT_TIMERS = {
   TOTAL_ANIMATION_DURATION: 11000 // 11 seconds total
 };
 
+// Line Drawing Animation Configuration
+export const LINE_ANIMATION = {
+  DRAWING_DURATION: 2000, // 2 seconds total for all lines to appear (configurable)
+  ANIMATION_CURVE: 'ease-out' as const,
+  TOTAL_LINES: 50,
+  get DELAY_BETWEEN_LINES() {
+    return this.DRAWING_DURATION / this.TOTAL_LINES; // Auto-calculated delay
+  },
+  STROKE_ANIMATION_DURATION: 1500, // Duration for each individual line to draw
+  OPACITY_FADE_DURATION: 300 // Quick fade-in after line is drawn
+};
+
 // Storage keys for localStorage
 export const STORAGE_KEYS = {
   INITIAL_AMOUNT: 'calculator_initial_amount',

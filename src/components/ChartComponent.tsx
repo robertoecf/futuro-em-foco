@@ -1,4 +1,3 @@
-
 import { ChartControls } from './chart/ChartControls';
 import { ChartInfo } from './chart/ChartInfo';
 import { ExportButton } from './chart/ExportButton';
@@ -31,6 +30,7 @@ interface ChartComponentProps {
   investorProfile?: InvestorProfile;
   calculationResult?: CalculationResult | null;
   onAnimationComplete?: () => void;
+  lineDrawingDuration?: number;
 }
 
 export const ChartComponent = ({ 
@@ -52,13 +52,15 @@ export const ChartComponent = ({
   retirementIncome = 0,
   investorProfile = 'moderado',
   calculationResult = null,
-  onAnimationComplete
+  onAnimationComplete,
+  lineDrawingDuration = 2000 // Default 2 seconds, fully configurable
 }: ChartComponentProps) => {
   
   console.log('ChartComponent data:', data);
   console.log('ChartComponent Monte Carlo data:', monteCarloData);
   console.log('ChartComponent isCalculating:', isCalculating);
   console.log('ChartComponent isMonteCarloEnabled:', isMonteCarloEnabled);
+  console.log('ChartComponent lineDrawingDuration:', lineDrawingDuration);
 
   const { animationPhase, isShowingLines } = useChartAnimation({
     isCalculating,
@@ -129,6 +131,7 @@ export const ChartComponent = ({
           perpetuityWealth={perpetuityWealth}
           monteCarloData={monteCarloData}
           isShowingLines={isShowingLines}
+          lineDrawingDuration={lineDrawingDuration}
         />
         
         {/* Optimizing Overlay */}

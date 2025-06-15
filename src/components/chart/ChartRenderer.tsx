@@ -3,6 +3,8 @@ import { ComposedChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveCo
 import { MonteCarloResult } from '@/lib/utils';
 import { CustomTooltip } from './CustomTooltip';
 import { formatYAxis } from './chartUtils';
+import { useLineAnimation } from './useLineAnimation';
+import { LINE_ANIMATION } from '@/components/calculator/constants';
 
 interface ChartRendererProps {
   chartData: any[];
@@ -10,6 +12,7 @@ interface ChartRendererProps {
   perpetuityWealth: number;
   monteCarloData: MonteCarloResult | null;
   isShowingLines: boolean;
+  lineDrawingDuration?: number;
 }
 
 export const ChartRenderer = ({
@@ -17,9 +20,16 @@ export const ChartRenderer = ({
   possibleRetirementAge,
   perpetuityWealth,
   monteCarloData,
-  isShowingLines
+  isShowingLines,
+  lineDrawingDuration = LINE_ANIMATION.DRAWING_DURATION
 }: ChartRendererProps) => {
   
+  const { getLineAnimationState } = useLineAnimation({
+    isShowingLines,
+    totalLines: LINE_ANIMATION.TOTAL_LINES,
+    drawingDuration: lineDrawingDuration
+  });
+
   // Generate colors for the 50 lines
   const generateLineColor = (index: number) => {
     const colors = [
@@ -35,11 +45,30 @@ export const ChartRenderer = ({
     chartDataLength: chartData.length,
     hasMonteCarloData: !!monteCarloData,
     isShowingLines,
+    lineDrawingDuration,
     firstDataKeys: chartData[0] ? Object.keys(chartData[0]) : []
   });
 
   return (
     <div className="relative h-[400px] w-full bg-white border border-gray-200 rounded-lg p-4">
+      {/* CSS for line drawing animation */}
+      <style>{`
+        @keyframes draw-line {
+          0% {
+            stroke-dashoffset: 1000;
+            opacity: 0.3;
+          }
+          50% {
+            stroke-dashoffset: 500;
+            opacity: 0.8;
+          }
+          100% {
+            stroke-dashoffset: 0;
+            opacity: 1;
+          }
+        }
+      `}</style>
+
       <ResponsiveContainer width="100%" height="100%">
         <ComposedChart
           data={chartData}
@@ -96,25 +125,31 @@ export const ChartRenderer = ({
             activeDot={{ r: 6, stroke: '#6B7280', strokeWidth: 2, fill: '#fff' }}
           />
 
-          {/* 50 Monte Carlo lines - progressive animation */}
-          {monteCarloData && Array.from({ length: 50 }, (_, i) => (
-            <Line
-              key={`monte-carlo-line-${i}`}
-              type="monotone"
-              dataKey={`line${i}`}
-              stroke={generateLineColor(i)}
-              strokeWidth={1.5}
-              strokeOpacity={isShowingLines ? 0.8 : 0}
-              dot={false}
-              activeDot={false}
-              connectNulls={false}
-              isAnimationActive={false}
-              style={{
-                transition: `stroke-opacity 0.5s ease-in-out`,
-                transitionDelay: isShowingLines ? `${i * 50}ms` : '0ms'
-              }}
-            />
-          ))}
+          {/* 50 Monte Carlo lines - fantastic progressive animation */}
+          {monteCarloData && Array.from({ length: LINE_ANIMATION.TOTAL_LINES }, (_, i) => {
+            const animationState = getLineAnimationState(i);
+            
+            return (
+              <Line
+                key={`monte-carlo-line-${i}`}
+                type="monotone"
+                dataKey={`line${i}`}
+                stroke={generateLineColor(i)}
+                strokeWidth={1.8}
+                strokeOpacity={animationState.opacity}
+                strokeDasharray={animationState.strokeDasharray}
+                strokeDashoffset={animationState.strokeDashoffset}
+                dot={false}
+                activeDot={false}
+                connectNulls={false}
+                isAnimationActive={false}
+                style={{
+                  transition: `opacity ${LINE_ANIMATION.OPACITY_FADE_DURATION}ms ease-out`,
+                  ...animationState.drawingStyle
+                }}
+              />
+            );
+          })}
 
           {/* Final Monte Carlo results - only visible when not showing lines */}
           {monteCarloData && !isShowingLines && (
