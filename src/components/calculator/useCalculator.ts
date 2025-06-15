@@ -49,6 +49,33 @@ export const useCalculator = () => {
   // Calculate accumulation years based on current and retirement age
   const accumulationYears = retirementAge - currentAge;
   
+  // Calculate possible retirement age based on desired income
+  const calculatePossibleRetirementAge = useCallback(() => {
+    if (retirementIncome <= 0) return retirementAge;
+    
+    // Required wealth to sustain the monthly income target
+    const requiredWealth = (retirementIncome * 12) / (portfolioReturn / 100);
+    const accumulationAnnualReturn = getAccumulationAnnualReturn(investorProfile);
+    const monthlyReturn = Math.pow(1 + accumulationAnnualReturn, 1/12) - 1;
+    
+    // Simulate accumulation to find when required wealth is reached
+    let balance = initialAmount;
+    let years = 0;
+    const maxYears = 50; // Safety limit
+    
+    while (balance < requiredWealth && years < maxYears) {
+      for (let month = 0; month < 12; month++) {
+        balance += monthlyAmount;
+        balance *= (1 + monthlyReturn);
+      }
+      years++;
+    }
+    
+    return currentAge + years;
+  }, [retirementIncome, portfolioReturn, investorProfile, initialAmount, monthlyAmount, currentAge, retirementAge]);
+
+  const possibleRetirementAge = calculatePossibleRetirementAge();
+  
   const calculateProjection = useCallback(() => {
     console.log('Calculating projection with:', {
       initialAmount,
@@ -210,6 +237,7 @@ export const useCalculator = () => {
     monthlyAmount,
     currentAge,
     retirementAge,
+    possibleRetirementAge, // Add the calculated possible retirement age
     lifeExpectancy,
     retirementIncome,
     portfolioReturn,

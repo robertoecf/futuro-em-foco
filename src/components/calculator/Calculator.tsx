@@ -16,6 +16,7 @@ export const Calculator: React.FC = () => {
     monthlyAmount,
     currentAge,
     retirementAge,
+    possibleRetirementAge,
     lifeExpectancy,
     retirementIncome,
     portfolioReturn,
@@ -69,7 +70,7 @@ export const Calculator: React.FC = () => {
           initialAmount={initialAmount}
           monthlyAmount={monthlyAmount}
           currentAge={currentAge}
-          retirementAge={retirementAge}
+          retirementAge={possibleRetirementAge} // Use calculated possible retirement age
           retirementIncome={retirementIncome}
           portfolioReturn={portfolioReturn}
           investorProfile={investorProfile}
@@ -85,7 +86,7 @@ export const Calculator: React.FC = () => {
         {/* Results Cards - Now with Three Projections when Monte Carlo is enabled */}
         <ResultsCards
           calculationResult={calculationResult}
-          retirementAge={retirementAge}
+          retirementAge={possibleRetirementAge}
           lifeExpectancy={lifeExpectancy}
           initialAmount={initialAmount}
           monteCarloResult={monteCarloResult}
@@ -123,7 +124,7 @@ export const Calculator: React.FC = () => {
                 }
               }}
               className="w-20 px-2 py-1 border border-gray-300 rounded text-sm"
-              min={retirementAge + 1}
+              min={possibleRetirementAge + 1}
             />
           </div>
         </div>
@@ -133,7 +134,7 @@ export const Calculator: React.FC = () => {
           initialAmount={initialAmount}
           monthlyAmount={monthlyAmount}
           currentAge={currentAge}
-          retirementAge={retirementAge}
+          retirementAge={possibleRetirementAge}
           lifeExpectancy={lifeExpectancy}
           retirementIncome={retirementIncome}
           portfolioReturn={portfolioReturn}
