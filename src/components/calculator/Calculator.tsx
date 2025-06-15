@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { useCalculator } from './useCalculator';
 import { CalculatorForm } from './CalculatorForm';
 import { ResultsCards } from './ResultsCards';
@@ -21,6 +22,9 @@ export const Calculator: React.FC = () => {
     investorProfile,
     calculationResult,
     accumulationYears,
+    isMonteCarloEnabled,
+    monteCarloResult,
+    isCalculating,
     handleInitialAmountBlur,
     handleMonthlyAmountBlur,
     handleCurrentAgeBlur,
@@ -28,7 +32,8 @@ export const Calculator: React.FC = () => {
     handleLifeExpectancyChange,
     handleRetirementIncomeBlur,
     handlePortfolioReturnBlur,
-    setInvestorProfile
+    setInvestorProfile,
+    handleMonteCarloToggle
   } = useCalculator();
   
   return (
@@ -39,6 +44,26 @@ export const Calculator: React.FC = () => {
       </div>
 
       <Card className="p-6 shadow-lg">
+        {/* Monte Carlo Toggle */}
+        <div className="mb-6 p-4 bg-gray-50 rounded-lg">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-sm font-medium text-gray-900">Simulação Probabilística</h3>
+              <p className="text-xs text-gray-500">
+                Ative para ver cenários baseados em risco e volatilidade (100 simulações Monte Carlo)
+              </p>
+            </div>
+            <Button
+              variant={isMonteCarloEnabled ? "default" : "outline"}
+              size="sm"
+              onClick={() => handleMonteCarloToggle(!isMonteCarloEnabled)}
+              className={isMonteCarloEnabled ? "bg-orange-500 hover:bg-orange-600" : ""}
+            >
+              {isMonteCarloEnabled ? "Ativado" : "Ativar"}
+            </Button>
+          </div>
+        </div>
+
         {/* Input Form - Two Panels Side by Side */}
         <CalculatorForm
           initialAmount={initialAmount}
@@ -76,6 +101,8 @@ export const Calculator: React.FC = () => {
             portfolioReturn={portfolioReturn}
             onLifeExpectancyChange={handleLifeExpectancyChange} 
             showLifeExpectancyControl={false}
+            monteCarloData={monteCarloResult}
+            isCalculating={isCalculating}
           />
         </div>
         

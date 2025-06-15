@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from 'react';
-import { calculateFullProjection } from '@/lib/utils';
+import { calculateFullProjection, runMonteCarloSimulation, getVolatilityByProfile, MonteCarloResult } from '@/lib/utils';
 
 export type InvestorProfile = 'conservador' | 'moderado' | 'arrojado';
 
@@ -18,7 +18,8 @@ const STORAGE_KEYS = {
   LIFE_EXPECTANCY: 'calculator_life_expectancy',
   RETIREMENT_INCOME: 'calculator_retirement_income',
   PORTFOLIO_RETURN: 'calculator_portfolio_return',
-  INVESTOR_PROFILE: 'calculator_investor_profile'
+  INVESTOR_PROFILE: 'calculator_investor_profile',
+  MONTE_CARLO_ENABLED: 'calculator_monte_carlo_enabled'
 };
 
 // Função para carregar dados do localStorage
@@ -100,6 +101,13 @@ export const useCalculator = () => {
   );
   const [calculationResult, setCalculationResult] = useState<CalculationResult | null>(null);
   
+  // New Monte Carlo states
+  const [isMonteCarloEnabled, setIsMonteCarloEnabled] = useState(() => 
+    loadFromStorage(STORAGE_KEYS.MONTE_CARLO_ENABLED, false)
+  );
+  const [monteCarloResult, setMonteCarloResult] = useState<MonteCarloResult | null>(null);
+  const [isCalculating, setIsCalculating] = useState(false);
+  
   // Calculate accumulation years based on current and retirement age
   const accumulationYears = retirementAge - currentAge;
   
@@ -122,7 +130,8 @@ export const useCalculator = () => {
       retirementAge,
       lifeExpectancy,
       portfolioReturn,
-      investorProfile
+      investorProfile,
+      isMonteCarloEnabled
     });
     
     const accumulationAnnualReturn = getAccumulationAnnualReturn();
@@ -130,6 +139,7 @@ export const useCalculator = () => {
     const retirementAnnualReturn = portfolioReturn / 100; // Convert percentage to decimal
     const monthlyIncomeRate = 0.004; // 0.4% de renda mensal
     
+    // Deterministic calculation
     const result = calculateFullProjection(
       initialAmount,
       monthlyAmount,
@@ -148,7 +158,41 @@ export const useCalculator = () => {
       yearlyValues: result.yearlyValues,
       monthlyIncome: result.monthlyIncome
     });
-  }, [initialAmount, monthlyAmount, currentAge, retirementAge, lifeExpectancy, retirementIncome, portfolioReturn, investorProfile, accumulationYears]);
+
+    // Monte Carlo calculation if enabled
+    if (isMonteCarloEnabled) {
+      setIsCalculating(true);
+      
+      // Run Monte Carlo simulation in a timeout to not block UI
+      setTimeout(() => {
+        const volatility = getVolatilityByProfile(investorProfile);
+        
+        const monteCarloResults = runMonteCarloSimulation(
+          initialAmount,
+          monthlyAmount,
+          accumulationYears,
+          lifeExpectancy - currentAge,
+          accumulationAnnualReturn,
+          volatility,
+          monthlyIncomeRate,
+          retirementIncome,
+          retirementAnnualReturn,
+          100 // Number of simulations
+        );
+        
+        console.log('Monte Carlo results:', monteCarloResults);
+        setMonteCarloResult(monteCarloResults);
+        setIsCalculating(false);
+      }, 100);
+    } else {
+      setMonteCarloResult(null);
+    }
+  }, [initialAmount, monthlyAmount, currentAge, retirementAge, lifeExpectancy, retirementIncome, portfolioReturn, investorProfile, accumulationYears, isMonteCarloEnabled]);
+
+  const handleMonteCarloToggle = (enabled: boolean) => {
+    setIsMonteCarloEnabled(enabled);
+    saveToStorage(STORAGE_KEYS.MONTE_CARLO_ENABLED, enabled);
+  };
 
   const handleInitialAmountBlur = (value: string) => {
     const numericValue = parseFloat(value.replace(/\D/g, ''));
@@ -245,6 +289,9 @@ export const useCalculator = () => {
     investorProfile,
     calculationResult,
     accumulationYears,
+    isMonteCarloEnabled,
+    monteCarloResult,
+    isCalculating,
     handleInitialAmountBlur,
     handleMonthlyAmountBlur,
     handleCurrentAgeBlur,
@@ -253,6 +300,7 @@ export const useCalculator = () => {
     handleRetirementIncomeBlur,
     handlePortfolioReturnBlur,
     setInvestorProfile: handleInvestorProfileChange,
+    handleMonteCarloToggle,
     calculateProjection
   };
 };
