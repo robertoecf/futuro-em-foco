@@ -26,47 +26,47 @@ export const MonteCarloAnimation = ({
   };
 
   if (animationPhase !== 'paths' && animationPhase !== 'consolidating') {
-    console.log('⏸️ MonteCarloAnimation: Not rendering paths, phase:', animationPhase);
+    console.log('⏸️ MonteCarloAnimation: Not in animation phase, current phase:', animationPhase);
     return null;
   }
 
-  console.log('🎬 MonteCarloAnimation: Rendering paths', {
-    animationPhase,
+  console.log('🎬 MonteCarloAnimation: Rendering animation for phase:', animationPhase, {
     visiblePathsCount: visiblePaths.length,
     pathOpacitiesCount: Object.keys(pathOpacities).length,
-    sampleVisiblePaths: visiblePaths.slice(0, 5),
-    sampleOpacities: Object.entries(pathOpacities).slice(0, 5)
+    firstFewOpacities: Object.entries(pathOpacities).slice(0, 5).map(([key, value]) => `${key}:${value}`)
   });
 
-  // Instead of only rendering visible paths, render all 50 paths but control opacity
+  // Render all 50 paths, control visibility via opacity
   const allPaths = Array.from({ length: 50 }, (_, i) => i);
 
   return (
     <>
       {allPaths.map((pathIndex) => {
         const opacity = pathOpacities[pathIndex] || 0;
-        const isVisible = visiblePaths.includes(pathIndex);
+        const color = generatePathColor(pathIndex);
         
-        // Debug first few paths
-        if (pathIndex < 3) {
+        // Debug first few paths to ensure they're being rendered
+        if (pathIndex < 5) {
           console.log(`🎨 Rendering path${pathIndex}:`, {
             opacity,
-            isVisible,
-            color: generatePathColor(pathIndex)
+            color,
+            dataKey: `path${pathIndex}`,
+            hasOpacity: pathIndex in pathOpacities
           });
         }
         
         return (
           <Line
-            key={`path${pathIndex}`}
+            key={`monte-carlo-path-${pathIndex}`}
             type="monotone"
             dataKey={`path${pathIndex}`}
-            stroke={generatePathColor(pathIndex)}
-            strokeWidth={1}
+            stroke={color}
+            strokeWidth={1.5}
             strokeOpacity={opacity}
             dot={false}
             activeDot={false}
-            connectNulls
+            connectNulls={false}
+            isAnimationActive={false}
           />
         );
       })}

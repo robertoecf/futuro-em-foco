@@ -28,14 +28,24 @@ export const ChartRenderer = ({
   
   // Debug chartData structure during animation phases
   if (animationPhase === 'paths' || animationPhase === 'consolidating') {
-    console.log('📊 ChartRenderer received data:', {
+    const firstDataPoint = chartData[0] || {};
+    const pathKeysInData = Object.keys(firstDataPoint).filter(k => k.startsWith('path'));
+    
+    console.log('📊 ChartRenderer - Animation Phase Debug:', {
       animationPhase,
       chartDataLength: chartData.length,
+      pathKeysInFirstPoint: pathKeysInData.length,
       visiblePathsCount: visiblePaths.length,
       pathOpacitiesCount: Object.keys(pathOpacities).length,
-      firstDataPointKeys: chartData[0] ? Object.keys(chartData[0]) : [],
-      pathKeysInData: chartData[0] ? Object.keys(chartData[0]).filter(k => k.startsWith('path')).length : 0
+      firstDataPointKeys: Object.keys(firstDataPoint),
+      pathDataExists: pathKeysInData.length > 0
     });
+    
+    if (pathKeysInData.length === 0) {
+      console.error('❌ ChartRenderer: NO PATH DATA FOUND IN CHART DATA!');
+    } else {
+      console.log('✅ ChartRenderer: Path data successfully detected in chartData');
+    }
   }
 
   return (
@@ -96,7 +106,7 @@ export const ChartRenderer = ({
             activeDot={{ r: 6, stroke: '#6B7280', strokeWidth: 2, fill: '#fff' }}
           />
 
-          {/* Animation phase: Show all random paths */}
+          {/* Animation phase: Show animated Monte Carlo paths */}
           <MonteCarloAnimation
             animationPhase={animationPhase}
             visiblePaths={visiblePaths}

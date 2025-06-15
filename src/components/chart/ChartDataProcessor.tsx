@@ -54,16 +54,18 @@ export const useChartDataProcessor = ({
 
   // Generate random path data for animation with better variation
   const generateRandomPaths = () => {
-    if (!monteCarloData || (animationPhase !== 'paths' && animationPhase !== 'consolidating')) {
-      console.log('❌ Not generating random paths:', { 
-        hasMonteCarloData: !!monteCarloData, 
-        animationPhase,
-        shouldGenerate: animationPhase === 'paths' || animationPhase === 'consolidating'
-      });
+    // Generate paths for animation phases only
+    if (animationPhase !== 'paths' && animationPhase !== 'consolidating') {
+      console.log('🚫 generateRandomPaths: Wrong phase:', animationPhase);
       return [];
     }
     
-    console.log('🎨 Generating random paths for animation...');
+    if (!monteCarloData) {
+      console.log('🚫 generateRandomPaths: No Monte Carlo data available');
+      return [];
+    }
+    
+    console.log('🎨 generateRandomPaths: Creating 50 animated paths for phase:', animationPhase);
     const paths = [];
     const baseData = monteCarloData.scenarios.median;
     
@@ -82,19 +84,20 @@ export const useChartDataProcessor = ({
       paths.push(pathData);
     }
     
-    console.log('✅ Generated', paths.length, 'random paths');
+    console.log('✅ generateRandomPaths: Generated', paths.length, 'paths with', paths[0]?.length, 'data points each');
     return paths;
   };
 
   const savingsLine = calculateSavingsLine();
   const randomPaths = generateRandomPaths();
 
-  console.log('📊 ChartDataProcessor state:', {
+  console.log('📊 ChartDataProcessor processing with:', {
     animationPhase,
     visiblePathsCount: visiblePaths.length,
-    randomPathsCount: randomPaths.length,
+    randomPathsGenerated: randomPaths.length,
     hasMonteCarloData: !!monteCarloData,
-    dataLength: data.length
+    dataLength: data.length,
+    shouldIncludePaths: (animationPhase === 'paths' || animationPhase === 'consolidating') && randomPaths.length > 0
   });
 
   const chartData = data.map((value, index) => {
@@ -118,21 +121,23 @@ export const useChartDataProcessor = ({
       };
     }
 
-    // Add random paths data for animation phase - ALWAYS include all paths, control visibility via opacity
+    // Add random paths data for animation phases - CRITICAL FIX
     if ((animationPhase === 'paths' || animationPhase === 'consolidating') && randomPaths.length > 0) {
       const pathsData: Record<string, number> = {};
+      
+      // Include ALL 50 paths in the data
       randomPaths.forEach((path, pathIndex) => {
         if (index < path.length) {
           pathsData[`path${pathIndex}`] = path[index];
         }
       });
       
-      // Debug: Log how many paths we're adding to the first data point
-      if (index === 0) {
-        console.log('🔍 Adding paths to chartData:', {
-          pathCount: Object.keys(pathsData).length,
-          samplePaths: Object.keys(pathsData).slice(0, 5),
-          visiblePathsCount: visiblePaths.length
+      // Debug: Log for first few data points
+      if (index < 3) {
+        console.log(`🔍 Adding ${Object.keys(pathsData).length} paths to data point ${index}:`, {
+          age,
+          pathKeys: Object.keys(pathsData).slice(0, 5),
+          sampleValues: Object.values(pathsData).slice(0, 5)
         });
       }
       
@@ -142,15 +147,21 @@ export const useChartDataProcessor = ({
     return baseData;
   });
 
-  // Debug: Check if paths are in the final chartData
+  // Final verification: Check if paths are actually in the chartData
   if ((animationPhase === 'paths' || animationPhase === 'consolidating') && chartData.length > 0) {
     const firstDataPoint = chartData[0];
     const pathKeys = Object.keys(firstDataPoint).filter(key => key.startsWith('path'));
-    console.log('📈 Final chartData contains paths:', {
-      pathKeysCount: pathKeys.length,
-      sampleKeys: pathKeys.slice(0, 5),
-      firstDataPoint: Object.keys(firstDataPoint)
+    console.log('✅ FINAL VERIFICATION - chartData contains paths:', {
+      pathKeysFound: pathKeys.length,
+      expectedPaths: 50,
+      firstFewPathKeys: pathKeys.slice(0, 5),
+      allDataKeys: Object.keys(firstDataPoint),
+      success: pathKeys.length === 50
     });
+    
+    if (pathKeys.length === 0) {
+      console.error('❌ CRITICAL ERROR: No path data found in chartData despite being in animation phase!');
+    }
   }
 
   return { chartData, savingsLine, randomPaths };
