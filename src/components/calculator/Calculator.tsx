@@ -45,26 +45,6 @@ export const Calculator: React.FC = () => {
       </div>
 
       <Card className="p-6 shadow-lg">
-        {/* Monte Carlo Toggle */}
-        <div className="mb-6 p-4 bg-gray-50 rounded-lg">
-          <div className="flex items-center justify-between">
-            <div>
-              <h3 className="text-sm font-medium text-gray-900">Simulação Probabilística Monte Carlo</h3>
-              <p className="text-xs text-gray-500">
-                Ative para ver três cenários (pessimista, mediano, otimista) baseados em risco e volatilidade
-              </p>
-            </div>
-            <Button
-              variant={isMonteCarloEnabled ? "default" : "outline"}
-              size="sm"
-              onClick={() => handleMonteCarloToggle(!isMonteCarloEnabled)}
-              className={isMonteCarloEnabled ? "bg-orange-500 hover:bg-orange-600" : ""}
-            >
-              {isMonteCarloEnabled ? "Ativado" : "Ativar"}
-            </Button>
-          </div>
-        </div>
-
         {/* Input Form - Two Panels Side by Side */}
         <CalculatorForm
           initialAmount={initialAmount}
@@ -93,8 +73,8 @@ export const Calculator: React.FC = () => {
           isMonteCarloEnabled={isMonteCarloEnabled}
         />
         
-        {/* Chart - Full Width */}
-        <div className="chart-container h-[400px] mb-4">
+        {/* Chart - Full Width with integrated controls and information */}
+        <div className="mb-8">
           <ChartComponent 
             data={calculationResult?.yearlyValues || []} 
             accumulationYears={accumulationYears}
@@ -103,30 +83,12 @@ export const Calculator: React.FC = () => {
             monthlyIncomeTarget={calculationResult?.monthlyIncome || 0}
             portfolioReturn={portfolioReturn}
             onLifeExpectancyChange={handleLifeExpectancyChange} 
-            showLifeExpectancyControl={false}
+            showLifeExpectancyControl={true}
             monteCarloData={monteCarloResult}
             isCalculating={isCalculating}
+            isMonteCarloEnabled={isMonteCarloEnabled}
+            onMonteCarloToggle={handleMonteCarloToggle}
           />
-        </div>
-        
-        {/* Life Expectancy Control - Below Chart */}
-        <div className="bg-gray-50 p-4 rounded-lg mb-8">
-          <div className="flex items-center justify-end space-x-2">
-            <label htmlFor="life-expectancy" className="text-sm">Expectativa de vida (anos):</label>
-            <input
-              id="life-expectancy"
-              type="number"
-              value={lifeExpectancy}
-              onChange={(e) => {
-                const value = parseInt(e.target.value);
-                if (!isNaN(value) && value > 0) {
-                  handleLifeExpectancyChange(value);
-                }
-              }}
-              className="w-20 px-2 py-1 border border-gray-300 rounded text-sm"
-              min={possibleRetirementAge + 1}
-            />
-          </div>
         </div>
         
         {/* Insights Section */}

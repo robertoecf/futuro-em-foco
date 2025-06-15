@@ -2,7 +2,8 @@
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine, ComposedChart } from 'recharts';
 import { MonteCarloResult } from '@/lib/utils';
 import { CustomTooltip } from './chart/CustomTooltip';
-import { ChartLegend } from './chart/ChartLegend';
+import { ChartControls } from './chart/ChartControls';
+import { ChartInfo } from './chart/ChartInfo';
 import { calculatePossibleRetirementAge, calculatePerpetuityWealth, formatYAxis } from './chart/chartUtils';
 
 interface ChartComponentProps {
@@ -16,6 +17,8 @@ interface ChartComponentProps {
   showLifeExpectancyControl?: boolean;
   monteCarloData?: MonteCarloResult | null;
   isCalculating?: boolean;
+  isMonteCarloEnabled?: boolean;
+  onMonteCarloToggle?: (enabled: boolean) => void;
 }
 
 export const ChartComponent = ({ 
@@ -28,7 +31,9 @@ export const ChartComponent = ({
   onLifeExpectancyChange,
   showLifeExpectancyControl = true,
   monteCarloData,
-  isCalculating = false
+  isCalculating = false,
+  isMonteCarloEnabled = false,
+  onMonteCarloToggle
 }: ChartComponentProps) => {
   console.log('ChartComponent data:', data);
   console.log('ChartComponent Monte Carlo data:', monteCarloData);
@@ -78,101 +83,120 @@ export const ChartComponent = ({
   }
 
   return (
-    <div className="h-[400px] w-full">
-      <ResponsiveContainer width="100%" height="100%">
-        <ComposedChart
-          data={chartData}
-          margin={{ top: 20, right: 30, left: 80, bottom: 20 }}
-        >
-          <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-          <XAxis 
-            dataKey="age" 
-            label={{ value: 'Idade', position: 'insideBottom', offset: -10 }}
-            tickFormatter={(value) => `${value}`}
-          />
-          <YAxis 
-            tickFormatter={formatYAxis}
-            width={80}
-          />
-          <Tooltip content={<CustomTooltip monteCarloData={monteCarloData} />} />
-          
-          {/* Reference line for possible retirement age */}
-          <ReferenceLine 
-            x={possibleRetirementAge} 
-            stroke="#6B7280" 
-            strokeDasharray="5 5" 
-            label={{ 
-              value: 'Idade Possível para Aposentadoria', 
-              position: 'top', 
-              fill: '#6B7280',
-              fontSize: 12
-            }} 
-          />
-          
-          {/* Reference line for perpetuity wealth */}
-          {perpetuityWealth > 0 && (
+    <div className="w-full">
+      {/* Controls Section */}
+      {(showLifeExpectancyControl || onMonteCarloToggle) && (
+        <ChartControls
+          lifeExpectancy={lifeExpectancy}
+          possibleRetirementAge={possibleRetirementAge}
+          isMonteCarloEnabled={isMonteCarloEnabled}
+          onLifeExpectancyChange={onLifeExpectancyChange || (() => {})}
+          onMonteCarloToggle={onMonteCarloToggle || (() => {})}
+        />
+      )}
+
+      {/* Chart Section */}
+      <div className="h-[400px] w-full bg-white border border-gray-200 rounded-lg p-4">
+        <ResponsiveContainer width="100%" height="100%">
+          <ComposedChart
+            data={chartData}
+            margin={{ top: 20, right: 30, left: 80, bottom: 20 }}
+          >
+            <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+            <XAxis 
+              dataKey="age" 
+              label={{ value: 'Idade', position: 'insideBottom', offset: -10 }}
+              tickFormatter={(value) => `${value}`}
+            />
+            <YAxis 
+              tickFormatter={formatYAxis}
+              width={80}
+            />
+            <Tooltip content={<CustomTooltip monteCarloData={monteCarloData} />} />
+            
+            {/* Reference line for possible retirement age */}
             <ReferenceLine 
-              y={perpetuityWealth} 
-              stroke="#6B7280" 
-              strokeDasharray="8 4" 
+              x={possibleRetirementAge} 
+              stroke="#9CA3AF" 
+              strokeDasharray="5 5" 
               label={{ 
-                value: 'Perpetuidade', 
-                position: 'insideTopRight', 
+                value: 'Aposentadoria Possível', 
+                position: 'top', 
                 fill: '#6B7280',
-                fontSize: 12
+                fontSize: 11
               }} 
             />
-          )}
+            
+            {/* Reference line for perpetuity wealth */}
+            {perpetuityWealth > 0 && (
+              <ReferenceLine 
+                y={perpetuityWealth} 
+                stroke="#9CA3AF" 
+                strokeDasharray="8 4" 
+                label={{ 
+                  value: 'Perpetuidade', 
+                  position: 'insideTopRight', 
+                  fill: '#6B7280',
+                  fontSize: 11
+                }} 
+              />
+            )}
 
-          {/* Monte Carlo lines */}
-          {monteCarloData ? (
-            <>
+            {/* Monte Carlo lines */}
+            {monteCarloData ? (
+              <>
+                <Line 
+                  type="monotone" 
+                  dataKey="optimistic" 
+                  name="Cenário Otimista"
+                  stroke="#10B981" 
+                  strokeWidth={2}
+                  strokeDasharray="5 5"
+                  dot={false}
+                  activeDot={{ r: 6, stroke: '#10B981', strokeWidth: 2, fill: '#fff' }}
+                />
+                <Line 
+                  type="monotone" 
+                  dataKey="median" 
+                  name="Cenário Neutro"
+                  stroke="#3B82F6" 
+                  strokeWidth={3}
+                  dot={false}
+                  activeDot={{ r: 8, stroke: '#3B82F6', strokeWidth: 2, fill: '#fff' }}
+                />
+                <Line 
+                  type="monotone" 
+                  dataKey="pessimistic" 
+                  name="Cenário Pessimista"
+                  stroke="#DC2626" 
+                  strokeWidth={2}
+                  strokeDasharray="5 5"
+                  dot={false}
+                  activeDot={{ r: 6, stroke: '#DC2626', strokeWidth: 2, fill: '#fff' }}
+                />
+              </>
+            ) : (
               <Line 
                 type="monotone" 
-                dataKey="optimistic" 
-                name="Cenário Otimista"
-                stroke="#10B981" 
+                dataKey="patrimonio" 
+                name="Patrimônio"
+                stroke="#FF6B00" 
                 strokeWidth={2}
-                strokeDasharray="5 5"
                 dot={false}
-                activeDot={{ r: 6, stroke: '#10B981', strokeWidth: 2, fill: '#fff' }}
+                activeDot={{ r: 8, stroke: '#FF6B00', strokeWidth: 2, fill: '#fff' }}
+                connectNulls
               />
-              <Line 
-                type="monotone" 
-                dataKey="median" 
-                name="Cenário Neutro"
-                stroke="#3B82F6" 
-                strokeWidth={3}
-                dot={false}
-                activeDot={{ r: 8, stroke: '#3B82F6', strokeWidth: 2, fill: '#fff' }}
-              />
-              <Line 
-                type="monotone" 
-                dataKey="pessimistic" 
-                name="Cenário Pessimista"
-                stroke="#DC2626" 
-                strokeWidth={2}
-                strokeDasharray="5 5"
-                dot={false}
-                activeDot={{ r: 6, stroke: '#DC2626', strokeWidth: 2, fill: '#fff' }}
-              />
-            </>
-          ) : (
-            <Line 
-              type="monotone" 
-              dataKey="patrimonio" 
-              name="Patrimônio"
-              stroke="#FF6B00" 
-              strokeWidth={2}
-              dot={false}
-              activeDot={{ r: 8, stroke: '#FF6B00', strokeWidth: 2, fill: '#fff' }}
-              connectNulls
-            />
-          )}
-        </ComposedChart>
-      </ResponsiveContainer>
+            )}
+          </ComposedChart>
+        </ResponsiveContainer>
+      </div>
       
-      <ChartLegend monteCarloData={monteCarloData} perpetuityWealth={perpetuityWealth} />
+      {/* Information Section */}
+      <ChartInfo
+        monteCarloData={monteCarloData}
+        perpetuityWealth={perpetuityWealth}
+        possibleRetirementAge={possibleRetirementAge}
+      />
     </div>
   );
 };
