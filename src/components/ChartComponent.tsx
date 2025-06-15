@@ -1,4 +1,3 @@
-
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine, Area, ComposedChart, AreaChart } from 'recharts';
 import { formatCurrency } from '@/lib/utils';
 import { Card, CardContent } from '@/components/ui/card';
@@ -55,7 +54,25 @@ export const ChartComponent = ({
     return baseData;
   });
 
-  const retirementAge = currentAge + accumulationYears;
+  // Calculate possible retirement age based on wealth accumulation
+  const calculatePossibleRetirementAge = () => {
+    if (monthlyIncomeTarget <= 0) return currentAge + accumulationYears;
+    
+    // Required wealth to sustain the monthly income target
+    const requiredWealth = (monthlyIncomeTarget * 12) / (portfolioReturn / 100);
+    
+    // Find the age where accumulated wealth reaches the required amount
+    for (let i = 0; i < data.length; i++) {
+      if (data[i] >= requiredWealth) {
+        return currentAge + i;
+      }
+    }
+    
+    // If never reached, return the original retirement age
+    return currentAge + accumulationYears;
+  };
+
+  const possibleRetirementAge = calculatePossibleRetirementAge();
   
   // Calcular patrimônio necessário para perpetuidade
   const perpetuityWealth = monthlyIncomeTarget > 0 && portfolioReturn > 0 
@@ -140,15 +157,15 @@ export const ChartComponent = ({
           />
           <Tooltip content={<CustomTooltip />} />
           
-          {/* Reference line for retirement age */}
+          {/* Reference line for possible retirement age */}
           <ReferenceLine 
-            x={retirementAge} 
-            stroke="#FF6B00" 
+            x={possibleRetirementAge} 
+            stroke="#6B7280" 
             strokeDasharray="5 5" 
             label={{ 
               value: 'Aposentadoria', 
               position: 'top', 
-              fill: '#FF6B00',
+              fill: '#6B7280',
               fontSize: 12
             }} 
           />
@@ -157,12 +174,12 @@ export const ChartComponent = ({
           {perpetuityWealth > 0 && (
             <ReferenceLine 
               y={perpetuityWealth} 
-              stroke="#10B981" 
+              stroke="#6B7280" 
               strokeDasharray="8 4" 
               label={{ 
                 value: 'Perpetuidade', 
                 position: 'insideTopRight', 
-                fill: '#10B981',
+                fill: '#6B7280',
                 fontSize: 12
               }} 
             />
@@ -244,7 +261,7 @@ export const ChartComponent = ({
         {/* Perpetuity Legend Item */}
         {perpetuityWealth > 0 && (
           <div className="flex items-center gap-2">
-            <div className="w-6 h-0.5 border-t-2 border-dashed border-green-500"></div>
+            <div className="w-6 h-0.5 border-t-2 border-dashed border-gray-500"></div>
             <span>Patrimônio para Perpetuidade: {formatCurrency(perpetuityWealth)} (renda indefinida sem esgotar o capital)</span>
           </div>
         )}
