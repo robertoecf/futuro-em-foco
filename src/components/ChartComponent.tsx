@@ -102,7 +102,7 @@ export const ChartComponent = ({
             stroke="#6B7280" 
             strokeDasharray="5 5" 
             label={{ 
-              value: 'Aposentadoria', 
+              value: 'Idade Possível para Aposentadoria', 
               position: 'top', 
               fill: '#6B7280',
               fontSize: 12
