@@ -11,6 +11,8 @@ interface InvestorProfileProps {
 }
 
 export const InvestorProfiles = ({ onProfileSelect, selectedProfile }: InvestorProfileProps) => {
+  const [openTooltips, setOpenTooltips] = useState<{[key: string]: boolean}>({});
+
   const profiles = [
     {
       id: 'conservador',
@@ -38,8 +40,25 @@ export const InvestorProfiles = ({ onProfileSelect, selectedProfile }: InvestorP
     }
   ];
 
+  const handleTooltipClick = (tooltipId: string) => {
+    setOpenTooltips(prev => ({
+      ...prev,
+      [tooltipId]: !prev[tooltipId]
+    }));
+  };
+
+  const handleClickOutside = () => {
+    setOpenTooltips({});
+  };
+
+  // Close tooltips when clicking anywhere on the document
+  React.useEffect(() => {
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, []);
+
   return (
-    <TooltipProvider>
+    <TooltipProvider delayDuration={0} skipDelayDuration={0}>
       <div className="space-y-6">
         <h2 className="text-2xl font-bold">Perfil do Investidor</h2>
         <p className="text-gray-600 mb-6">De acordo com o seu perfil de investidor, o seu perfil é o que melhor se adequa às suas expectativas:</p>
@@ -66,9 +85,15 @@ export const InvestorProfiles = ({ onProfileSelect, selectedProfile }: InvestorP
                 <div className="flex items-center gap-1">
                   <span>Volatilidade esperada: </span>
                   <span className="font-semibold">{profile.volatility}%</span>
-                  <Tooltip>
-                    <TooltipTrigger>
-                      <InfoIcon className="h-3 w-3 text-gray-400 hover:text-gray-600" />
+                  <Tooltip open={openTooltips[`${profile.id}-volatility`]}>
+                    <TooltipTrigger asChild>
+                      <InfoIcon 
+                        className="h-3 w-3 text-gray-400 hover:text-gray-600 cursor-pointer" 
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleTooltipClick(`${profile.id}-volatility`);
+                        }}
+                      />
                     </TooltipTrigger>
                     <TooltipContent>
                       <p className="max-w-xs">
@@ -83,9 +108,15 @@ export const InvestorProfiles = ({ onProfileSelect, selectedProfile }: InvestorP
                 <div className="flex items-center gap-1">
                   <span>Perda máxima: </span>
                   <span className="font-semibold">{profile.maxLoss}%</span>
-                  <Tooltip>
-                    <TooltipTrigger>
-                      <InfoIcon className="h-3 w-3 text-gray-400 hover:text-gray-600" />
+                  <Tooltip open={openTooltips[`${profile.id}-maxloss`]}>
+                    <TooltipTrigger asChild>
+                      <InfoIcon 
+                        className="h-3 w-3 text-gray-400 hover:text-gray-600 cursor-pointer" 
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleTooltipClick(`${profile.id}-maxloss`);
+                        }}
+                      />
                     </TooltipTrigger>
                     <TooltipContent>
                       <p className="max-w-xs">
