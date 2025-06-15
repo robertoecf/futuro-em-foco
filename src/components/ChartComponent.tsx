@@ -1,4 +1,3 @@
-
 import { ChartControls } from './chart/ChartControls';
 import { ChartInfo } from './chart/ChartInfo';
 import { ExportButton } from './chart/ExportButton';
@@ -59,7 +58,7 @@ export const ChartComponent = ({
   console.log('ChartComponent isCalculating:', isCalculating);
   console.log('ChartComponent isMonteCarloEnabled:', isMonteCarloEnabled);
 
-  const { animationPhase, visiblePaths, pathOpacities } = useChartAnimation({
+  const { isShowingLines } = useChartAnimation({
     isCalculating,
     isMonteCarloEnabled,
     monteCarloData,
@@ -74,8 +73,7 @@ export const ChartComponent = ({
     monthlyAmount,
     monthlyIncomeTarget,
     monteCarloData,
-    animationPhase,
-    visiblePaths
+    isMonteCarloEnabled
   });
 
   const possibleRetirementAge = calculatePossibleRetirementAge(
@@ -90,21 +88,7 @@ export const ChartComponent = ({
   const perpetuityWealth = monthlyIncomeTarget > 0 ? 
     (monthlyIncomeTarget * 12) / (portfolioReturn / 100) : 0;
 
-  console.log('ChartComponent animationPhase:', animationPhase);
-
-  // Show projecting message ONLY during projecting phase
-  if (animationPhase === 'projecting') {
-    return (
-      <ProjectingMessage
-        lifeExpectancy={lifeExpectancy}
-        possibleRetirementAge={possibleRetirementAge}
-        isMonteCarloEnabled={isMonteCarloEnabled}
-        onLifeExpectancyChange={onLifeExpectancyChange || (() => {})}
-        onMonteCarloToggle={onMonteCarloToggle || (() => {})}
-        showLifeExpectancyControl={showLifeExpectancyControl}
-      />
-    );
-  }
+  console.log('ChartComponent isShowingLines:', isShowingLines);
 
   const planningInputs = {
     initialAmount,
@@ -117,18 +101,15 @@ export const ChartComponent = ({
     investorProfile
   };
 
-  // For all other phases (initial, paths, consolidating, final), show the chart
   return (
     <div className="w-full">
-      {/* Chart Section - Always render unless in projecting phase */}
+      {/* Chart Section */}
       <ChartRenderer
         chartData={chartData}
         possibleRetirementAge={possibleRetirementAge}
         perpetuityWealth={perpetuityWealth}
         monteCarloData={monteCarloData}
-        animationPhase={animationPhase}
-        visiblePaths={visiblePaths}
-        pathOpacities={pathOpacities}
+        isShowingLines={isShowingLines}
       />
       
       {/* Export Button - positioned at bottom right of chart */}

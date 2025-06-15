@@ -3,17 +3,13 @@ import { ComposedChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveCo
 import { MonteCarloResult } from '@/lib/utils';
 import { CustomTooltip } from './CustomTooltip';
 import { formatYAxis } from './chartUtils';
-import { MonteCarloAnimation } from './MonteCarloAnimation';
-import { AnimationPhase } from './ChartAnimationStates';
 
 interface ChartRendererProps {
   chartData: any[];
   possibleRetirementAge: number;
   perpetuityWealth: number;
   monteCarloData: MonteCarloResult | null;
-  animationPhase: AnimationPhase;
-  visiblePaths: number[];
-  pathOpacities: Record<number, number>;
+  isShowingLines: boolean;
 }
 
 export const ChartRenderer = ({
@@ -21,32 +17,26 @@ export const ChartRenderer = ({
   possibleRetirementAge,
   perpetuityWealth,
   monteCarloData,
-  animationPhase,
-  visiblePaths,
-  pathOpacities
+  isShowingLines
 }: ChartRendererProps) => {
   
-  // Debug chartData structure during animation phases
-  if (animationPhase === 'paths' || animationPhase === 'consolidating') {
-    const firstDataPoint = chartData[0] || {};
-    const pathKeysInData = Object.keys(firstDataPoint).filter(k => k.startsWith('path'));
-    
-    console.log('📊 ChartRenderer - Animation Phase Debug:', {
-      animationPhase,
-      chartDataLength: chartData.length,
-      pathKeysInFirstPoint: pathKeysInData.length,
-      visiblePathsCount: visiblePaths.length,
-      pathOpacitiesCount: Object.keys(pathOpacities).length,
-      firstDataPointKeys: Object.keys(firstDataPoint),
-      pathDataExists: pathKeysInData.length > 0
-    });
-    
-    if (pathKeysInData.length === 0) {
-      console.error('❌ ChartRenderer: NO PATH DATA FOUND IN CHART DATA!');
-    } else {
-      console.log('✅ ChartRenderer: Path data successfully detected in chartData');
-    }
-  }
+  // Generate colors for the 50 lines
+  const generateLineColor = (index: number) => {
+    const colors = [
+      '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FECA57', 
+      '#FF9FF3', '#54A0FF', '#5F27CD', '#00D2D3', '#FF9F43',
+      '#FC427B', '#1DD1A1', '#3742FA', '#2F3542', '#FF5722',
+      '#009688', '#673AB7', '#E91E63', '#795548', '#607D8B'
+    ];
+    return colors[index % colors.length];
+  };
+
+  console.log('📊 ChartRenderer:', {
+    chartDataLength: chartData.length,
+    hasMonteCarloData: !!monteCarloData,
+    isShowingLines,
+    firstDataKeys: chartData[0] ? Object.keys(chartData[0]) : []
+  });
 
   return (
     <div className="relative h-[400px] w-full bg-white border border-gray-200 rounded-lg p-4">
@@ -95,7 +85,7 @@ export const ChartRenderer = ({
             />
           )}
 
-          {/* Savings line - gray continuous line */}
+          {/* Savings line - always visible */}
           <Line 
             type="monotone" 
             dataKey="poupanca" 
@@ -106,61 +96,69 @@ export const ChartRenderer = ({
             activeDot={{ r: 6, stroke: '#6B7280', strokeWidth: 2, fill: '#fff' }}
           />
 
-          {/* Animation phase: Show animated Monte Carlo paths */}
-          <MonteCarloAnimation
-            animationPhase={animationPhase}
-            visiblePaths={visiblePaths}
-            pathOpacities={pathOpacities}
-          />
+          {/* 50 Monte Carlo lines - controlled by opacity */}
+          {monteCarloData && Array.from({ length: 50 }, (_, i) => (
+            <Line
+              key={`monte-carlo-line-${i}`}
+              type="monotone"
+              dataKey={`line${i}`}
+              stroke={generateLineColor(i)}
+              strokeWidth={1.5}
+              strokeOpacity={isShowingLines ? 0.7 : 0}
+              dot={false}
+              activeDot={false}
+              connectNulls={false}
+              isAnimationActive={false}
+            />
+          ))}
 
-          {/* Final phase: Show Monte Carlo results or main patrimonio line */}
-          {animationPhase === 'final' && (
+          {/* Final Monte Carlo results - only visible when not showing lines */}
+          {monteCarloData && !isShowingLines && (
             <>
-              {monteCarloData ? (
-                <>
-                  <Line 
-                    type="monotone" 
-                    dataKey="optimistic" 
-                    name="Cenário Otimista"
-                    stroke="#10B981" 
-                    strokeWidth={2}
-                    strokeDasharray="5 5"
-                    dot={false}
-                    activeDot={{ r: 6, stroke: '#10B981', strokeWidth: 2, fill: '#fff' }}
-                  />
-                  <Line 
-                    type="monotone" 
-                    dataKey="median" 
-                    name="Cenário Neutro"
-                    stroke="#3B82F6" 
-                    strokeWidth={3}
-                    dot={false}
-                    activeDot={{ r: 8, stroke: '#3B82F6', strokeWidth: 2, fill: '#fff' }}
-                  />
-                  <Line 
-                    type="monotone" 
-                    dataKey="pessimistic" 
-                    name="Cenário Pessimista"
-                    stroke="#DC2626" 
-                    strokeWidth={2}
-                    strokeDasharray="5 5"
-                    dot={false}
-                    activeDot={{ r: 6, stroke: '#DC2626', strokeWidth: 2, fill: '#fff' }}
-                  />
-                </>
-              ) : (
-                <Line 
-                  type="monotone" 
-                  dataKey="patrimonio" 
-                  name="Patrimônio"
-                  stroke="#FF6B00" 
-                  strokeWidth={2}
-                  dot={false}
-                  activeDot={{ r: 8, stroke: '#FF6B00', strokeWidth: 2, fill: '#fff' }}
-                  connectNulls
-                />
-              )}
+              <Line 
+                type="monotone" 
+                dataKey="optimistic" 
+                name="Cenário Otimista"
+                stroke="#10B981" 
+                strokeWidth={2}
+                strokeDasharray="5 5"
+                dot={false}
+                activeDot={{ r: 6, stroke: '#10B981', strokeWidth: 2, fill: '#fff' }}
+              />
+              <Line 
+                type="monotone" 
+                dataKey="median" 
+                name="Cenário Neutro"
+                stroke="#3B82F6" 
+                strokeWidth={3}
+                dot={false}
+                activeDot={{ r: 8, stroke: '#3B82F6', strokeWidth: 2, fill: '#fff' }}
+              />
+              <Line 
+                type="monotone" 
+                dataKey="pessimistic" 
+                name="Cenário Pessimista"
+                stroke="#DC2626" 
+                strokeWidth={2}
+                strokeDasharray="5 5"
+                dot={false}
+                activeDot={{ r: 6, stroke: '#DC2626', strokeWidth: 2, fill: '#fff' }}
+              />
             </>
+          )}
+
+          {/* Regular patrimonio line - only when Monte Carlo is disabled */}
+          {!monteCarloData && (
+            <Line 
+              type="monotone" 
+              dataKey="patrimonio" 
+              name="Patrimônio"
+              stroke="#FF6B00" 
+              strokeWidth={2}
+              dot={false}
+              activeDot={{ r: 8, stroke: '#FF6B00', strokeWidth: 2, fill: '#fff' }}
+              connectNulls
+            />
           )}
         </ComposedChart>
       </ResponsiveContainer>
