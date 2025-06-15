@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Card } from '@/components/ui/card';
 import { formatCurrency } from '@/lib/utils';
@@ -51,11 +52,12 @@ export const InsightsCards: React.FC<InsightsCardsProps> = ({
     return balance;
   };
 
-  // 1. Patrimônio necessário para gerar a renda desejada SEM dilapidar
+  // 1. Patrimônio necessário para gerar a renda desejada SEM dilapidar - CORRIGIDO
   const calculateRequiredWealthSustainable = () => {
     if (retirementIncome <= 0) return 0;
     // Fórmula: Patrimônio = (renda mensal * 12) / retorno anual
-    return (retirementIncome * 12) / 0.04; // Usando 4% como fator padrão
+    // CORREÇÃO: Agora usa o portfolioReturn definido pelo usuário
+    return (retirementIncome * 12) / (portfolioReturn / 100);
   };
 
   // 1b. Patrimônio mínimo para consumir até os 100 anos
