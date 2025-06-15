@@ -9,6 +9,7 @@ import { useChartAnimation } from './chart/ChartAnimationStates';
 import { useChartDataProcessor } from './chart/ChartDataProcessor';
 import { ChartRenderer } from './chart/ChartRenderer';
 import { ProjectingMessage } from './chart/ProjectingMessage';
+import { ProjectingOverlay } from './chart/ProjectingOverlay';
 
 interface ChartComponentProps {
   data: number[];
@@ -103,12 +104,12 @@ export const ChartComponent = ({
     investorProfile
   };
 
-  // Show projecting/optimizing messages during those phases
-  if (isMonteCarloEnabled && (animationPhase === 'projecting' || animationPhase === 'optimizing')) {
+  // Show projecting message ONLY during projecting phase
+  if (isMonteCarloEnabled && animationPhase === 'projecting') {
     return (
       <div className="w-full">
         <ProjectingMessage
-          phase={animationPhase}
+          phase="projecting"
           lifeExpectancy={lifeExpectancy}
           possibleRetirementAge={possibleRetirementAge}
           onLifeExpectancyChange={onLifeExpectancyChange || (() => {})}
@@ -120,14 +121,19 @@ export const ChartComponent = ({
 
   return (
     <div className="w-full">
-      {/* Chart Section */}
-      <ChartRenderer
-        chartData={chartData}
-        possibleRetirementAge={possibleRetirementAge}
-        perpetuityWealth={perpetuityWealth}
-        monteCarloData={monteCarloData}
-        isShowingLines={isShowingLines}
-      />
+      {/* Chart Section with Overlay */}
+      <div className="relative">
+        <ChartRenderer
+          chartData={chartData}
+          possibleRetirementAge={possibleRetirementAge}
+          perpetuityWealth={perpetuityWealth}
+          monteCarloData={monteCarloData}
+          isShowingLines={isShowingLines}
+        />
+        
+        {/* Optimizing Overlay */}
+        <ProjectingOverlay isVisible={animationPhase === 'optimizing'} />
+      </div>
       
       {/* Export Button - positioned at bottom right of chart */}
       <div className="relative">

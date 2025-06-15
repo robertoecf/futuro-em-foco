@@ -9,7 +9,7 @@ interface UseChartAnimationProps {
   onAnimationComplete?: () => void;
 }
 
-export type AnimationPhase = 'projecting' | 'optimizing' | 'paths' | 'final';
+export type AnimationPhase = 'projecting' | 'paths' | 'optimizing' | 'final';
 
 export const useChartAnimation = ({ 
   isCalculating, 
@@ -44,29 +44,29 @@ export const useChartAnimation = ({
       console.log('🚀 Starting Monte Carlo animation sequence');
       setHasStartedAnimation(true);
       
-      // Phase 1: Projecting (3 seconds minimum)
+      // Phase 1: Projecting (3 seconds)
       setAnimationPhase('projecting');
       
       const timer1 = setTimeout(() => {
-        console.log('🔄 Phase 2: Optimizing display...');
-        setAnimationPhase('optimizing');
+        console.log('📈 Phase 2: Showing 50 paths...');
+        setAnimationPhase('paths');
         
-        // Phase 2: Optimizing (2 seconds)
+        // Phase 2: Paths (6 seconds)
         const timer2 = setTimeout(() => {
-          console.log('📈 Phase 3: Showing 50 paths...');
-          setAnimationPhase('paths');
+          console.log('🔄 Phase 3: Optimizing display...');
+          setAnimationPhase('optimizing');
           
-          // Phase 3: Paths (6 seconds)
+          // Phase 3: Optimizing (2 seconds)
           const timer3 = setTimeout(() => {
             console.log('✨ Phase 4: Final results');
             setAnimationPhase('final');
             if (onAnimationComplete) {
               onAnimationComplete();
             }
-          }, 6000);
+          }, 2000);
           
           return () => clearTimeout(timer3);
-        }, 2000);
+        }, 6000);
         
         return () => clearTimeout(timer2);
       }, 3000);

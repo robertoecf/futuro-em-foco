@@ -6,17 +6,17 @@ export const DEFAULT_VALUES = {
   CURRENT_AGE: 30,
   RETIREMENT_AGE: 65,
   LIFE_EXPECTANCY: 100,
-  RETIREMENT_INCOME: 0,
+  RETIREMENT_INCOME: 0,  
   PORTFOLIO_RETURN: 4, // 4% default
   INVESTOR_PROFILE: 'moderado' as const,
   MONTE_CARLO_ENABLED: false
 };
 
-// Magic Moment Animation Timers - Sistema de 4 fases
+// Magic Moment Animation Timers - Cronologia Corrigida
 export const MAGIC_MOMENT_TIMERS = {
   PROJECTING_DURATION: 3000, // 3 seconds - "Projetando futuros possíveis..."
+  PATHS_DURATION: 6000, // 6 seconds - Mostra as 50 linhas coloridas
   OPTIMIZING_DURATION: 2000, // 2 seconds - "Otimizando exibição..."
-  PATHS_DURATION: 6000, // 6 seconds - Mostrando as 50 linhas coloridas
   TOTAL_ANIMATION_DURATION: 11000 // 11 seconds total
 };
 
