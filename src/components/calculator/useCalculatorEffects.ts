@@ -1,6 +1,7 @@
 
 import { useCallback, useEffect } from 'react';
 import { calculateFullProjection, runMonteCarloSimulation, getVolatilityByProfile } from '@/lib/utils';
+import { runBrownianMonteCarloSimulation } from '@/lib/brownianMotionUtils';
 import type { InvestorProfile, CalculationResult } from './types';
 import { getAccumulationAnnualReturn } from './calculationUtils';
 
@@ -100,29 +101,36 @@ export const useCalculatorEffects = ({
       monthlyIncome: result.monthlyIncome
     });
 
-    // Monte Carlo calculation if enabled
+    // Monte Carlo calculation if enabled - now using GBM
     if (isMonteCarloEnabled) {
-      console.log('🚀 Starting Monte Carlo calculation and animation');
+      console.log('🚀 Starting Geometric Brownian Motion Monte Carlo calculation');
       setIsCalculating(true);
       
-      // Execute Monte Carlo calculation immediately but let animation control the timing
       const volatility = getVolatilityByProfile(investorProfile);
       
-      const monteCarloResults = runMonteCarloSimulation(
+      // Use the new GBM-based Monte Carlo simulation
+      const gbmResults = runBrownianMonteCarloSimulation(
         initialAmount,
         monthlyAmount,
         accumulationYears,
         lifeExpectancy - currentAge,
-        accumulationAnnualReturn,
-        volatility,
+        accumulationAnnualReturn, // drift rate (μ)
+        volatility, // volatility (σ)
         monthlyIncomeRate,
         retirementIncome,
         retirementAnnualReturn,
         100 // Number of simulations
       );
       
-      console.log('💾 Monte Carlo calculation completed, results ready:', monteCarloResults);
-      setMonteCarloResult(monteCarloResults);
+      console.log('💾 GBM Monte Carlo calculation completed:', gbmResults);
+      
+      // Convert to the format expected by the chart components
+      const convertedResults = {
+        scenarios: gbmResults.scenarios,
+        statistics: gbmResults.statistics
+      };
+      
+      setMonteCarloResult(convertedResults);
       
       // Don't set isCalculating to false here - let the animation control it
     } else {

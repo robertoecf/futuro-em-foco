@@ -1,4 +1,3 @@
-
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 
@@ -40,6 +39,10 @@ export interface MonteCarloResult {
     standardDeviation: number[];
   };
 }
+
+// Re-export GBM types for compatibility
+export type { BrownianMonteCarloResult } from './brownianMotionUtils';
+export { runBrownianMonteCarloSimulation, compareMonteCarloMethods } from './brownianMotionUtils';
 
 // Volatilidade por perfil de investidor
 export function getVolatilityByProfile(profile: string): number {
