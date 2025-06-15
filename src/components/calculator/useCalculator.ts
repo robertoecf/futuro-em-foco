@@ -1,4 +1,3 @@
-
 import { useState, useCallback, useEffect } from 'react';
 import { calculateFullProjection, runMonteCarloSimulation, getVolatilityByProfile, MonteCarloResult } from '@/lib/utils';
 import type { InvestorProfile, CalculationResult } from './types';
