@@ -1,4 +1,3 @@
-
 import { ChartControls } from './chart/ChartControls';
 import { ChartInfo } from './chart/ChartInfo';
 import { ExportButton } from './chart/ExportButton';
@@ -29,6 +28,7 @@ interface ChartComponentProps {
   retirementIncome?: number;
   investorProfile?: InvestorProfile;
   calculationResult?: CalculationResult | null;
+  onAnimationComplete?: () => void; // Callback para quando a animação terminar
 }
 
 export const ChartComponent = ({ 
@@ -49,7 +49,8 @@ export const ChartComponent = ({
   retirementAge = 65,
   retirementIncome = 0,
   investorProfile = 'moderado',
-  calculationResult = null
+  calculationResult = null,
+  onAnimationComplete
 }: ChartComponentProps) => {
   
   console.log('ChartComponent data:', data);
@@ -58,7 +59,8 @@ export const ChartComponent = ({
   const { animationPhase, visiblePaths, pathOpacities } = useChartAnimation({
     isCalculating,
     isMonteCarloEnabled,
-    monteCarloData
+    monteCarloData,
+    onAnimationComplete
   });
 
   const { chartData } = useChartDataProcessor({

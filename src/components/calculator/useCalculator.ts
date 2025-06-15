@@ -75,6 +75,12 @@ export const useCalculator = () => {
 
   const possibleRetirementAge = calculatePossibleRetirementAge();
   
+  // Função para finalizar o cálculo - será chamada pela animação
+  const finishCalculation = useCallback(() => {
+    console.log('🏁 Calculation animation finished - setting isCalculating to false');
+    setIsCalculating(false);
+  }, []);
+  
   const calculateProjection = useCallback(() => {
     console.log('Calculating projection with:', {
       initialAmount,
@@ -114,29 +120,29 @@ export const useCalculator = () => {
 
     // Monte Carlo calculation if enabled
     if (isMonteCarloEnabled) {
+      console.log('🚀 Starting Monte Carlo calculation and animation');
       setIsCalculating(true);
       
-      // Run Monte Carlo simulation in a timeout to not block UI
-      setTimeout(() => {
-        const volatility = getVolatilityByProfile(investorProfile);
-        
-        const monteCarloResults = runMonteCarloSimulation(
-          initialAmount,
-          monthlyAmount,
-          accumulationYears,
-          lifeExpectancy - currentAge,
-          accumulationAnnualReturn,
-          volatility,
-          monthlyIncomeRate,
-          retirementIncome,
-          retirementAnnualReturn,
-          100 // Number of simulations
-        );
-        
-        console.log('Monte Carlo results:', monteCarloResults);
-        setMonteCarloResult(monteCarloResults);
-        setIsCalculating(false);
-      }, 100);
+      // Execute Monte Carlo calculation immediately but let animation control the timing
+      const volatility = getVolatilityByProfile(investorProfile);
+      
+      const monteCarloResults = runMonteCarloSimulation(
+        initialAmount,
+        monthlyAmount,
+        accumulationYears,
+        lifeExpectancy - currentAge,
+        accumulationAnnualReturn,
+        volatility,
+        monthlyIncomeRate,
+        retirementIncome,
+        retirementAnnualReturn,
+        100 // Number of simulations
+      );
+      
+      console.log('💾 Monte Carlo calculation completed, results ready:', monteCarloResults);
+      setMonteCarloResult(monteCarloResults);
+      
+      // Don't set isCalculating to false here - let the animation control it
     } else {
       // Reset Monte Carlo data when disabled
       setMonteCarloResult(null);
@@ -255,6 +261,7 @@ export const useCalculator = () => {
     isMonteCarloEnabled,
     monteCarloResult,
     isCalculating,
+    finishCalculation, // Export the finish function
     handleInitialAmountBlur,
     handleMonthlyAmountBlur,
     handleCurrentAgeBlur,

@@ -9,12 +9,14 @@ interface UseChartAnimationProps {
   isCalculating: boolean;
   isMonteCarloEnabled: boolean;
   monteCarloData: MonteCarloResult | null;
+  onAnimationComplete?: () => void; // Callback para quando a animação terminar
 }
 
 export const useChartAnimation = ({ 
   isCalculating, 
   isMonteCarloEnabled, 
-  monteCarloData 
+  monteCarloData,
+  onAnimationComplete
 }: UseChartAnimationProps) => {
   const [animationPhase, setAnimationPhase] = useState<AnimationPhase>('final');
   const [visiblePaths, setVisiblePaths] = useState<number[]>([]);
@@ -44,6 +46,7 @@ export const useChartAnimation = ({
       console.log('🎬 Starting Magic Moment animation at', new Date().toLocaleTimeString());
       console.log(`⏱️ Message will show for ${MAGIC_MOMENT_TIMERS.MESSAGE_DURATION}ms`);
       console.log(`📈 Paths will evolve over ${MAGIC_MOMENT_TIMERS.PATHS_EVOLUTION_DURATION}ms`);
+      console.log(`✨ Consolidation will take ${MAGIC_MOMENT_TIMERS.CONSOLIDATION_DURATION}ms`);
       
       setAnimationPhase('projecting');
       setVisiblePaths([]);
@@ -108,7 +111,13 @@ export const useChartAnimation = ({
                     const endTime = Date.now();
                     console.log('✨ Magic Moment animation completed!');
                     console.log(`🎯 Total animation time: ${endTime - startTime}ms`);
+                    console.log('🏁 Calling onAnimationComplete callback');
                     setAnimationPhase('final');
+                    
+                    // Notify that animation is complete
+                    if (onAnimationComplete) {
+                      onAnimationComplete();
+                    }
                   }
                   
                   return newOpacities;
@@ -143,7 +152,7 @@ export const useChartAnimation = ({
         clearInterval(fadeInterval);
       }
     };
-  }, [isCalculating, isMonteCarloEnabled]);
+  }, [isCalculating, isMonteCarloEnabled, onAnimationComplete]);
 
   return {
     animationPhase,
