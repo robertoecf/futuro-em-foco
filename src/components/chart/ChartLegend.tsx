@@ -33,19 +33,25 @@ export const ChartLegend = ({ monteCarloData, perpetuityWealth }: ChartLegendPro
         </div>
       )}
       
-      {/* Perpetuity Legend Item */}
-      {perpetuityWealth > 0 && (
-        <div className="flex items-center gap-2">
-          <div className="w-6 h-0.5 border-t-2 border-dashed border-gray-500"></div>
-          <span>Patrimônio para Perpetuidade: {formatCurrency(perpetuityWealth)} (renda indefinida sem esgotar o capital)</span>
-        </div>
-      )}
-      
       {/* Patrimônio Legend Item (only for deterministic) */}
       {!monteCarloData && (
         <div className="flex items-center gap-2">
           <div className="w-6 h-0.5 bg-orange-500"></div>
           <span>Patrimônio</span>
+        </div>
+      )}
+      
+      {/* Total Poupado Legend Item */}
+      <div className="flex items-center gap-2">
+        <div className="w-6 h-0.5 bg-gray-500"></div>
+        <span>Total Poupado</span>
+      </div>
+      
+      {/* Perpetuity Legend Item */}
+      {perpetuityWealth > 0 && (
+        <div className="flex items-center gap-2">
+          <div className="w-6 h-0.5 border-t-2 border-dashed border-gray-500"></div>
+          <span>Patrimônio para Perpetuidade: {formatCurrency(perpetuityWealth)} (renda indefinida sem esgotar o capital)</span>
         </div>
       )}
     </div>
