@@ -78,18 +78,18 @@ export const ResultsCards: React.FC<ResultsCardsProps> = ({
             </div>
           </Card>
 
-          {/* Cenário Mediano */}
-          <Card className="p-6 border-orange-200 bg-orange-50 ring-2 ring-orange-300">
+          {/* Cenário Neutro */}
+          <Card className="p-6 border-blue-200 bg-blue-50 ring-2 ring-blue-300">
             <div className="text-center">
-              <h4 className="text-sm font-medium text-orange-800 mb-2">Cenário Mediano (50%)</h4>
+              <h4 className="text-sm font-medium text-blue-800 mb-2">Cenário Neutro (50%)</h4>
               <div className="space-y-3">
                 <div>
-                  <p className="text-xs text-orange-600 mb-1">Patrimônio aos {retirementAge} anos</p>
-                  <p className="text-xl font-bold text-orange-900">{formatCurrency(medianWealth)}</p>
+                  <p className="text-xs text-blue-600 mb-1">Patrimônio aos {retirementAge} anos</p>
+                  <p className="text-xl font-bold text-blue-900">{formatCurrency(medianWealth)}</p>
                 </div>
                 <div>
-                  <p className="text-xs text-orange-600 mb-1">Renda mensal</p>
-                  <p className="text-lg font-semibold text-orange-800">{formatCurrency(medianIncome)}</p>
+                  <p className="text-xs text-blue-600 mb-1">Renda mensal</p>
+                  <p className="text-lg font-semibold text-blue-800">{formatCurrency(medianIncome)}</p>
                 </div>
               </div>
             </div>

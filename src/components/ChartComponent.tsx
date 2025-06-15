@@ -74,11 +74,11 @@ export const ChartComponent = ({
             
             {monteCarloData ? (
               <div className="space-y-1">
-                <p className="text-sm text-blue-600">
+                <p className="text-sm text-green-600">
                   {`Cenário Otimista: ${formatCurrency(data.optimistic || 0)}`}
                 </p>
-                <p className="text-sm font-medium">
-                  {`Cenário Mediano: ${formatCurrency(data.median || 0)}`}
+                <p className="text-sm font-medium text-blue-600">
+                  {`Cenário Neutro: ${formatCurrency(data.median || 0)}`}
                 </p>
                 <p className="text-sm text-red-600">
                   {`Cenário Pessimista: ${formatCurrency(data.pessimistic || 0)}`}
@@ -128,13 +128,6 @@ export const ChartComponent = ({
           data={chartData}
           margin={{ top: 20, right: 30, left: 80, bottom: 20 }}
         >
-          <defs>
-            <linearGradient id="uncertaintyArea" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#FF6B00" stopOpacity={0.3}/>
-              <stop offset="95%" stopColor="#FF6B00" stopOpacity={0.1}/>
-            </linearGradient>
-          </defs>
-          
           <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
           <XAxis 
             dataKey="age" 
@@ -175,17 +168,6 @@ export const ChartComponent = ({
             />
           )}
 
-          {/* Monte Carlo uncertainty area */}
-          {monteCarloData && (
-            <Area
-              type="monotone"
-              dataKey="percentile75"
-              stackId="1"
-              stroke="none"
-              fill="url(#uncertaintyArea)"
-            />
-          )}
-          
           {/* Monte Carlo lines */}
           {monteCarloData ? (
             <>
@@ -193,20 +175,20 @@ export const ChartComponent = ({
                 type="monotone" 
                 dataKey="optimistic" 
                 name="Cenário Otimista"
-                stroke="#2563EB" 
+                stroke="#10B981" 
                 strokeWidth={2}
                 strokeDasharray="5 5"
                 dot={false}
-                activeDot={{ r: 6, stroke: '#2563EB', strokeWidth: 2, fill: '#fff' }}
+                activeDot={{ r: 6, stroke: '#10B981', strokeWidth: 2, fill: '#fff' }}
               />
               <Line 
                 type="monotone" 
                 dataKey="median" 
-                name="Cenário Mediano"
-                stroke="#FF6B00" 
+                name="Cenário Neutro"
+                stroke="#3B82F6" 
                 strokeWidth={3}
                 dot={false}
-                activeDot={{ r: 8, stroke: '#FF6B00', strokeWidth: 2, fill: '#fff' }}
+                activeDot={{ r: 8, stroke: '#3B82F6', strokeWidth: 2, fill: '#fff' }}
               />
               <Line 
                 type="monotone" 
@@ -240,24 +222,20 @@ export const ChartComponent = ({
         {monteCarloData && (
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <div className="w-6 h-0.5 bg-blue-600 border-dashed border-2"></div>
+              <div className="w-6 h-0.5 bg-green-500 border-dashed border-2"></div>
               <span>Cenário Otimista (75º percentil)</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-6 h-0.5 bg-orange-500"></div>
-              <span>Cenário Mediano (50º percentil)</span>
+              <div className="w-6 h-0.5 bg-blue-500"></div>
+              <span>Cenário Neutro (50º percentil)</span>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-6 h-0.5 bg-red-600 border-dashed border-2"></div>
               <span>Cenário Pessimista (25º percentil)</span>
             </div>
-            <div className="flex items-center gap-2">
-              <div className="w-6 h-3 bg-gradient-to-b from-orange-300 to-orange-100 opacity-50"></div>
-              <span>Faixa de Incerteza (25º - 75º percentis)</span>
-            </div>
-            {monteCarloData.statistics.successProbability && (
+            {monteCarloResult.statistics.successProbability && (
               <div className="text-sm font-medium text-green-600 mt-2">
-                Probabilidade de Sucesso: {(monteCarloData.statistics.successProbability * 100).toFixed(1)}%
+                Probabilidade de Sucesso: {(monteCarloResult.statistics.successProbability * 100).toFixed(1)}%
               </div>
             )}
           </div>
