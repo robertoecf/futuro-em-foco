@@ -8,6 +8,8 @@ interface ChartComponentProps {
   accumulationYears: number;
   lifeExpectancy: number;
   currentAge: number;
+  monthlyIncomeTarget?: number;
+  portfolioReturn?: number;
   onLifeExpectancyChange?: (value: number) => void;
   showLifeExpectancyControl?: boolean;
 }
@@ -17,6 +19,8 @@ export const ChartComponent = ({
   accumulationYears, 
   lifeExpectancy = 100,
   currentAge = 30,
+  monthlyIncomeTarget = 0,
+  portfolioReturn = 4,
   onLifeExpectancyChange,
   showLifeExpectancyControl = true
 }: ChartComponentProps) => {
@@ -35,6 +39,11 @@ export const ChartComponent = ({
   });
 
   const retirementAge = currentAge + accumulationYears;
+  
+  // Calcular patrimônio necessário para perpetuidade
+  const perpetuityWealth = monthlyIncomeTarget > 0 && portfolioReturn > 0 
+    ? (monthlyIncomeTarget * 12) / (portfolioReturn / 100)
+    : 0;
 
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
@@ -114,6 +123,21 @@ export const ChartComponent = ({
             }} 
           />
           
+          {/* Reference line for perpetuity wealth */}
+          {perpetuityWealth > 0 && (
+            <ReferenceLine 
+              y={perpetuityWealth} 
+              stroke="#10B981" 
+              strokeDasharray="8 4" 
+              label={{ 
+                value: 'Perpetuidade', 
+                position: 'topRight', 
+                fill: '#10B981',
+                fontSize: 12
+              }} 
+            />
+          )}
+          
           <Line 
             type="monotone" 
             dataKey="patrimonio" 
@@ -126,6 +150,14 @@ export const ChartComponent = ({
           />
         </LineChart>
       </ResponsiveContainer>
+      
+      {/* Perpetuity explanation */}
+      {perpetuityWealth > 0 && (
+        <div className="mt-2 text-xs text-gray-600 flex items-center gap-2">
+          <div className="w-4 h-0.5 bg-green-500" style={{ borderBottom: '2px dashed #10B981' }}></div>
+          <span>Patrimônio para Perpetuidade: {formatCurrency(perpetuityWealth)} (renda indefinida sem esgotar o capital)</span>
+        </div>
+      )}
     </div>
   );
 };

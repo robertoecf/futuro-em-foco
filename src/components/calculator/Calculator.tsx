@@ -72,6 +72,8 @@ export const Calculator: React.FC = () => {
             accumulationYears={accumulationYears}
             lifeExpectancy={lifeExpectancy}
             currentAge={currentAge}
+            monthlyIncomeTarget={calculationResult?.monthlyIncome || 0}
+            portfolioReturn={portfolioReturn}
             onLifeExpectancyChange={handleLifeExpectancyChange} 
             showLifeExpectancyControl={false}
           />
