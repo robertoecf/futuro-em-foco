@@ -1,4 +1,3 @@
-
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine, ComposedChart } from 'recharts';
 import { MonteCarloResult } from '@/lib/utils';
 import { CustomTooltip } from './chart/CustomTooltip';
@@ -7,6 +6,7 @@ import { ChartInfo } from './chart/ChartInfo';
 import { ExportButton } from './chart/ExportButton';
 import { calculatePossibleRetirementAge, formatYAxis } from './chart/chartUtils';
 import { InvestorProfile, CalculationResult } from '@/components/calculator/useCalculator';
+import { useState, useEffect } from 'react';
 
 interface ChartComponentProps {
   data: number[];
@@ -49,8 +49,78 @@ export const ChartComponent = ({
   investorProfile = 'moderado',
   calculationResult = null
 }: ChartComponentProps) => {
+  const [animationPhase, setAnimationPhase] = useState<'initial' | 'projecting' | 'paths' | 'consolidating' | 'final'>('initial');
+  const [visiblePaths, setVisiblePaths] = useState<number[]>([]);
+  const [pathOpacities, setPathOpacities] = useState<Record<number, number>>({});
+
   console.log('ChartComponent data:', data);
   console.log('ChartComponent Monte Carlo data:', monteCarloData);
+
+  // Reset animation when Monte Carlo starts
+  useEffect(() => {
+    if (isCalculating && isMonteCarloEnabled) {
+      setAnimationPhase('projecting');
+      setVisiblePaths([]);
+      setPathOpacities({});
+      
+      // After 2 seconds, start showing paths
+      const timer1 = setTimeout(() => {
+        if (monteCarloData) {
+          setAnimationPhase('paths');
+          // Generate 50 random paths for visual effect
+          const pathsToShow = Array.from({ length: 50 }, (_, i) => i);
+          setVisiblePaths(pathsToShow);
+          
+          // Initialize all paths with full opacity
+          const initialOpacities: Record<number, number> = {};
+          pathsToShow.forEach(path => {
+            initialOpacities[path] = 1;
+          });
+          setPathOpacities(initialOpacities);
+          
+          // After 3 seconds showing all paths, start consolidating
+          const timer2 = setTimeout(() => {
+            setAnimationPhase('consolidating');
+            
+            // Fade out paths gradually over 2 seconds
+            const fadeInterval = setInterval(() => {
+              setPathOpacities(prev => {
+                const newOpacities = { ...prev };
+                let allFaded = true;
+                
+                pathsToShow.forEach(path => {
+                  if (newOpacities[path] > 0) {
+                    newOpacities[path] = Math.max(0, newOpacities[path] - 0.05);
+                    if (newOpacities[path] > 0) allFaded = false;
+                  }
+                });
+                
+                if (allFaded) {
+                  clearInterval(fadeInterval);
+                  setAnimationPhase('final');
+                }
+                
+                return newOpacities;
+              });
+            }, 50);
+          }, 3000);
+        }
+      }, 2000);
+    } else if (!isCalculating) {
+      setAnimationPhase('final');
+    }
+  }, [isCalculating, isMonteCarloEnabled, monteCarloData]);
+
+  // Generate random colors for paths
+  const generatePathColor = (index: number) => {
+    const colors = [
+      '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FECA57', 
+      '#FF9FF3', '#54A0FF', '#5F27CD', '#00D2D3', '#FF9F43',
+      '#FC427B', '#1DD1A1', '#3742FA', '#2F3542', '#FF5722',
+      '#009688', '#673AB7', '#E91E63', '#795548', '#607D8B'
+    ];
+    return colors[index % colors.length];
+  };
 
   // Calculate savings line (initial + monthly contributions - retirement withdrawals)
   const calculateSavingsLine = () => {
@@ -80,6 +150,27 @@ export const ChartComponent = ({
 
   const savingsLine = calculateSavingsLine();
 
+  // Generate random path data for animation
+  const generateRandomPaths = () => {
+    if (!monteCarloData || animationPhase !== 'paths') return [];
+    
+    const paths = [];
+    const baseData = monteCarloData.scenarios.median;
+    
+    for (let pathIndex = 0; pathIndex < 50; pathIndex++) {
+      const pathData = baseData.map((value, index) => {
+        // Add random variation to create visual diversity
+        const variation = (Math.random() - 0.5) * 0.4 * value;
+        return Math.max(0, value + variation);
+      });
+      paths.push(pathData);
+    }
+    
+    return paths;
+  };
+
+  const randomPaths = generateRandomPaths();
+
   const chartData = data.map((value, index) => {
     const age = currentAge + index;
     const baseData = {
@@ -89,8 +180,8 @@ export const ChartComponent = ({
       fase: age < (currentAge + accumulationYears) ? "Acumulação" : "Aposentadoria"
     };
 
-    // Add Monte Carlo data if available
-    if (monteCarloData && index < monteCarloData.scenarios.pessimistic.length) {
+    // Add Monte Carlo data if available and in final phase
+    if (monteCarloData && animationPhase === 'final' && index < monteCarloData.scenarios.pessimistic.length) {
       return {
         ...baseData,
         pessimistic: monteCarloData.scenarios.pessimistic[index],
@@ -99,6 +190,17 @@ export const ChartComponent = ({
         percentile25: monteCarloData.statistics.percentile25[index],
         percentile75: monteCarloData.statistics.percentile75[index]
       };
+    }
+
+    // Add random paths data for animation phase
+    if (animationPhase === 'paths' || animationPhase === 'consolidating') {
+      const pathsData: Record<string, number> = {};
+      randomPaths.forEach((path, pathIndex) => {
+        if (index < path.length) {
+          pathsData[`path${pathIndex}`] = path[index];
+        }
+      });
+      return { ...baseData, ...pathsData };
     }
 
     return baseData;
@@ -116,13 +218,28 @@ export const ChartComponent = ({
   const perpetuityWealth = monthlyIncomeTarget > 0 ? 
     (monthlyIncomeTarget * 12) / (portfolioReturn / 100) : 0;
 
-  if (isCalculating) {
+  // Show projecting message
+  if (animationPhase === 'projecting') {
     return (
-      <div className="h-[400px] w-full flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto mb-4"></div>
-          <p className="text-gray-600">Calculando simulações Monte Carlo...</p>
+      <div className="w-full">
+        <div className="relative h-[400px] w-full bg-white border border-gray-200 rounded-lg p-4 flex items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-orange-500 mx-auto mb-6"></div>
+            <h3 className="text-2xl font-bold text-gray-800 mb-2">Projetando futuros possíveis...</h3>
+            <p className="text-gray-600">Analisando mil cenários diferentes baseados em risco e volatilidade</p>
+          </div>
         </div>
+        
+        {/* Controls Section */}
+        {(showLifeExpectancyControl || onMonteCarloToggle) && (
+          <ChartControls
+            lifeExpectancy={lifeExpectancy}
+            possibleRetirementAge={possibleRetirementAge}
+            isMonteCarloEnabled={isMonteCarloEnabled}
+            onLifeExpectancyChange={onLifeExpectancyChange || (() => {})}
+            onMonteCarloToggle={onMonteCarloToggle || (() => {})}
+          />
+        )}
       </div>
     );
   }
@@ -198,50 +315,73 @@ export const ChartComponent = ({
               activeDot={{ r: 6, stroke: '#6B7280', strokeWidth: 2, fill: '#fff' }}
             />
 
-            {/* Monte Carlo lines or main patrimonio line */}
-            {monteCarloData ? (
+            {/* Animation phase: Show all random paths */}
+            {(animationPhase === 'paths' || animationPhase === 'consolidating') && (
               <>
-                <Line 
-                  type="monotone" 
-                  dataKey="optimistic" 
-                  name="Cenário Otimista"
-                  stroke="#10B981" 
-                  strokeWidth={2}
-                  strokeDasharray="5 5"
-                  dot={false}
-                  activeDot={{ r: 6, stroke: '#10B981', strokeWidth: 2, fill: '#fff' }}
-                />
-                <Line 
-                  type="monotone" 
-                  dataKey="median" 
-                  name="Cenário Neutro"
-                  stroke="#3B82F6" 
-                  strokeWidth={3}
-                  dot={false}
-                  activeDot={{ r: 8, stroke: '#3B82F6', strokeWidth: 2, fill: '#fff' }}
-                />
-                <Line 
-                  type="monotone" 
-                  dataKey="pessimistic" 
-                  name="Cenário Pessimista"
-                  stroke="#DC2626" 
-                  strokeWidth={2}
-                  strokeDasharray="5 5"
-                  dot={false}
-                  activeDot={{ r: 6, stroke: '#DC2626', strokeWidth: 2, fill: '#fff' }}
-                />
+                {visiblePaths.map((pathIndex) => (
+                  <Line
+                    key={`path${pathIndex}`}
+                    type="monotone"
+                    dataKey={`path${pathIndex}`}
+                    stroke={generatePathColor(pathIndex)}
+                    strokeWidth={1}
+                    strokeOpacity={pathOpacities[pathIndex] || 0}
+                    dot={false}
+                    activeDot={false}
+                    connectNulls
+                  />
+                ))}
               </>
-            ) : (
-              <Line 
-                type="monotone" 
-                dataKey="patrimonio" 
-                name="Patrimônio"
-                stroke="#FF6B00" 
-                strokeWidth={2}
-                dot={false}
-                activeDot={{ r: 8, stroke: '#FF6B00', strokeWidth: 2, fill: '#fff' }}
-                connectNulls
-              />
+            )}
+
+            {/* Final phase: Show Monte Carlo results or main patrimonio line */}
+            {animationPhase === 'final' && (
+              <>
+                {monteCarloData ? (
+                  <>
+                    <Line 
+                      type="monotone" 
+                      dataKey="optimistic" 
+                      name="Cenário Otimista"
+                      stroke="#10B981" 
+                      strokeWidth={2}
+                      strokeDasharray="5 5"
+                      dot={false}
+                      activeDot={{ r: 6, stroke: '#10B981', strokeWidth: 2, fill: '#fff' }}
+                    />
+                    <Line 
+                      type="monotone" 
+                      dataKey="median" 
+                      name="Cenário Neutro"
+                      stroke="#3B82F6" 
+                      strokeWidth={3}
+                      dot={false}
+                      activeDot={{ r: 8, stroke: '#3B82F6', strokeWidth: 2, fill: '#fff' }}
+                    />
+                    <Line 
+                      type="monotone" 
+                      dataKey="pessimistic" 
+                      name="Cenário Pessimista"
+                      stroke="#DC2626" 
+                      strokeWidth={2}
+                      strokeDasharray="5 5"
+                      dot={false}
+                      activeDot={{ r: 6, stroke: '#DC2626', strokeWidth: 2, fill: '#fff' }}
+                    />
+                  </>
+                ) : (
+                  <Line 
+                    type="monotone" 
+                    dataKey="patrimonio" 
+                    name="Patrimônio"
+                    stroke="#FF6B00" 
+                    strokeWidth={2}
+                    dot={false}
+                    activeDot={{ r: 8, stroke: '#FF6B00', strokeWidth: 2, fill: '#fff' }}
+                    connectNulls
+                  />
+                )}
+              </>
             )}
           </ComposedChart>
         </ResponsiveContainer>
