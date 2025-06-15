@@ -52,22 +52,30 @@ export const useChartDataProcessor = ({
     return savingsData;
   };
 
-  // Generate random path data for animation
+  // Generate random path data for animation with better variation
   const generateRandomPaths = () => {
-    if (!monteCarloData || animationPhase !== 'paths') return [];
+    if (!monteCarloData || (animationPhase !== 'paths' && animationPhase !== 'consolidating')) return [];
     
+    console.log('Generating random paths for animation...');
     const paths = [];
     const baseData = monteCarloData.scenarios.median;
     
     for (let pathIndex = 0; pathIndex < 50; pathIndex++) {
       const pathData = baseData.map((value, index) => {
-        // Add random variation to create visual diversity
-        const variation = (Math.random() - 0.5) * 0.4 * value;
-        return Math.max(0, value + variation);
+        // Create more dramatic variation for visual effect
+        const volatility = 0.3 + (Math.random() * 0.4); // 30% to 70% volatility
+        const randomFactor = (Math.random() - 0.5) * 2; // -1 to 1
+        const variation = value * volatility * randomFactor;
+        
+        // Add some growth trend variation
+        const growthFactor = 1 + (index * 0.01 * Math.random());
+        
+        return Math.max(0, (value + variation) * growthFactor);
       });
       paths.push(pathData);
     }
     
+    console.log('Generated', paths.length, 'random paths');
     return paths;
   };
 
@@ -96,7 +104,7 @@ export const useChartDataProcessor = ({
     }
 
     // Add random paths data for animation phase
-    if (animationPhase === 'paths' || animationPhase === 'consolidating') {
+    if ((animationPhase === 'paths' || animationPhase === 'consolidating') && randomPaths.length > 0) {
       const pathsData: Record<string, number> = {};
       randomPaths.forEach((path, pathIndex) => {
         if (index < path.length) {
