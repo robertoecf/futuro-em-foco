@@ -1,7 +1,9 @@
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine, Area, ComposedChart, AreaChart } from 'recharts';
-import { formatCurrency } from '@/lib/utils';
-import { Card, CardContent } from '@/components/ui/card';
+
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine, ComposedChart } from 'recharts';
 import { MonteCarloResult } from '@/lib/utils';
+import { CustomTooltip } from './chart/CustomTooltip';
+import { ChartLegend } from './chart/ChartLegend';
+import { calculatePossibleRetirementAge, calculatePerpetuityWealth, formatYAxis } from './chart/chartUtils';
 
 interface ChartComponentProps {
   data: number[];
@@ -54,78 +56,15 @@ export const ChartComponent = ({
     return baseData;
   });
 
-  // Calculate possible retirement age based on wealth accumulation
-  const calculatePossibleRetirementAge = () => {
-    if (monthlyIncomeTarget <= 0) return currentAge + accumulationYears;
-    
-    // Required wealth to sustain the monthly income target
-    const requiredWealth = (monthlyIncomeTarget * 12) / (portfolioReturn / 100);
-    
-    // Find the age where accumulated wealth reaches the required amount
-    for (let i = 0; i < data.length; i++) {
-      if (data[i] >= requiredWealth) {
-        return currentAge + i;
-      }
-    }
-    
-    // If never reached, return the original retirement age
-    return currentAge + accumulationYears;
-  };
-
-  const possibleRetirementAge = calculatePossibleRetirementAge();
+  const possibleRetirementAge = calculatePossibleRetirementAge(
+    data,
+    monthlyIncomeTarget,
+    portfolioReturn,
+    currentAge,
+    accumulationYears
+  );
   
-  // Calcular patrimônio necessário para perpetuidade
-  const perpetuityWealth = monthlyIncomeTarget > 0 && portfolioReturn > 0 
-    ? (monthlyIncomeTarget * 12) / (portfolioReturn / 100)
-    : 0;
-
-  const CustomTooltip = ({ active, payload, label }: any) => {
-    if (active && payload && payload.length) {
-      const data = payload[0].payload;
-      const phase = data.fase;
-      
-      return (
-        <Card className="p-0 border shadow-md">
-          <CardContent className="p-3">
-            <p className="text-sm font-bold">{`Idade: ${label} anos`}</p>
-            
-            {monteCarloData ? (
-              <div className="space-y-1">
-                <p className="text-sm text-green-600">
-                  {`Cenário Otimista: ${formatCurrency(data.optimistic || 0)}`}
-                </p>
-                <p className="text-sm font-medium text-blue-600">
-                  {`Cenário Neutro: ${formatCurrency(data.median || 0)}`}
-                </p>
-                <p className="text-sm text-red-600">
-                  {`Cenário Pessimista: ${formatCurrency(data.pessimistic || 0)}`}
-                </p>
-              </div>
-            ) : (
-              <p className="text-sm">
-                {`Patrimônio: ${formatCurrency(data.patrimonio)}`}
-              </p>
-            )}
-            
-            <p className="text-xs text-gray-500 mt-1">
-              {phase === "Acumulação" ? "Fase de Acumulação" : "Fase de Aposentadoria"}
-            </p>
-          </CardContent>
-        </Card>
-      );
-    }
-    return null;
-  };
-
-  // Create a custom formatter for the Y-axis that uses Intl.NumberFormat
-  const formatYAxis = (value: number) => {
-    return new Intl.NumberFormat('pt-BR', {
-      style: 'currency',
-      currency: 'BRL',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0
-    }).format(value);
-  };
+  const perpetuityWealth = calculatePerpetuityWealth(monthlyIncomeTarget, portfolioReturn);
 
   if (isCalculating) {
     return (
@@ -155,7 +94,7 @@ export const ChartComponent = ({
             tickFormatter={formatYAxis}
             width={80}
           />
-          <Tooltip content={<CustomTooltip />} />
+          <Tooltip content={<CustomTooltip monteCarloData={monteCarloData} />} />
           
           {/* Reference line for possible retirement age */}
           <ReferenceLine 
@@ -233,47 +172,7 @@ export const ChartComponent = ({
         </ComposedChart>
       </ResponsiveContainer>
       
-      {/* Custom Legend */}
-      <div className="mt-4 flex flex-col gap-2 text-xs text-gray-600">
-        {/* Monte Carlo Legend */}
-        {monteCarloData && (
-          <div className="space-y-1">
-            <div className="flex items-center gap-2">
-              <div className="w-6 h-0.5 bg-green-500 border-dashed border-2"></div>
-              <span>Cenário Otimista (75º percentil)</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-6 h-0.5 bg-blue-500"></div>
-              <span>Cenário Neutro (50º percentil)</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-6 h-0.5 bg-red-600 border-dashed border-2"></div>
-              <span>Cenário Pessimista (25º percentil)</span>
-            </div>
-            {monteCarloData.statistics.successProbability && (
-              <div className="text-sm font-medium text-green-600 mt-2">
-                Probabilidade de Sucesso: {(monteCarloData.statistics.successProbability * 100).toFixed(1)}%
-              </div>
-            )}
-          </div>
-        )}
-        
-        {/* Perpetuity Legend Item */}
-        {perpetuityWealth > 0 && (
-          <div className="flex items-center gap-2">
-            <div className="w-6 h-0.5 border-t-2 border-dashed border-gray-500"></div>
-            <span>Patrimônio para Perpetuidade: {formatCurrency(perpetuityWealth)} (renda indefinida sem esgotar o capital)</span>
-          </div>
-        )}
-        
-        {/* Patrimônio Legend Item (only for deterministic) */}
-        {!monteCarloData && (
-          <div className="flex items-center gap-2">
-            <div className="w-6 h-0.5 bg-orange-500"></div>
-            <span>Patrimônio</span>
-          </div>
-        )}
-      </div>
+      <ChartLegend monteCarloData={monteCarloData} perpetuityWealth={perpetuityWealth} />
     </div>
   );
 };
