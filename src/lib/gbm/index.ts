@@ -1,0 +1,9 @@
+
+// Main exports from the GBM module
+export type { BrownianMonteCarloResult } from './types';
+export { generateNormalRandom } from './randomGenerators';
+export { monteCarloGBM } from './coreGBM';
+export { portfolioGBMSimulation } from './portfolioSimulation';
+export { calculateStatistics } from './statistics';
+export { runBrownianMonteCarloSimulation } from './mainSimulation';
+export { compareMonteCarloMethods } from './comparison';
