@@ -233,9 +233,9 @@ export const ChartComponent = ({
               <div className="w-6 h-0.5 bg-red-600 border-dashed border-2"></div>
               <span>Cenário Pessimista (25º percentil)</span>
             </div>
-            {monteCarloResult.statistics.successProbability && (
+            {monteCarloData.statistics.successProbability && (
               <div className="text-sm font-medium text-green-600 mt-2">
-                Probabilidade de Sucesso: {(monteCarloResult.statistics.successProbability * 100).toFixed(1)}%
+                Probabilidade de Sucesso: {(monteCarloData.statistics.successProbability * 100).toFixed(1)}%
               </div>
             )}
           </div>
