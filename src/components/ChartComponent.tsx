@@ -131,7 +131,7 @@ export const ChartComponent = ({
               strokeDasharray="8 4" 
               label={{ 
                 value: 'Perpetuidade', 
-                position: 'topRight', 
+                position: 'insideTopRight', 
                 fill: '#10B981',
                 fontSize: 12
               }} 
