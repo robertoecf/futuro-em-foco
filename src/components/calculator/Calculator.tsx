@@ -71,6 +71,8 @@ export const Calculator: React.FC = () => {
           initialAmount={initialAmount}
           monteCarloResult={monteCarloResult}
           isMonteCarloEnabled={isMonteCarloEnabled}
+          currentAge={currentAge}
+          portfolioReturn={portfolioReturn}
         />
         
         {/* Chart - Full Width with integrated controls and information */}
