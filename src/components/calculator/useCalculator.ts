@@ -1,3 +1,4 @@
+
 import { useCalculatorState } from './useCalculatorState';
 import { useCalculatorHandlers } from './useCalculatorHandlers';
 import { useCalculatorEffects } from './useCalculatorEffects';
@@ -38,27 +39,9 @@ export const useCalculator = () => {
   // Calculate accumulation years based on current and retirement age
   const accumulationYears = retirementAge - currentAge;
 
-  const { calculatePossibleRetirementAge, calculateProjection } = useCalculatorEffects({
-    initialAmount,
-    monthlyAmount,
-    currentAge,
-    retirementAge,
-    lifeExpectancy,
-    retirementIncome,
-    portfolioReturn,
-    investorProfile,
-    accumulationYears,
-    isMonteCarloEnabled,
-    sharedPlanData,
-    setCalculationResult,
-    setIsCalculating,
-    setMonteCarloResult
-  });
-
   const {
     finishCalculation,
     handleMonteCarloToggle,
-    handleCalculateProjection,
     handleInitialAmountBlur,
     handleMonthlyAmountBlur,
     handleCurrentAgeBlur,
@@ -80,8 +63,24 @@ export const useCalculator = () => {
     setInvestorProfile,
     setIsMonteCarloEnabled,
     setIsCalculating,
-    setMonteCarloResult,
-    calculateProjection
+    setMonteCarloResult
+  });
+
+  const { calculatePossibleRetirementAge, calculateProjection } = useCalculatorEffects({
+    initialAmount,
+    monthlyAmount,
+    currentAge,
+    retirementAge,
+    lifeExpectancy,
+    retirementIncome,
+    portfolioReturn,
+    investorProfile,
+    accumulationYears,
+    isMonteCarloEnabled,
+    sharedPlanData,
+    setCalculationResult,
+    setIsCalculating,
+    setMonteCarloResult
   });
 
   const possibleRetirementAge = calculatePossibleRetirementAge();
@@ -111,6 +110,6 @@ export const useCalculator = () => {
     handlePortfolioReturnBlur,
     setInvestorProfile: handleInvestorProfileChange,
     handleMonteCarloToggle,
-    handleCalculateProjection
+    calculateProjection
   };
 };

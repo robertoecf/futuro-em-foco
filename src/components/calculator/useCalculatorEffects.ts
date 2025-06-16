@@ -1,6 +1,6 @@
 
 import { useCallback, useEffect } from 'react';
-import { calculateFullProjection } from '@/lib/utils';
+import { calculateFullProjection, runMonteCarloSimulation, getVolatilityByProfile } from '@/lib/utils';
 import { runBrownianMonteCarloSimulation } from '@/lib/brownianMotionUtils';
 import type { InvestorProfile, CalculationResult } from './types';
 import { getAccumulationAnnualReturn } from './calculationUtils';
@@ -43,13 +43,15 @@ export const useCalculatorEffects = ({
   const calculatePossibleRetirementAge = useCallback(() => {
     if (retirementIncome <= 0) return retirementAge;
     
+    // Required wealth to sustain the monthly income target
     const requiredWealth = (retirementIncome * 12) / (portfolioReturn / 100);
     const accumulationAnnualReturn = getAccumulationAnnualReturn(investorProfile);
     const monthlyReturn = Math.pow(1 + accumulationAnnualReturn, 1/12) - 1;
     
+    // Simulate accumulation to find when required wealth is reached
     let balance = initialAmount;
     let years = 0;
-    const maxYears = 50;
+    const maxYears = 50; // Safety limit
     
     while (balance < requiredWealth && years < maxYears) {
       for (let month = 0; month < 12; month++) {
@@ -62,26 +64,36 @@ export const useCalculatorEffects = ({
     return currentAge + years;
   }, [retirementIncome, portfolioReturn, investorProfile, initialAmount, monthlyAmount, currentAge, retirementAge]);
 
-  // Main calculation function - runs everything when called
   const calculateProjection = useCallback(() => {
-    console.log('🚀 Running calculation');
-    setIsCalculating(true);
+    console.log('Calculating projection with:', {
+      initialAmount,
+      monthlyAmount,
+      currentAge,
+      retirementAge,
+      lifeExpectancy,
+      portfolioReturn,
+      investorProfile,
+      isMonteCarloEnabled
+    });
     
     const accumulationAnnualReturn = getAccumulationAnnualReturn(investorProfile);
-    const retirementAnnualReturn = portfolioReturn / 100;
-    const monthlyIncomeRate = 0.004;
+    console.log('Using accumulation return:', accumulationAnnualReturn);
+    const retirementAnnualReturn = portfolioReturn / 100; // Convert percentage to decimal
+    const monthlyIncomeRate = 0.004; // 0.4% de renda mensal
     
-    // Always run deterministic calculation first
+    // Deterministic calculation
     const result = calculateFullProjection(
       initialAmount,
       monthlyAmount,
       accumulationYears,
-      lifeExpectancy - currentAge,
+      lifeExpectancy - currentAge, // Total years from current age to life expectancy
       accumulationAnnualReturn,
       monthlyIncomeRate,
       retirementIncome,
-      retirementAnnualReturn
+      retirementAnnualReturn // Pass the retirement return rate
     );
+    
+    console.log('Calculation result:', result);
     
     setCalculationResult({
       finalAmount: result.retirementAmount,
@@ -89,51 +101,55 @@ export const useCalculatorEffects = ({
       monthlyIncome: result.monthlyIncome
     });
 
-    // Run Monte Carlo if enabled
+    // Monte Carlo calculation if enabled - now using GBM
     if (isMonteCarloEnabled) {
-      console.log('🎲 Running Monte Carlo simulation');
+      console.log('🚀 Starting Geometric Brownian Motion Monte Carlo calculation');
+      setIsCalculating(true);
       
-      const volatility = investorProfile === 'conservador' ? 0.08 : 
-                        investorProfile === 'moderado' ? 0.12 : 0.16;
+      const volatility = getVolatilityByProfile(investorProfile);
       
+      // Use the new GBM-based Monte Carlo simulation
       const gbmResults = runBrownianMonteCarloSimulation(
         initialAmount,
         monthlyAmount,
         accumulationYears,
         lifeExpectancy - currentAge,
-        accumulationAnnualReturn,
-        volatility,
+        accumulationAnnualReturn, // drift rate (μ)
+        volatility, // volatility (σ)
         monthlyIncomeRate,
         retirementIncome,
         retirementAnnualReturn,
-        100
+        100 // Number of simulations
       );
       
-      setMonteCarloResult({
+      console.log('💾 GBM Monte Carlo calculation completed:', gbmResults);
+      
+      // Convert to the format expected by the chart components
+      const convertedResults = {
         scenarios: gbmResults.scenarios,
         statistics: gbmResults.statistics
-      });
+      };
+      
+      setMonteCarloResult(convertedResults);
+      
+      // Don't set isCalculating to false here - let the animation control it
     } else {
+      // Reset Monte Carlo data when disabled
       setMonteCarloResult(null);
+      setIsCalculating(false);
     }
-  }, [
-    initialAmount,
-    monthlyAmount,
-    currentAge,
-    lifeExpectancy,
-    retirementIncome,
-    portfolioReturn,
-    investorProfile,
-    accumulationYears,
-    isMonteCarloEnabled,
-    setCalculationResult,
-    setIsCalculating,
-    setMonteCarloResult
-  ]);
+  }, [initialAmount, monthlyAmount, currentAge, retirementAge, lifeExpectancy, retirementIncome, portfolioReturn, investorProfile, accumulationYears, isMonteCarloEnabled, setCalculationResult, setIsCalculating, setMonteCarloResult]);
+
+  // Calculate on state changes
+  useEffect(() => {
+    console.log('useEffect triggered, recalculating projection');
+    calculateProjection();
+  }, [calculateProjection]);
 
   // Clear URL after loading shared plan
   useEffect(() => {
     if (sharedPlanData) {
+      // Remove parameter from URL without reloading the page
       const url = new URL(window.location.href);
       url.searchParams.delete('plan');
       window.history.replaceState({}, '', url.toString());
