@@ -1,7 +1,6 @@
 
 import React from 'react';
 import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { useCalculator } from './useCalculator';
 import { CalculatorForm } from './CalculatorForm';
 import { ResultsCards } from './ResultsCards';
@@ -82,12 +81,10 @@ export const Calculator: React.FC = () => {
         {/* Calculation Mode Indicator */}
         <CalculationModeIndicator 
           isMonteCarloEnabled={isMonteCarloEnabled}
-          isCalculating={isCalculating}
         />
 
         {/* Calculation Button */}
         <CalculationButton
-          isMonteCarloEnabled={isMonteCarloEnabled}
           isCalculating={isCalculating}
           onCalculate={handleCalculateProjection}
         />

@@ -3,20 +3,14 @@ import { Button } from '@/components/ui/button';
 import { Calculator, Zap } from 'lucide-react';
 
 interface CalculationButtonProps {
-  isMonteCarloEnabled: boolean;
   isCalculating: boolean;
   onCalculate: () => void;
 }
 
 export const CalculationButton = ({ 
-  isMonteCarloEnabled, 
   isCalculating, 
   onCalculate 
 }: CalculationButtonProps) => {
-  if (!isMonteCarloEnabled) {
-    return null; // Don't show button when Monte Carlo is disabled
-  }
-
   return (
     <div className="flex justify-center mb-6">
       <Button
@@ -28,12 +22,12 @@ export const CalculationButton = ({
         {isCalculating ? (
           <>
             <Zap className="h-5 w-5 mr-2 animate-pulse" />
-            Calculando Projeção...
+            Calculando...
           </>
         ) : (
           <>
             <Calculator className="h-5 w-5 mr-2" />
-            Calcular Projeção Probabilística
+            Calcular Projeção
           </>
         )}
       </Button>

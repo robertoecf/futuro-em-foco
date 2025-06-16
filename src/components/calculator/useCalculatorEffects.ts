@@ -1,6 +1,6 @@
 
 import { useCallback, useEffect } from 'react';
-import { calculateFullProjection, runMonteCarloSimulation, getVolatilityByProfile } from '@/lib/utils';
+import { calculateFullProjection } from '@/lib/utils';
 import { runBrownianMonteCarloSimulation } from '@/lib/brownianMotionUtils';
 import type { InvestorProfile, CalculationResult } from './types';
 import { getAccumulationAnnualReturn } from './calculationUtils';
@@ -43,15 +43,13 @@ export const useCalculatorEffects = ({
   const calculatePossibleRetirementAge = useCallback(() => {
     if (retirementIncome <= 0) return retirementAge;
     
-    // Required wealth to sustain the monthly income target
     const requiredWealth = (retirementIncome * 12) / (portfolioReturn / 100);
     const accumulationAnnualReturn = getAccumulationAnnualReturn(investorProfile);
     const monthlyReturn = Math.pow(1 + accumulationAnnualReturn, 1/12) - 1;
     
-    // Simulate accumulation to find when required wealth is reached
     let balance = initialAmount;
     let years = 0;
-    const maxYears = 50; // Safety limit
+    const maxYears = 50;
     
     while (balance < requiredWealth && years < maxYears) {
       for (let month = 0; month < 12; month++) {
@@ -64,14 +62,16 @@ export const useCalculatorEffects = ({
     return currentAge + years;
   }, [retirementIncome, portfolioReturn, investorProfile, initialAmount, monthlyAmount, currentAge, retirementAge]);
 
-  // Deterministic calculation (always runs automatically)
-  const calculateDeterministicProjection = useCallback(() => {
-    console.log('📊 Running deterministic calculation');
+  // Main calculation function - runs everything when called
+  const calculateProjection = useCallback(() => {
+    console.log('🚀 Running calculation');
+    setIsCalculating(true);
     
     const accumulationAnnualReturn = getAccumulationAnnualReturn(investorProfile);
     const retirementAnnualReturn = portfolioReturn / 100;
     const monthlyIncomeRate = 0.004;
     
+    // Always run deterministic calculation first
     const result = calculateFullProjection(
       initialAmount,
       monthlyAmount,
@@ -88,24 +88,13 @@ export const useCalculatorEffects = ({
       yearlyValues: result.yearlyValues,
       monthlyIncome: result.monthlyIncome
     });
-  }, [initialAmount, monthlyAmount, currentAge, lifeExpectancy, retirementIncome, portfolioReturn, investorProfile, accumulationYears, setCalculationResult]);
 
-  // Full calculation including Monte Carlo (only runs when explicitly called)
-  const calculateProjection = useCallback(() => {
-    console.log('🚀 Running full calculation with Monte Carlo:', isMonteCarloEnabled);
-    
-    // Always run deterministic first
-    calculateDeterministicProjection();
-
-    // Run Monte Carlo only if enabled
+    // Run Monte Carlo if enabled
     if (isMonteCarloEnabled) {
-      console.log('🎲 Starting Monte Carlo calculation');
-      setIsCalculating(true);
+      console.log('🎲 Running Monte Carlo simulation');
       
-      const accumulationAnnualReturn = getAccumulationAnnualReturn(investorProfile);
-      const volatility = getVolatilityByProfile(investorProfile);
-      const retirementAnnualReturn = portfolioReturn / 100;
-      const monthlyIncomeRate = 0.004;
+      const volatility = investorProfile === 'conservador' ? 0.08 : 
+                        investorProfile === 'moderado' ? 0.12 : 0.16;
       
       const gbmResults = runBrownianMonteCarloSimulation(
         initialAmount,
@@ -120,20 +109,14 @@ export const useCalculatorEffects = ({
         100
       );
       
-      const convertedResults = {
+      setMonteCarloResult({
         scenarios: gbmResults.scenarios,
         statistics: gbmResults.statistics
-      };
-      
-      setMonteCarloResult(convertedResults);
+      });
     } else {
-      // Clear Monte Carlo data when disabled
       setMonteCarloResult(null);
-      setIsCalculating(false);
     }
   }, [
-    isMonteCarloEnabled,
-    calculateDeterministicProjection,
     initialAmount,
     monthlyAmount,
     currentAge,
@@ -142,15 +125,11 @@ export const useCalculatorEffects = ({
     portfolioReturn,
     investorProfile,
     accumulationYears,
+    isMonteCarloEnabled,
+    setCalculationResult,
     setIsCalculating,
     setMonteCarloResult
   ]);
-
-  // Auto-calculate deterministic projection on input changes
-  useEffect(() => {
-    console.log('📊 Auto-calculating deterministic projection due to input change');
-    calculateDeterministicProjection();
-  }, [calculateDeterministicProjection]);
 
   // Clear URL after loading shared plan
   useEffect(() => {
