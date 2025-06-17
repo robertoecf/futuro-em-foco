@@ -32,14 +32,14 @@ const Index = () => {
   return (
     <div className="min-h-screen">
       {/* Header */}
-      <header className="flex justify-between items-center p-6">
+      <header className="flex justify-between items-center p-6 max-w-7xl mx-auto">
         <div className="text-2xl font-bold">futuro em foco</div>
         <Button className="bg-black hover:bg-gray-800">Conheça o planner</Button>
       </header>
 
       {/* Hero Section - Banner Laranja */}
       <section className="px-4 sm:px-6 lg:px-8 pt-8 pb-16">
-        <HeroSection />
+        <HeroSection onReceivePlan={handleReceivePlanByEmail} />
       </section>
 
       {/* Calculator Section - Análise Detalhada */}
@@ -55,18 +55,20 @@ const Index = () => {
 
       {/* CTA Section */}
       <section className="px-4 sm:px-6 lg:px-8 py-16 bg-gray-50 text-center">
-        <h2 className="text-3xl font-bold mb-4">O Futuro em Foco pode te ajudar alcançar seus objetivos</h2>
-        <p className="text-lg text-gray-600 mb-8 max-w-3xl mx-auto">
-          Nossa calculadora de projeção patrimonial permite simular diferentes cenários para 
-          aposentadoria, preservação ou usufruto do seu patrimônio, ajudando você a tomar 
-          as melhores decisões financeiras.
-        </p>
-        <Button 
-          className="bg-black hover:bg-gray-800 text-white"
-          onClick={handleReceivePlanByEmail}
-        >
-          Quero ajuda de um especialista
-        </Button>
+        <div className="max-w-7xl mx-auto">
+          <h2 className="text-3xl font-bold mb-4">O Futuro em Foco pode te ajudar alcançar seus objetivos</h2>
+          <p className="text-lg text-gray-600 mb-8 max-w-3xl mx-auto">
+            Nossa calculadora de projeção patrimonial permite simular diferentes cenários para 
+            aposentadoria, preservação ou usufruto do seu patrimônio, ajudando você a tomar 
+            as melhores decisões financeiras.
+          </p>
+          <Button 
+            className="bg-black hover:bg-gray-800 text-white"
+            onClick={handleReceivePlanByEmail}
+          >
+            Quero ajuda de um especialista
+          </Button>
+        </div>
       </section>
 
       {/* Footer */}

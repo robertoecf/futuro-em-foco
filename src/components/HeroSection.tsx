@@ -11,12 +11,12 @@ export const HeroSection = ({ onReceivePlan }: HeroSectionProps) => {
       onReceivePlan();
     } else {
       // Comportamento padrão se não houver callback
-      console.log('Fale com um especialista clicked');
+      console.log('Consultar um especialista clicked');
     }
   };
 
   return (
-    <div className="orange-red-gradient text-white p-8 md:p-16 rounded-lg">
+    <div className="orange-red-gradient text-white p-8 md:p-16 rounded-lg max-w-7xl mx-auto">
       <div className="max-w-3xl">
         <h1 className="text-4xl md:text-5xl font-bold mb-4">
           Quer garantir sua aposentadoria tranquila?
@@ -30,7 +30,7 @@ export const HeroSection = ({ onReceivePlan }: HeroSectionProps) => {
           className="bg-black hover:bg-gray-800 text-white"
           onClick={handleClick}
         >
-          Fale com um especialista
+          Consultar um especialista
         </Button>
       </div>
     </div>
