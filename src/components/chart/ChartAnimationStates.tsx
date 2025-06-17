@@ -29,19 +29,28 @@ export const useChartAnimation = ({
     hasStartedAnimation
   });
 
-  // Reset when Monte Carlo is disabled
+  // Complete reset when Monte Carlo is disabled - this is the key fix
   useEffect(() => {
     if (!isMonteCarloEnabled) {
-      console.log('🔄 Monte Carlo disabled - resetting animation');
+      console.log('🔄 Monte Carlo disabled - completely resetting animation state');
       setAnimationPhase('final');
       setHasStartedAnimation(false);
       return;
     }
   }, [isMonteCarloEnabled]);
 
+  // Reset animation state when calculation starts - improved reset
+  useEffect(() => {
+    if (isCalculating && isMonteCarloEnabled) {
+      console.log('🔄 Calculation started - resetting animation state');
+      setHasStartedAnimation(false);
+      setAnimationPhase('projecting');
+    }
+  }, [isCalculating, isMonteCarloEnabled]);
+
   // Start animation sequence when Monte Carlo data is ready
   useEffect(() => {
-    if (isMonteCarloEnabled && monteCarloData && !hasStartedAnimation) {
+    if (isMonteCarloEnabled && monteCarloData && !hasStartedAnimation && !isCalculating) {
       console.log('🚀 Starting Monte Carlo animation sequence');
       setHasStartedAnimation(true);
       
@@ -82,16 +91,7 @@ export const useChartAnimation = ({
       
       return () => clearTimeout(timer1);
     }
-  }, [isMonteCarloEnabled, monteCarloData, hasStartedAnimation, onAnimationComplete]);
-
-  // Reset animation state when calculation starts
-  useEffect(() => {
-    if (isCalculating && isMonteCarloEnabled) {
-      console.log('🔄 Calculation started - resetting animation state');
-      setHasStartedAnimation(false);
-      setAnimationPhase('projecting');
-    }
-  }, [isCalculating, isMonteCarloEnabled]);
+  }, [isMonteCarloEnabled, monteCarloData, hasStartedAnimation, isCalculating, onAnimationComplete]);
 
   return {
     animationPhase,

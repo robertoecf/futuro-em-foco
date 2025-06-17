@@ -36,12 +36,19 @@ export const useCalculatorState = () => {
   );
   const [calculationResult, setCalculationResult] = useState<CalculationResult | null>(null);
   
-  // Monte Carlo states
+  // Monte Carlo states - always start disabled unless explicitly loaded from shared plan
   const [isMonteCarloEnabled, setIsMonteCarloEnabled] = useState(() => 
-    loadFromStorage(STORAGE_KEYS.MONTE_CARLO_ENABLED, DEFAULT_VALUES.MONTE_CARLO_ENABLED)
+    sharedPlanData?.isMonteCarloEnabled ?? false // Force false to prevent auto-loading
   );
   const [monteCarloResult, setMonteCarloResult] = useState<MonteCarloResult | null>(null);
   const [isCalculating, setIsCalculating] = useState(false);
+
+  // Log initial state for debugging
+  console.log('🏗️ Calculator state initialized:', {
+    isMonteCarloEnabled,
+    hasSharedPlan: !!sharedPlanData,
+    isCalculating
+  });
 
   return {
     // State values

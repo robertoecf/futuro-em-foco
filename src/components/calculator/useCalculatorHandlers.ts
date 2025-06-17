@@ -36,6 +36,15 @@ export const useCalculatorHandlers = ({
   setMonteCarloResult
 }: UseCalculatorHandlersProps) => {
 
+  // Helper function to reset Monte Carlo state when variables change
+  const resetMonteCarloState = useCallback(() => {
+    console.log('🔄 Resetting Monte Carlo state due to variable change');
+    setIsMonteCarloEnabled(false);
+    setIsCalculating(false);
+    setMonteCarloResult(null);
+    saveToStorage(STORAGE_KEYS.MONTE_CARLO_ENABLED, false);
+  }, [setIsMonteCarloEnabled, setIsCalculating, setMonteCarloResult]);
+
   const finishCalculation = useCallback(() => {
     console.log('🏁 Calculation animation finished - setting isCalculating to false');
     setIsCalculating(false);
@@ -59,7 +68,8 @@ export const useCalculatorHandlers = ({
     const finalValue = isNaN(numericValue) ? 0 : numericValue;
     setInitialAmount(finalValue);
     saveToStorage(STORAGE_KEYS.INITIAL_AMOUNT, finalValue);
-  }, [setInitialAmount]);
+    resetMonteCarloState(); // Reset Monte Carlo when variable changes
+  }, [setInitialAmount, resetMonteCarloState]);
 
   const handleMonthlyAmountBlur = useCallback((value: string) => {
     const numericValue = parseFloat(value.replace(/\D/g, ''));
@@ -67,7 +77,8 @@ export const useCalculatorHandlers = ({
     const finalValue = isNaN(numericValue) ? 0 : numericValue;
     setMonthlyAmount(finalValue);
     saveToStorage(STORAGE_KEYS.MONTHLY_AMOUNT, finalValue);
-  }, [setMonthlyAmount]);
+    resetMonteCarloState(); // Reset Monte Carlo when variable changes
+  }, [setMonthlyAmount, resetMonteCarloState]);
 
   const handleCurrentAgeBlur = useCallback((value: string) => {
     const numericValue = parseInt(value);
@@ -80,8 +91,9 @@ export const useCalculatorHandlers = ({
         setRetirementAge(newRetirementAge);
         saveToStorage(STORAGE_KEYS.RETIREMENT_AGE, newRetirementAge);
       }
+      resetMonteCarloState(); // Reset Monte Carlo when variable changes
     }
-  }, [setCurrentAge, retirementAge, setRetirementAge]);
+  }, [setCurrentAge, retirementAge, setRetirementAge, resetMonteCarloState]);
 
   const handleRetirementAgeBlur = useCallback((value: string) => {
     const numericValue = parseInt(value);
@@ -89,14 +101,16 @@ export const useCalculatorHandlers = ({
     if (!isNaN(numericValue) && numericValue > currentAge) {
       setRetirementAge(numericValue);
       saveToStorage(STORAGE_KEYS.RETIREMENT_AGE, numericValue);
+      resetMonteCarloState(); // Reset Monte Carlo when variable changes
     }
-  }, [setRetirementAge, currentAge]);
+  }, [setRetirementAge, currentAge, resetMonteCarloState]);
   
   const handleLifeExpectancyChange = useCallback((value: number) => {
     console.log('Life expectancy change:', value);
     setLifeExpectancy(value);
     saveToStorage(STORAGE_KEYS.LIFE_EXPECTANCY, value);
-  }, [setLifeExpectancy]);
+    resetMonteCarloState(); // Reset Monte Carlo when variable changes
+  }, [setLifeExpectancy, resetMonteCarloState]);
   
   const handleRetirementIncomeBlur = useCallback((value: string) => {
     const numericValue = parseFloat(value.replace(/\D/g, ''));
@@ -104,7 +118,8 @@ export const useCalculatorHandlers = ({
     const finalValue = isNaN(numericValue) ? 0 : numericValue;
     setRetirementIncome(finalValue);
     saveToStorage(STORAGE_KEYS.RETIREMENT_INCOME, finalValue);
-  }, [setRetirementIncome]);
+    resetMonteCarloState(); // Reset Monte Carlo when variable changes
+  }, [setRetirementIncome, resetMonteCarloState]);
 
   const handlePortfolioReturnBlur = useCallback((value: string) => {
     const numericValue = parseFloat(value);
@@ -112,14 +127,16 @@ export const useCalculatorHandlers = ({
     if (!isNaN(numericValue) && numericValue > 0) {
       setPortfolioReturn(numericValue);
       saveToStorage(STORAGE_KEYS.PORTFOLIO_RETURN, numericValue);
+      resetMonteCarloState(); // Reset Monte Carlo when variable changes
     }
-  }, [setPortfolioReturn]);
+  }, [setPortfolioReturn, resetMonteCarloState]);
 
   const handleInvestorProfileChange = useCallback((profile: InvestorProfile) => {
     console.log('Investor profile change:', profile);
     setInvestorProfile(profile);
     saveToStorage(STORAGE_KEYS.INVESTOR_PROFILE, profile);
-  }, [setInvestorProfile]);
+    resetMonteCarloState(); // Reset Monte Carlo when variable changes
+  }, [setInvestorProfile, resetMonteCarloState]);
 
   return {
     finishCalculation,

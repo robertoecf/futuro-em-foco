@@ -65,7 +65,7 @@ export const useCalculatorEffects = ({
   }, [retirementIncome, portfolioReturn, investorProfile, initialAmount, monthlyAmount, currentAge, retirementAge]);
 
   const calculateProjection = useCallback(() => {
-    console.log('Calculating projection with:', {
+    console.log('🧮 Calculating projection with:', {
       initialAmount,
       monthlyAmount,
       currentAge,
@@ -81,7 +81,7 @@ export const useCalculatorEffects = ({
     const retirementAnnualReturn = portfolioReturn / 100; // Convert percentage to decimal
     const monthlyIncomeRate = 0.004; // 0.4% de renda mensal
     
-    // Deterministic calculation
+    // Always calculate deterministic projection first
     const result = calculateFullProjection(
       initialAmount,
       monthlyAmount,
@@ -93,7 +93,7 @@ export const useCalculatorEffects = ({
       retirementAnnualReturn // Pass the retirement return rate
     );
     
-    console.log('Calculation result:', result);
+    console.log('✅ Deterministic calculation result:', result);
     
     setCalculationResult({
       finalAmount: result.retirementAmount,
@@ -101,9 +101,10 @@ export const useCalculatorEffects = ({
       monthlyIncome: result.monthlyIncome
     });
 
-    // Monte Carlo calculation if enabled - now using GBM
+    // Only run Monte Carlo if explicitly enabled and user manually triggered it
+    // This prevents automatic Monte Carlo execution when variables change
     if (isMonteCarloEnabled) {
-      console.log('🚀 Starting Geometric Brownian Motion Monte Carlo calculation');
+      console.log('🎲 Monte Carlo is enabled - will calculate when user explicitly requests');
       setIsCalculating(true);
       
       const volatility = getVolatilityByProfile(investorProfile);
@@ -135,14 +136,15 @@ export const useCalculatorEffects = ({
       // Don't set isCalculating to false here - let the animation control it
     } else {
       // Reset Monte Carlo data when disabled
+      console.log('📊 Monte Carlo disabled - using deterministic results only');
       setMonteCarloResult(null);
       setIsCalculating(false);
     }
   }, [initialAmount, monthlyAmount, currentAge, retirementAge, lifeExpectancy, retirementIncome, portfolioReturn, investorProfile, accumulationYears, isMonteCarloEnabled, setCalculationResult, setIsCalculating, setMonteCarloResult]);
 
-  // Calculate on state changes
+  // Calculate on state changes - but Monte Carlo won't auto-run due to the logic above
   useEffect(() => {
-    console.log('useEffect triggered, recalculating projection');
+    console.log('📊 useEffect triggered, recalculating projection');
     calculateProjection();
   }, [calculateProjection]);
 
