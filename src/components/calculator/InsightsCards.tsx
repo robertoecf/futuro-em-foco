@@ -122,6 +122,68 @@ export const InsightsCards: React.FC<InsightsCardsProps> = ({
     return payment;
   };
 
+  // NOVO: 5. Sugestão de aporte mensal para atingir a renda desejada
+  const calculateSuggestedMonthlyContribution = () => {
+    if (retirementIncome <= 0) return 0;
+    
+    const requiredWealth = calculateRequiredWealthDepleting();
+    const monthlyReturn = Math.pow(1 + accumulationAnnualReturn, 1/12) - 1;
+    const months = accumulationYears * 12;
+    
+    // Calcular crescimento do valor inicial
+    const futureValueInitial = initialAmount * Math.pow(1 + monthlyReturn, months);
+    
+    // Valor que precisa ser acumulado através de aportes
+    const remainingWealth = requiredWealth - futureValueInitial;
+    
+    if (remainingWealth <= 0) return 0;
+    
+    // Fórmula de anuidade para calcular PMT necessário
+    if (monthlyReturn === 0) {
+      return remainingWealth / months;
+    }
+    
+    const suggestedPMT = remainingWealth * monthlyReturn / (Math.pow(1 + monthlyReturn, months) - 1);
+    return Math.max(0, suggestedPMT);
+  };
+
+  // NOVO: 6. Rentabilidade mínima necessária durante acumulação
+  const calculateMinimumAccumulationReturn = () => {
+    if (retirementIncome <= 0) return accumulationAnnualReturn * 100;
+    
+    const requiredWealth = calculateRequiredWealthDepleting();
+    const months = accumulationYears * 12;
+    
+    // Usando iteração para encontrar a taxa mínima necessária
+    let minRate = 0.001; // 0.1% como ponto de partida
+    let maxRate = 0.5; // 50% como limite superior
+    const tolerance = 1; // R$ 1 de tolerância
+    
+    for (let iteration = 0; iteration < 100; iteration++) {
+      const testRate = (minRate + maxRate) / 2;
+      const monthlyReturn = Math.pow(1 + testRate, 1/12) - 1;
+      
+      // Simular acumulação com esta taxa
+      let balance = initialAmount;
+      for (let i = 0; i < months; i++) {
+        balance += monthlyAmount;
+        balance *= (1 + monthlyReturn);
+      }
+      
+      if (Math.abs(balance - requiredWealth) < tolerance) {
+        return testRate * 100;
+      }
+      
+      if (balance < requiredWealth) {
+        minRate = testRate;
+      } else {
+        maxRate = testRate;
+      }
+    }
+    
+    return ((minRate + maxRate) / 2) * 100;
+  };
+
   // Cálculo do patrimônio necessário com descrição personalizada
   const getPatrimonioNecessarioInfo = () => {
     const sustentavel = calculateRequiredWealthSustainable();
@@ -136,7 +198,7 @@ export const InsightsCards: React.FC<InsightsCardsProps> = ({
     
     return {
       value: sustentavel,
-      description: `${formatCurrency(sustentavel)}\n(com perpetuidade)\n\n${formatCurrency(minimo)}\n(consumindo até ${lifeExpectancy} anos)`
+      description: `${formatCurrency(sustentavel)} (perpetuidade) | ${formatCurrency(minimo)} (até ${lifeExpectancy} anos)`
     };
   };
 
@@ -148,11 +210,10 @@ export const InsightsCards: React.FC<InsightsCardsProps> = ({
       value: patrimonioInfo.value,
       description: patrimonioInfo.description,
       isCurrency: false,
-      isMultiline: true,
       showValueAsDescription: true
     },
     {
-      title: "Idade possível para aposentadoria",
+      title: "Idade possível aposentadoria",
       value: calculatePossibleRetirementAge(),
       description: "Com a renda desejada",
       isCurrency: false,
@@ -161,14 +222,27 @@ export const InsightsCards: React.FC<InsightsCardsProps> = ({
     {
       title: "Renda sustentável",
       value: calculateSustainableIncome(),
-      description: "Que preserva o patrimônio",
+      description: "Preserva o patrimônio",
       isCurrency: true
     },
     {
       title: "Renda máxima",
       value: calculateDepletingIncome(),
-      description: "Que esgota o patrimônio aos " + lifeExpectancy + " anos",
+      description: `Esgota aos ${lifeExpectancy} anos`,
       isCurrency: true
+    },
+    {
+      title: "Sugestão aporte mensal",
+      value: calculateSuggestedMonthlyContribution(),
+      description: "Para atingir renda desejada",
+      isCurrency: true
+    },
+    {
+      title: "Rentabilidade mínima",
+      value: calculateMinimumAccumulationReturn(),
+      description: "Durante acumulação",
+      isCurrency: false,
+      suffix: "% a.a."
     }
   ];
 
@@ -176,7 +250,7 @@ export const InsightsCards: React.FC<InsightsCardsProps> = ({
     <div className="mb-16">
       <h2 className="text-2xl font-bold mb-6">Insights</h2>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {insights.map((insight, index) => (
           <Card key={index} className="p-6 bg-white border-l-4 border-l-orange-500">
             <div className="text-center">
@@ -189,7 +263,7 @@ export const InsightsCards: React.FC<InsightsCardsProps> = ({
                   }
                 </p>
               )}
-              <p className={`text-sm text-gray-600 ${insight.isMultiline ? 'whitespace-pre-line' : ''} ${insight.showValueAsDescription ? 'text-lg font-semibold text-orange-600' : ''}`}>
+              <p className={`text-sm text-gray-600 ${insight.showValueAsDescription ? 'text-lg font-semibold text-orange-600' : ''}`}>
                 {insight.description}
               </p>
             </div>
