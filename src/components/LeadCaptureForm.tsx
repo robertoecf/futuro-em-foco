@@ -4,11 +4,11 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Card } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
 import { usePlanningData } from '@/hooks/usePlanningData';
 import { InvestorProfile, CalculationResult } from '@/components/calculator/useCalculator';
+import { validateAndSanitize, sanitizeCSVValue } from '@/lib/validation';
 
 interface LeadCaptureFormProps {
   isOpen: boolean;
@@ -43,12 +43,40 @@ export const LeadCaptureForm = ({
     phone: '',
     wantsExpertEvaluation: false
   });
+  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
   const { savePlanningData, getPlanningUrl, sendPlanByEmail } = usePlanningData();
 
-  const generateExcelFile = (chartData: any[], userData: any) => {
-    // Create CSV content (Excel-compatible)
+  const validateForm = () => {
+    const errors: Record<string, string> = {};
+
+    // Validate name
+    const sanitizedName = validateAndSanitize.sanitizeString(formData.name);
+    if (!sanitizedName || sanitizedName.length < 2) {
+      errors.name = 'Nome deve ter pelo menos 2 caracteres';
+    }
+
+    // Validate email
+    const emailValidation = validateAndSanitize.email(formData.email);
+    if (!emailValidation.isValid) {
+      errors.email = 'Email inválido';
+    }
+
+    // Validate phone (optional)
+    if (formData.phone) {
+      const phoneValidation = validateAndSanitize.phone(formData.phone);
+      if (!phoneValidation.isValid) {
+        errors.phone = 'Telefone inválido';
+      }
+    }
+
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  const generateSecureExcelFile = (chartData: any[], userData: any) => {
+    // Create CSV content with proper sanitization
     const headers = ['Idade', 'Patrimonio', 'Total_Poupado', 'Fase'];
     
     // Add Monte Carlo headers if available
@@ -57,20 +85,20 @@ export const LeadCaptureForm = ({
     }
     
     const csvContent = [
-      headers.join(','),
+      headers.map(h => sanitizeCSVValue(h)).join(','),
       ...chartData.map(row => {
         const basicData = [
-          row.age,
-          row.patrimonio.toFixed(2),
-          row.poupanca.toFixed(2),
-          `"${row.fase}"`
+          sanitizeCSVValue(row.age?.toString() || ''),
+          sanitizeCSVValue(row.patrimonio?.toFixed(2) || ''),
+          sanitizeCSVValue(row.poupanca?.toFixed(2) || ''),
+          sanitizeCSVValue(row.fase || '')
         ];
         
         if (row.pessimistic !== undefined) {
           basicData.push(
-            row.pessimistic.toFixed(2),
-            row.median.toFixed(2),
-            row.optimistic.toFixed(2)
+            sanitizeCSVValue(row.pessimistic?.toFixed(2) || ''),
+            sanitizeCSVValue(row.median?.toFixed(2) || ''),
+            sanitizeCSVValue(row.optimistic?.toFixed(2) || '')
           );
         }
         
@@ -83,20 +111,25 @@ export const LeadCaptureForm = ({
     const link = document.createElement('a');
     const url = URL.createObjectURL(blob);
     link.setAttribute('href', url);
-    link.setAttribute('download', `planejamento_aposentadoria_${userData.name.replace(/\s+/g, '_')}.csv`);
+    
+    const sanitizedName = validateAndSanitize.sanitizeString(userData.name);
+    const fileName = `planejamento_aposentadoria_${sanitizedName.replace(/\s+/g, '_')}.csv`;
+    link.setAttribute('download', fileName);
+    
     link.style.visibility = 'hidden';
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+    URL.revokeObjectURL(url);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!formData.name || !formData.email) {
+    if (!validateForm()) {
       toast({
-        title: "Campos obrigatórios",
-        description: "Por favor, preencha nome e email.",
+        title: "Erro de validação",
+        description: "Por favor, corrija os erros no formulário.",
         variant: "destructive",
       });
       return;
@@ -105,9 +138,8 @@ export const LeadCaptureForm = ({
     setIsSubmitting(true);
 
     try {
-      // Generate Excel file if export data is provided
       if (exportData) {
-        generateExcelFile(exportData.chartData, formData);
+        generateSecureExcelFile(exportData.chartData, formData);
         
         toast({
           title: "Arquivo baixado com sucesso!",
@@ -132,12 +164,13 @@ export const LeadCaptureForm = ({
         phone: '',
         wantsExpertEvaluation: false
       });
+      setFormErrors({});
       onClose();
     } catch (error) {
       console.error('Error submitting form:', error);
       toast({
         title: "Erro ao processar",
-        description: exportData ? "Houve um erro ao gerar o arquivo." : "Houve um erro ao enviar seu plano. Tente novamente.",
+        description: error instanceof Error ? error.message : (exportData ? "Houve um erro ao gerar o arquivo." : "Houve um erro ao enviar seu plano. Tente novamente."),
         variant: "destructive",
       });
     } finally {
@@ -165,8 +198,12 @@ export const LeadCaptureForm = ({
               value={formData.name}
               onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
               placeholder="Seu nome completo"
+              maxLength={100}
               required
             />
+            {formErrors.name && (
+              <p className="text-sm text-red-600 mt-1">{formErrors.name}</p>
+            )}
           </div>
 
           <div>
@@ -177,8 +214,12 @@ export const LeadCaptureForm = ({
               value={formData.email}
               onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
               placeholder="seu@email.com"
+              maxLength={100}
               required
             />
+            {formErrors.email && (
+              <p className="text-sm text-red-600 mt-1">{formErrors.email}</p>
+            )}
           </div>
 
           <div>
@@ -189,7 +230,11 @@ export const LeadCaptureForm = ({
               value={formData.phone}
               onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
               placeholder="(11) 99999-9999"
+              maxLength={15}
             />
+            {formErrors.phone && (
+              <p className="text-sm text-red-600 mt-1">{formErrors.phone}</p>
+            )}
           </div>
 
           <div className="flex items-center space-x-2">

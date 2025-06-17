@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Calculator } from '@/components/calculator/Calculator';
 import { HeroSection } from '@/components/HeroSection';
 import { InvestorProfiles } from '@/components/InvestorProfiles';
@@ -7,9 +7,15 @@ import { Recommendations } from '@/components/Recommendations';
 import { LeadCaptureForm } from '@/components/LeadCaptureForm';
 import { Button } from '@/components/ui/button';
 import { useCalculator } from '@/components/calculator/useCalculator';
+import { cleanupExpiredData } from '@/components/calculator/storageUtils';
 
 const Index = () => {
   const [isLeadFormOpen, setIsLeadFormOpen] = useState(false);
+  
+  // Cleanup expired data on app start
+  useEffect(() => {
+    cleanupExpiredData();
+  }, []);
   
   // Usar os dados do calculador para capturar no formulário
   const calculatorData = useCalculator();

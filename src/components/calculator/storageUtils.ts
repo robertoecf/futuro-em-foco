@@ -1,21 +1,14 @@
 
-// Function to load data from localStorage
+import { secureStorage } from '@/lib/secureStorage';
+
+// Function to load data from secure storage
 export const loadFromStorage = (key: string, defaultValue: any) => {
-  try {
-    const saved = localStorage.getItem(key);
-    return saved ? JSON.parse(saved) : defaultValue;
-  } catch {
-    return defaultValue;
-  }
+  return secureStorage.get(key, defaultValue);
 };
 
-// Function to save to localStorage
+// Function to save to secure storage
 export const saveToStorage = (key: string, value: any) => {
-  try {
-    localStorage.setItem(key, JSON.stringify(value));
-  } catch (error) {
-    console.error('Error saving to localStorage:', error);
-  }
+  secureStorage.set(key, value);
 };
 
 // Function to load data from a shared plan
@@ -25,14 +18,18 @@ export const loadFromSharedPlan = () => {
   
   if (planId) {
     try {
-      const planData = localStorage.getItem(`planning_${planId}`);
+      const planData = secureStorage.get(`planning_${planId}`);
       if (planData) {
-        const parsed = JSON.parse(planData);
-        return parsed.planningInputs;
+        return planData.planningInputs;
       }
     } catch (error) {
       console.error('Error loading shared plan:', error);
     }
   }
   return null;
+};
+
+// Cleanup expired data on app start
+export const cleanupExpiredData = () => {
+  secureStorage.cleanup();
 };
