@@ -28,7 +28,10 @@ export const Calculator: React.FC = () => {
     handleLifeExpectancyChange,
     handleRetirementIncomeBlur,
     handlePortfolioReturnBlur,
-    setInvestorProfile
+    setInvestorProfile,
+    handleCalculate, // Added
+    calculationState, // Added
+    isCalculating // Added
   } = useCalculator();
   
   return (
@@ -55,6 +58,9 @@ export const Calculator: React.FC = () => {
           handleRetirementIncomeBlur={handleRetirementIncomeBlur}
           handlePortfolioReturnBlur={handlePortfolioReturnBlur}
           setInvestorProfile={setInvestorProfile}
+          handleCalculate={handleCalculate} // Added
+          calculationState={calculationState} // Added
+          isCalculating={isCalculating} // Added
         />
         
         {/* Results Cards - Horizontal Layout */}
@@ -63,17 +69,21 @@ export const Calculator: React.FC = () => {
           retirementAge={retirementAge}
           lifeExpectancy={lifeExpectancy}
           initialAmount={initialAmount}
+          calculationState={calculationState} // Added
+          isCalculating={isCalculating} // Added
         />
         
         {/* Chart - Full Width */}
         <div className="chart-container h-[400px] mb-4">
           <ChartComponent 
-            data={calculationResult?.yearlyValues || []} 
+            data={calculationState === 'calculated' ? calculationResult?.yearlyValues || [] : []} // Modified data prop
             accumulationYears={accumulationYears}
             lifeExpectancy={lifeExpectancy}
             currentAge={currentAge}
             onLifeExpectancyChange={handleLifeExpectancyChange} 
             showLifeExpectancyControl={false}
+            calculationState={calculationState} // Added
+            isCalculating={isCalculating} // Added
           />
         </div>
         

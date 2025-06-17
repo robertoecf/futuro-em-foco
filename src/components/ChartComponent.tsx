@@ -10,6 +10,8 @@ interface ChartComponentProps {
   currentAge: number;
   onLifeExpectancyChange?: (value: number) => void;
   showLifeExpectancyControl?: boolean;
+  calculationState: 'idle' | 'calculated' | 'stale'; // Added
+  isCalculating: boolean; // Added
 }
 
 export const ChartComponent = ({ 
@@ -18,11 +20,48 @@ export const ChartComponent = ({
   lifeExpectancy = 100,
   currentAge = 30,
   onLifeExpectancyChange,
-  showLifeExpectancyControl = true
+  showLifeExpectancyControl = true,
+  calculationState, // Added
+  isCalculating // Added
 }: ChartComponentProps) => {
-  console.log('ChartComponent data:', data);
-  console.log('ChartComponent currentAge:', currentAge);
-  console.log('ChartComponent accumulationYears:', accumulationYears);
+
+  if (isCalculating) {
+    return (
+      <div className="flex items-center justify-center h-full text-gray-500">
+        <p className="text-lg">Generating chart...</p>
+      </div>
+    );
+  }
+
+  if (calculationState === 'idle') {
+    return (
+      <div className="flex items-center justify-center h-full text-gray-500">
+        <p className="text-lg">Chart will appear here after calculation.</p>
+      </div>
+    );
+  }
+
+  if (calculationState === 'stale') {
+    return (
+      <div className="flex items-center justify-center h-full text-red-500">
+        <p className="text-lg">Chart data is outdated. Please recalculate.</p>
+      </div>
+    );
+  }
+
+  // Only proceed to generate chartData if state is 'calculated'
+  // The data prop itself will be [] if not 'calculated', handled in Calculator.tsx
+  if (calculationState !== 'calculated' || !data || data.length === 0) {
+     return (
+      <div className="flex items-center justify-center h-full text-gray-500">
+        <p className="text-lg">No data available to display chart. Please calculate.</p>
+      </div>
+    );
+  }
+
+  // console.log('ChartComponent data:', data);
+  // console.log('ChartComponent currentAge:', currentAge);
+  // console.log('ChartComponent accumulationYears:', accumulationYears);
 
   const chartData = data.map((value, index) => {
     const age = currentAge + index;

@@ -79,6 +79,8 @@ export const useCalculator = () => {
     loadFromStorage(STORAGE_KEYS.INVESTOR_PROFILE, DEFAULT_INVESTOR_PROFILE)
   );
   const [calculationResult, setCalculationResult] = useState<CalculationResult | null>(null);
+  const [calculationState, setCalculationState] = useState<'idle' | 'calculated' | 'stale'>('idle');
+  const [isCalculating, setIsCalculating] = useState<boolean>(false);
   
   // Calculate accumulation years based on current and retirement age
   const accumulationYears = retirementAge - currentAge;
@@ -94,26 +96,42 @@ export const useCalculator = () => {
     }
   };
   
-  const calculateProjection = useCallback(() => {
-    console.log('Calculating projection with:', {
+  const handleCalculate = async () => {
+    setIsCalculating(true);
+    posthog.capture('calculator_manual_calculate_triggered', {
+      initial_amount: initialAmount,
+      monthly_amount: monthlyAmount,
+      current_age: currentAge,
+      retirement_age: retirementAge,
+      life_expectancy: lifeExpectancy,
+      retirement_income_desired: retirementIncome,
+      portfolio_return_at_retirement: portfolioReturn,
+      investor_profile: investorProfile,
+    });
+
+    console.log('Manual calculation triggered with:', {
       initialAmount,
       monthlyAmount,
       currentAge,
       retirementAge,
       lifeExpectancy,
       portfolioReturn,
-      investorProfile
+      investorProfile,
+      retirementIncome
     });
     
     const accumulationAnnualReturn = getAccumulationAnnualReturn();
     console.log('Using accumulation return:', accumulationAnnualReturn);
     const retirementAnnualReturn = portfolioReturn / 100; // Convert percentage to decimal
-    const monthlyIncomeRate = 0.004; // 0.4% de renda mensal
+    const monthlyIncomeRate = 0.004; // 0.4% de renda mensal. Consider if this should be configurable or is fixed.
     
+    // Ensure accumulationYears is up-to-date if currentAge or retirementAge changed
+    const currentAccumulationYears = retirementAge - currentAge;
+
     const result = calculateFullProjection(
       initialAmount,
       monthlyAmount,
-      accumulationYears,
+      currentAccumulationYears, // Use locally calculated accumulationYears
       lifeExpectancy - currentAge, // Total years from current age to life expectancy
       accumulationAnnualReturn,
       monthlyIncomeRate,
@@ -130,8 +148,25 @@ export const useCalculator = () => {
     };
 
     setCalculationResult(calculationData);
-    return calculationData; // Return the result
-  }, [initialAmount, monthlyAmount, currentAge, retirementAge, lifeExpectancy, retirementIncome, portfolioReturn, investorProfile, accumulationYears]);
+
+    posthog.capture('calculator_calculation_updated', {
+      initial_amount: initialAmount,
+      monthly_amount: monthlyAmount,
+      current_age: currentAge,
+      retirement_age: retirementAge,
+      life_expectancy: lifeExpectancy,
+      retirement_income_desired: retirementIncome,
+      portfolio_return_at_retirement: portfolioReturn,
+      investor_profile: investorProfile,
+      calculated_final_amount: calculationData.finalAmount,
+      calculated_monthly_income: calculationData.monthlyIncome
+    });
+
+    setCalculationState('calculated');
+    setIsCalculating(false);
+  };
+
+  // The old calculateProjection useCallback is now removed / replaced by handleCalculate.
 
   const handleInitialAmountBlur = (value: string) => {
     const numericValue = parseFloat(value.replace(/\D/g, ''));
@@ -144,6 +179,9 @@ export const useCalculator = () => {
       input_value: finalValue,
       investor_profile: investorProfile // Capture current profile
     });
+    if (calculationState === 'calculated') {
+      setCalculationState('stale');
+    }
   };
 
   const handleMonthlyAmountBlur = (value: string) => {
@@ -157,6 +195,9 @@ export const useCalculator = () => {
       input_value: finalValue,
       investor_profile: investorProfile
     });
+    if (calculationState === 'calculated') {
+      setCalculationState('stale');
+    }
   };
 
   const handleCurrentAgeBlur = (value: string) => {
@@ -175,6 +216,9 @@ export const useCalculator = () => {
         input_value: numericValue, // or updated numericValue if adjustments were made
         investor_profile: investorProfile
       });
+      if (calculationState === 'calculated') {
+        setCalculationState('stale');
+      }
     }
   };
 
@@ -189,6 +233,9 @@ export const useCalculator = () => {
         input_value: numericValue,
         investor_profile: investorProfile
       });
+      if (calculationState === 'calculated') {
+        setCalculationState('stale');
+      }
     }
   };
   
@@ -201,6 +248,9 @@ export const useCalculator = () => {
       input_value: value,
       investor_profile: investorProfile
     });
+    if (calculationState === 'calculated') {
+      setCalculationState('stale');
+    }
   };
   
   const handleRetirementIncomeBlur = (value: string) => {
@@ -214,6 +264,9 @@ export const useCalculator = () => {
       input_value: finalValue,
       investor_profile: investorProfile
     });
+    if (calculationState === 'calculated') {
+      setCalculationState('stale');
+    }
   };
 
   const handlePortfolioReturnBlur = (value: string) => {
@@ -227,6 +280,9 @@ export const useCalculator = () => {
         input_value: numericValue,
         investor_profile: investorProfile
       });
+      if (calculationState === 'calculated') {
+        setCalculationState('stale');
+      }
     }
   };
 
@@ -237,32 +293,12 @@ export const useCalculator = () => {
     posthog.capture('calculator_profile_selected', {
       profile_name: profile
     });
+    if (calculationState === 'calculated') {
+      setCalculationState('stale');
+    }
   };
 
-  // Calculate on state changes
-  useEffect(() => {
-    console.log('useEffect triggered, recalculating projection');
-
-    // Assuming calculateProjection will be modified to return the result object
-    // and continue to call setCalculationResult internally.
-    const tempResult = calculateProjection();
-
-    if (tempResult) { // Ensure result is not null
-      posthog.capture('calculator_calculation_updated', {
-        initial_amount: initialAmount,
-        monthly_amount: monthlyAmount,
-        current_age: currentAge,
-        retirement_age: retirementAge,
-        life_expectancy: lifeExpectancy,
-        retirement_income_desired: retirementIncome,
-        portfolio_return_at_retirement: portfolioReturn,
-        investor_profile: investorProfile,
-        calculated_final_amount: tempResult.finalAmount,
-        calculated_monthly_income: tempResult.monthlyIncome
-      });
-    }
-    // Add all dependencies used in the effect and PostHog event
-  }, [calculateProjection, initialAmount, monthlyAmount, currentAge, retirementAge, lifeExpectancy, retirementIncome, portfolioReturn, investorProfile]);
+  // Automatic calculation useEffect removed
 
   return {
     initialAmount,
@@ -274,6 +310,8 @@ export const useCalculator = () => {
     portfolioReturn,
     investorProfile,
     calculationResult,
+    calculationState, // Added
+    isCalculating, // Added
     accumulationYears,
     handleInitialAmountBlur,
     handleMonthlyAmountBlur,
@@ -283,6 +321,7 @@ export const useCalculator = () => {
     handleRetirementIncomeBlur,
     handlePortfolioReturnBlur,
     setInvestorProfile: handleInvestorProfileChange,
-    calculateProjection
+    handleCalculate // Added
+    // calculateProjection // Removed
   };
 };

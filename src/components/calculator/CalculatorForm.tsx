@@ -2,6 +2,7 @@
 import React from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Button } from '@/components/ui/button'; // Added
 import { InvestorProfile } from './useCalculator';
 
 interface CalculatorFormProps {
@@ -19,6 +20,9 @@ interface CalculatorFormProps {
   handleRetirementIncomeBlur: (value: string) => void;
   handlePortfolioReturnBlur: (value: string) => void;
   setInvestorProfile: (value: InvestorProfile) => void;
+  handleCalculate: () => Promise<void>; // Added
+  calculationState: 'idle' | 'calculated' | 'stale'; // Added
+  isCalculating: boolean; // Added
 }
 
 export const CalculatorForm: React.FC<CalculatorFormProps> = ({
@@ -33,7 +37,10 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({
   handleCurrentAgeBlur,
   handleRetirementAgeBlur,
   handleRetirementIncomeBlur,
-  handlePortfolioReturnBlur
+  handlePortfolioReturnBlur,
+  handleCalculate, // Added
+  calculationState, // Added
+  isCalculating // Added
 }) => {
   // Format numbers for display in inputs
   const formatInputCurrency = (value: number) => {
@@ -131,6 +138,26 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({
             </p>
           </div>
         </div>
+      </div>
+
+      {/* Calculate Button Section */}
+      <div className="col-span-1 md:col-span-2 mt-8 flex flex-col items-center">
+        {calculationState === 'stale' && (
+          <p className="text-red-500 mb-2 text-center">
+            Input values have changed. Please recalculate for updated results.
+          </p>
+        )}
+        <Button
+          onClick={handleCalculate}
+          disabled={isCalculating}
+          className="w-full md:w-auto px-8 py-3 text-lg" // Example styling
+        >
+          {isCalculating
+            ? 'Calculating...'
+            : calculationState === 'stale' || calculationState === 'calculated'
+            ? 'Recalculate'
+            : 'Calculate'}
+        </Button>
       </div>
     </div>
   );
