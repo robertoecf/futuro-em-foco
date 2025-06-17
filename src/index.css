@@ -43,21 +43,6 @@
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
-
-    /* Aurora Theme Mix Variables */
-    --palette-mix-white: #FFFFFF;
-    --palette-mix-black-blue: #17384B;
-    --palette-mix-gray-green: #6B8E70;
-    --palette-mix-orange: #E48200;
-    --palette-black: #000000;
-
-    /* Aurora Colors */
-    --aurora-1: #E48200;
-    --aurora-2: #00b4d8;
-    --aurora-3: #a7c957;
-    --aurora-4: #E48200;
-    --aurora-5: #0077b6;
-    --aurora-6: #6a994e;
   }
 
   .dark {
@@ -97,32 +82,6 @@
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
-
-  /* Light Theme Mix */
-  .light-theme.theme-mix {
-    --theme-surface: var(--palette-mix-white);
-    --theme-surface-container-bg: rgba(23, 56, 75, 0.05);
-    --theme-on-surface: var(--palette-mix-black-blue);
-    --theme-on-surface-variant: var(--palette-mix-gray-green);
-    --theme-primary: var(--palette-mix-orange);
-    --theme-on-primary: var(--palette-mix-white);
-    --theme-outline: rgba(23, 56, 75, 0.1);
-    --cursor-color: rgba(0, 0, 0, 0.1);
-    --cursor-blend-mode: multiply;
-  }
-
-  /* Dark Theme Mix */
-  .dark-theme.theme-mix {
-    --theme-surface: var(--palette-black);
-    --theme-surface-container-bg: rgba(255, 255, 255, 0.05);
-    --theme-on-surface: #E0E6EB;
-    --theme-on-surface-variant: #A8B2BA;
-    --theme-primary: var(--palette-mix-orange);
-    --theme-on-primary: var(--palette-mix-white);
-    --theme-outline: rgba(255, 255, 255, 0.1);
-    --cursor-color: rgba(255, 255, 255, 0.05);
-    --cursor-blend-mode: screen;
-  }
 }
 
 @layer base {
@@ -137,14 +96,6 @@
 
 .orange-red-gradient {
   background: linear-gradient(135deg, #FF6B00 0%, #B30000 100%);
-}
-
-.aurora-gradient {
-  background: linear-gradient(135deg, var(--aurora-1) 0%, var(--aurora-2) 25%, var(--aurora-3) 50%, var(--aurora-4) 75%, var(--aurora-5) 100%);
-}
-
-.aurora-gradient-dark {
-  background: linear-gradient(135deg, var(--aurora-1) 0%, var(--aurora-5) 25%, var(--aurora-6) 50%, var(--aurora-4) 75%, var(--aurora-2) 100%);
 }
 
 .chart-container {
@@ -173,3 +124,4 @@
 .recommendation-card:hover {
   transform: translateY(-5px);
 }
+
