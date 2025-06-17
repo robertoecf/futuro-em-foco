@@ -40,7 +40,6 @@ export const useCalculator = () => {
   const accumulationYears = retirementAge - currentAge;
 
   const {
-    finishCalculation,
     handleMonteCarloToggle,
     handleInitialAmountBlur,
     handleMonthlyAmountBlur,
@@ -84,6 +83,12 @@ export const useCalculator = () => {
   });
 
   const possibleRetirementAge = calculatePossibleRetirementAge();
+
+  // Function to finish calculation (called when animation completes)
+  const finishCalculation = () => {
+    console.log('🏁 Animation finished - calculation complete');
+    setIsCalculating(false);
+  };
 
   return {
     initialAmount,

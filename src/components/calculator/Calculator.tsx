@@ -26,6 +26,7 @@ export const Calculator: React.FC = () => {
     isMonteCarloEnabled,
     monteCarloResult,
     isCalculating,
+    finishCalculation,
     handleInitialAmountBlur,
     handleMonthlyAmountBlur,
     handleCurrentAgeBlur,
@@ -101,6 +102,7 @@ export const Calculator: React.FC = () => {
             retirementIncome={retirementIncome}
             investorProfile={investorProfile}
             calculationResult={calculationResult}
+            onAnimationComplete={finishCalculation}
           />
         </div>
 

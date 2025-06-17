@@ -101,39 +101,48 @@ export const useCalculatorEffects = ({
       monthlyIncome: result.monthlyIncome
     });
 
-    // Only run Monte Carlo if explicitly enabled and user manually triggered it
-    // This prevents automatic Monte Carlo execution when variables change
+    // Only run Monte Carlo if explicitly enabled
     if (isMonteCarloEnabled) {
-      console.log('🎲 Monte Carlo is enabled - will calculate when user explicitly requests');
+      console.log('🎲 Monte Carlo enabled - starting calculation');
       setIsCalculating(true);
       
-      const volatility = getVolatilityByProfile(investorProfile);
+      // Use setTimeout to allow UI to update before heavy calculation
+      setTimeout(() => {
+        try {
+          const volatility = getVolatilityByProfile(investorProfile);
+          
+          // Use the new GBM-based Monte Carlo simulation
+          const gbmResults = runBrownianMonteCarloSimulation(
+            initialAmount,
+            monthlyAmount,
+            accumulationYears,
+            lifeExpectancy - currentAge,
+            accumulationAnnualReturn, // drift rate (μ)
+            volatility, // volatility (σ)
+            monthlyIncomeRate,
+            retirementIncome,
+            retirementAnnualReturn,
+            100 // Number of simulations
+          );
+          
+          console.log('💾 GBM Monte Carlo calculation completed:', gbmResults);
+          
+          // Convert to the format expected by the chart components
+          const convertedResults = {
+            scenarios: gbmResults.scenarios,
+            statistics: gbmResults.statistics
+          };
+          
+          setMonteCarloResult(convertedResults);
+          setIsCalculating(false);
+          
+        } catch (error) {
+          console.error('❌ Monte Carlo calculation failed:', error);
+          setIsCalculating(false);
+          setMonteCarloResult(null);
+        }
+      }, 100); // Small delay to allow UI update
       
-      // Use the new GBM-based Monte Carlo simulation
-      const gbmResults = runBrownianMonteCarloSimulation(
-        initialAmount,
-        monthlyAmount,
-        accumulationYears,
-        lifeExpectancy - currentAge,
-        accumulationAnnualReturn, // drift rate (μ)
-        volatility, // volatility (σ)
-        monthlyIncomeRate,
-        retirementIncome,
-        retirementAnnualReturn,
-        100 // Number of simulations
-      );
-      
-      console.log('💾 GBM Monte Carlo calculation completed:', gbmResults);
-      
-      // Convert to the format expected by the chart components
-      const convertedResults = {
-        scenarios: gbmResults.scenarios,
-        statistics: gbmResults.statistics
-      };
-      
-      setMonteCarloResult(convertedResults);
-      
-      // Don't set isCalculating to false here - let the animation control it
     } else {
       // Reset Monte Carlo data when disabled
       console.log('📊 Monte Carlo disabled - using deterministic results only');
@@ -142,7 +151,7 @@ export const useCalculatorEffects = ({
     }
   }, [initialAmount, monthlyAmount, currentAge, retirementAge, lifeExpectancy, retirementIncome, portfolioReturn, investorProfile, accumulationYears, isMonteCarloEnabled, setCalculationResult, setIsCalculating, setMonteCarloResult]);
 
-  // Calculate on state changes - but Monte Carlo won't auto-run due to the logic above
+  // Calculate on state changes
   useEffect(() => {
     console.log('📊 useEffect triggered, recalculating projection');
     calculateProjection();
