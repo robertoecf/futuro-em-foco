@@ -16,7 +16,7 @@ export const HeroSection = ({ onReceivePlan }: HeroSectionProps) => {
   };
 
   return (
-    <div className="orange-red-gradient text-white p-8 md:p-16 rounded-lg max-w-7xl mx-auto">
+    <div className="aurora-gradient dark-theme:aurora-gradient-dark text-white p-8 md:p-16 rounded-lg max-w-7xl mx-auto">
       <div className="max-w-3xl">
         <h1 className="text-4xl md:text-5xl font-bold mb-4">
           Quer garantir sua aposentadoria tranquila?
