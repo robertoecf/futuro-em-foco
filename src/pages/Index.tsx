@@ -65,7 +65,7 @@ const Index = () => {
           className="bg-black hover:bg-gray-800 text-white"
           onClick={handleReceivePlanByEmail}
         >
-          Receber plano por email
+          Quero ajuda de um especialista
         </Button>
       </section>
 

@@ -1,3 +1,4 @@
+
 import { ChartControls } from './chart/ChartControls';
 import { ChartInfo } from './chart/ChartInfo';
 import { ExportButton } from './chart/ExportButton';
@@ -53,7 +54,7 @@ export const ChartComponent = ({
   investorProfile = 'moderado',
   calculationResult = null,
   onAnimationComplete,
-  lineDrawingDuration = 2000 // Default 2 seconds, fully configurable
+  lineDrawingDuration = 2000
 }: ChartComponentProps) => {
   
   console.log('ChartComponent data:', data);
@@ -124,6 +125,11 @@ export const ChartComponent = ({
 
   return (
     <div className="w-full">
+      {/* Chart Title */}
+      <div className="mb-6">
+        <h3 className="text-xl font-bold text-gray-900">Gráfico de projeção patrimonial</h3>
+      </div>
+
       {/* Chart Section with Overlay */}
       <div className="relative">
         <ChartRenderer
@@ -151,7 +157,7 @@ export const ChartComponent = ({
         </div>
       </div>
 
-      {/* Controls Section - Now below the chart */}
+      {/* Controls Section - Now above the chart info */}
       {(showLifeExpectancyControl || onMonteCarloToggle) && (
         <ChartControls
           lifeExpectancy={lifeExpectancy}

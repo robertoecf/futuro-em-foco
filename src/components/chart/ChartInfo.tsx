@@ -23,7 +23,7 @@ export const ChartInfo = ({ monteCarloData, perpetuityWealth, possibleRetirement
         {monteCarloData ? (
           <div className="space-y-2">
             <div className="flex items-center gap-2">
-              <div className="w-6 h-0.5 bg-green-500" style={{ borderTop: '2px dashed' }}></div>
+              <div className="w-6 h-0.5 bg-green-500 border-t-2 border-dashed border-green-500"></div>
               <span className="text-xs text-gray-600">Otimista (75º percentil)</span>
             </div>
             <div className="flex items-center gap-2">
@@ -31,7 +31,7 @@ export const ChartInfo = ({ monteCarloData, perpetuityWealth, possibleRetirement
               <span className="text-xs text-gray-600">Neutro (50º percentil)</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-6 h-0.5 bg-red-600" style={{ borderTop: '2px dashed' }}></div>
+              <div className="w-6 h-0.5 bg-red-600 border-t-2 border-dashed border-red-600"></div>
               <span className="text-xs text-gray-600">Pessimista (25º percentil)</span>
             </div>
           </div>
@@ -56,15 +56,6 @@ export const ChartInfo = ({ monteCarloData, perpetuityWealth, possibleRetirement
               <p className="text-xs text-gray-500 mb-1">Probabilidade de Sucesso</p>
               <p className="text-lg font-bold text-green-600">
                 {(monteCarloData.statistics.successProbability * 100).toFixed(1)}%
-              </p>
-            </div>
-          )}
-          
-          {perpetuityWealth > 0 && (
-            <div>
-              <p className="text-xs text-gray-500 mb-1">Patrimônio para Perpetuidade</p>
-              <p className="text-sm font-semibold text-gray-800">
-                {formatCurrency(perpetuityWealth)}
               </p>
             </div>
           )}

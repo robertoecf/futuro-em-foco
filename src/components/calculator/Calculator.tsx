@@ -45,6 +45,11 @@ export const Calculator: React.FC = () => {
       </div>
 
       <Card className="p-6 shadow-lg">
+        {/* Parameters Section Title */}
+        <div className="mb-6">
+          <h3 className="text-xl font-bold text-gray-900">Parâmetros</h3>
+        </div>
+
         {/* Input Form - Two Panels Side by Side */}
         <CalculatorForm
           initialAmount={initialAmount}

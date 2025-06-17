@@ -33,10 +33,9 @@ export const ExportButton = ({ chartData, planningInputs, calculationResult }: E
         onClick={handleExportClick}
         variant="outline"
         size="sm"
-        className="bg-white hover:bg-gray-50 border-gray-300 text-gray-700"
+        className="bg-white hover:bg-gray-50 border-gray-300 text-gray-700 p-2"
       >
-        <Download className="w-4 h-4 mr-2" />
-        Export to Excel
+        <Download className="w-4 h-4" />
       </Button>
 
       <LeadCaptureForm
