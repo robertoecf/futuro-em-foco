@@ -54,7 +54,7 @@ export const ChartComponent = ({
   investorProfile = 'moderado',
   calculationResult = null,
   onAnimationComplete,
-  lineDrawingDuration = 12000 // Aumentado para 12 segundos para animação mais suave
+  lineDrawingDuration = 2000
 }: ChartComponentProps) => {
   
   console.log('ChartComponent data:', data);
@@ -70,7 +70,7 @@ export const ChartComponent = ({
     onAnimationComplete
   });
 
-  const { chartData, generateLineColor } = useChartDataProcessor({
+  const { chartData } = useChartDataProcessor({
     data,
     currentAge,
     accumulationYears,
@@ -140,7 +140,6 @@ export const ChartComponent = ({
           isShowingLines={isShowingLines}
           isDrawingFinalLines={isDrawingFinalLines}
           lineDrawingDuration={lineDrawingDuration}
-          generateLineColor={generateLineColor}
         />
         
         {/* Optimizing Overlay */}

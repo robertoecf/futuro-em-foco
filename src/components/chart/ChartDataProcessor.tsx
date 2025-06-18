@@ -1,6 +1,5 @@
 
 import { MonteCarloResult } from '@/lib/utils';
-import { LINE_ANIMATION } from '@/components/calculator/constants';
 
 interface ChartDataProcessorProps {
   data: number[];
@@ -12,16 +11,6 @@ interface ChartDataProcessorProps {
   monteCarloData: MonteCarloResult | null;
   isMonteCarloEnabled: boolean;
 }
-
-// Generate unique colors for 500 lines using HSL color space
-const generateLineColor = (index: number, total: number = LINE_ANIMATION.TOTAL_LINES) => {
-  // Use HSL to generate evenly distributed colors across the spectrum
-  const hue = (index * 360) / total; // Distribute across full color wheel
-  const saturation = 60 + (index % 30); // Vary saturation for variety
-  const lightness = 45 + (index % 20); // Vary lightness for variety
-  
-  return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
-};
 
 export const useChartDataProcessor = ({
   data,
@@ -57,43 +46,29 @@ export const useChartDataProcessor = ({
     return savingsData;
   };
 
-  // Generate 500 Monte Carlo lines when data is available
+  // Generate 50 Monte Carlo lines when data is available
   const generateMonteCarloLines = () => {
     if (!isMonteCarloEnabled || !monteCarloData) {
       return [];
     }
     
-    console.log('🎨 Generating', LINE_ANIMATION.TOTAL_LINES, 'Monte Carlo lines');
+    console.log('🎨 Generating 50 Monte Carlo lines');
     const lines = [];
     const baseData = monteCarloData.scenarios.median;
     
-    // Generate varied paths based on the Monte Carlo scenarios
-    for (let lineIndex = 0; lineIndex < LINE_ANIMATION.TOTAL_LINES; lineIndex++) {
+    // Generate 50 varied paths based on the Monte Carlo scenarios
+    for (let lineIndex = 0; lineIndex < 50; lineIndex++) {
       const lineData = baseData.map((value, dataIndex) => {
         // Create variation between pessimistic and optimistic scenarios
         const pessimistic = monteCarloData.scenarios.pessimistic[dataIndex] || value;
         const optimistic = monteCarloData.scenarios.optimistic[dataIndex] || value;
         
-        // Use more sophisticated distribution for 500 lines
-        const randomFactor1 = Math.random();
-        const randomFactor2 = Math.random();
+        // Interpolate between scenarios with some randomness
+        const randomFactor = Math.random();
+        const interpolated = pessimistic + (optimistic - pessimistic) * randomFactor;
         
-        // Create broader distribution with some lines going beyond the original range
-        let interpolated;
-        if (randomFactor1 < 0.1) {
-          // 10% of lines go beyond pessimistic
-          interpolated = pessimistic * (0.7 + randomFactor2 * 0.3);
-        } else if (randomFactor1 > 0.9) {
-          // 10% of lines go beyond optimistic
-          interpolated = optimistic * (1.0 + randomFactor2 * 0.5);
-        } else {
-          // 80% of lines interpolate between scenarios
-          interpolated = pessimistic + (optimistic - pessimistic) * randomFactor2;
-        }
-        
-        // Add controlled noise for visual variety
-        const noiseIntensity = 0.05 + (lineIndex % 10) * 0.005; // Vary noise by line
-        const noise = (Math.random() - 0.5) * noiseIntensity * value;
+        // Add some additional noise for visual variety
+        const noise = (Math.random() - 0.5) * 0.1 * value;
         
         return Math.max(0, interpolated + noise);
       });
@@ -110,8 +85,7 @@ export const useChartDataProcessor = ({
   console.log('📊 ChartDataProcessor:', {
     isMonteCarloEnabled,
     hasMonteCarloData: !!monteCarloData,
-    monteCarloLinesGenerated: monteCarloLines.length,
-    totalLines: LINE_ANIMATION.TOTAL_LINES
+    monteCarloLinesGenerated: monteCarloLines.length
   });
 
   const chartData = data.map((value, index) => {
@@ -133,11 +107,11 @@ export const useChartDataProcessor = ({
         percentile75: monteCarloData.statistics.percentile75[index]
       };
 
-      // Add the 500 Monte Carlo lines data
+      // Add the 50 Monte Carlo lines data
       const linesData: Record<string, number> = {};
       monteCarloLines.forEach((line, lineIndex) => {
         if (index < line.length) {
-          linesData[`line${lineIndex}`] = line[lineIndex];
+          linesData[`line${lineIndex}`] = line[index];
         }
       });
 
@@ -147,10 +121,5 @@ export const useChartDataProcessor = ({
     return baseData;
   });
 
-  return { 
-    chartData, 
-    savingsLine, 
-    monteCarloLines,
-    generateLineColor
-  };
+  return { chartData, savingsLine, monteCarloLines };
 };

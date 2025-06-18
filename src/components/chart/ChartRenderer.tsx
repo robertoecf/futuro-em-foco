@@ -15,7 +15,6 @@ interface ChartRendererProps {
   isShowingLines: boolean;
   isDrawingFinalLines: boolean;
   lineDrawingDuration?: number;
-  generateLineColor?: (index: number, total?: number) => string;
 }
 
 export const ChartRenderer = ({
@@ -25,28 +24,29 @@ export const ChartRenderer = ({
   monteCarloData,
   isShowingLines,
   isDrawingFinalLines,
-  lineDrawingDuration = LINE_ANIMATION.DRAWING_DURATION,
-  generateLineColor
+  lineDrawingDuration = LINE_ANIMATION.DRAWING_DURATION
 }: ChartRendererProps) => {
   
   const { getLineAnimationState } = useLineAnimation({
     isShowingLines,
     totalLines: LINE_ANIMATION.TOTAL_LINES,
-    drawingDuration: lineDrawingDuration,
-    chartData
+    drawingDuration: lineDrawingDuration
   });
 
   const { getFinalLineAnimationState } = useFinalLinesAnimation({
     isDrawingFinalLines
   });
 
-  // Default color generator if not provided - SIMPLE VERSION
-  const defaultGenerateLineColor = (index: number) => {
-    const hue = (index * 360) / LINE_ANIMATION.TOTAL_LINES;
-    return `hsl(${hue}, 70%, 50%)`;
+  // Generate colors for the 50 lines
+  const generateLineColor = (index: number) => {
+    const colors = [
+      '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FECA57', 
+      '#FF9FF3', '#54A0FF', '#5F27CD', '#00D2D3', '#FF9F43',
+      '#FC427B', '#1DD1A1', '#3742FA', '#2F3542', '#FF5722',
+      '#009688', '#673AB7', '#E91E63', '#795548', '#607D8B'
+    ];
+    return colors[index % colors.length];
   };
-
-  const colorGenerator = generateLineColor || defaultGenerateLineColor;
 
   console.log('📊 ChartRenderer:', {
     chartDataLength: chartData.length,
@@ -54,22 +54,26 @@ export const ChartRenderer = ({
     isShowingLines,
     isDrawingFinalLines,
     lineDrawingDuration,
-    totalLines: LINE_ANIMATION.TOTAL_LINES
+    firstDataKeys: chartData[0] ? Object.keys(chartData[0]) : []
   });
 
   return (
     <div className="relative h-[400px] w-full bg-white border border-gray-200 rounded-lg p-4">
-      {/* Simple CSS for smooth animations */}
+      {/* CSS for line drawing animation */}
       <style>{`
-        .monte-carlo-line {
-          vector-effect: non-scaling-stroke;
-          transition: opacity 800ms ease-in-out;
-          will-change: opacity;
-        }
-        .final-line {
-          vector-effect: non-scaling-stroke;
-          transition: opacity 600ms ease-in-out;
-          will-change: opacity;
+        @keyframes draw-line {
+          0% {
+            stroke-dashoffset: 1000;
+            opacity: 0.3;
+          }
+          50% {
+            stroke-dashoffset: 500;
+            opacity: 0.8;
+          }
+          100% {
+            stroke-dashoffset: 0;
+            opacity: 1;
+          }
         }
       `}</style>
 
@@ -129,33 +133,33 @@ export const ChartRenderer = ({
             activeDot={{ r: 6, stroke: '#6B7280', strokeWidth: 2, fill: '#fff' }}
           />
 
-          {/* Monte Carlo lines - ONLY during 'paths' phase - SIMPLIFIED */}
-          {monteCarloData && isShowingLines && Array.from({ length: LINE_ANIMATION.TOTAL_LINES }, (_, i) => {
+          {/* 50 Monte Carlo lines - fantastic progressive animation */}
+          {monteCarloData && Array.from({ length: LINE_ANIMATION.TOTAL_LINES }, (_, i) => {
             const animationState = getLineAnimationState(i);
-            
-            // Debug log for first few lines
-            if (i < 5) {
-              console.log(`Line ${i} state:`, animationState);
-            }
             
             return (
               <Line
                 key={`monte-carlo-line-${i}`}
                 type="monotone"
                 dataKey={`line${i}`}
-                stroke={colorGenerator(i, LINE_ANIMATION.TOTAL_LINES)}
-                strokeWidth={1.5}
-                strokeOpacity={animationState.currentOpacity}
+                stroke={generateLineColor(i)}
+                strokeWidth={1.8}
+                strokeOpacity={animationState.opacity}
+                strokeDasharray={animationState.strokeDasharray}
+                strokeDashoffset={animationState.strokeDashoffset}
                 dot={false}
                 activeDot={false}
                 connectNulls={false}
                 isAnimationActive={false}
-                className="monte-carlo-line"
+                style={{
+                  transition: `opacity ${LINE_ANIMATION.OPACITY_FADE_DURATION}ms ease-out`,
+                  ...animationState.drawingStyle
+                }}
               />
             );
           })}
 
-          {/* Final Monte Carlo results - ONLY during 'drawing-final' and 'final' phases */}
+          {/* Final Monte Carlo results - with drawing animation during drawing-final phase */}
           {monteCarloData && (isDrawingFinalLines || (!isShowingLines && !isDrawingFinalLines)) && (
             <>
               {/* Pessimistic Line */}
@@ -167,13 +171,14 @@ export const ChartRenderer = ({
                     dataKey="pessimistic" 
                     name="Cenário Pessimista"
                     stroke="#DC2626" 
-                    strokeWidth={3}
-                    strokeDasharray="5 5"
-                    strokeOpacity={animationState.opacity}
+                    strokeWidth={2}
+                    strokeDasharray={isDrawingFinalLines ? animationState.strokeDasharray : "5 5"}
+                    strokeDashoffset={isDrawingFinalLines ? animationState.strokeDashoffset : "0"}
+                    strokeOpacity={isDrawingFinalLines ? animationState.opacity : 1}
                     dot={false}
                     activeDot={{ r: 6, stroke: '#DC2626', strokeWidth: 2, fill: '#fff' }}
                     isAnimationActive={false}
-                    className="final-line"
+                    style={isDrawingFinalLines ? animationState.drawingStyle : {}}
                   />
                 );
               })()}
@@ -187,12 +192,14 @@ export const ChartRenderer = ({
                     dataKey="median" 
                     name="Cenário Neutro"
                     stroke="#3B82F6" 
-                    strokeWidth={4}
-                    strokeOpacity={animationState.opacity}
+                    strokeWidth={3}
+                    strokeDasharray={isDrawingFinalLines ? animationState.strokeDasharray : "none"}
+                    strokeDashoffset={isDrawingFinalLines ? animationState.strokeDashoffset : "0"}
+                    strokeOpacity={isDrawingFinalLines ? animationState.opacity : 1}
                     dot={false}
                     activeDot={{ r: 8, stroke: '#3B82F6', strokeWidth: 2, fill: '#fff' }}
                     isAnimationActive={false}
-                    className="final-line"
+                    style={isDrawingFinalLines ? animationState.drawingStyle : {}}
                   />
                 );
               })()}
@@ -206,13 +213,14 @@ export const ChartRenderer = ({
                     dataKey="optimistic" 
                     name="Cenário Otimista"
                     stroke="#10B981" 
-                    strokeWidth={3}
-                    strokeDasharray="5 5"
-                    strokeOpacity={animationState.opacity}
+                    strokeWidth={2}
+                    strokeDasharray={isDrawingFinalLines ? animationState.strokeDasharray : "5 5"}
+                    strokeDashoffset={isDrawingFinalLines ? animationState.strokeDashoffset : "0"}
+                    strokeOpacity={isDrawingFinalLines ? animationState.opacity : 1}
                     dot={false}
                     activeDot={{ r: 6, stroke: '#10B981', strokeWidth: 2, fill: '#fff' }}
                     isAnimationActive={false}
-                    className="final-line"
+                    style={isDrawingFinalLines ? animationState.drawingStyle : {}}
                   />
                 );
               })()}

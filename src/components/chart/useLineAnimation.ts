@@ -6,17 +6,15 @@ interface UseLineAnimationProps {
   isShowingLines: boolean;
   totalLines: number;
   drawingDuration?: number;
-  chartData?: any[];
 }
 
 export const useLineAnimation = ({
   isShowingLines,
   totalLines = LINE_ANIMATION.TOTAL_LINES,
-  drawingDuration = LINE_ANIMATION.DRAWING_DURATION,
-  chartData = []
+  drawingDuration = LINE_ANIMATION.DRAWING_DURATION
 }: UseLineAnimationProps) => {
   const [animatedLines, setAnimatedLines] = useState<Set<number>>(new Set());
-  const [fadingLines, setFadingLines] = useState<Set<number>>(new Set());
+  const [drawingLines, setDrawingLines] = useState<Set<number>>(new Set());
   const timeoutsRef = useRef<NodeJS.Timeout[]>([]);
 
   console.log('🎨 useLineAnimation:', {
@@ -24,7 +22,7 @@ export const useLineAnimation = ({
     totalLines,
     drawingDuration,
     animatedLinesCount: animatedLines.size,
-    fadingLinesCount: fadingLines.size
+    drawingLinesCount: drawingLines.size
   });
 
   // Calculate delay between lines based on total duration
@@ -36,76 +34,71 @@ export const useLineAnimation = ({
     timeoutsRef.current = [];
   };
 
-  // Start line animation with simple fade-in
+  // Start line drawing animation
   useEffect(() => {
     if (isShowingLines) {
-      console.log('🚀 Starting line animation - simple version');
+      console.log('🚀 Starting line drawing animation');
       
       // Reset states
       setAnimatedLines(new Set());
-      setFadingLines(new Set());
+      setDrawingLines(new Set());
       clearAllTimeouts();
 
-      // Schedule each line to start fading in
+      // Schedule each line to start drawing
       for (let i = 0; i < totalLines; i++) {
-        const startFadingTimeout = setTimeout(() => {
-          console.log(`✨ Starting fade-in for line ${i}`);
-          setFadingLines(prev => new Set([...prev, i]));
+        const startDrawingTimeout = setTimeout(() => {
+          console.log(`✏️ Starting to draw line ${i}`);
+          setDrawingLines(prev => new Set([...prev, i]));
 
-          // After the fade-in completes, mark as fully animated
-          const completeFadingTimeout = setTimeout(() => {
-            console.log(`✅ Completed fade-in for line ${i}`);
-            setFadingLines(prev => {
+          // After the drawing animation completes, mark as fully animated
+          const completeDrawingTimeout = setTimeout(() => {
+            console.log(`✅ Completed drawing line ${i}`);
+            setDrawingLines(prev => {
               const next = new Set(prev);
               next.delete(i);
               return next;
             });
             setAnimatedLines(prev => new Set([...prev, i]));
-          }, LINE_ANIMATION.OPACITY_FADE_DURATION);
+          }, LINE_ANIMATION.STROKE_ANIMATION_DURATION);
 
-          timeoutsRef.current.push(completeFadingTimeout);
+          timeoutsRef.current.push(completeDrawingTimeout);
         }, i * delayBetweenLines);
 
-        timeoutsRef.current.push(startFadingTimeout);
+        timeoutsRef.current.push(startDrawingTimeout);
       }
     } else {
       console.log('🔄 Resetting line animation');
       clearAllTimeouts();
       setAnimatedLines(new Set());
-      setFadingLines(new Set());
+      setDrawingLines(new Set());
     }
 
     return clearAllTimeouts;
   }, [isShowingLines, totalLines, delayBetweenLines]);
 
-  // Get animation state for a specific line - SIMPLE VERSION
+  // Get animation state for a specific line
   const getLineAnimationState = (lineIndex: number) => {
-    const isFading = fadingLines.has(lineIndex);
+    const isDrawing = drawingLines.has(lineIndex);
     const isComplete = animatedLines.has(lineIndex);
     
-    // Opacidade fixa e simples
-    const targetOpacity = 0.6; // Opacidade única para todas as linhas
-    
     return {
-      isFading,
+      isDrawing,
       isComplete,
-      isVisible: isFading || isComplete,
-      targetOpacity,
-      currentOpacity: isComplete ? targetOpacity : (isFading ? targetOpacity * 0.3 : 0),
+      isVisible: isDrawing || isComplete,
+      strokeDasharray: isDrawing ? "1000 1000" : "none", // Large dash for drawing effect
+      strokeDashoffset: isDrawing ? "1000" : "0",
+      opacity: isComplete ? 1 : (isDrawing ? 0.8 : 0),
       animationDelay: `${lineIndex * delayBetweenLines}ms`,
-      // Animação simples apenas com opacity
-      style: {
-        opacity: isComplete ? targetOpacity : (isFading ? targetOpacity * 0.3 : 0),
-        transition: isFading ? `opacity ${LINE_ANIMATION.OPACITY_FADE_DURATION}ms ease-in-out` : 'none',
-        willChange: isFading ? 'opacity' : 'auto'
-      }
+      drawingStyle: isDrawing ? {
+        animation: `draw-line ${LINE_ANIMATION.STROKE_ANIMATION_DURATION}ms ${LINE_ANIMATION.ANIMATION_CURVE} forwards`
+      } : {}
     };
   };
 
   return {
     getLineAnimationState,
     animatedLinesCount: animatedLines.size,
-    fadingLinesCount: fadingLines.size,
+    drawingLinesCount: drawingLines.size,
     isAnimationComplete: animatedLines.size === totalLines,
     totalLines
   };
