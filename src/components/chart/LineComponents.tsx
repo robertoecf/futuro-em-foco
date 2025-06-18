@@ -55,6 +55,20 @@ export const LineComponents = ({
         activeDot={{ r: 6, stroke: '#6B7280', strokeWidth: 2, fill: '#fff' }}
       />
 
+      {/* Regular patrimonio line - only when Monte Carlo is disabled */}
+      {!monteCarloData && (
+        <Line 
+          type="monotone" 
+          dataKey="patrimonio" 
+          name="Patrimônio"
+          stroke="#FF6B00" 
+          strokeWidth={2}
+          dot={false}
+          activeDot={{ r: 8, stroke: '#FF6B00', strokeWidth: 2, fill: '#fff' }}
+          connectNulls
+        />
+      )}
+
       {/* 50 Monte Carlo lines - smooth progressive animation */}
       {monteCarloData && Array.from({ length: LINE_ANIMATION.TOTAL_LINES }, (_, i) => {
         const animationState = getLineAnimationState(i);
@@ -80,20 +94,6 @@ export const LineComponents = ({
       {/* Final Monte Carlo results using new component */}
       {monteCarloData && (
         <FinalLinesRenderer isDrawingFinalLines={isDrawingFinalLines} />
-      )}
-
-      {/* Regular patrimonio line - only when Monte Carlo is disabled */}
-      {!monteCarloData && (
-        <Line 
-          type="monotone" 
-          dataKey="patrimonio" 
-          name="Patrimônio"
-          stroke="#FF6B00" 
-          strokeWidth={2}
-          dot={false}
-          activeDot={{ r: 8, stroke: '#FF6B00', strokeWidth: 2, fill: '#fff' }}
-          connectNulls
-        />
       )}
     </>
   );
