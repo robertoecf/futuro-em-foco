@@ -57,12 +57,11 @@ export const ChartComponent = ({
   lineDrawingDuration = 2000
 }: ChartComponentProps) => {
   
-  console.log('🏗️ ChartComponent render:', {
-    dataLength: data.length,
-    hasMonteCarloData: !!monteCarloData,
-    isCalculating,
-    isMonteCarloEnabled
-  });
+  console.log('ChartComponent data:', data);
+  console.log('ChartComponent Monte Carlo data:', monteCarloData);
+  console.log('ChartComponent isCalculating:', isCalculating);
+  console.log('ChartComponent isMonteCarloEnabled:', isMonteCarloEnabled);
+  console.log('ChartComponent lineDrawingDuration:', lineDrawingDuration);
 
   const { animationPhase, isShowingLines, isDrawingFinalLines } = useChartAnimation({
     isCalculating,
@@ -71,7 +70,7 @@ export const ChartComponent = ({
     onAnimationComplete
   });
 
-  const { chartData, actualLinesCount } = useChartDataProcessor({
+  const { chartData } = useChartDataProcessor({
     data,
     currentAge,
     accumulationYears,
@@ -90,16 +89,13 @@ export const ChartComponent = ({
     accumulationYears
   );
   
+  // Calculate perpetuity wealth based on retirement return and desired income
   const perpetuityWealth = monthlyIncomeTarget > 0 ? 
     (monthlyIncomeTarget * 12) / (portfolioReturn / 100) : 0;
 
-  console.log('📊 ChartComponent processed data:', {
-    animationPhase,
-    isShowingLines,
-    isDrawingFinalLines,
-    actualLinesCount,
-    chartDataLength: chartData.length
-  });
+  console.log('ChartComponent animationPhase:', animationPhase);
+  console.log('ChartComponent isShowingLines:', isShowingLines);
+  console.log('ChartComponent isDrawingFinalLines:', isDrawingFinalLines);
 
   const planningInputs = {
     initialAmount,
@@ -112,7 +108,7 @@ export const ChartComponent = ({
     investorProfile
   };
 
-  // Show projecting message during projecting phase
+  // Show projecting message ONLY during projecting phase
   if (isMonteCarloEnabled && animationPhase === 'projecting') {
     return (
       <div className="w-full">
@@ -144,13 +140,13 @@ export const ChartComponent = ({
           isShowingLines={isShowingLines}
           isDrawingFinalLines={isDrawingFinalLines}
           lineDrawingDuration={lineDrawingDuration}
-          actualLinesCount={actualLinesCount}
         />
         
+        {/* Optimizing Overlay */}
         <ProjectingOverlay isVisible={animationPhase === 'optimizing'} />
       </div>
       
-      {/* Export Button */}
+      {/* Export Button - positioned at bottom right of chart */}
       <div className="relative">
         <div className="absolute -top-12 right-4">
           <ExportButton
@@ -161,7 +157,7 @@ export const ChartComponent = ({
         </div>
       </div>
 
-      {/* Controls Section */}
+      {/* Controls Section - Now above the chart info */}
       {(showLifeExpectancyControl || onMonteCarloToggle) && (
         <ChartControls
           lifeExpectancy={lifeExpectancy}

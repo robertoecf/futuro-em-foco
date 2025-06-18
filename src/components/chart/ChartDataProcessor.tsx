@@ -46,78 +46,48 @@ export const useChartDataProcessor = ({
     return savingsData;
   };
 
-  // Generate Monte Carlo lines with guaranteed data inclusion
-  const generateMonteCarloLinesData = () => {
+  // Generate 50 Monte Carlo lines when data is available
+  const generateMonteCarloLines = () => {
     if (!isMonteCarloEnabled || !monteCarloData) {
-      console.log('⚠️ Monte Carlo disabled or no data available');
-      return { linesData: {}, actualLinesCount: 0 };
+      return [];
     }
     
-    console.log('🎯 Generating Monte Carlo lines data');
+    console.log('🎨 Generating 50 Monte Carlo lines');
+    const lines = [];
+    const baseData = monteCarloData.scenarios.median;
     
-    // Create 50 line variations between pessimistic and optimistic scenarios
-    const targetLines = 50;
-    const linesData: Record<string, number[]> = {};
-    
-    for (let lineIndex = 0; lineIndex < targetLines; lineIndex++) {
-      const lineData: number[] = [];
-      
-      for (let dataIndex = 0; dataIndex < data.length; dataIndex++) {
-        if (dataIndex < monteCarloData.scenarios.pessimistic.length) {
-          const pessimistic = monteCarloData.scenarios.pessimistic[dataIndex];
-          const optimistic = monteCarloData.scenarios.optimistic[dataIndex];
-          const median = monteCarloData.scenarios.median[dataIndex];
-          
-          // Create variation: interpolate between scenarios with controlled randomness
-          const randomFactor = Math.random();
-          let interpolated: number;
-          
-          if (randomFactor < 0.3) {
-            // 30% closer to pessimistic
-            interpolated = pessimistic + (median - pessimistic) * Math.random();
-          } else if (randomFactor > 0.7) {
-            // 30% closer to optimistic
-            interpolated = median + (optimistic - median) * Math.random();
-          } else {
-            // 40% between pessimistic and optimistic
-            interpolated = pessimistic + (optimistic - pessimistic) * Math.random();
-          }
-          
-          // Add small noise for visual variety (max 5% of value)
-          const noise = (Math.random() - 0.5) * 0.05 * interpolated;
-          const finalValue = Math.max(0, interpolated + noise);
-          
-          lineData.push(finalValue);
-        } else {
-          // Fallback for missing data points
-          lineData.push(data[dataIndex] || 0);
-        }
-      }
-      
-      linesData[`line${lineIndex}`] = lineData;
+    // Generate 50 varied paths based on the Monte Carlo scenarios
+    for (let lineIndex = 0; lineIndex < 50; lineIndex++) {
+      const lineData = baseData.map((value, dataIndex) => {
+        // Create variation between pessimistic and optimistic scenarios
+        const pessimistic = monteCarloData.scenarios.pessimistic[dataIndex] || value;
+        const optimistic = monteCarloData.scenarios.optimistic[dataIndex] || value;
+        
+        // Interpolate between scenarios with some randomness
+        const randomFactor = Math.random();
+        const interpolated = pessimistic + (optimistic - pessimistic) * randomFactor;
+        
+        // Add some additional noise for visual variety
+        const noise = (Math.random() - 0.5) * 0.1 * value;
+        
+        return Math.max(0, interpolated + noise);
+      });
+      lines.push(lineData);
     }
     
-    console.log('✅ Generated Monte Carlo lines:', {
-      targetLines,
-      dataLength: data.length,
-      sampleKeys: Object.keys(linesData).slice(0, 5)
-    });
-    
-    return { linesData, actualLinesCount: targetLines };
+    console.log('✅ Generated', lines.length, 'Monte Carlo lines');
+    return lines;
   };
 
   const savingsLine = calculateSavingsLine();
-  const { linesData, actualLinesCount } = generateMonteCarloLinesData();
+  const monteCarloLines = generateMonteCarloLines();
 
-  console.log('📊 ChartDataProcessor final summary:', {
+  console.log('📊 ChartDataProcessor:', {
     isMonteCarloEnabled,
     hasMonteCarloData: !!monteCarloData,
-    actualLinesCount,
-    dataLength: data.length,
-    linesGenerated: Object.keys(linesData).length
+    monteCarloLinesGenerated: monteCarloLines.length
   });
 
-  // Build chart data with all components
   const chartData = data.map((value, index) => {
     const age = currentAge + index;
     const baseData = {
@@ -127,33 +97,29 @@ export const useChartDataProcessor = ({
       fase: age < (currentAge + accumulationYears) ? "Acumulação" : "Aposentadoria"
     };
 
-    // Add Monte Carlo scenario data when available
-    const monteCarloScenarios = monteCarloData && index < monteCarloData.scenarios.pessimistic.length ? {
-      pessimistic: monteCarloData.scenarios.pessimistic[index],
-      median: monteCarloData.scenarios.median[index],
-      optimistic: monteCarloData.scenarios.optimistic[index],
-      percentile25: monteCarloData.statistics.percentile25[index],
-      percentile75: monteCarloData.statistics.percentile75[index]
-    } : {};
+    // Always include Monte Carlo data when available
+    if (monteCarloData && index < monteCarloData.scenarios.pessimistic.length) {
+      const monteCarloData_final = {
+        pessimistic: monteCarloData.scenarios.pessimistic[index],
+        median: monteCarloData.scenarios.median[index],
+        optimistic: monteCarloData.scenarios.optimistic[index],
+        percentile25: monteCarloData.statistics.percentile25[index],
+        percentile75: monteCarloData.statistics.percentile75[index]
+      };
 
-    // Add individual Monte Carlo lines data
-    const individualLinesData: Record<string, number> = {};
-    Object.entries(linesData).forEach(([lineKey, lineValues]) => {
-      if (index < lineValues.length) {
-        individualLinesData[lineKey] = lineValues[index];
-      }
-    });
+      // Add the 50 Monte Carlo lines data
+      const linesData: Record<string, number> = {};
+      monteCarloLines.forEach((line, lineIndex) => {
+        if (index < line.length) {
+          linesData[`line${lineIndex}`] = line[index];
+        }
+      });
 
-    return { 
-      ...baseData, 
-      ...monteCarloScenarios, 
-      ...individualLinesData 
-    };
+      return { ...baseData, ...monteCarloData_final, ...linesData };
+    }
+
+    return baseData;
   });
 
-  return { 
-    chartData, 
-    savingsLine, 
-    actualLinesCount
-  };
+  return { chartData, savingsLine, monteCarloLines };
 };

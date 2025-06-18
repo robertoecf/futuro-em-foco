@@ -1,4 +1,3 @@
-
 // Default values
 export const DEFAULT_VALUES = {
   INITIAL_AMOUNT: 15000,
@@ -25,40 +24,12 @@ export const MAGIC_MOMENT_TIMERS = {
 export const LINE_ANIMATION = {
   DRAWING_DURATION: 2000, // 2 seconds total for all lines to appear (configurable)
   ANIMATION_CURVE: 'ease-out' as const,
-  TOTAL_LINES: 50, // Default fallback, will be dynamic based on data
+  TOTAL_LINES: 50,
   get DELAY_BETWEEN_LINES() {
     return this.DRAWING_DURATION / this.TOTAL_LINES; // Auto-calculated delay
   },
   STROKE_ANIMATION_DURATION: 1500, // Duration for each individual line to draw
-  OPACITY_FADE_DURATION: 300, // Quick fade-in after line is drawn
-  
-  // Scalability settings for large number of lines (e.g., 500)
-  MAX_SUPPORTED_LINES: 1000, // Maximum number of lines the system can handle
-  PERFORMANCE_THRESHOLD: 100, // Above this, consider performance optimizations
-  
-  // Dynamic timing calculation for large datasets
-  calculateOptimalTiming: (lineCount: number) => {
-    if (lineCount <= 50) {
-      return {
-        drawingDuration: 2000,
-        strokeDuration: 1500,
-        delayBetweenLines: 2000 / lineCount
-      };
-    } else if (lineCount <= 200) {
-      return {
-        drawingDuration: 3000,
-        strokeDuration: 1200,
-        delayBetweenLines: 3000 / lineCount
-      };
-    } else {
-      // For 500+ lines, optimize for performance
-      return {
-        drawingDuration: 4000,
-        strokeDuration: 800,
-        delayBetweenLines: 4000 / lineCount
-      };
-    }
-  }
+  OPACITY_FADE_DURATION: 300 // Quick fade-in after line is drawn
 };
 
 // Final Lines Drawing Animation Configuration
