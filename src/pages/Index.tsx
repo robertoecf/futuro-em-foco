@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Calculator } from '@/components/calculator/Calculator';
 import { HeroSection } from '@/components/HeroSection';
@@ -8,22 +7,19 @@ import { LeadCaptureForm } from '@/components/LeadCaptureForm';
 import { Button } from '@/components/ui/button';
 import { useCalculator } from '@/components/calculator/useCalculator';
 import { cleanupExpiredData } from '@/components/calculator/storageUtils';
-
 const Index = () => {
   const [isLeadFormOpen, setIsLeadFormOpen] = useState(false);
-  
+
   // Cleanup expired data on app start
   useEffect(() => {
     cleanupExpiredData();
   }, []);
-  
+
   // Usar os dados do calculador para capturar no formulário
   const calculatorData = useCalculator();
-
   const handleReceivePlanByEmail = () => {
     setIsLeadFormOpen(true);
   };
-
   const planningInputs = {
     initialAmount: calculatorData.initialAmount,
     monthlyAmount: calculatorData.monthlyAmount,
@@ -34,12 +30,10 @@ const Index = () => {
     portfolioReturn: calculatorData.portfolioReturn,
     investorProfile: calculatorData.investorProfile
   };
-
-  return (
-    <div className="min-h-screen">
+  return <div className="min-h-screen">
       {/* Header */}
       <header className="flex justify-between items-center p-6 max-w-7xl mx-auto">
-        <div className="text-2xl font-bold">futuro em foco</div>
+        <div className="text-2xl font-bold">Futuro em foco</div>
         <Button className="bg-black hover:bg-gray-800">Conheça o planner</Button>
       </header>
 
@@ -68,10 +62,7 @@ const Index = () => {
             aposentadoria, preservação ou usufruto do seu patrimônio, ajudando você a tomar 
             as melhores decisões financeiras.
           </p>
-          <Button 
-            className="bg-black hover:bg-gray-800 text-white"
-            onClick={handleReceivePlanByEmail}
-          >
+          <Button className="bg-black hover:bg-gray-800 text-white" onClick={handleReceivePlanByEmail}>
             Quero ajuda de um especialista
           </Button>
         </div>
@@ -88,14 +79,7 @@ const Index = () => {
       </footer>
 
       {/* Lead Capture Form Modal */}
-      <LeadCaptureForm
-        isOpen={isLeadFormOpen}
-        onClose={() => setIsLeadFormOpen(false)}
-        planningInputs={planningInputs}
-        calculationResult={calculatorData.calculationResult}
-      />
-    </div>
-  );
+      <LeadCaptureForm isOpen={isLeadFormOpen} onClose={() => setIsLeadFormOpen(false)} planningInputs={planningInputs} calculationResult={calculatorData.calculationResult} />
+    </div>;
 };
-
 export default Index;
