@@ -1,4 +1,5 @@
 
+import { useMemo, useRef, useEffect } from 'react';
 import { MonteCarloResult } from '@/lib/utils';
 
 interface ChartDataProcessorProps {
@@ -22,15 +23,14 @@ export const useChartDataProcessor = ({
   monteCarloData,
   isMonteCarloEnabled
 }: ChartDataProcessorProps) => {
-  
-  // Calculate savings line
-  const calculateSavingsLine = () => {
+
+  const savingsLine = useMemo(() => {
     const savingsData: number[] = [];
     let totalSaved = initialAmount;
-    
+
     for (let year = 0; year <= data.length - 1; year++) {
       const age = currentAge + year;
-      
+
       if (year === 0) {
         savingsData.push(initialAmount);
       } else if (age <= (currentAge + accumulationYears)) {
@@ -42,45 +42,40 @@ export const useChartDataProcessor = ({
         savingsData.push(Math.max(0, totalSaved));
       }
     }
-    
-    return savingsData;
-  };
 
-  // Generate 50 Monte Carlo lines when data is available
-  const generateMonteCarloLines = () => {
+    return savingsData;
+  }, [data, currentAge, accumulationYears, initialAmount, monthlyAmount, monthlyIncomeTarget]);
+
+  const monteCarloLinesRef = useRef<number[][]>([]);
+
+  useEffect(() => {
     if (!isMonteCarloEnabled || !monteCarloData) {
-      return [];
+      monteCarloLinesRef.current = [];
+      return;
     }
-    
+
     console.log('🎨 Generating 50 Monte Carlo lines');
-    const lines = [];
+    const lines = [] as number[][];
     const baseData = monteCarloData.scenarios.median;
-    
-    // Generate 50 varied paths based on the Monte Carlo scenarios
+
     for (let lineIndex = 0; lineIndex < 50; lineIndex++) {
       const lineData = baseData.map((value, dataIndex) => {
-        // Create variation between pessimistic and optimistic scenarios
         const pessimistic = monteCarloData.scenarios.pessimistic[dataIndex] || value;
         const optimistic = monteCarloData.scenarios.optimistic[dataIndex] || value;
-        
-        // Interpolate between scenarios with some randomness
         const randomFactor = Math.random();
         const interpolated = pessimistic + (optimistic - pessimistic) * randomFactor;
-        
-        // Add some additional noise for visual variety
         const noise = (Math.random() - 0.5) * 0.1 * value;
-        
+
         return Math.max(0, interpolated + noise);
       });
       lines.push(lineData);
     }
-    
-    console.log('✅ Generated', lines.length, 'Monte Carlo lines');
-    return lines;
-  };
 
-  const savingsLine = calculateSavingsLine();
-  const monteCarloLines = generateMonteCarloLines();
+    console.log('✅ Generated', lines.length, 'Monte Carlo lines');
+    monteCarloLinesRef.current = lines;
+  }, [isMonteCarloEnabled, monteCarloData]);
+
+  const monteCarloLines = monteCarloLinesRef.current;
 
   console.log('📊 ChartDataProcessor:', {
     isMonteCarloEnabled,
@@ -88,7 +83,7 @@ export const useChartDataProcessor = ({
     monteCarloLinesGenerated: monteCarloLines.length
   });
 
-  const chartData = data.map((value, index) => {
+  const chartData = useMemo(() => data.map((value, index) => {
     const age = currentAge + index;
     const baseData = {
       age,
@@ -119,7 +114,7 @@ export const useChartDataProcessor = ({
     }
 
     return baseData;
-  });
+  }), [data, currentAge, accumulationYears, monteCarloData, savingsLine, monteCarloLines]);
 
   return { chartData, savingsLine, monteCarloLines };
 };
