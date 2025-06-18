@@ -133,33 +133,33 @@ export const ChartRenderer = ({
                 activeDot={false}
                 connectNulls={false}
                 isAnimationActive={false}
-                style={{
-                  transition: 'stroke-opacity 0.3s ease-out'
-                }}
               />
             );
           })}
 
-          {/* Final Monte Carlo results - with drawing animation during drawing-final phase */}
+          {/* Final Monte Carlo results - with smooth drawing animation */}
           {monteCarloData && (isDrawingFinalLines || (!isShowingLines && !isDrawingFinalLines)) && (
             <>
               {/* Pessimistic Line */}
               {(() => {
                 const animationState = getFinalLineAnimationState('pessimistic');
+                if (!animationState.isVisible) return null;
+                
                 return (
                   <Line 
+                    key="pessimistic-line"
                     type="monotone" 
                     dataKey="pessimistic" 
                     name="Cenário Pessimista"
                     stroke="#DC2626" 
                     strokeWidth={2}
-                    strokeDasharray={isDrawingFinalLines ? animationState.strokeDasharray : "5 5"}
-                    strokeDashoffset={isDrawingFinalLines ? animationState.strokeDashoffset : "0"}
-                    strokeOpacity={isDrawingFinalLines ? animationState.opacity : 1}
+                    strokeDasharray={animationState.strokeDasharray}
+                    strokeDashoffset={animationState.strokeDashoffset}
+                    strokeOpacity={animationState.opacity}
                     dot={false}
                     activeDot={{ r: 6, stroke: '#DC2626', strokeWidth: 2, fill: '#fff' }}
                     isAnimationActive={false}
-                    style={isDrawingFinalLines ? animationState.drawingStyle : {}}
+                    style={animationState.drawingStyle}
                   />
                 );
               })()}
@@ -167,20 +167,23 @@ export const ChartRenderer = ({
               {/* Median Line */}
               {(() => {
                 const animationState = getFinalLineAnimationState('median');
+                if (!animationState.isVisible) return null;
+                
                 return (
                   <Line 
+                    key="median-line"
                     type="monotone" 
                     dataKey="median" 
                     name="Cenário Neutro"
                     stroke="#3B82F6" 
                     strokeWidth={3}
-                    strokeDasharray={isDrawingFinalLines ? animationState.strokeDasharray : "none"}
-                    strokeDashoffset={isDrawingFinalLines ? animationState.strokeDashoffset : "0"}
-                    strokeOpacity={isDrawingFinalLines ? animationState.opacity : 1}
+                    strokeDasharray={animationState.strokeDasharray}
+                    strokeDashoffset={animationState.strokeDashoffset}
+                    strokeOpacity={animationState.opacity}
                     dot={false}
                     activeDot={{ r: 8, stroke: '#3B82F6', strokeWidth: 2, fill: '#fff' }}
                     isAnimationActive={false}
-                    style={isDrawingFinalLines ? animationState.drawingStyle : {}}
+                    style={animationState.drawingStyle}
                   />
                 );
               })()}
@@ -188,20 +191,23 @@ export const ChartRenderer = ({
               {/* Optimistic Line */}
               {(() => {
                 const animationState = getFinalLineAnimationState('optimistic');
+                if (!animationState.isVisible) return null;
+                
                 return (
                   <Line 
+                    key="optimistic-line"
                     type="monotone" 
                     dataKey="optimistic" 
                     name="Cenário Otimista"
                     stroke="#10B981" 
                     strokeWidth={2}
-                    strokeDasharray={isDrawingFinalLines ? animationState.strokeDasharray : "5 5"}
-                    strokeDashoffset={isDrawingFinalLines ? animationState.strokeDashoffset : "0"}
-                    strokeOpacity={isDrawingFinalLines ? animationState.opacity : 1}
+                    strokeDasharray={animationState.strokeDasharray}
+                    strokeDashoffset={animationState.strokeDashoffset}
+                    strokeOpacity={animationState.opacity}
                     dot={false}
                     activeDot={{ r: 6, stroke: '#10B981', strokeWidth: 2, fill: '#fff' }}
                     isAnimationActive={false}
-                    style={isDrawingFinalLines ? animationState.drawingStyle : {}}
+                    style={animationState.drawingStyle}
                   />
                 );
               })()}

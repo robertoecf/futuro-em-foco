@@ -9,16 +9,15 @@ interface UseFinalLinesAnimationProps {
 export const useFinalLinesAnimation = ({
   isDrawingFinalLines
 }: UseFinalLinesAnimationProps) => {
-  const [animatedLines, setAnimatedLines] = useState<Set<string>>(new Set());
-  const [drawingLines, setDrawingLines] = useState<Set<string>>(new Set());
+  const [currentlyDrawing, setCurrentlyDrawing] = useState<string | null>(null);
+  const [completedLines, setCompletedLines] = useState<Set<string>>(new Set());
   const timeoutsRef = useRef<NodeJS.Timeout[]>([]);
 
   console.log('📈 useFinalLinesAnimation:', {
     isDrawingFinalLines,
-    animatedLinesCount: animatedLines.size,
-    drawingLinesCount: drawingLines.size,
-    animatedLines: Array.from(animatedLines),
-    drawingLines: Array.from(drawingLines)
+    currentlyDrawing,
+    completedLinesCount: completedLines.size,
+    completedLines: Array.from(completedLines)
   });
 
   // Clear all timeouts when component unmounts or animation resets
@@ -33,25 +32,22 @@ export const useFinalLinesAnimation = ({
       console.log('🎯 Starting final lines drawing animation');
       
       // Reset states
-      setAnimatedLines(new Set());
-      setDrawingLines(new Set());
+      setCurrentlyDrawing(null);
+      setCompletedLines(new Set());
       clearAllTimeouts();
 
-      // Schedule each final line to start drawing (pessimistic → median → optimistic)
+      // Schedule each final line to be drawn (pessimistic → median → optimistic)
       FINAL_LINES_ANIMATION.LINES.forEach((lineKey, index) => {
+        // Start drawing the line
         const startDrawingTimeout = setTimeout(() => {
           console.log(`🖊️ Starting to draw final line: ${lineKey}`);
-          setDrawingLines(prev => new Set([...prev, lineKey]));
+          setCurrentlyDrawing(lineKey);
 
-          // After the drawing animation completes, mark as fully animated
+          // After the drawing animation completes, mark as completed
           const completeDrawingTimeout = setTimeout(() => {
             console.log(`✅ Completed drawing final line: ${lineKey}`);
-            setDrawingLines(prev => {
-              const next = new Set(prev);
-              next.delete(lineKey);
-              return next;
-            });
-            setAnimatedLines(prev => new Set([...prev, lineKey]));
+            setCurrentlyDrawing(null);
+            setCompletedLines(prev => new Set([...prev, lineKey]));
           }, FINAL_LINES_ANIMATION.STROKE_ANIMATION_DURATION);
 
           timeoutsRef.current.push(completeDrawingTimeout);
@@ -62,8 +58,8 @@ export const useFinalLinesAnimation = ({
     } else {
       console.log('🔄 Resetting final lines animation');
       clearAllTimeouts();
-      setAnimatedLines(new Set());
-      setDrawingLines(new Set());
+      setCurrentlyDrawing(null);
+      setCompletedLines(new Set());
     }
 
     return clearAllTimeouts;
@@ -71,27 +67,28 @@ export const useFinalLinesAnimation = ({
 
   // Get animation state for a specific final line
   const getFinalLineAnimationState = (lineKey: string) => {
-    const isDrawing = drawingLines.has(lineKey);
-    const isComplete = animatedLines.has(lineKey);
+    const isDrawing = currentlyDrawing === lineKey;
+    const isComplete = completedLines.has(lineKey);
+    const isVisible = isDrawing || isComplete;
     
     return {
       isDrawing,
       isComplete,
-      isVisible: isDrawing || isComplete,
-      strokeDasharray: isDrawing ? "1000 1000" : "none", // Large dash for drawing effect
+      isVisible,
+      strokeDasharray: isDrawing ? "1000 1000" : "none",
       strokeDashoffset: isDrawing ? "1000" : "0",
-      opacity: isComplete ? 1 : (isDrawing ? 0.8 : 0),
+      opacity: isVisible ? 1 : 0,
       drawingStyle: isDrawing ? {
-        animation: `draw-line ${FINAL_LINES_ANIMATION.STROKE_ANIMATION_DURATION}ms ${FINAL_LINES_ANIMATION.ANIMATION_CURVE} forwards`
+        animation: `draw-line ${FINAL_LINES_ANIMATION.STROKE_ANIMATION_DURATION}ms ease-out forwards`
       } : {}
     };
   };
 
   return {
     getFinalLineAnimationState,
-    animatedLinesCount: animatedLines.size,
-    drawingLinesCount: drawingLines.size,
-    isAnimationComplete: animatedLines.size === FINAL_LINES_ANIMATION.LINES.length,
+    currentlyDrawing,
+    completedLinesCount: completedLines.size,
+    isAnimationComplete: completedLines.size === FINAL_LINES_ANIMATION.LINES.length,
     totalFinalLines: FINAL_LINES_ANIMATION.LINES.length
   };
 };
