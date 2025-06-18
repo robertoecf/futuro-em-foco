@@ -57,11 +57,12 @@ export const ChartComponent = ({
   lineDrawingDuration = 2000
 }: ChartComponentProps) => {
   
-  console.log('ChartComponent data:', data);
-  console.log('ChartComponent Monte Carlo data:', monteCarloData);
-  console.log('ChartComponent isCalculating:', isCalculating);
-  console.log('ChartComponent isMonteCarloEnabled:', isMonteCarloEnabled);
-  console.log('ChartComponent lineDrawingDuration:', lineDrawingDuration);
+  console.log('🏗️ ChartComponent render:', {
+    dataLength: data.length,
+    hasMonteCarloData: !!monteCarloData,
+    isCalculating,
+    isMonteCarloEnabled
+  });
 
   const { animationPhase, isShowingLines, isDrawingFinalLines } = useChartAnimation({
     isCalculating,
@@ -89,11 +90,10 @@ export const ChartComponent = ({
     accumulationYears
   );
   
-  // Calculate perpetuity wealth based on retirement return and desired income
   const perpetuityWealth = monthlyIncomeTarget > 0 ? 
     (monthlyIncomeTarget * 12) / (portfolioReturn / 100) : 0;
 
-  console.log('ChartComponent analysis:', {
+  console.log('📊 ChartComponent processed data:', {
     animationPhase,
     isShowingLines,
     isDrawingFinalLines,
@@ -112,7 +112,7 @@ export const ChartComponent = ({
     investorProfile
   };
 
-  // Show projecting message ONLY during projecting phase
+  // Show projecting message during projecting phase
   if (isMonteCarloEnabled && animationPhase === 'projecting') {
     return (
       <div className="w-full">
@@ -147,11 +147,10 @@ export const ChartComponent = ({
           actualLinesCount={actualLinesCount}
         />
         
-        {/* Optimizing Overlay */}
         <ProjectingOverlay isVisible={animationPhase === 'optimizing'} />
       </div>
       
-      {/* Export Button - positioned at bottom right of chart */}
+      {/* Export Button */}
       <div className="relative">
         <div className="absolute -top-12 right-4">
           <ExportButton
@@ -162,7 +161,7 @@ export const ChartComponent = ({
         </div>
       </div>
 
-      {/* Controls Section - Now above the chart info */}
+      {/* Controls Section */}
       {(showLifeExpectancyControl || onMonteCarloToggle) && (
         <ChartControls
           lifeExpectancy={lifeExpectancy}

@@ -2,7 +2,6 @@
 import { Line } from 'recharts';
 import { MonteCarloResult } from '@/lib/utils';
 import { useLineAnimation } from './useLineAnimation';
-import { LINE_ANIMATION } from '@/components/calculator/constants';
 
 interface MonteCarloLinesProps {
   chartData: any[];
@@ -25,7 +24,7 @@ export const MonteCarloLines = ({
     drawingDuration: lineDrawingDuration
   });
 
-  // Generate colors for the lines (support up to 500+ lines)
+  // Generate colors for the lines
   const generateLineColor = (index: number) => {
     const baseColors = [
       '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FECA57', 
@@ -34,20 +33,28 @@ export const MonteCarloLines = ({
       '#009688', '#673AB7', '#E91E63', '#795548', '#607D8B'
     ];
     
-    // For more than 20 lines, generate variations
     if (index < baseColors.length) {
       return baseColors[index];
     }
     
     // Generate HSL colors for additional lines
-    const hue = (index * 137.508) % 360; // Golden angle for good distribution
-    const saturation = 60 + (index % 40); // Vary saturation
-    const lightness = 45 + (index % 30); // Vary lightness
+    const hue = (index * 137.508) % 360;
+    const saturation = 60 + (index % 40);
+    const lightness = 45 + (index % 30);
     
     return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
   };
 
-  if (!monteCarloData) return null;
+  if (!monteCarloData || totalLinesToRender === 0) {
+    console.log('⚠️ No Monte Carlo data or lines to render');
+    return null;
+  }
+
+  console.log('🎨 Rendering Monte Carlo lines:', {
+    totalLinesToRender,
+    isShowingLines,
+    chartDataLength: chartData.length
+  });
 
   return (
     <>
@@ -55,11 +62,11 @@ export const MonteCarloLines = ({
         const animationState = getLineAnimationState(i);
         const lineKey = `line${i}`;
         
-        // Check if this line actually exists in the data
-        const hasDataForLine = chartData.some(dataPoint => dataPoint[lineKey] !== undefined);
+        // Check if this line exists in the data
+        const hasDataForLine = chartData.length > 0 && chartData[0] && chartData[0][lineKey] !== undefined;
         
         if (!hasDataForLine) {
-          console.log(`⚠️ Line ${i} (${lineKey}) not found in chart data`);
+          console.log(`⚠️ Line ${lineKey} not found in chart data`);
           return null;
         }
         
@@ -78,7 +85,7 @@ export const MonteCarloLines = ({
             connectNulls={false}
             isAnimationActive={false}
             style={{
-              transition: `opacity ${LINE_ANIMATION.OPACITY_FADE_DURATION}ms ease-out`,
+              transition: `opacity 300ms ease-out`,
               ...animationState.drawingStyle
             }}
           />

@@ -4,7 +4,6 @@ import { ChartContainer } from './ChartContainer';
 import { ReferenceLines } from './ReferenceLines';
 import { MonteCarloLines } from './MonteCarloLines';
 import { FinalResultLines } from './FinalResultLines';
-import { LINE_ANIMATION } from '@/components/calculator/constants';
 
 interface ChartRendererProps {
   chartData: any[];
@@ -24,35 +23,17 @@ export const ChartRenderer = ({
   monteCarloData,
   isShowingLines,
   isDrawingFinalLines,
-  lineDrawingDuration = LINE_ANIMATION.DRAWING_DURATION,
-  actualLinesCount
+  lineDrawingDuration = 2000,
+  actualLinesCount = 0
 }: ChartRendererProps) => {
   
-  // Detect actual number of Monte Carlo lines in the data
-  const detectLinesInData = () => {
-    if (!chartData || chartData.length === 0) return 0;
-    
-    const firstDataPoint = chartData[0] || {};
-    const lineKeys = Object.keys(firstDataPoint).filter(key => 
-      key.startsWith('line') && key.match(/^line\d+$/)
-    );
-    
-    return lineKeys.length;
-  };
-
-  const detectedLines = detectLinesInData();
-  const totalLinesToRender = actualLinesCount || detectedLines || LINE_ANIMATION.TOTAL_LINES;
-
-  console.log('📊 ChartRenderer lines detection:', {
+  console.log('📊 ChartRenderer rendering:', {
     chartDataLength: chartData.length,
     hasMonteCarloData: !!monteCarloData,
     isShowingLines,
     isDrawingFinalLines,
-    lineDrawingDuration,
-    detectedLines,
     actualLinesCount,
-    totalLinesToRender,
-    firstDataKeys: chartData[0] ? Object.keys(chartData[0]).filter(k => k.startsWith('line')).slice(0, 10) : []
+    sampleDataKeys: chartData[0] ? Object.keys(chartData[0]).filter(k => k.startsWith('line')).length : 0
   });
 
   return (
@@ -66,7 +47,7 @@ export const ChartRenderer = ({
         chartData={chartData}
         monteCarloData={monteCarloData}
         isShowingLines={isShowingLines}
-        totalLinesToRender={totalLinesToRender}
+        totalLinesToRender={actualLinesCount}
         lineDrawingDuration={lineDrawingDuration}
       />
 

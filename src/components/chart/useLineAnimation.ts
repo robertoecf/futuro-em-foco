@@ -1,6 +1,5 @@
 
 import { useState, useEffect, useRef } from 'react';
-import { LINE_ANIMATION } from '@/components/calculator/constants';
 
 interface UseLineAnimationProps {
   isShowingLines: boolean;
@@ -10,34 +9,25 @@ interface UseLineAnimationProps {
 
 export const useLineAnimation = ({
   isShowingLines,
-  totalLines,
-  drawingDuration = LINE_ANIMATION.DRAWING_DURATION
+  totalLines = 50,
+  drawingDuration = 2000
 }: UseLineAnimationProps) => {
   const [animatedLines, setAnimatedLines] = useState<Set<number>>(new Set());
   const [drawingLines, setDrawingLines] = useState<Set<number>>(new Set());
   const timeoutsRef = useRef<NodeJS.Timeout[]>([]);
 
-  // Use dynamic totalLines or fallback to constant
-  const actualTotalLines = totalLines || LINE_ANIMATION.TOTAL_LINES;
-
   console.log('🎨 useLineAnimation:', {
     isShowingLines,
-    totalLines: actualTotalLines,
+    totalLines,
     drawingDuration,
-    animatedLinesCount: animatedLines.size,
-    drawingLinesCount: drawingLines.size
+    animatedLinesCount: animatedLines.size
   });
 
-  // Calculate delay between lines based on total duration and actual number of lines
-  const delayBetweenLines = drawingDuration / actualTotalLines;
+  // Ensure we have valid totalLines
+  const safeTotalLines = Math.max(1, totalLines || 50);
+  const delayBetweenLines = drawingDuration / safeTotalLines;
 
-  console.log('⏱️ Animation timing:', {
-    delayBetweenLines,
-    totalDuration: drawingDuration,
-    linesCount: actualTotalLines
-  });
-
-  // Clear all timeouts when component unmounts or animation resets
+  // Clear all timeouts
   const clearAllTimeouts = () => {
     timeoutsRef.current.forEach(timeout => clearTimeout(timeout));
     timeoutsRef.current = [];
@@ -45,8 +35,8 @@ export const useLineAnimation = ({
 
   // Start line drawing animation
   useEffect(() => {
-    if (isShowingLines && actualTotalLines > 0) {
-      console.log(`🚀 Starting line drawing animation for ${actualTotalLines} lines`);
+    if (isShowingLines && safeTotalLines > 0) {
+      console.log(`🚀 Starting line animation for ${safeTotalLines} lines`);
       
       // Reset states
       setAnimatedLines(new Set());
@@ -54,26 +44,24 @@ export const useLineAnimation = ({
       clearAllTimeouts();
 
       // Schedule each line to start drawing
-      for (let i = 0; i < actualTotalLines; i++) {
-        const startDrawingTimeout = setTimeout(() => {
-          console.log(`✏️ Starting to draw line ${i} of ${actualTotalLines}`);
+      for (let i = 0; i < safeTotalLines; i++) {
+        const startTimeout = setTimeout(() => {
           setDrawingLines(prev => new Set([...prev, i]));
 
-          // After the drawing animation completes, mark as fully animated
-          const completeDrawingTimeout = setTimeout(() => {
-            console.log(`✅ Completed drawing line ${i}`);
+          // Complete drawing after animation duration
+          const completeTimeout = setTimeout(() => {
             setDrawingLines(prev => {
               const next = new Set(prev);
               next.delete(i);
               return next;
             });
             setAnimatedLines(prev => new Set([...prev, i]));
-          }, LINE_ANIMATION.STROKE_ANIMATION_DURATION);
+          }, 1500); // Fixed duration for individual line drawing
 
-          timeoutsRef.current.push(completeDrawingTimeout);
+          timeoutsRef.current.push(completeTimeout);
         }, i * delayBetweenLines);
 
-        timeoutsRef.current.push(startDrawingTimeout);
+        timeoutsRef.current.push(startTimeout);
       }
     } else {
       console.log('🔄 Resetting line animation');
@@ -83,7 +71,7 @@ export const useLineAnimation = ({
     }
 
     return clearAllTimeouts;
-  }, [isShowingLines, actualTotalLines, delayBetweenLines]);
+  }, [isShowingLines, safeTotalLines, delayBetweenLines]);
 
   // Get animation state for a specific line
   const getLineAnimationState = (lineIndex: number) => {
@@ -94,12 +82,11 @@ export const useLineAnimation = ({
       isDrawing,
       isComplete,
       isVisible: isDrawing || isComplete,
-      strokeDasharray: isDrawing ? "1000 1000" : "none", // Large dash for drawing effect
+      strokeDasharray: isDrawing ? "1000 1000" : "none",
       strokeDashoffset: isDrawing ? "1000" : "0",
       opacity: isComplete ? 1 : (isDrawing ? 0.8 : 0),
-      animationDelay: `${lineIndex * delayBetweenLines}ms`,
       drawingStyle: isDrawing ? {
-        animation: `draw-line ${LINE_ANIMATION.STROKE_ANIMATION_DURATION}ms ${LINE_ANIMATION.ANIMATION_CURVE} forwards`
+        animation: `draw-line 1500ms ease-out forwards`
       } : {}
     };
   };
@@ -107,8 +94,7 @@ export const useLineAnimation = ({
   return {
     getLineAnimationState,
     animatedLinesCount: animatedLines.size,
-    drawingLinesCount: drawingLines.size,
-    isAnimationComplete: animatedLines.size === actualTotalLines,
-    totalLines: actualTotalLines
+    isAnimationComplete: animatedLines.size === safeTotalLines,
+    totalLines: safeTotalLines
   };
 };
