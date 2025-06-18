@@ -4,7 +4,7 @@ import { MonteCarloResult } from '@/lib/utils';
 import { CustomTooltip } from './CustomTooltip';
 import { formatYAxis } from './chartUtils';
 import { useLineAnimation } from './useLineAnimation';
-import { useFinalLinesAnimation } from './useFinalLinesAnimation';
+import { FinalLinesRenderer } from './FinalLinesRenderer';
 import { LINE_ANIMATION } from '@/components/calculator/constants';
 
 interface ChartRendererProps {
@@ -33,10 +33,6 @@ export const ChartRenderer = ({
     drawingDuration: lineDrawingDuration
   });
 
-  const { getFinalLineAnimationState } = useFinalLinesAnimation({
-    isDrawingFinalLines
-  });
-
   // Generate colors for the 50 lines
   const generateLineColor = (index: number) => {
     const colors = [
@@ -48,13 +44,12 @@ export const ChartRenderer = ({
     return colors[index % colors.length];
   };
 
-  console.log('📊 ChartRenderer:', {
+  console.log('📊 ChartRenderer (refactored):', {
     chartDataLength: chartData.length,
     hasMonteCarloData: !!monteCarloData,
     isShowingLines,
     isDrawingFinalLines,
-    lineDrawingDuration,
-    firstDataKeys: chartData[0] ? Object.keys(chartData[0]) : []
+    lineDrawingDuration
   });
 
   return (
@@ -137,78 +132,9 @@ export const ChartRenderer = ({
             );
           })}
 
-          {/* Final Monte Carlo results - always render, control visibility with opacity */}
+          {/* Final Monte Carlo results using new component */}
           {monteCarloData && (
-            <>
-              {/* Pessimistic Line */}
-              {(() => {
-                const animationState = getFinalLineAnimationState('pessimistic');
-                
-                return (
-                  <Line 
-                    key="pessimistic-line"
-                    type="monotone" 
-                    dataKey="pessimistic" 
-                    name="Cenário Pessimista"
-                    stroke="#DC2626" 
-                    strokeWidth={2}
-                    strokeDasharray={animationState.strokeDasharray}
-                    strokeDashoffset={animationState.strokeDashoffset}
-                    strokeOpacity={animationState.opacity}
-                    dot={false}
-                    activeDot={{ r: 6, stroke: '#DC2626', strokeWidth: 2, fill: '#fff' }}
-                    isAnimationActive={false}
-                    style={animationState.drawingStyle}
-                  />
-                );
-              })()}
-              
-              {/* Median Line */}
-              {(() => {
-                const animationState = getFinalLineAnimationState('median');
-                
-                return (
-                  <Line 
-                    key="median-line"
-                    type="monotone" 
-                    dataKey="median" 
-                    name="Cenário Neutro"
-                    stroke="#3B82F6" 
-                    strokeWidth={3}
-                    strokeDasharray={animationState.strokeDasharray}
-                    strokeDashoffset={animationState.strokeDashoffset}
-                    strokeOpacity={animationState.opacity}
-                    dot={false}
-                    activeDot={{ r: 8, stroke: '#3B82F6', strokeWidth: 2, fill: '#fff' }}
-                    isAnimationActive={false}
-                    style={animationState.drawingStyle}
-                  />
-                );
-              })()}
-              
-              {/* Optimistic Line */}
-              {(() => {
-                const animationState = getFinalLineAnimationState('optimistic');
-                
-                return (
-                  <Line 
-                    key="optimistic-line"
-                    type="monotone" 
-                    dataKey="optimistic" 
-                    name="Cenário Otimista"
-                    stroke="#10B981" 
-                    strokeWidth={2}
-                    strokeDasharray={animationState.strokeDasharray}
-                    strokeDashoffset={animationState.strokeDashoffset}
-                    strokeOpacity={animationState.opacity}
-                    dot={false}
-                    activeDot={{ r: 6, stroke: '#10B981', strokeWidth: 2, fill: '#fff' }}
-                    isAnimationActive={false}
-                    style={animationState.drawingStyle}
-                  />
-                );
-              })()}
-            </>
+            <FinalLinesRenderer isDrawingFinalLines={isDrawingFinalLines} />
           )}
 
           {/* Regular patrimonio line - only when Monte Carlo is disabled */}
