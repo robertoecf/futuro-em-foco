@@ -5,7 +5,7 @@ import { calculateStatistics } from './statistics';
 import type { BrownianMonteCarloResult } from './types';
 
 // Optimized Monte Carlo with reduced simulation count and performance improvements
-export function runOptimizedMonteCarloSimulation(
+export async function runOptimizedMonteCarloSimulation(
   initialAmount: number,
   monthlyContribution: number,
   accumulationYears: number,
@@ -16,7 +16,7 @@ export function runOptimizedMonteCarloSimulation(
   retirementMonthlyIncome: number = 0,
   retirementAnnualReturn: number = 0.04,
   simulationCount: number = 50 // Reduced from 100 to 50
-): BrownianMonteCarloResult {
+): Promise<BrownianMonteCarloResult> {
   const startTime = performance.now();
   
   console.log('🚀 Starting Optimized Monte Carlo simulation:', {
