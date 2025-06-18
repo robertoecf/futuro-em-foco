@@ -10,15 +10,15 @@ export const useFinalLinesAnimation = ({
   isDrawingFinalLines
 }: UseFinalLinesAnimationProps) => {
   const [animatedLines, setAnimatedLines] = useState<Set<string>>(new Set());
-  const [drawingLines, setDrawingLines] = useState<Set<string>>(new Set());
+  const [fadingLines, setFadingLines] = useState<Set<string>>(new Set());
   const timeoutsRef = useRef<NodeJS.Timeout[]>([]);
 
   console.log('📈 useFinalLinesAnimation:', {
     isDrawingFinalLines,
     animatedLinesCount: animatedLines.size,
-    drawingLinesCount: drawingLines.size,
+    fadingLinesCount: fadingLines.size,
     animatedLines: Array.from(animatedLines),
-    drawingLines: Array.from(drawingLines)
+    fadingLines: Array.from(fadingLines)
   });
 
   // Clear all timeouts when component unmounts or animation resets
@@ -30,67 +30,67 @@ export const useFinalLinesAnimation = ({
   // Start final lines drawing animation
   useEffect(() => {
     if (isDrawingFinalLines) {
-      console.log('🎯 Starting final lines drawing animation');
+      console.log('🎯 Starting final lines fade-in animation');
       
       // Reset states
       setAnimatedLines(new Set());
-      setDrawingLines(new Set());
+      setFadingLines(new Set());
       clearAllTimeouts();
 
-      // Schedule each final line to start drawing (pessimistic → median → optimistic)
+      // Schedule each final line to start fading in (pessimistic → median → optimistic)
       FINAL_LINES_ANIMATION.LINES.forEach((lineKey, index) => {
-        const startDrawingTimeout = setTimeout(() => {
-          console.log(`🖊️ Starting to draw final line: ${lineKey}`);
-          setDrawingLines(prev => new Set([...prev, lineKey]));
+        const startFadingTimeout = setTimeout(() => {
+          console.log(`✨ Starting fade-in for final line: ${lineKey}`);
+          setFadingLines(prev => new Set([...prev, lineKey]));
 
-          // After the drawing animation completes, mark as fully animated
-          const completeDrawingTimeout = setTimeout(() => {
-            console.log(`✅ Completed drawing final line: ${lineKey}`);
-            setDrawingLines(prev => {
+          // After the fade-in completes, mark as fully animated
+          const completeFadingTimeout = setTimeout(() => {
+            console.log(`✅ Completed fade-in for final line: ${lineKey}`);
+            setFadingLines(prev => {
               const next = new Set(prev);
               next.delete(lineKey);
               return next;
             });
             setAnimatedLines(prev => new Set([...prev, lineKey]));
-          }, FINAL_LINES_ANIMATION.STROKE_ANIMATION_DURATION);
+          }, FINAL_LINES_ANIMATION.OPACITY_FADE_DURATION);
 
-          timeoutsRef.current.push(completeDrawingTimeout);
+          timeoutsRef.current.push(completeFadingTimeout);
         }, index * FINAL_LINES_ANIMATION.DELAY_BETWEEN_LINES);
 
-        timeoutsRef.current.push(startDrawingTimeout);
+        timeoutsRef.current.push(startFadingTimeout);
       });
     } else {
       console.log('🔄 Resetting final lines animation');
       clearAllTimeouts();
       setAnimatedLines(new Set());
-      setDrawingLines(new Set());
+      setFadingLines(new Set());
     }
 
     return clearAllTimeouts;
   }, [isDrawingFinalLines]);
 
-  // Get animation state for a specific final line
+  // Get animation state for a specific final line - only opacity animation
   const getFinalLineAnimationState = (lineKey: string) => {
-    const isDrawing = drawingLines.has(lineKey);
+    const isFading = fadingLines.has(lineKey);
     const isComplete = animatedLines.has(lineKey);
     
     return {
-      isDrawing,
+      isFading,
       isComplete,
-      isVisible: isDrawing || isComplete,
-      strokeDasharray: isDrawing ? "1000 1000" : "none", // Large dash for drawing effect
-      strokeDashoffset: isDrawing ? "1000" : "0",
-      opacity: isComplete ? 1 : (isDrawing ? 0.8 : 0),
-      drawingStyle: isDrawing ? {
-        animation: `draw-line ${FINAL_LINES_ANIMATION.STROKE_ANIMATION_DURATION}ms ${FINAL_LINES_ANIMATION.ANIMATION_CURVE} forwards`
-      } : {}
+      isVisible: isFading || isComplete,
+      opacity: isComplete ? 1 : (isFading ? 0.8 : 0),
+      style: {
+        opacity: isComplete ? 1 : (isFading ? 0.8 : 0),
+        transition: isFading ? `opacity ${FINAL_LINES_ANIMATION.OPACITY_FADE_DURATION}ms ease-in-out` : 'none',
+        willChange: isFading ? 'opacity' : 'auto'
+      }
     };
   };
 
   return {
     getFinalLineAnimationState,
     animatedLinesCount: animatedLines.size,
-    drawingLinesCount: drawingLines.size,
+    fadingLinesCount: fadingLines.size,
     isAnimationComplete: animatedLines.size === FINAL_LINES_ANIMATION.LINES.length,
     totalFinalLines: FINAL_LINES_ANIMATION.LINES.length
   };

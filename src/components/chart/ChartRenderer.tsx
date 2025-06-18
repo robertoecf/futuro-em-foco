@@ -28,7 +28,6 @@ export const ChartRenderer = ({
   generateLineColor
 }: ChartRendererProps) => {
   
-  // Volta a usar apenas o sistema de animação que funcionava
   const { getLineAnimationState } = useLineAnimation({
     isShowingLines,
     totalLines: LINE_ANIMATION.TOTAL_LINES,
@@ -66,6 +65,11 @@ export const ChartRenderer = ({
         .monte-carlo-line {
           vector-effect: non-scaling-stroke;
           transition: opacity 800ms ease-in-out;
+          will-change: opacity;
+        }
+        .final-line {
+          vector-effect: non-scaling-stroke;
+          transition: opacity 600ms ease-in-out;
           will-change: opacity;
         }
       `}</style>
@@ -126,7 +130,7 @@ export const ChartRenderer = ({
             activeDot={{ r: 6, stroke: '#6B7280', strokeWidth: 2, fill: '#fff' }}
           />
 
-          {/* 500 Monte Carlo lines - smooth fade animation only */}
+          {/* Monte Carlo lines - smooth fade animation only */}
           {monteCarloData && Array.from({ length: LINE_ANIMATION.TOTAL_LINES }, (_, i) => {
             const animationState = getLineAnimationState(i);
             
@@ -148,7 +152,7 @@ export const ChartRenderer = ({
             );
           })}
 
-          {/* Final Monte Carlo results - with drawing animation during drawing-final phase */}
+          {/* Final Monte Carlo results - smooth opacity animation only (NO strokeDash) */}
           {monteCarloData && (isDrawingFinalLines || (!isShowingLines && !isDrawingFinalLines)) && (
             <>
               {/* Pessimistic Line */}
@@ -161,13 +165,13 @@ export const ChartRenderer = ({
                     name="Cenário Pessimista"
                     stroke="#DC2626" 
                     strokeWidth={3}
-                    strokeDasharray={isDrawingFinalLines ? animationState.strokeDasharray : "5 5"}
-                    strokeDashoffset={isDrawingFinalLines ? animationState.strokeDashoffset : "0"}
-                    strokeOpacity={isDrawingFinalLines ? animationState.opacity : 1}
+                    strokeDasharray="5 5"
+                    strokeOpacity={animationState.opacity}
                     dot={false}
                     activeDot={{ r: 6, stroke: '#DC2626', strokeWidth: 2, fill: '#fff' }}
                     isAnimationActive={false}
-                    style={isDrawingFinalLines ? animationState.drawingStyle : {}}
+                    className="final-line"
+                    style={animationState.style}
                   />
                 );
               })()}
@@ -182,13 +186,12 @@ export const ChartRenderer = ({
                     name="Cenário Neutro"
                     stroke="#3B82F6" 
                     strokeWidth={4}
-                    strokeDasharray={isDrawingFinalLines ? animationState.strokeDasharray : "none"}
-                    strokeDashoffset={isDrawingFinalLines ? animationState.strokeDashoffset : "0"}
-                    strokeOpacity={isDrawingFinalLines ? animationState.opacity : 1}
+                    strokeOpacity={animationState.opacity}
                     dot={false}
                     activeDot={{ r: 8, stroke: '#3B82F6', strokeWidth: 2, fill: '#fff' }}
                     isAnimationActive={false}
-                    style={isDrawingFinalLines ? animationState.drawingStyle : {}}
+                    className="final-line"
+                    style={animationState.style}
                   />
                 );
               })()}
@@ -203,13 +206,13 @@ export const ChartRenderer = ({
                     name="Cenário Otimista"
                     stroke="#10B981" 
                     strokeWidth={3}
-                    strokeDasharray={isDrawingFinalLines ? animationState.strokeDasharray : "5 5"}
-                    strokeDashoffset={isDrawingFinalLines ? animationState.strokeDashoffset : "0"}
-                    strokeOpacity={isDrawingFinalLines ? animationState.opacity : 1}
+                    strokeDasharray="5 5"
+                    strokeOpacity={animationState.opacity}
                     dot={false}
                     activeDot={{ r: 6, stroke: '#10B981', strokeWidth: 2, fill: '#fff' }}
                     isAnimationActive={false}
-                    style={isDrawingFinalLines ? animationState.drawingStyle : {}}
+                    className="final-line"
+                    style={animationState.style}
                   />
                 );
               })()}
