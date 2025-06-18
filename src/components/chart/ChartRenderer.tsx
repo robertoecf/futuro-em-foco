@@ -1,9 +1,8 @@
-
 import { ComposedChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
 import { MonteCarloResult } from '@/lib/utils';
 import { CustomTooltip } from './CustomTooltip';
 import { formatYAxis } from './chartUtils';
-import { useGradientLineAnimation } from './useGradientLineAnimation';
+import { useLineAnimation } from './useLineAnimation';
 import { useFinalLinesAnimation } from './useFinalLinesAnimation';
 import { LINE_ANIMATION } from '@/components/calculator/constants';
 
@@ -29,11 +28,12 @@ export const ChartRenderer = ({
   generateLineColor
 }: ChartRendererProps) => {
   
-  const { getLineAnimationState } = useGradientLineAnimation({
+  // Volta a usar apenas o sistema de animação que funcionava
+  const { getLineAnimationState } = useLineAnimation({
     isShowingLines,
     totalLines: LINE_ANIMATION.TOTAL_LINES,
-    chartData,
-    drawingDuration: lineDrawingDuration
+    drawingDuration: lineDrawingDuration,
+    chartData
   });
 
   const { getFinalLineAnimationState } = useFinalLinesAnimation({
@@ -56,19 +56,15 @@ export const ChartRenderer = ({
     isShowingLines,
     isDrawingFinalLines,
     lineDrawingDuration,
-    totalLines: LINE_ANIMATION.TOTAL_LINES,
-    firstDataKeys: chartData[0] ? Object.keys(chartData[0]) : []
+    totalLines: LINE_ANIMATION.TOTAL_LINES
   });
 
   return (
     <div className="relative h-[400px] w-full bg-white border border-gray-200 rounded-lg p-4">
-      {/* Optimized CSS for smooth animations */}
+      {/* Optimized CSS for smooth animations - only opacity */}
       <style>{`
         .monte-carlo-line {
           vector-effect: non-scaling-stroke;
-        }
-        
-        .gradient-line {
           transition: opacity 800ms ease-in-out;
           will-change: opacity;
         }
@@ -130,7 +126,7 @@ export const ChartRenderer = ({
             activeDot={{ r: 6, stroke: '#6B7280', strokeWidth: 2, fill: '#fff' }}
           />
 
-          {/* 500 Monte Carlo lines - smooth gradient animation */}
+          {/* 500 Monte Carlo lines - smooth fade animation only */}
           {monteCarloData && Array.from({ length: LINE_ANIMATION.TOTAL_LINES }, (_, i) => {
             const animationState = getLineAnimationState(i);
             
@@ -146,7 +142,7 @@ export const ChartRenderer = ({
                 activeDot={false}
                 connectNulls={false}
                 isAnimationActive={false}
-                className="monte-carlo-line gradient-line"
+                className="monte-carlo-line"
                 style={animationState.style}
               />
             );

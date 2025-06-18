@@ -23,20 +23,20 @@ export const MAGIC_MOMENT_TIMERS = {
 
 // Line Drawing Animation Configuration - 500 Cenários
 export const LINE_ANIMATION = {
-  DRAWING_DURATION: 12000, // 12 seconds total for all lines to appear (muito mais devagar)
-  ANIMATION_CURVE: 'ease-in-out' as const, // Mudado para ease-in-out para ser mais suave
-  TOTAL_LINES: 500, // Aumentado de 50 para 500 cenários
+  DRAWING_DURATION: 6000, // Mantém 6 segundos original
+  ANIMATION_CURVE: 'ease-in-out' as const,
+  TOTAL_LINES: 500, // Aumentado para 500 cenários
   get DELAY_BETWEEN_LINES() {
-    return this.DRAWING_DURATION / this.TOTAL_LINES; // 24ms delay entre cada linha
+    return this.DRAWING_DURATION / this.TOTAL_LINES; // 12ms delay entre cada linha
   },
   FADE_IN_DURATION: 2000, // 2 seconds para cada linha fazer fade-in (sem stroke animation)
   OPACITY_FADE_DURATION: 800, // Fade-in mais longo e suave
-  STROKE_ANIMATION_DURATION: 2000, // Adicionado de volta para compatibilidade
-  // Configurações para degradê
+  STROKE_ANIMATION_DURATION: 2000, // Mantido para compatibilidade
+  // Configurações para degradê sutil
   GRADIENT_OPACITY: {
-    TOP: 0.9, // Linhas no topo (valores altos)
+    TOP: 0.7, // Linhas no topo (valores altos) - mais sutil
     MIDDLE: 0.5, // Linhas no meio
-    BOTTOM: 0.25 // Linhas na base (valores baixos)
+    BOTTOM: 0.3 // Linhas na base (valores baixos)
   }
 };
 
