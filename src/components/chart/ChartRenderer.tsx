@@ -59,24 +59,6 @@ export const ChartRenderer = ({
 
   return (
     <div className="relative h-[400px] w-full bg-white border border-gray-200 rounded-lg p-4">
-      {/* CSS for line drawing animation */}
-      <style>{`
-        @keyframes draw-line {
-          0% {
-            stroke-dashoffset: 1000;
-            opacity: 0.3;
-          }
-          50% {
-            stroke-dashoffset: 500;
-            opacity: 0.8;
-          }
-          100% {
-            stroke-dashoffset: 0;
-            opacity: 1;
-          }
-        }
-      `}</style>
-
       <ResponsiveContainer width="100%" height="100%">
         <ComposedChart
           data={chartData}
@@ -133,9 +115,11 @@ export const ChartRenderer = ({
             activeDot={{ r: 6, stroke: '#6B7280', strokeWidth: 2, fill: '#fff' }}
           />
 
-          {/* 50 Monte Carlo lines - fantastic progressive animation */}
+          {/* 50 Monte Carlo lines - smooth progressive animation */}
           {monteCarloData && Array.from({ length: LINE_ANIMATION.TOTAL_LINES }, (_, i) => {
             const animationState = getLineAnimationState(i);
+            
+            if (!animationState.isVisible) return null;
             
             return (
               <Line
@@ -145,15 +129,12 @@ export const ChartRenderer = ({
                 stroke={generateLineColor(i)}
                 strokeWidth={1.8}
                 strokeOpacity={animationState.opacity}
-                strokeDasharray={animationState.strokeDasharray}
-                strokeDashoffset={animationState.strokeDashoffset}
                 dot={false}
                 activeDot={false}
                 connectNulls={false}
                 isAnimationActive={false}
                 style={{
-                  transition: `opacity ${LINE_ANIMATION.OPACITY_FADE_DURATION}ms ease-out`,
-                  ...animationState.drawingStyle
+                  transition: 'stroke-opacity 0.3s ease-out'
                 }}
               />
             );
