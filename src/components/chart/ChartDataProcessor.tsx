@@ -1,4 +1,3 @@
-
 import { MonteCarloResult } from '@/lib/utils';
 
 interface ChartDataProcessorProps {
@@ -46,20 +45,38 @@ export const useChartDataProcessor = ({
     return savingsData;
   };
 
-  // Generate 50 Monte Carlo lines when data is available
+  // Generate Monte Carlo lines based on available data
   const generateMonteCarloLines = () => {
     if (!isMonteCarloEnabled || !monteCarloData) {
       return [];
     }
     
-    console.log('🎨 Generating 50 Monte Carlo lines');
+    console.log('🎨 Generating Monte Carlo lines from available data');
     const lines = [];
     const baseData = monteCarloData.scenarios.median;
     
-    // Generate 50 varied paths based on the Monte Carlo scenarios
-    for (let lineIndex = 0; lineIndex < 50; lineIndex++) {
+    // Check how many line keys are available in the first data point
+    const firstDataPoint = data[0] || {};
+    const availableLineKeys = Object.keys(firstDataPoint).filter(key => key.startsWith('line'));
+    const numberOfLines = availableLineKeys.length;
+    
+    console.log('📊 Available Monte Carlo lines in data:', {
+      totalDataPoints: data.length,
+      availableLineKeys: numberOfLines,
+      firstLineKeys: availableLineKeys.slice(0, 5) // Show first 5 for debugging
+    });
+    
+    // Generate lines based on available data or create synthetic ones
+    const targetLines = Math.max(numberOfLines, 50); // Minimum 50 lines for visual effect
+    
+    for (let lineIndex = 0; lineIndex < targetLines; lineIndex++) {
       const lineData = baseData.map((value, dataIndex) => {
-        // Create variation between pessimistic and optimistic scenarios
+        // Use existing line data if available
+        if (data[dataIndex] && data[dataIndex][`line${lineIndex}`] !== undefined) {
+          return data[dataIndex][`line${lineIndex}`];
+        }
+        
+        // Otherwise, create variation between pessimistic and optimistic scenarios
         const pessimistic = monteCarloData.scenarios.pessimistic[dataIndex] || value;
         const optimistic = monteCarloData.scenarios.optimistic[dataIndex] || value;
         
@@ -79,13 +96,33 @@ export const useChartDataProcessor = ({
     return lines;
   };
 
+  // Detect number of Monte Carlo lines in chart data
+  const detectMonteCarloLinesCount = () => {
+    if (!monteCarloData || data.length === 0) return 0;
+    
+    const firstDataPoint = data[0] || {};
+    const lineKeys = Object.keys(firstDataPoint).filter(key => key.startsWith('line') && key.match(/^line\d+$/));
+    const count = lineKeys.length;
+    
+    console.log('🔍 Detected Monte Carlo lines in chart data:', {
+      totalKeys: Object.keys(firstDataPoint).length,
+      lineKeys: lineKeys.slice(0, 10), // Show first 10 for debugging
+      detectedCount: count
+    });
+    
+    return count;
+  };
+
   const savingsLine = calculateSavingsLine();
   const monteCarloLines = generateMonteCarloLines();
+  const actualLinesCount = detectMonteCarloLinesCount();
 
-  console.log('📊 ChartDataProcessor:', {
+  console.log('📊 ChartDataProcessor summary:', {
     isMonteCarloEnabled,
     hasMonteCarloData: !!monteCarloData,
-    monteCarloLinesGenerated: monteCarloLines.length
+    monteCarloLinesGenerated: monteCarloLines.length,
+    actualLinesInData: actualLinesCount,
+    dataLength: data.length
   });
 
   const chartData = data.map((value, index) => {
@@ -107,11 +144,11 @@ export const useChartDataProcessor = ({
         percentile75: monteCarloData.statistics.percentile75[index]
       };
 
-      // Add the 50 Monte Carlo lines data
+      // Add the Monte Carlo lines data from generated lines
       const linesData: Record<string, number> = {};
       monteCarloLines.forEach((line, lineIndex) => {
         if (index < line.length) {
-          linesData[`line${lineIndex}`] = line[index];
+          linesData[`line${lineIndex}`] = line[lineIndex];
         }
       });
 
@@ -121,5 +158,10 @@ export const useChartDataProcessor = ({
     return baseData;
   });
 
-  return { chartData, savingsLine, monteCarloLines };
+  return { 
+    chartData, 
+    savingsLine, 
+    monteCarloLines, 
+    actualLinesCount: Math.max(actualLinesCount, monteCarloLines.length) 
+  };
 };

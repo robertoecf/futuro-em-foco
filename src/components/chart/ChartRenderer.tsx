@@ -15,6 +15,7 @@ interface ChartRendererProps {
   isShowingLines: boolean;
   isDrawingFinalLines: boolean;
   lineDrawingDuration?: number;
+  actualLinesCount?: number;
 }
 
 export const ChartRenderer = ({
@@ -24,12 +25,40 @@ export const ChartRenderer = ({
   monteCarloData,
   isShowingLines,
   isDrawingFinalLines,
-  lineDrawingDuration = LINE_ANIMATION.DRAWING_DURATION
+  lineDrawingDuration = LINE_ANIMATION.DRAWING_DURATION,
+  actualLinesCount
 }: ChartRendererProps) => {
   
+  // Detect actual number of Monte Carlo lines in the data
+  const detectLinesInData = () => {
+    if (!chartData || chartData.length === 0) return 0;
+    
+    const firstDataPoint = chartData[0] || {};
+    const lineKeys = Object.keys(firstDataPoint).filter(key => 
+      key.startsWith('line') && key.match(/^line\d+$/)
+    );
+    
+    return lineKeys.length;
+  };
+
+  const detectedLines = detectLinesInData();
+  const totalLinesToRender = actualLinesCount || detectedLines || LINE_ANIMATION.TOTAL_LINES;
+
+  console.log('📊 ChartRenderer lines detection:', {
+    chartDataLength: chartData.length,
+    hasMonteCarloData: !!monteCarloData,
+    isShowingLines,
+    isDrawingFinalLines,
+    lineDrawingDuration,
+    detectedLines,
+    actualLinesCount,
+    totalLinesToRender,
+    firstDataKeys: chartData[0] ? Object.keys(chartData[0]).filter(k => k.startsWith('line')).slice(0, 10) : []
+  });
+
   const { getLineAnimationState } = useLineAnimation({
     isShowingLines,
-    totalLines: LINE_ANIMATION.TOTAL_LINES,
+    totalLines: totalLinesToRender,
     drawingDuration: lineDrawingDuration
   });
 
@@ -37,25 +66,27 @@ export const ChartRenderer = ({
     isDrawingFinalLines
   });
 
-  // Generate colors for the 50 lines
+  // Generate colors for the lines (support up to 500+ lines)
   const generateLineColor = (index: number) => {
-    const colors = [
+    const baseColors = [
       '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FECA57', 
       '#FF9FF3', '#54A0FF', '#5F27CD', '#00D2D3', '#FF9F43',
       '#FC427B', '#1DD1A1', '#3742FA', '#2F3542', '#FF5722',
       '#009688', '#673AB7', '#E91E63', '#795548', '#607D8B'
     ];
-    return colors[index % colors.length];
+    
+    // For more than 20 lines, generate variations
+    if (index < baseColors.length) {
+      return baseColors[index];
+    }
+    
+    // Generate HSL colors for additional lines
+    const hue = (index * 137.508) % 360; // Golden angle for good distribution
+    const saturation = 60 + (index % 40); // Vary saturation
+    const lightness = 45 + (index % 30); // Vary lightness
+    
+    return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
   };
-
-  console.log('📊 ChartRenderer:', {
-    chartDataLength: chartData.length,
-    hasMonteCarloData: !!monteCarloData,
-    isShowingLines,
-    isDrawingFinalLines,
-    lineDrawingDuration,
-    firstDataKeys: chartData[0] ? Object.keys(chartData[0]) : []
-  });
 
   return (
     <div className="relative h-[400px] w-full bg-white border border-gray-200 rounded-lg p-4">
@@ -133,15 +164,24 @@ export const ChartRenderer = ({
             activeDot={{ r: 6, stroke: '#6B7280', strokeWidth: 2, fill: '#fff' }}
           />
 
-          {/* 50 Monte Carlo lines - fantastic progressive animation */}
-          {monteCarloData && Array.from({ length: LINE_ANIMATION.TOTAL_LINES }, (_, i) => {
+          {/* Dynamic Monte Carlo lines - render all available lines */}
+          {monteCarloData && Array.from({ length: totalLinesToRender }, (_, i) => {
             const animationState = getLineAnimationState(i);
+            const lineKey = `line${i}`;
+            
+            // Check if this line actually exists in the data
+            const hasDataForLine = chartData.some(dataPoint => dataPoint[lineKey] !== undefined);
+            
+            if (!hasDataForLine) {
+              console.log(`⚠️ Line ${i} (${lineKey}) not found in chart data`);
+              return null;
+            }
             
             return (
               <Line
                 key={`monte-carlo-line-${i}`}
                 type="monotone"
-                dataKey={`line${i}`}
+                dataKey={lineKey}
                 stroke={generateLineColor(i)}
                 strokeWidth={1.8}
                 strokeOpacity={animationState.opacity}
@@ -157,7 +197,7 @@ export const ChartRenderer = ({
                 }}
               />
             );
-          })}
+          }).filter(Boolean)}
 
           {/* Final Monte Carlo results - with drawing animation during drawing-final phase */}
           {monteCarloData && (isDrawingFinalLines || (!isShowingLines && !isDrawingFinalLines)) && (

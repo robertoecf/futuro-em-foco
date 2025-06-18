@@ -70,7 +70,7 @@ export const ChartComponent = ({
     onAnimationComplete
   });
 
-  const { chartData } = useChartDataProcessor({
+  const { chartData, actualLinesCount } = useChartDataProcessor({
     data,
     currentAge,
     accumulationYears,
@@ -93,9 +93,13 @@ export const ChartComponent = ({
   const perpetuityWealth = monthlyIncomeTarget > 0 ? 
     (monthlyIncomeTarget * 12) / (portfolioReturn / 100) : 0;
 
-  console.log('ChartComponent animationPhase:', animationPhase);
-  console.log('ChartComponent isShowingLines:', isShowingLines);
-  console.log('ChartComponent isDrawingFinalLines:', isDrawingFinalLines);
+  console.log('ChartComponent analysis:', {
+    animationPhase,
+    isShowingLines,
+    isDrawingFinalLines,
+    actualLinesCount,
+    chartDataLength: chartData.length
+  });
 
   const planningInputs = {
     initialAmount,
@@ -140,6 +144,7 @@ export const ChartComponent = ({
           isShowingLines={isShowingLines}
           isDrawingFinalLines={isDrawingFinalLines}
           lineDrawingDuration={lineDrawingDuration}
+          actualLinesCount={actualLinesCount}
         />
         
         {/* Optimizing Overlay */}

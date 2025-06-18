@@ -4,29 +4,38 @@ import { LINE_ANIMATION } from '@/components/calculator/constants';
 
 interface UseLineAnimationProps {
   isShowingLines: boolean;
-  totalLines: number;
+  totalLines?: number;
   drawingDuration?: number;
 }
 
 export const useLineAnimation = ({
   isShowingLines,
-  totalLines = LINE_ANIMATION.TOTAL_LINES,
+  totalLines,
   drawingDuration = LINE_ANIMATION.DRAWING_DURATION
 }: UseLineAnimationProps) => {
   const [animatedLines, setAnimatedLines] = useState<Set<number>>(new Set());
   const [drawingLines, setDrawingLines] = useState<Set<number>>(new Set());
   const timeoutsRef = useRef<NodeJS.Timeout[]>([]);
 
+  // Use dynamic totalLines or fallback to constant
+  const actualTotalLines = totalLines || LINE_ANIMATION.TOTAL_LINES;
+
   console.log('🎨 useLineAnimation:', {
     isShowingLines,
-    totalLines,
+    totalLines: actualTotalLines,
     drawingDuration,
     animatedLinesCount: animatedLines.size,
     drawingLinesCount: drawingLines.size
   });
 
-  // Calculate delay between lines based on total duration
-  const delayBetweenLines = drawingDuration / totalLines;
+  // Calculate delay between lines based on total duration and actual number of lines
+  const delayBetweenLines = drawingDuration / actualTotalLines;
+
+  console.log('⏱️ Animation timing:', {
+    delayBetweenLines,
+    totalDuration: drawingDuration,
+    linesCount: actualTotalLines
+  });
 
   // Clear all timeouts when component unmounts or animation resets
   const clearAllTimeouts = () => {
@@ -36,8 +45,8 @@ export const useLineAnimation = ({
 
   // Start line drawing animation
   useEffect(() => {
-    if (isShowingLines) {
-      console.log('🚀 Starting line drawing animation');
+    if (isShowingLines && actualTotalLines > 0) {
+      console.log(`🚀 Starting line drawing animation for ${actualTotalLines} lines`);
       
       // Reset states
       setAnimatedLines(new Set());
@@ -45,9 +54,9 @@ export const useLineAnimation = ({
       clearAllTimeouts();
 
       // Schedule each line to start drawing
-      for (let i = 0; i < totalLines; i++) {
+      for (let i = 0; i < actualTotalLines; i++) {
         const startDrawingTimeout = setTimeout(() => {
-          console.log(`✏️ Starting to draw line ${i}`);
+          console.log(`✏️ Starting to draw line ${i} of ${actualTotalLines}`);
           setDrawingLines(prev => new Set([...prev, i]));
 
           // After the drawing animation completes, mark as fully animated
@@ -74,7 +83,7 @@ export const useLineAnimation = ({
     }
 
     return clearAllTimeouts;
-  }, [isShowingLines, totalLines, delayBetweenLines]);
+  }, [isShowingLines, actualTotalLines, delayBetweenLines]);
 
   // Get animation state for a specific line
   const getLineAnimationState = (lineIndex: number) => {
@@ -99,7 +108,7 @@ export const useLineAnimation = ({
     getLineAnimationState,
     animatedLinesCount: animatedLines.size,
     drawingLinesCount: drawingLines.size,
-    isAnimationComplete: animatedLines.size === totalLines,
-    totalLines
+    isAnimationComplete: animatedLines.size === actualTotalLines,
+    totalLines: actualTotalLines
   };
 };
