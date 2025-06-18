@@ -26,7 +26,7 @@ export const ChartRenderer = ({
   lineDrawingDuration = LINE_ANIMATION.DRAWING_DURATION
 }: ChartRendererProps) => {
 
-  console.log('📊 ChartRenderer (refactored):', {
+  console.log('📊 ChartRenderer (fixed):', {
     chartDataLength: chartData.length,
     hasMonteCarloData: !!monteCarloData,
     isShowingLines,

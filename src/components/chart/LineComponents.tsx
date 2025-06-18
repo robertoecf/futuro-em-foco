@@ -36,6 +36,12 @@ export const LineComponents = ({
     return colors[index % colors.length];
   };
 
+  console.log('🎨 LineComponents rendering:', {
+    hasMonteCarloData: !!monteCarloData,
+    isShowingLines,
+    isDrawingFinalLines
+  });
+
   return (
     <>
       {/* Savings line - always visible */}
