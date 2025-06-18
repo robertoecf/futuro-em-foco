@@ -16,7 +16,7 @@ export const HeroSection = ({ onReceivePlan }: HeroSectionProps) => {
   };
 
   return (
-    <div className="orange-red-gradient text-white p-8 md:p-16 rounded-lg max-w-7xl mx-auto relative overflow-hidden">
+    <div className="aurora-banner text-white p-8 md:p-16 rounded-lg max-w-7xl mx-auto relative overflow-hidden">
       {/* Aurora Background */}
       <div id="aurora-banner-background">
         <div id="banner-blob1" className="aurora-banner-blob"></div>
@@ -41,7 +41,7 @@ export const HeroSection = ({ onReceivePlan }: HeroSectionProps) => {
           Vamos entender o seu objetivo e checar a necessidade de ajustes no seu planejamento.
         </p>
         <Button 
-          className="bg-black hover:bg-gray-800 text-white"
+          className="bg-white hover:bg-gray-100 text-black font-semibold"
           onClick={handleClick}
         >
           Consultar um especialista
