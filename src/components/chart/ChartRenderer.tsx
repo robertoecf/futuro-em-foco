@@ -3,7 +3,7 @@ import { ComposedChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveCo
 import { MonteCarloResult } from '@/lib/utils';
 import { CustomTooltip } from './CustomTooltip';
 import { formatYAxis } from './chartUtils';
-import { useLineAnimation } from './useLineAnimation';
+import { useGradientLineAnimation } from './useGradientLineAnimation';
 import { useFinalLinesAnimation } from './useFinalLinesAnimation';
 import { LINE_ANIMATION } from '@/components/calculator/constants';
 
@@ -15,6 +15,7 @@ interface ChartRendererProps {
   isShowingLines: boolean;
   isDrawingFinalLines: boolean;
   lineDrawingDuration?: number;
+  generateLineColor?: (index: number, total?: number) => string;
 }
 
 export const ChartRenderer = ({
@@ -24,12 +25,14 @@ export const ChartRenderer = ({
   monteCarloData,
   isShowingLines,
   isDrawingFinalLines,
-  lineDrawingDuration = LINE_ANIMATION.DRAWING_DURATION
+  lineDrawingDuration = LINE_ANIMATION.DRAWING_DURATION,
+  generateLineColor
 }: ChartRendererProps) => {
   
-  const { getLineAnimationState } = useLineAnimation({
+  const { getLineAnimationState } = useGradientLineAnimation({
     isShowingLines,
     totalLines: LINE_ANIMATION.TOTAL_LINES,
+    chartData,
     drawingDuration: lineDrawingDuration
   });
 
@@ -37,16 +40,15 @@ export const ChartRenderer = ({
     isDrawingFinalLines
   });
 
-  // Generate colors for the 50 lines
-  const generateLineColor = (index: number) => {
-    const colors = [
-      '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FECA57', 
-      '#FF9FF3', '#54A0FF', '#5F27CD', '#00D2D3', '#FF9F43',
-      '#FC427B', '#1DD1A1', '#3742FA', '#2F3542', '#FF5722',
-      '#009688', '#673AB7', '#E91E63', '#795548', '#607D8B'
-    ];
-    return colors[index % colors.length];
+  // Default color generator if not provided
+  const defaultGenerateLineColor = (index: number) => {
+    const hue = (index * 360) / LINE_ANIMATION.TOTAL_LINES;
+    const saturation = 60 + (index % 30);
+    const lightness = 45 + (index % 20);
+    return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
   };
+
+  const colorGenerator = generateLineColor || defaultGenerateLineColor;
 
   console.log('📊 ChartRenderer:', {
     chartDataLength: chartData.length,
@@ -54,26 +56,21 @@ export const ChartRenderer = ({
     isShowingLines,
     isDrawingFinalLines,
     lineDrawingDuration,
+    totalLines: LINE_ANIMATION.TOTAL_LINES,
     firstDataKeys: chartData[0] ? Object.keys(chartData[0]) : []
   });
 
   return (
     <div className="relative h-[400px] w-full bg-white border border-gray-200 rounded-lg p-4">
-      {/* CSS for line drawing animation */}
+      {/* Optimized CSS for smooth animations */}
       <style>{`
-        @keyframes draw-line {
-          0% {
-            stroke-dashoffset: 1000;
-            opacity: 0.3;
-          }
-          50% {
-            stroke-dashoffset: 500;
-            opacity: 0.8;
-          }
-          100% {
-            stroke-dashoffset: 0;
-            opacity: 1;
-          }
+        .monte-carlo-line {
+          vector-effect: non-scaling-stroke;
+        }
+        
+        .gradient-line {
+          transition: opacity 800ms ease-in-out;
+          will-change: opacity;
         }
       `}</style>
 
@@ -133,7 +130,7 @@ export const ChartRenderer = ({
             activeDot={{ r: 6, stroke: '#6B7280', strokeWidth: 2, fill: '#fff' }}
           />
 
-          {/* 50 Monte Carlo lines - fantastic progressive animation */}
+          {/* 500 Monte Carlo lines - smooth gradient animation */}
           {monteCarloData && Array.from({ length: LINE_ANIMATION.TOTAL_LINES }, (_, i) => {
             const animationState = getLineAnimationState(i);
             
@@ -142,19 +139,15 @@ export const ChartRenderer = ({
                 key={`monte-carlo-line-${i}`}
                 type="monotone"
                 dataKey={`line${i}`}
-                stroke={generateLineColor(i)}
-                strokeWidth={1.8}
-                strokeOpacity={animationState.opacity}
-                strokeDasharray={animationState.strokeDasharray}
-                strokeDashoffset={animationState.strokeDashoffset}
+                stroke={colorGenerator(i, LINE_ANIMATION.TOTAL_LINES)}
+                strokeWidth={1.5}
+                strokeOpacity={animationState.currentOpacity}
                 dot={false}
                 activeDot={false}
                 connectNulls={false}
                 isAnimationActive={false}
-                style={{
-                  transition: `opacity ${LINE_ANIMATION.OPACITY_FADE_DURATION}ms ease-out`,
-                  ...animationState.drawingStyle
-                }}
+                className="monte-carlo-line gradient-line"
+                style={animationState.style}
               />
             );
           })}
@@ -171,7 +164,7 @@ export const ChartRenderer = ({
                     dataKey="pessimistic" 
                     name="Cenário Pessimista"
                     stroke="#DC2626" 
-                    strokeWidth={2}
+                    strokeWidth={3}
                     strokeDasharray={isDrawingFinalLines ? animationState.strokeDasharray : "5 5"}
                     strokeDashoffset={isDrawingFinalLines ? animationState.strokeDashoffset : "0"}
                     strokeOpacity={isDrawingFinalLines ? animationState.opacity : 1}
@@ -192,7 +185,7 @@ export const ChartRenderer = ({
                     dataKey="median" 
                     name="Cenário Neutro"
                     stroke="#3B82F6" 
-                    strokeWidth={3}
+                    strokeWidth={4}
                     strokeDasharray={isDrawingFinalLines ? animationState.strokeDasharray : "none"}
                     strokeDashoffset={isDrawingFinalLines ? animationState.strokeDashoffset : "0"}
                     strokeOpacity={isDrawingFinalLines ? animationState.opacity : 1}
@@ -213,7 +206,7 @@ export const ChartRenderer = ({
                     dataKey="optimistic" 
                     name="Cenário Otimista"
                     stroke="#10B981" 
-                    strokeWidth={2}
+                    strokeWidth={3}
                     strokeDasharray={isDrawingFinalLines ? animationState.strokeDasharray : "5 5"}
                     strokeDashoffset={isDrawingFinalLines ? animationState.strokeDashoffset : "0"}
                     strokeOpacity={isDrawingFinalLines ? animationState.opacity : 1}
