@@ -40,12 +40,10 @@ export const ChartRenderer = ({
     isDrawingFinalLines
   });
 
-  // Default color generator if not provided
+  // Default color generator if not provided - SIMPLE VERSION
   const defaultGenerateLineColor = (index: number) => {
     const hue = (index * 360) / LINE_ANIMATION.TOTAL_LINES;
-    const saturation = 60 + (index % 30);
-    const lightness = 45 + (index % 20);
-    return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+    return `hsl(${hue}, 70%, 50%)`;
   };
 
   const colorGenerator = generateLineColor || defaultGenerateLineColor;
@@ -61,7 +59,7 @@ export const ChartRenderer = ({
 
   return (
     <div className="relative h-[400px] w-full bg-white border border-gray-200 rounded-lg p-4">
-      {/* Optimized CSS for smooth animations - only opacity */}
+      {/* Simple CSS for smooth animations */}
       <style>{`
         .monte-carlo-line {
           vector-effect: non-scaling-stroke;
@@ -131,9 +129,14 @@ export const ChartRenderer = ({
             activeDot={{ r: 6, stroke: '#6B7280', strokeWidth: 2, fill: '#fff' }}
           />
 
-          {/* Monte Carlo lines - ONLY during 'paths' phase */}
+          {/* Monte Carlo lines - ONLY during 'paths' phase - SIMPLIFIED */}
           {monteCarloData && isShowingLines && Array.from({ length: LINE_ANIMATION.TOTAL_LINES }, (_, i) => {
             const animationState = getLineAnimationState(i);
+            
+            // Debug log for first few lines
+            if (i < 5) {
+              console.log(`Line ${i} state:`, animationState);
+            }
             
             return (
               <Line
@@ -148,7 +151,6 @@ export const ChartRenderer = ({
                 connectNulls={false}
                 isAnimationActive={false}
                 className="monte-carlo-line"
-                style={animationState.style}
               />
             );
           })}
@@ -172,7 +174,6 @@ export const ChartRenderer = ({
                     activeDot={{ r: 6, stroke: '#DC2626', strokeWidth: 2, fill: '#fff' }}
                     isAnimationActive={false}
                     className="final-line"
-                    style={animationState.style}
                   />
                 );
               })()}
@@ -192,7 +193,6 @@ export const ChartRenderer = ({
                     activeDot={{ r: 8, stroke: '#3B82F6', strokeWidth: 2, fill: '#fff' }}
                     isAnimationActive={false}
                     className="final-line"
-                    style={animationState.style}
                   />
                 );
               })()}
@@ -213,7 +213,6 @@ export const ChartRenderer = ({
                     activeDot={{ r: 6, stroke: '#10B981', strokeWidth: 2, fill: '#fff' }}
                     isAnimationActive={false}
                     className="final-line"
-                    style={animationState.style}
                   />
                 );
               })()}

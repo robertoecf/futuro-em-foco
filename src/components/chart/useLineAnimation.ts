@@ -36,41 +36,10 @@ export const useLineAnimation = ({
     timeoutsRef.current = [];
   };
 
-  // Calculate gradient opacity based on line's final value position
-  const calculateGradientOpacity = (lineIndex: number): number => {
-    if (!chartData || chartData.length === 0) return 0.5;
-    
-    // Get the final value for this line (last data point)
-    const finalDataPoint = chartData[chartData.length - 1];
-    const lineValue = finalDataPoint?.[`line${lineIndex}`];
-    
-    if (!lineValue) return 0.5;
-    
-    // Collect all final values to determine position in range
-    const allFinalValues: number[] = [];
-    for (let i = 0; i < totalLines; i++) {
-      const value = finalDataPoint?.[`line${i}`];
-      if (value) allFinalValues.push(value);
-    }
-    
-    if (allFinalValues.length === 0) return 0.5;
-    
-    // Calculate percentile position (0 = bottom, 1 = top)
-    allFinalValues.sort((a, b) => a - b);
-    const position = allFinalValues.indexOf(lineValue) / (allFinalValues.length - 1);
-    
-    // Create subtle gradient: top values get higher opacity, bottom values get lower
-    if (position >= 0.8) return 0.7; // Top 20%
-    if (position >= 0.6) return 0.6; // 60-80%
-    if (position >= 0.4) return 0.5; // 40-60%
-    if (position >= 0.2) return 0.4; // 20-40%
-    return 0.3; // Bottom 20%
-  };
-
-  // Start line animation with smooth fade-in only
+  // Start line animation with simple fade-in
   useEffect(() => {
     if (isShowingLines) {
-      console.log('🚀 Starting line animation with smooth fade-in');
+      console.log('🚀 Starting line animation - simple version');
       
       // Reset states
       setAnimatedLines(new Set());
@@ -109,22 +78,24 @@ export const useLineAnimation = ({
     return clearAllTimeouts;
   }, [isShowingLines, totalLines, delayBetweenLines]);
 
-  // Get animation state for a specific line with gradient opacity
+  // Get animation state for a specific line - SIMPLE VERSION
   const getLineAnimationState = (lineIndex: number) => {
     const isFading = fadingLines.has(lineIndex);
     const isComplete = animatedLines.has(lineIndex);
-    const gradientOpacity = calculateGradientOpacity(lineIndex);
+    
+    // Opacidade fixa e simples
+    const targetOpacity = 0.6; // Opacidade única para todas as linhas
     
     return {
       isFading,
       isComplete,
       isVisible: isFading || isComplete,
-      targetOpacity: gradientOpacity,
-      currentOpacity: isComplete ? gradientOpacity : (isFading ? gradientOpacity * 0.3 : 0),
+      targetOpacity,
+      currentOpacity: isComplete ? targetOpacity : (isFading ? targetOpacity * 0.3 : 0),
       animationDelay: `${lineIndex * delayBetweenLines}ms`,
-      // Smooth opacity-only animation - no stroke animations that cause flickering
+      // Animação simples apenas com opacity
       style: {
-        opacity: isComplete ? gradientOpacity : (isFading ? gradientOpacity * 0.3 : 0),
+        opacity: isComplete ? targetOpacity : (isFading ? targetOpacity * 0.3 : 0),
         transition: isFading ? `opacity ${LINE_ANIMATION.OPACITY_FADE_DURATION}ms ease-in-out` : 'none',
         willChange: isFading ? 'opacity' : 'auto'
       }
