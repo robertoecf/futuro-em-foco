@@ -1,14 +1,22 @@
 
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
 import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { useCalculator } from './useCalculator';
-import { CalculatorForm } from './CalculatorForm';
+import { OptimizedCalculatorForm } from './OptimizedCalculatorForm';
 import { ResultsCards } from './ResultsCards';
 import { InsightsCards } from './InsightsCards';
-import { ChartComponent } from '@/components/ChartComponent';
 import { InvestorProfiles } from '@/components/InvestorProfiles';
-import { Recommendations } from '@/components/Recommendations';
+
+// Lazy load heavy components
+const ChartComponent = lazy(() => import('@/components/ChartComponent').then(module => ({ default: module.ChartComponent })));
+const Recommendations = lazy(() => import('@/components/Recommendations').then(module => ({ default: module.Recommendations })));
+
+// Loading component for suspense
+const ComponentLoader = () => (
+  <div className="flex items-center justify-center p-8">
+    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+  </div>
+);
 
 export const Calculator: React.FC = () => {
   const {
@@ -51,12 +59,12 @@ export const Calculator: React.FC = () => {
           <h3 className="text-xl font-bold text-gray-900">Parâmetros</h3>
         </div>
 
-        {/* Input Form - Two Panels Side by Side */}
-        <CalculatorForm
+        {/* Optimized Input Form */}
+        <OptimizedCalculatorForm
           initialAmount={initialAmount}
           monthlyAmount={monthlyAmount}
           currentAge={currentAge}
-          retirementAge={possibleRetirementAge} // Use calculated possible retirement age
+          retirementAge={possibleRetirementAge}
           retirementIncome={retirementIncome}
           portfolioReturn={portfolioReturn}
           investorProfile={investorProfile}
@@ -69,7 +77,7 @@ export const Calculator: React.FC = () => {
           setInvestorProfile={setInvestorProfile}
         />
         
-        {/* Insights Section - Moved above the chart */}
+        {/* Insights Section */}
         <InsightsCards
           initialAmount={initialAmount}
           monthlyAmount={monthlyAmount}
@@ -81,32 +89,34 @@ export const Calculator: React.FC = () => {
           investorProfile={investorProfile}
         />
 
-        {/* Chart - Full Width with integrated controls and information */}
+        {/* Lazy-loaded Chart */}
         <div className="mb-8">
-          <ChartComponent 
-            data={calculationResult?.yearlyValues || []} 
-            accumulationYears={accumulationYears}
-            lifeExpectancy={lifeExpectancy}
-            currentAge={currentAge}
-            monthlyIncomeTarget={calculationResult?.monthlyIncome || 0}
-            portfolioReturn={portfolioReturn}
-            onLifeExpectancyChange={handleLifeExpectancyChange} 
-            showLifeExpectancyControl={true}
-            monteCarloData={monteCarloResult}
-            isCalculating={isCalculating}
-            isMonteCarloEnabled={isMonteCarloEnabled}
-            onMonteCarloToggle={handleMonteCarloToggle}
-            initialAmount={initialAmount}
-            monthlyAmount={monthlyAmount}
-            retirementAge={possibleRetirementAge}
-            retirementIncome={retirementIncome}
-            investorProfile={investorProfile}
-            calculationResult={calculationResult}
-            onAnimationComplete={finishCalculation}
-          />
+          <Suspense fallback={<ComponentLoader />}>
+            <ChartComponent 
+              data={calculationResult?.yearlyValues || []} 
+              accumulationYears={accumulationYears}
+              lifeExpectancy={lifeExpectancy}
+              currentAge={currentAge}
+              monthlyIncomeTarget={calculationResult?.monthlyIncome || 0}
+              portfolioReturn={portfolioReturn}
+              onLifeExpectancyChange={handleLifeExpectancyChange} 
+              showLifeExpectancyControl={true}
+              monteCarloData={monteCarloResult}
+              isCalculating={isCalculating}
+              isMonteCarloEnabled={isMonteCarloEnabled}
+              onMonteCarloToggle={handleMonteCarloToggle}
+              initialAmount={initialAmount}
+              monthlyAmount={monthlyAmount}
+              retirementAge={possibleRetirementAge}
+              retirementIncome={retirementIncome}
+              investorProfile={investorProfile}
+              calculationResult={calculationResult}
+              onAnimationComplete={finishCalculation}
+            />
+          </Suspense>
         </div>
 
-        {/* Results Cards - Now below the chart */}
+        {/* Results Cards */}
         <ResultsCards
           calculationResult={calculationResult}
           retirementAge={possibleRetirementAge}
@@ -119,10 +129,10 @@ export const Calculator: React.FC = () => {
         />
       </Card>
 
-      {/* Recommendations Section */}
-      <div>
+      {/* Lazy-loaded Recommendations Section */}
+      <Suspense fallback={<ComponentLoader />}>
         <Recommendations investorProfile={investorProfile} />
-      </div>
+      </Suspense>
     </div>
   );
 };

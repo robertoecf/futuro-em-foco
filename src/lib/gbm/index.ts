@@ -6,4 +6,5 @@ export { monteCarloGBM } from './coreGBM';
 export { portfolioGBMSimulation } from './portfolioSimulation';
 export { calculateStatistics } from './statistics';
 export { runBrownianMonteCarloSimulation } from './mainSimulation';
+export { runOptimizedMonteCarloSimulation } from './optimizedSimulation';
 export { compareMonteCarloMethods } from './comparison';

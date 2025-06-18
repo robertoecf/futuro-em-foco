@@ -1,14 +1,14 @@
 
-import { secureStorage } from '@/lib/secureStorage';
+import { optimizedStorage } from '@/lib/optimizedStorage';
 
-// Function to load data from secure storage
+// Function to load data from optimized storage
 export const loadFromStorage = (key: string, defaultValue: any) => {
-  return secureStorage.get(key, defaultValue);
+  return optimizedStorage.get(key, defaultValue);
 };
 
-// Function to save to secure storage
+// Function to save to optimized storage with batching
 export const saveToStorage = (key: string, value: any) => {
-  secureStorage.set(key, value);
+  optimizedStorage.set(key, value);
 };
 
 // Function to load data from a shared plan
@@ -18,7 +18,7 @@ export const loadFromSharedPlan = () => {
   
   if (planId) {
     try {
-      const planData = secureStorage.get(`planning_${planId}`);
+      const planData = optimizedStorage.get(`planning_${planId}`);
       if (planData) {
         return planData.planningInputs;
       }
@@ -29,7 +29,7 @@ export const loadFromSharedPlan = () => {
   return null;
 };
 
-// Cleanup expired data on app start
-export const cleanupExpiredData = () => {
-  secureStorage.cleanup();
+// Async cleanup of expired data
+export const cleanupExpiredData = async () => {
+  await optimizedStorage.cleanup();
 };
