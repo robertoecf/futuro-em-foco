@@ -55,12 +55,6 @@ export const useFinalLinesAnimation = ({
 
         timeoutsRef.current.push(startDrawingTimeout);
       });
-    } else if (!isDrawingFinalLines) {
-      // Only reset if we're not in drawing mode - this preserves completed lines
-      console.log('🔄 Resetting final lines animation');
-      clearAllTimeouts();
-      setCurrentlyDrawing(null);
-      // Don't reset completedLines here - let them stay visible
     }
 
     return clearAllTimeouts;
@@ -70,13 +64,15 @@ export const useFinalLinesAnimation = ({
   const getFinalLineAnimationState = (lineKey: string) => {
     const isDrawing = currentlyDrawing === lineKey;
     const isComplete = completedLines.has(lineKey);
-    const isVisible = isDrawing || isComplete;
+    
+    // Line is visible if it's drawing, completed, or if animation is not active
+    const isVisible = isDrawing || isComplete || !isDrawingFinalLines;
     
     return {
       isDrawing,
       isComplete,
       isVisible,
-      strokeDasharray: isDrawing ? "1000 1000" : "none",
+      strokeDasharray: isDrawing ? "1000 1000" : (lineKey === 'median' ? "none" : "8 4"),
       strokeDashoffset: isDrawing ? "1000" : "0",
       opacity: isVisible ? 1 : 0,
       drawingStyle: isDrawing ? {

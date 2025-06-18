@@ -1,3 +1,4 @@
+
 import { ComposedChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
 import { MonteCarloResult } from '@/lib/utils';
 import { CustomTooltip } from './CustomTooltip';
@@ -136,7 +137,7 @@ export const ChartRenderer = ({
             );
           })}
 
-          {/* Final Monte Carlo results - always show when Monte Carlo data exists */}
+          {/* Final Monte Carlo results - always render, control visibility with opacity */}
           {monteCarloData && (
             <>
               {/* Pessimistic Line */}
