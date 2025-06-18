@@ -1,4 +1,3 @@
-
 import { ComposedChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
 import { MonteCarloResult } from '@/lib/utils';
 import { CustomTooltip } from './CustomTooltip';
@@ -137,13 +136,12 @@ export const ChartRenderer = ({
             );
           })}
 
-          {/* Final Monte Carlo results - with smooth drawing animation */}
-          {monteCarloData && (isDrawingFinalLines || (!isShowingLines && !isDrawingFinalLines)) && (
+          {/* Final Monte Carlo results - always show when Monte Carlo data exists */}
+          {monteCarloData && (
             <>
               {/* Pessimistic Line */}
               {(() => {
                 const animationState = getFinalLineAnimationState('pessimistic');
-                if (!animationState.isVisible) return null;
                 
                 return (
                   <Line 
@@ -167,7 +165,6 @@ export const ChartRenderer = ({
               {/* Median Line */}
               {(() => {
                 const animationState = getFinalLineAnimationState('median');
-                if (!animationState.isVisible) return null;
                 
                 return (
                   <Line 
@@ -191,7 +188,6 @@ export const ChartRenderer = ({
               {/* Optimistic Line */}
               {(() => {
                 const animationState = getFinalLineAnimationState('optimistic');
-                if (!animationState.isVisible) return null;
                 
                 return (
                   <Line 

@@ -55,11 +55,12 @@ export const useFinalLinesAnimation = ({
 
         timeoutsRef.current.push(startDrawingTimeout);
       });
-    } else {
+    } else if (!isDrawingFinalLines) {
+      // Only reset if we're not in drawing mode - this preserves completed lines
       console.log('🔄 Resetting final lines animation');
       clearAllTimeouts();
       setCurrentlyDrawing(null);
-      setCompletedLines(new Set());
+      // Don't reset completedLines here - let them stay visible
     }
 
     return clearAllTimeouts;
