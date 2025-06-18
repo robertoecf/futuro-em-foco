@@ -1,10 +1,9 @@
 
-import { ComposedChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
+import { ComposedChart, ResponsiveContainer } from 'recharts';
 import { MonteCarloResult } from '@/lib/utils';
-import { CustomTooltip } from './CustomTooltip';
-import { formatYAxis } from './chartUtils';
-import { useLineAnimation } from './useLineAnimation';
-import { FinalLinesRenderer } from './FinalLinesRenderer';
+import { ChartGrid } from './ChartGrid';
+import { ReferenceLines } from './ReferenceLines';
+import { LineComponents } from './LineComponents';
 import { LINE_ANIMATION } from '@/components/calculator/constants';
 
 interface ChartRendererProps {
@@ -26,23 +25,6 @@ export const ChartRenderer = ({
   isDrawingFinalLines,
   lineDrawingDuration = LINE_ANIMATION.DRAWING_DURATION
 }: ChartRendererProps) => {
-  
-  const { getLineAnimationState } = useLineAnimation({
-    isShowingLines,
-    totalLines: LINE_ANIMATION.TOTAL_LINES,
-    drawingDuration: lineDrawingDuration
-  });
-
-  // Generate colors for the 50 lines
-  const generateLineColor = (index: number) => {
-    const colors = [
-      '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FECA57', 
-      '#FF9FF3', '#54A0FF', '#5F27CD', '#00D2D3', '#FF9F43',
-      '#FC427B', '#1DD1A1', '#3742FA', '#2F3542', '#FF5722',
-      '#009688', '#673AB7', '#E91E63', '#795548', '#607D8B'
-    ];
-    return colors[index % colors.length];
-  };
 
   console.log('📊 ChartRenderer (refactored):', {
     chartDataLength: chartData.length,
@@ -59,97 +41,19 @@ export const ChartRenderer = ({
           data={chartData}
           margin={{ top: 20, right: 30, left: 80, bottom: 20 }}
         >
-          <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-          <XAxis 
-            dataKey="age" 
-            label={{ value: 'Idade', position: 'insideBottom', offset: -10 }}
-            tickFormatter={(value) => `${value}`}
-          />
-          <YAxis 
-            tickFormatter={formatYAxis}
-            width={80}
-          />
-          <Tooltip content={<CustomTooltip monteCarloData={monteCarloData} />} />
+          <ChartGrid monteCarloData={monteCarloData} />
           
-          {/* Reference line for possible retirement age */}
-          <ReferenceLine 
-            x={possibleRetirementAge} 
-            stroke="#9CA3AF" 
-            strokeDasharray="5 5" 
-            label={{ 
-              value: 'Idade de Aposentadoria', 
-              position: 'top', 
-              fill: '#6B7280',
-              fontSize: 11
-            }} 
-          />
-          
-          {/* Reference line for perpetuity wealth */}
-          {perpetuityWealth > 0 && (
-            <ReferenceLine 
-              y={perpetuityWealth} 
-              stroke="#9CA3AF" 
-              strokeDasharray="8 4" 
-              label={{ 
-                value: 'Patrimônio Perpetuidade', 
-                position: 'insideTopRight', 
-                fill: '#6B7280',
-                fontSize: 11
-              }} 
-            />
-          )}
-
-          {/* Savings line - always visible */}
-          <Line 
-            type="monotone" 
-            dataKey="poupanca" 
-            name="Total Poupado"
-            stroke="#6B7280" 
-            strokeWidth={2}
-            dot={false}
-            activeDot={{ r: 6, stroke: '#6B7280', strokeWidth: 2, fill: '#fff' }}
+          <ReferenceLines 
+            possibleRetirementAge={possibleRetirementAge}
+            perpetuityWealth={perpetuityWealth}
           />
 
-          {/* 50 Monte Carlo lines - smooth progressive animation */}
-          {monteCarloData && Array.from({ length: LINE_ANIMATION.TOTAL_LINES }, (_, i) => {
-            const animationState = getLineAnimationState(i);
-            
-            if (!animationState.isVisible) return null;
-            
-            return (
-              <Line
-                key={`monte-carlo-line-${i}`}
-                type="monotone"
-                dataKey={`line${i}`}
-                stroke={generateLineColor(i)}
-                strokeWidth={1.8}
-                strokeOpacity={animationState.opacity}
-                dot={false}
-                activeDot={false}
-                connectNulls={false}
-                isAnimationActive={false}
-              />
-            );
-          })}
-
-          {/* Final Monte Carlo results using new component */}
-          {monteCarloData && (
-            <FinalLinesRenderer isDrawingFinalLines={isDrawingFinalLines} />
-          )}
-
-          {/* Regular patrimonio line - only when Monte Carlo is disabled */}
-          {!monteCarloData && (
-            <Line 
-              type="monotone" 
-              dataKey="patrimonio" 
-              name="Patrimônio"
-              stroke="#FF6B00" 
-              strokeWidth={2}
-              dot={false}
-              activeDot={{ r: 8, stroke: '#FF6B00', strokeWidth: 2, fill: '#fff' }}
-              connectNulls
-            />
-          )}
+          <LineComponents
+            monteCarloData={monteCarloData}
+            isShowingLines={isShowingLines}
+            isDrawingFinalLines={isDrawingFinalLines}
+            lineDrawingDuration={lineDrawingDuration}
+          />
         </ComposedChart>
       </ResponsiveContainer>
     </div>
