@@ -33,7 +33,7 @@ const Index = () => {
   return <div className="min-h-screen">
       {/* Header */}
       <header className="flex justify-between items-center p-6 max-w-7xl mx-auto">
-        <div className="text-2xl font-bold">Futuro em foco</div>
+        <div className="text-2xl font-bold">Futuro em Foco</div>
         <Button className="bg-black hover:bg-gray-800">Conheça o planner</Button>
       </header>
 
