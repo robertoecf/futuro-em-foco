@@ -31,6 +31,7 @@ export const LINE_ANIMATION = {
   },
   FADE_IN_DURATION: 2000, // 2 seconds para cada linha fazer fade-in (sem stroke animation)
   OPACITY_FADE_DURATION: 800, // Fade-in mais longo e suave
+  STROKE_ANIMATION_DURATION: 2000, // Adicionado de volta para compatibilidade
   // Configurações para degradê
   GRADIENT_OPACITY: {
     TOP: 0.9, // Linhas no topo (valores altos)
