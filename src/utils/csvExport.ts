@@ -1,4 +1,3 @@
-
 import { validateAndSanitize, sanitizeCSVValue } from '@/lib/validation';
 
 interface UserData {
@@ -8,7 +7,20 @@ interface UserData {
   wantsExpertEvaluation: boolean;
 }
 
-export const generateSecureExcelFile = (chartData: any[], userData: UserData) => {
+interface ChartDataPoint {
+  age: number;
+  patrimonio: number;
+  poupanca: number;
+  fase: string;
+  pessimistic?: number;
+  median?: number;
+  optimistic?: number;
+  percentile25?: number;
+  percentile75?: number;
+  [key: string]: number | string | undefined; // Para as linhas Monte Carlo dinâmicas (line0, line1, etc.)
+}
+
+export const generateSecureExcelFile = (chartData: ChartDataPoint[], userData: UserData) => {
   // Create CSV content with proper sanitization
   const headers = ['Idade', 'Patrimonio', 'Total_Poupado', 'Fase'];
   

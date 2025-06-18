@@ -1,8 +1,8 @@
 
 import { encryption } from './encryption';
 
-interface StoredData {
-  data: any;
+interface StoredData<T = unknown> {
+  data: T;
   timestamp: number;
   expiresIn?: number; // milliseconds
 }
@@ -10,9 +10,9 @@ interface StoredData {
 class SecureStorage {
   private readonly DEFAULT_EXPIRY = 30 * 24 * 60 * 60 * 1000; // 30 days
 
-  set(key: string, value: any, expiresIn?: number): void {
+  set<T>(key: string, value: T, expiresIn?: number): void {
     try {
-      const storedData: StoredData = {
+      const storedData: StoredData<T> = {
         data: value,
         timestamp: Date.now(),
         expiresIn: expiresIn || this.DEFAULT_EXPIRY
@@ -25,12 +25,12 @@ class SecureStorage {
     }
   }
 
-  get(key: string, defaultValue: any = null): any {
+  get<T>(key: string, defaultValue: T | null = null): T | null {
     try {
       const encrypted = localStorage.getItem(`secure_${key}`);
       if (!encrypted) return defaultValue;
 
-      const storedData: StoredData = encryption.decrypt(encrypted);
+      const storedData: StoredData<T> = encryption.decrypt(encrypted);
       if (!storedData) return defaultValue;
 
       // Check expiration
