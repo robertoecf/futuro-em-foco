@@ -1,5 +1,4 @@
 
-import { useMemo } from 'react';
 import { MonteCarloResult } from '@/lib/utils';
 
 interface ChartDataProcessorProps {
@@ -24,7 +23,8 @@ export const useChartDataProcessor = ({
   isMonteCarloEnabled
 }: ChartDataProcessorProps) => {
   
-  const savingsLine = useMemo(() => {
+  // Calculate savings line
+  const calculateSavingsLine = () => {
     const savingsData: number[] = [];
     let totalSaved = initialAmount;
     
@@ -44,9 +44,10 @@ export const useChartDataProcessor = ({
     }
     
     return savingsData;
-  }, [data, currentAge, accumulationYears, initialAmount, monthlyAmount, monthlyIncomeTarget]);
+  };
 
-  const monteCarloLines = useMemo(() => {
+  // Generate 50 Monte Carlo lines when data is available
+  const generateMonteCarloLines = () => {
     if (!isMonteCarloEnabled || !monteCarloData) {
       return [];
     }
@@ -76,48 +77,49 @@ export const useChartDataProcessor = ({
     
     console.log('✅ Generated', lines.length, 'Monte Carlo lines');
     return lines;
-  }, [isMonteCarloEnabled, monteCarloData]);
+  };
 
-  const chartData = useMemo(() => {
-    console.log('📊 ChartDataProcessor:', {
-      isMonteCarloEnabled,
-      hasMonteCarloData: !!monteCarloData,
-      monteCarloLinesGenerated: monteCarloLines.length
-    });
+  const savingsLine = calculateSavingsLine();
+  const monteCarloLines = generateMonteCarloLines();
 
-    return data.map((value, index) => {
-      const age = currentAge + index;
-      const baseData = {
-        age,
-        patrimonio: value,
-        poupanca: savingsLine[index] || 0,
-        fase: age < (currentAge + accumulationYears) ? "Acumulação" : "Aposentadoria"
+  console.log('📊 ChartDataProcessor:', {
+    isMonteCarloEnabled,
+    hasMonteCarloData: !!monteCarloData,
+    monteCarloLinesGenerated: monteCarloLines.length
+  });
+
+  const chartData = data.map((value, index) => {
+    const age = currentAge + index;
+    const baseData = {
+      age,
+      patrimonio: value,
+      poupanca: savingsLine[index] || 0,
+      fase: age < (currentAge + accumulationYears) ? "Acumulação" : "Aposentadoria"
+    };
+
+    // Always include Monte Carlo data when available
+    if (monteCarloData && index < monteCarloData.scenarios.pessimistic.length) {
+      const monteCarloData_final = {
+        pessimistic: monteCarloData.scenarios.pessimistic[index],
+        median: monteCarloData.scenarios.median[index],
+        optimistic: monteCarloData.scenarios.optimistic[index],
+        percentile25: monteCarloData.statistics.percentile25[index],
+        percentile75: monteCarloData.statistics.percentile75[index]
       };
 
-      // Always include Monte Carlo data when available
-      if (monteCarloData && index < monteCarloData.scenarios.pessimistic.length) {
-        const monteCarloData_final = {
-          pessimistic: monteCarloData.scenarios.pessimistic[index],
-          median: monteCarloData.scenarios.median[index],
-          optimistic: monteCarloData.scenarios.optimistic[index],
-          percentile25: monteCarloData.statistics.percentile25[index],
-          percentile75: monteCarloData.statistics.percentile75[index]
-        };
+      // Add the 50 Monte Carlo lines data
+      const linesData: Record<string, number> = {};
+      monteCarloLines.forEach((line, lineIndex) => {
+        if (index < line.length) {
+          linesData[`line${lineIndex}`] = line[index];
+        }
+      });
 
-        // Add the 50 Monte Carlo lines data
-        const linesData: Record<string, number> = {};
-        monteCarloLines.forEach((line, lineIndex) => {
-          if (index < line.length) {
-            linesData[`line${lineIndex}`] = line[lineIndex];
-          }
-        });
+      return { ...baseData, ...monteCarloData_final, ...linesData };
+    }
 
-        return { ...baseData, ...monteCarloData_final, ...linesData };
-      }
-
-      return baseData;
-    });
-  }, [data, currentAge, accumulationYears, savingsLine, monteCarloData, monteCarloLines]);
+    return baseData;
+  });
 
   return { chartData, savingsLine, monteCarloLines };
 };

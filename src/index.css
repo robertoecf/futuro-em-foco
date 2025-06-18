@@ -94,16 +94,6 @@
   }
 }
 
-/* Keyframe for drawing line effect */
-@keyframes draw-line {
-  0% {
-    stroke-dashoffset: 1000;
-  }
-  100% {
-    stroke-dashoffset: 0;
-  }
-}
-
 .orange-red-gradient {
   background: linear-gradient(135deg, #FF6B00 0%, #B30000 100%);
 }
@@ -134,3 +124,4 @@
 .recommendation-card:hover {
   transform: translateY(-5px);
 }
+
