@@ -1,3 +1,4 @@
+
 import { ComposedChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
 import { MonteCarloResult } from '@/lib/utils';
 import { CustomTooltip } from './CustomTooltip';
@@ -130,8 +131,8 @@ export const ChartRenderer = ({
             activeDot={{ r: 6, stroke: '#6B7280', strokeWidth: 2, fill: '#fff' }}
           />
 
-          {/* Monte Carlo lines - smooth fade animation only */}
-          {monteCarloData && Array.from({ length: LINE_ANIMATION.TOTAL_LINES }, (_, i) => {
+          {/* Monte Carlo lines - ONLY during 'paths' phase */}
+          {monteCarloData && isShowingLines && Array.from({ length: LINE_ANIMATION.TOTAL_LINES }, (_, i) => {
             const animationState = getLineAnimationState(i);
             
             return (
@@ -152,7 +153,7 @@ export const ChartRenderer = ({
             );
           })}
 
-          {/* Final Monte Carlo results - smooth opacity animation only (NO strokeDash) */}
+          {/* Final Monte Carlo results - ONLY during 'drawing-final' and 'final' phases */}
           {monteCarloData && (isDrawingFinalLines || (!isShowingLines && !isDrawingFinalLines)) && (
             <>
               {/* Pessimistic Line */}

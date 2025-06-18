@@ -11,12 +11,14 @@ export const useFinalLinesAnimation = ({
 }: UseFinalLinesAnimationProps) => {
   const [animatedLines, setAnimatedLines] = useState<Set<string>>(new Set());
   const [fadingLines, setFadingLines] = useState<Set<string>>(new Set());
+  const [hasCompletedAnimation, setHasCompletedAnimation] = useState(false);
   const timeoutsRef = useRef<NodeJS.Timeout[]>([]);
 
   console.log('📈 useFinalLinesAnimation:', {
     isDrawingFinalLines,
     animatedLinesCount: animatedLines.size,
     fadingLinesCount: fadingLines.size,
+    hasCompletedAnimation,
     animatedLines: Array.from(animatedLines),
     fadingLines: Array.from(fadingLines)
   });
@@ -29,7 +31,7 @@ export const useFinalLinesAnimation = ({
 
   // Start final lines drawing animation
   useEffect(() => {
-    if (isDrawingFinalLines) {
+    if (isDrawingFinalLines && !hasCompletedAnimation) {
       console.log('🎯 Starting final lines fade-in animation');
       
       // Reset states
@@ -51,7 +53,17 @@ export const useFinalLinesAnimation = ({
               next.delete(lineKey);
               return next;
             });
-            setAnimatedLines(prev => new Set([...prev, lineKey]));
+            setAnimatedLines(prev => {
+              const newSet = new Set([...prev, lineKey]);
+              
+              // Mark animation as completed when all lines are done
+              if (newSet.size === FINAL_LINES_ANIMATION.LINES.length) {
+                console.log('🏁 All final lines animation completed');
+                setHasCompletedAnimation(true);
+              }
+              
+              return newSet;
+            });
           }, FINAL_LINES_ANIMATION.OPACITY_FADE_DURATION);
 
           timeoutsRef.current.push(completeFadingTimeout);
@@ -59,20 +71,23 @@ export const useFinalLinesAnimation = ({
 
         timeoutsRef.current.push(startFadingTimeout);
       });
-    } else {
-      console.log('🔄 Resetting final lines animation');
-      clearAllTimeouts();
-      setAnimatedLines(new Set());
-      setFadingLines(new Set());
     }
 
     return clearAllTimeouts;
-  }, [isDrawingFinalLines]);
+  }, [isDrawingFinalLines, hasCompletedAnimation]);
+
+  // Reset completion flag only when Monte Carlo is disabled (detected by animation restart)
+  useEffect(() => {
+    if (!isDrawingFinalLines && animatedLines.size === 0 && fadingLines.size === 0) {
+      console.log('🔄 Resetting final lines animation completion flag');
+      setHasCompletedAnimation(false);
+    }
+  }, [isDrawingFinalLines, animatedLines.size, fadingLines.size]);
 
   // Get animation state for a specific final line - only opacity animation
   const getFinalLineAnimationState = (lineKey: string) => {
     const isFading = fadingLines.has(lineKey);
-    const isComplete = animatedLines.has(lineKey);
+    const isComplete = animatedLines.has(lineKey) || hasCompletedAnimation;
     
     return {
       isFading,
@@ -91,7 +106,7 @@ export const useFinalLinesAnimation = ({
     getFinalLineAnimationState,
     animatedLinesCount: animatedLines.size,
     fadingLinesCount: fadingLines.size,
-    isAnimationComplete: animatedLines.size === FINAL_LINES_ANIMATION.LINES.length,
+    isAnimationComplete: hasCompletedAnimation,
     totalFinalLines: FINAL_LINES_ANIMATION.LINES.length
   };
 };
