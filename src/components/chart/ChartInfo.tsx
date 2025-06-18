@@ -1,12 +1,15 @@
+
 import { Card } from '@/components/ui/card';
 import { formatCurrency } from '@/lib/utils';
 import { MonteCarloResult } from '@/lib/utils';
 import { TrendingUp, Target, BarChart3 } from 'lucide-react';
+
 interface ChartInfoProps {
   monteCarloData?: MonteCarloResult | null;
   perpetuityWealth: number;
   possibleRetirementAge: number;
 }
+
 export const ChartInfo = ({
   monteCarloData,
   perpetuityWealth,
@@ -33,9 +36,19 @@ export const ChartInfo = ({
               <div className="w-6 h-0.5 bg-red-600 border-t-2 border-dashed border-red-600"></div>
               <span className="text-xs text-gray-600">Pessimista (25º percentil)</span>
             </div>
-          </div> : <div className="flex items-center gap-2">
-            <div className="w-6 h-0.5 bg-orange-500"></div>
-            <span className="text-xs text-gray-600">Patrimônio Projetado</span>
+            <div className="flex items-center gap-2">
+              <div className="w-6 h-0.5 bg-gray-500"></div>
+              <span className="text-xs text-gray-600">Total Poupado</span>
+            </div>
+          </div> : <div className="space-y-2">
+            <div className="flex items-center gap-2">
+              <div className="w-6 h-0.5 bg-orange-500"></div>
+              <span className="text-xs text-gray-600">Patrimônio Projetado</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-6 h-0.5 bg-gray-500"></div>
+              <span className="text-xs text-gray-600">Total Poupado</span>
+            </div>
           </div>}
       </Card>
 

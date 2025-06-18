@@ -100,7 +100,7 @@ export const ChartRenderer = ({
             stroke="#9CA3AF" 
             strokeDasharray="5 5" 
             label={{ 
-              value: 'Idade de Aposentadoria', 
+              value: 'Independência financeira', 
               position: 'top', 
               fill: '#6B7280',
               fontSize: 11
