@@ -1,5 +1,5 @@
 
-import { useMemo, useRef, useEffect } from 'react';
+import { useMemo } from 'react';
 import { MonteCarloResult } from '@/lib/utils';
 
 interface ChartDataProcessorProps {
@@ -46,16 +46,13 @@ export const useChartDataProcessor = ({
     return savingsData;
   }, [data, currentAge, accumulationYears, initialAmount, monthlyAmount, monthlyIncomeTarget]);
 
-  const monteCarloLinesRef = useRef<number[][]>([]);
-
-  useEffect(() => {
+  const monteCarloLines = useMemo(() => {
     if (!isMonteCarloEnabled || !monteCarloData) {
-      monteCarloLinesRef.current = [];
-      return;
+      return [] as number[][];
     }
 
     console.log('🎨 Generating 50 Monte Carlo lines');
-    const lines = [] as number[][];
+    const lines: number[][] = [];
     const baseData = monteCarloData.scenarios.median;
 
     for (let lineIndex = 0; lineIndex < 50; lineIndex++) {
@@ -72,10 +69,8 @@ export const useChartDataProcessor = ({
     }
 
     console.log('✅ Generated', lines.length, 'Monte Carlo lines');
-    monteCarloLinesRef.current = lines;
+    return lines;
   }, [isMonteCarloEnabled, monteCarloData]);
-
-  const monteCarloLines = monteCarloLinesRef.current;
 
   console.log('📊 ChartDataProcessor:', {
     isMonteCarloEnabled,
