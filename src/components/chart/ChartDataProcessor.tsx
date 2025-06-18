@@ -1,4 +1,5 @@
 
+import { useEffect, useRef } from 'react';
 import { MonteCarloResult } from '@/lib/utils';
 
 interface ChartDataProcessorProps {
@@ -22,6 +23,8 @@ export const useChartDataProcessor = ({
   monteCarloData,
   isMonteCarloEnabled
 }: ChartDataProcessorProps) => {
+
+  const monteCarloLinesRef = useRef<number[][]>([]);
   
   // Calculate savings line
   const calculateSavingsLine = () => {
@@ -80,12 +83,15 @@ export const useChartDataProcessor = ({
   };
 
   const savingsLine = calculateSavingsLine();
-  const monteCarloLines = generateMonteCarloLines();
+
+  useEffect(() => {
+    monteCarloLinesRef.current = generateMonteCarloLines();
+  }, [monteCarloData, isMonteCarloEnabled]);
 
   console.log('📊 ChartDataProcessor:', {
     isMonteCarloEnabled,
     hasMonteCarloData: !!monteCarloData,
-    monteCarloLinesGenerated: monteCarloLines.length
+    monteCarloLinesGenerated: monteCarloLinesRef.current.length
   });
 
   const chartData = data.map((value, index) => {
@@ -109,7 +115,7 @@ export const useChartDataProcessor = ({
 
       // Add the 50 Monte Carlo lines data
       const linesData: Record<string, number> = {};
-      monteCarloLines.forEach((line, lineIndex) => {
+      monteCarloLinesRef.current.forEach((line, lineIndex) => {
         if (index < line.length) {
           linesData[`line${lineIndex}`] = line[index];
         }
@@ -121,5 +127,5 @@ export const useChartDataProcessor = ({
     return baseData;
   });
 
-  return { chartData, savingsLine, monteCarloLines };
+  return { chartData, savingsLine, monteCarloLines: monteCarloLinesRef.current };
 };
