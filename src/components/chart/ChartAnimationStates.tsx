@@ -1,4 +1,5 @@
 
+
 import { useState, useEffect, useRef } from 'react';
 import { MonteCarloResult } from '@/lib/utils';
 import { MAGIC_MOMENT_TIMERS } from '@/components/calculator/constants';
@@ -21,6 +22,7 @@ export const useChartAnimation = ({
   const [animationPhase, setAnimationPhase] = useState<AnimationPhase>('final');
   const [hasStartedAnimation, setHasStartedAnimation] = useState(false);
   const [projectingStartTime, setProjectingStartTime] = useState<number | null>(null);
+  const [hasMinimumTimePassed, setHasMinimumTimePassed] = useState(false);
   const timersRef = useRef<NodeJS.Timeout[]>([]);
 
   console.log('🎬 useChartAnimation state:', {
@@ -29,7 +31,8 @@ export const useChartAnimation = ({
     hasMonteCarloData: !!monteCarloData,
     animationPhase,
     hasStartedAnimation,
-    projectingStartTime
+    projectingStartTime,
+    hasMinimumTimePassed
   });
 
   // Cleanup function for timers
@@ -45,28 +48,25 @@ export const useChartAnimation = ({
     return timer;
   };
 
-  // Handle projecting to paths transition with minimum time control
-  const handleProjectingToPathsTransition = () => {
-    if (!projectingStartTime || !monteCarloData) return;
-
-    const elapsedTime = Date.now() - projectingStartTime;
-    const remainingTime = Math.max(0, MAGIC_MOMENT_TIMERS.PROJECTING_DURATION - elapsedTime);
-
-    console.log('⏱️ Projecting phase timing:', {
-      elapsedTime,
-      remainingTime,
-      minimumDuration: MAGIC_MOMENT_TIMERS.PROJECTING_DURATION
+  // Check if both conditions are met for transition
+  const checkTransitionConditions = () => {
+    const dataReady = monteCarloData && !isCalculating;
+    
+    console.log('🔍 Checking transition conditions:', {
+      hasMinimumTimePassed,
+      dataReady: !!dataReady,
+      monteCarloData: !!monteCarloData,
+      isCalculating
     });
 
-    if (remainingTime > 0) {
-      console.log(`⏳ Waiting ${remainingTime}ms more before transitioning to paths...`);
-      addTimer(() => {
-        console.log('🔄 Phase 2: Starting paths animation...');
-        setAnimationPhase('paths');
-      }, remainingTime);
-    } else {
-      console.log('🔄 Phase 2: Starting paths animation immediately...');
+    if (hasMinimumTimePassed && dataReady) {
+      console.log('✅ Both conditions met - transitioning to paths phase');
       setAnimationPhase('paths');
+    } else {
+      const waitingFor = [];
+      if (!hasMinimumTimePassed) waitingFor.push('minimum time (2000ms)');
+      if (!dataReady) waitingFor.push('Monte Carlo data');
+      console.log(`⏳ Waiting for: ${waitingFor.join(' and ')}`);
     }
   };
 
@@ -78,6 +78,7 @@ export const useChartAnimation = ({
       setAnimationPhase('final');
       setHasStartedAnimation(false);
       setProjectingStartTime(null);
+      setHasMinimumTimePassed(false);
       return;
     }
   }, [isMonteCarloEnabled]);
@@ -90,17 +91,32 @@ export const useChartAnimation = ({
       setProjectingStartTime(startTime);
       setAnimationPhase('projecting');
       setHasStartedAnimation(true);
+      setHasMinimumTimePassed(false);
       console.log('⏱️ Projecting phase started at:', startTime);
+
+      // Set timer for minimum time (2000ms)
+      addTimer(() => {
+        console.log('⏰ Minimum time (2000ms) has passed');
+        setHasMinimumTimePassed(true);
+      }, MAGIC_MOMENT_TIMERS.PROJECTING_DURATION);
     }
   }, [isCalculating, isMonteCarloEnabled, hasStartedAnimation]);
 
-  // Handle animation sequence when data is ready
+  // Check transition conditions when minimum time passes
+  useEffect(() => {
+    if (hasMinimumTimePassed && animationPhase === 'projecting') {
+      console.log('⏰ Minimum time passed - checking if data is ready');
+      checkTransitionConditions();
+    }
+  }, [hasMinimumTimePassed, animationPhase]);
+
+  // Check transition conditions when data becomes ready
   useEffect(() => {
     if (isMonteCarloEnabled && monteCarloData && !isCalculating && hasStartedAnimation && animationPhase === 'projecting') {
-      console.log('📊 Monte Carlo data ready - checking projecting phase timing');
-      handleProjectingToPathsTransition();
+      console.log('📊 Monte Carlo data ready - checking if minimum time has passed');
+      checkTransitionConditions();
     }
-  }, [isMonteCarloEnabled, monteCarloData, isCalculating, hasStartedAnimation, animationPhase, projectingStartTime]);
+  }, [isMonteCarloEnabled, monteCarloData, isCalculating, hasStartedAnimation, animationPhase]);
 
   // Handle subsequent animation phases
   useEffect(() => {
@@ -143,3 +159,4 @@ export const useChartAnimation = ({
     isDrawingFinalLines: animationPhase === 'drawing-final'
   };
 };
+
