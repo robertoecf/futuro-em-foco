@@ -1,4 +1,3 @@
-
 /* === BOTÕES PREMIUM TECNO-ETÉREOS === */
 
 /* Botão Primário */
@@ -182,29 +181,12 @@
   cursor: pointer;
   overflow: visible;
   
-  /* Preparação para efeitos de texto */
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(255, 255, 255, 0.6) 50%,
-    transparent 100%
-  );
-  background-size: 200% 100%;
-  background-position: -100% 0;
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+  /* Cor preta padrão */
   color: black;
   
-  /* Contorno animado usando text-stroke */
+  /* Contorno transparente por padrão */
   -webkit-text-stroke: 1px transparent;
   text-stroke: 1px transparent;
-  
-  /* Suporte para navegadores que não suportam background-clip: text */
-  @supports not (-webkit-background-clip: text) {
-    -webkit-text-fill-color: initial;
-    color: black;
-  }
 }
 
 .tech-logo-header::before {
@@ -224,6 +206,7 @@
   background-position: -50% 0;
   -webkit-background-clip: text;
   background-clip: text;
+  -webkit-text-fill-color: transparent;
   opacity: 0;
   transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
   pointer-events: none;
@@ -236,9 +219,6 @@
   text-shadow: 
     0 2px 8px rgba(0, 0, 0, 0.2),
     0 4px 16px rgba(0, 0, 0, 0.1);
-  
-  /* Animação do brilho no texto */
-  background-position: 100% 0;
   
   /* Contorno iluminado */
   -webkit-text-stroke: 1px rgba(255, 255, 255, 0.3);
