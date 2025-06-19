@@ -660,9 +660,13 @@
 }
 
 #cta-blob8 { 
-  --x-start: 90vw; --y-start: 50vh; --x-en
+  --x-start: 90vw; --y-start: 50vh; --x-end: 10vw; --y-end: 50vh; 
+  width: 25vw; height: 25vw; 
+  animation-duration: 40s; 
+  background: linear-gradient(135deg, var(--palette-mix-orange), #b30000); 
+}
 
- #cta-blob9 { 
+#cta-blob9 { 
   --x-start: 5vw; --y-start: 95vh; --x-end: 30vw; --y-end: 70vh; 
   width: 28vw; height: 28vw; 
   animation-duration: 37s; 
