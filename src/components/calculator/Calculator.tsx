@@ -53,7 +53,7 @@ export const Calculator: React.FC = () => {
         <InvestorProfiles onProfileSelect={setInvestorProfile} selectedProfile={investorProfile} />
       </div>
 
-      <Card className="p-6 shadow-lg">
+      <Card className="p-6 shadow-lg glass-card">
         {/* Parameters Section Title */}
         <div className="mb-6">
           <h3 className="text-xl font-bold text-gray-900">Parâmetros</h3>

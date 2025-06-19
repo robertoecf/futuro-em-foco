@@ -31,7 +31,7 @@ export const ResultsCards: React.FC<ResultsCardsProps> = ({
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         {[1, 2, 3, 4].map((i) => (
-          <Card key={i} className="p-4 bg-gray-50 animate-pulse">
+          <Card key={i} className="p-4 glass-card animate-pulse">
             <div className="h-4 bg-gray-300 rounded mb-2"></div>
             <div className="h-8 bg-gray-300 rounded"></div>
           </Card>
@@ -109,7 +109,7 @@ export const ResultsCards: React.FC<ResultsCardsProps> = ({
           {scenarios.map((scenario, index) => {
             const IconComponent = scenario.icon;
             return (
-              <Card key={index} className={`p-6 ${scenario.bgColor} ${scenario.borderColor} border-2 hover:shadow-lg transition-shadow duration-200`}>
+              <Card key={index} className={`p-6 monte-carlo-card ${scenario.bgColor} ${scenario.borderColor} hover:shadow-lg transition-shadow duration-200`}>
                 <div className="text-center space-y-4">
                   {/* Header com ícone */}
                   <div className="flex items-center justify-center space-x-2">
@@ -146,14 +146,14 @@ export const ResultsCards: React.FC<ResultsCardsProps> = ({
 
         {/* Métricas Adicionais */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6">
-          <Card className="p-4 bg-gradient-to-r from-gray-50 to-gray-100">
+          <Card className="p-4 glass-card">
             <div className="text-center">
               <p className="text-sm text-gray-600 font-medium">Investimento inicial</p>
               <p className="text-xl font-bold text-gray-900">{formatCurrency(initialAmount)}</p>
             </div>
           </Card>
           
-          <Card className="p-4 bg-gradient-to-r from-blue-50 to-blue-100">
+          <Card className="p-4 glass-card">
             <div className="text-center">
               <p className="text-sm text-blue-700 font-medium">Probabilidade de sucesso</p>
               <p className="text-xl font-bold text-blue-900">
@@ -162,7 +162,7 @@ export const ResultsCards: React.FC<ResultsCardsProps> = ({
             </div>
           </Card>
           
-          <Card className="p-4 bg-gradient-to-r from-orange-50 to-orange-100">
+          <Card className="p-4 glass-card">
             <div className="text-center">
               <p className="text-sm text-orange-700 font-medium">Duração da renda</p>
               <p className="text-xl font-bold text-orange-900">{lifeExpectancy - retirementAge} anos</p>
@@ -176,22 +176,22 @@ export const ResultsCards: React.FC<ResultsCardsProps> = ({
   // Layout original para cálculo determinístico
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-      <Card className="p-4 bg-gray-50">
+      <Card className="p-4 glass-card">
         <p className="text-sm text-gray-500">Investimento inicial</p>
         <p className="text-2xl font-bold">{formatCurrency(initialAmount)}</p>
       </Card>
       
-      <Card className="p-4 bg-gray-50">
+      <Card className="p-4 glass-card">
         <p className="text-sm text-gray-500">Patrimônio aos {retirementAge} anos</p>
         <p className="text-2xl font-bold">{formatCurrency(calculationResult.finalAmount)}</p>
       </Card>
       
-      <Card className="p-4 bg-gray-50">
+      <Card className="p-4 glass-card">
         <p className="text-sm text-gray-500">Renda mensal na aposentadoria</p>
         <p className="text-2xl font-bold">{formatCurrency(calculationResult.monthlyIncome)}</p>
       </Card>
       
-      <Card className="p-4 bg-gray-50">
+      <Card className="p-4 glass-card">
         <p className="text-sm text-gray-500">Duração da renda</p>
         <p className="text-2xl font-bold">{lifeExpectancy - retirementAge} anos</p>
       </Card>

@@ -132,15 +132,17 @@ export const ChartComponent = ({
 
       {/* Chart Section with Overlay */}
       <div className="relative">
-        <ChartRenderer
-          chartData={chartData}
-          possibleRetirementAge={possibleRetirementAge}
-          perpetuityWealth={perpetuityWealth}
-          monteCarloData={monteCarloData}
-          isShowingLines={isShowingLines}
-          isDrawingFinalLines={isDrawingFinalLines}
-          lineDrawingDuration={lineDrawingDuration}
-        />
+        <div className="chart-container">
+          <ChartRenderer
+            chartData={chartData}
+            possibleRetirementAge={possibleRetirementAge}
+            perpetuityWealth={perpetuityWealth}
+            monteCarloData={monteCarloData}
+            isShowingLines={isShowingLines}
+            isDrawingFinalLines={isDrawingFinalLines}
+            lineDrawingDuration={lineDrawingDuration}
+          />
+        </div>
         
         {/* Optimizing Overlay */}
         <ProjectingOverlay isVisible={animationPhase === 'optimizing'} />

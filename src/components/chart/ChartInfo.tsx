@@ -17,7 +17,7 @@ export const ChartInfo = ({
 }: ChartInfoProps) => {
   return <div className="mt-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
       {/* Legenda dos Cenários */}
-      <Card className="p-4">
+      <Card className="p-4 chart-info-card">
         <div className="flex items-center gap-2 mb-3">
           <BarChart3 className="h-4 w-4 text-gray-600" />
           <h4 className="text-sm font-semibold text-gray-900">Cenários</h4>
@@ -53,7 +53,7 @@ export const ChartInfo = ({
       </Card>
 
       {/* Métricas Chave */}
-      <Card className="p-4">
+      <Card className="p-4 chart-info-card">
         <div className="flex items-center gap-2 mb-3">
           <TrendingUp className="h-4 w-4 text-green-600" />
           <h4 className="text-sm font-semibold text-gray-900">Métricas Chave</h4>
@@ -70,7 +70,7 @@ export const ChartInfo = ({
       </Card>
 
       {/* Linhas de Referência */}
-      <Card className="p-4">
+      <Card className="p-4 chart-info-card">
         <div className="flex items-center gap-2 mb-3">
           <Target className="h-4 w-4 text-gray-600" />
           <h4 className="text-sm font-semibold text-gray-900">Referências</h4>
