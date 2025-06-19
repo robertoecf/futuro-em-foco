@@ -1,12 +1,861 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* === IMPORTS DOS ARQUIVOS DE ESTILO TECNO-ETÉREO === */
-/* IMPORTANTE: base.css deve vir primeiro para definir as variáveis CSS */
-@import './styles/base.css';
-@import './styles/aurora.css';
-@import './styles/components.css';
-@import './styles/buttons.css';
-@import './styles/animations.css';
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+
+    --primary: 222.2 47.4% 11.2%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
+
+    --radius: 0.5rem;
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+
+    /* === SISTEMA TECNO-ETÉREO === */
+    
+    /* Paleta Principal Conforme Manual */
+    --palette-blue-deep: #0F2A3C;
+    --palette-green-dark: #2F3B29;
+    --palette-mix-orange: #E48200;
+    --palette-black: #000000;
+    --palette-mix-white: #FEFFFB;
+    
+    /* Sistema de Theming Reativo - Modo Claro */
+    --theme-surface: rgba(254, 255, 251, 0.85);
+    --theme-surface-container-bg: rgba(254, 255, 251, 0.9);
+    --theme-surface-glass: rgba(254, 255, 251, 0.15);
+    --theme-primary: #E48200;
+    --theme-on-primary: #FEFFFB;
+    --theme-secondary: #0F2A3C;
+    --theme-on-secondary: #FEFFFB;
+    --theme-accent: #2F3B29;
+    --theme-text-primary: #000000;
+    --theme-text-secondary: rgba(0, 0, 0, 0.7);
+    --theme-text-tertiary: rgba(0, 0, 0, 0.5);
+    
+    /* Gradientes Técnicos */
+    --tech-gradient-primary: linear-gradient(135deg, rgba(228, 130, 0, 0.1), rgba(15, 42, 60, 0.05));
+    --tech-gradient-surface: linear-gradient(135deg, rgba(254, 255, 251, 0.95), rgba(248, 250, 252, 0.9));
+    --tech-gradient-glass: linear-gradient(135deg, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.05));
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+
+    /* Sistema de Theming Reativo - Modo Escuro */
+    --theme-surface: rgba(15, 42, 60, 0.85);
+    --theme-surface-container-bg: rgba(15, 42, 60, 0.9);
+    --theme-surface-glass: rgba(15, 42, 60, 0.15);
+    --theme-primary: #E48200;
+    --theme-on-primary: #FEFFFB;
+    --theme-secondary: #2F3B29;
+    --theme-on-secondary: #FEFFFB;
+    --theme-accent: #0F2A3C;
+    --theme-text-primary: #FEFFFB;
+    --theme-text-secondary: rgba(254, 255, 251, 0.7);
+    --theme-text-tertiary: rgba(254, 255, 251, 0.5);
+    
+    /* Gradientes Técnicos - Modo Escuro */
+    --tech-gradient-primary: linear-gradient(135deg, rgba(228, 130, 0, 0.2), rgba(47, 59, 41, 0.1));
+    --tech-gradient-surface: linear-gradient(135deg, rgba(15, 42, 60, 0.95), rgba(47, 59, 41, 0.8));
+    --tech-gradient-glass: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.02));
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background: #ffffff;
+    background: radial-gradient(circle, rgba(255, 255, 255, 1) 0%, rgba(199, 199, 199, 0.8) 100%);
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* Grade Técnica Sutil - Camada 2 da Hierarquia */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    opacity: 0.02;
+    background-image: 
+      linear-gradient(rgba(0,0,0,.1) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,0,0,.1) 1px, transparent 1px);
+    background-size: 20px 20px;
+    pointer-events: none;
+  }
+
+  /* Tipografia Estruturada */
+  .font-tech {
+    font-family: 'JetBrains Mono', monospace;
+  }
+}
+
+/* === SISTEMA GLASSMORPHISM TECNO-ETÉREO === */
+
+/* Painéis de Vidro Inteligente - Camada 3 da Hierarquia */
+.glass-panel {
+  background: var(--theme-surface-container-bg);
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.05);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-panel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: var(--tech-gradient-glass);
+  transition: left 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+}
+
+.glass-panel:hover::before {
+  left: 100%;
+}
+
+.glass-panel:hover {
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: 
+    0 16px 48px rgba(0, 0, 0, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    0 0 0 1px rgba(228, 130, 0, 0.2);
+}
+
+/* Botões Premium Tecno-Etéreos */
+.tech-button-primary {
+  background: var(--tech-gradient-glass);
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  border: 1px solid rgba(228, 130, 0, 0.3);
+  border-radius: 12px;
+  color: var(--theme-text-primary);
+  font-weight: 600;
+  padding: 12px 24px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 
+    0 4px 16px rgba(228, 130, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.tech-button-primary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(228, 130, 0, 0.2),
+    transparent
+  );
+  transition: left 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.tech-button-primary:hover::before {
+  left: 100%;
+}
+
+.tech-button-primary:hover {
+  transform: translateY(-2px) scale(1.02);
+  border-color: rgba(228, 130, 0, 0.5);
+  box-shadow: 
+    0 8px 32px rgba(228, 130, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+/* Botão Monte Carlo Especializado */
+.tech-button-monte-carlo {
+  background: linear-gradient(135deg, 
+    rgba(228, 130, 0, 0.9) 0%,
+    rgba(228, 130, 0, 0.7) 100%);
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  border: 1px solid rgba(228, 130, 0, 0.4);
+  border-radius: 12px;
+  color: var(--palette-mix-white);
+  font-weight: 600;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 
+    0 6px 20px rgba(228, 130, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.tech-button-monte-carlo:hover {
+  transform: translateY(-3px) scale(1.02);
+  background: linear-gradient(135deg, 
+    rgba(228, 130, 0, 1) 0%,
+    rgba(228, 130, 0, 0.8) 100%);
+  box-shadow: 
+    0 12px 32px rgba(228, 130, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+/* Cards Refinados */
+.glass-card {
+  background: var(--theme-surface-container-bg);
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.glass-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 
+    0 12px 40px rgba(0, 0, 0, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 0 0 1px rgba(228, 130, 0, 0.1);
+}
+
+/* Insight Cards Especializado */
+.insight-card {
+  background: var(--tech-gradient-surface);
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  box-shadow: 
+    0 6px 24px rgba(0, 0, 0, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.insight-card:hover {
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: 
+    0 16px 40px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 0 0 1px rgba(228, 130, 0, 0.15);
+}
+
+/* Monte Carlo Results Cards */
+.monte-carlo-card {
+  background: var(--theme-surface-container-bg);
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  border: 2px solid transparent;
+  border-radius: 16px;
+  background-clip: padding-box;
+  box-shadow: 
+    0 12px 40px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.monte-carlo-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  padding: 2px;
+  background: var(--tech-gradient-glass);
+  border-radius: inherit;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  -webkit-mask-composite: xor;
+}
+
+.monte-carlo-card:hover {
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 
+    0 20px 60px rgba(0, 0, 0, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* Chart Container */
+.chart-container {
+  background: var(--theme-surface-container-bg);
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  box-shadow: 
+    0 12px 40px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  position: relative;
+  width: 100%;
+  height: 400px;
+  margin-top: 20px;
+}
+
+/* Chart Info Cards */
+.chart-info-card {
+  background: var(--tech-gradient-surface);
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  box-shadow: 
+    0 4px 16px rgba(0, 0, 0, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.chart-info-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 
+    0 8px 24px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* === ANIMAÇÕES TECNO-ETÉREAS === */
+
+/* fadeInSlideUp - Animação Padrão Conforme Manual */
+@keyframes fadeInSlideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+    filter: blur(4px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+.fade-in-slide-up {
+  animation: fadeInSlideUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* Investor Profile Cards */
+.investor-card {
+  background: var(--theme-surface-container-bg);
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  border: 2px solid rgba(255, 255, 255, 0.03);
+  border-radius: 16px;
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.investor-card:hover {
+  transform: translateY(-8px) scale(1.03);
+  box-shadow: 
+    0 20px 60px rgba(0, 0, 0, 0.15),
+    0 0 0 2px rgba(228, 130, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.investor-card.active {
+  background: linear-gradient(135deg, 
+    rgba(228, 130, 0, 0.15) 0%,
+    rgba(228, 130, 0, 0.05) 100%);
+  border: 2px solid rgba(228, 130, 0, 0.5);
+  box-shadow: 
+    0 12px 48px rgba(228, 130, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+/* Recommendation Cards */
+.recommendation-card {
+  background: var(--theme-surface-container-bg);
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  border-radius: 16px;
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.recommendation-card:hover {
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 
+    0 20px 50px rgba(0, 0, 0, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 0 0 1px rgba(228, 130, 0, 0.2);
+}
+
+/* === AURORA BACKGROUND - Camada 1 da Hierarquia === */
+
+.aurora-banner {
+  background-color: var(--palette-black);
+  position: relative;
+}
+
+#aurora-banner-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;  
+  height: 100%;
+  z-index: 1;
+  overflow: hidden;
+  filter: blur(100px) saturate(1.5);
+  pointer-events: none;
+}
+
+.aurora-banner-blob {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.7;
+  will-change: transform;
+  animation: moveBannerBlob 25s infinite alternate;
+  mix-blend-mode: screen;
+}
+
+@keyframes moveBannerBlob {
+  0% { 
+    transform: translate(var(--x-start, -20vw), var(--y-start, -30vh)) rotate(0deg) scale(1.1); 
+  }
+  100% { 
+    transform: translate(var(--x-end, 20vw), var(--y-end, 30vh)) rotate(180deg) scale(1); 
+  }
+}
+
+/* Posicionamento das Bolhas Aurora */
+#banner-blob1 { 
+  --x-start: -15vw; --y-start: -20vh; --x-end: 25vw; --y-end: 40vh; 
+  width: 35vw; height: 35vw; 
+  animation-duration: 35s; 
+  background: var(--palette-mix-orange); 
+}
+
+#banner-blob2 { 
+  --x-start: 85vw; --y-start: -15vh; --x-end: 45vw; --y-end: -10vh; 
+  width: 30vw; height: 30vw; 
+  animation-duration: 28s; 
+  background: #00b4d8; 
+}
+
+#banner-blob3 { 
+  --x-start: 55vw; --y-start: 110vh; --x-end: 15vw; --y-end: 10vh; 
+  width: 28vw; height: 28vw; 
+  animation-duration: 42s; 
+  background: #a7c957; 
+}
+
+#banner-blob4 { 
+  --x-start: 5vw; --y-start: 50vh; --x-end: 75vw; --y-end: 80vh; 
+  width: 38vw; height: 38vw; 
+  animation-duration: 31s; 
+  background: var(--palette-mix-orange); 
+}
+
+#banner-blob5 { 
+  --x-start: 20vw; --y-start: 90vh; --x-end: 80vw; --y-end: -10vh; 
+  width: 32vw; height: 32vw; 
+  animation-duration: 38s; 
+  background: #0077b6; 
+}
+
+#banner-blob6 { 
+  --x-start: 70vw; --y-start: 10vh; --x-end: -10vw; --y-end: 60vh; 
+  width: 25vw; height: 25vw; 
+  animation-duration: 45s; 
+  background: var(--palette-green-dark); 
+}
+
+#banner-blob7 { 
+  --x-start: 10vw; --y-start: 100vh; --x-end: 90vw; --y-end: 0vh; 
+  width: 30vw; height: 30vw; 
+  animation-duration: 33s; 
+  background: linear-gradient(135deg, var(--palette-mix-orange), #b30000); 
+}
+
+#banner-blob8 { 
+  --x-start: 90vw; --y-start: 50vh; --x-end: 10vw; --y-end: 50vh; 
+  width: 25vw; height: 25vw; 
+  animation-duration: 40s; 
+  background: linear-gradient(135deg, var(--palette-mix-orange), #b30000); 
+}
+
+#banner-blob9 { 
+  --x-start: 5vw; --y-start: 95vh; --x-end: 30vw; --y-end: 70vh; 
+  width: 28vw; height: 28vw; 
+  animation-duration: 37s; 
+  background: #455a3e; 
+}
+
+/* CTA Aurora Background */
+.aurora-cta-banner {
+  background-color: var(--palette-black);
+  position: relative;
+}
+
+#aurora-cta-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  overflow: hidden;
+  filter: blur(100px) saturate(1.5);
+  pointer-events: none;
+}
+
+.aurora-cta-blob {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.7;
+  will-change: transform;
+  animation: moveCtaBlob 25s infinite alternate;
+  mix-blend-mode: screen;
+}
+
+@keyframes moveCtaBlob {
+  0% { 
+    transform: translate(var(--x-start, -20vw), var(--y-start, -30vh)) rotate(0deg) scale(1.1); 
+  }
+  100% { 
+    transform: translate(var(--x-end, 20vw), var(--y-end, 30vh)) rotate(180deg) scale(1); 
+  }
+}
+
+/* Posicionamento CTA Blobs */
+#cta-blob1 { 
+  --x-start: -15vw; --y-start: -20vh; --x-end: 25vw; --y-end: 40vh; 
+  width: 35vw; height: 35vw; 
+  animation-duration: 35s; 
+  background: var(--palette-mix-orange); 
+}
+
+#cta-blob2 { 
+  --x-start: 85vw; --y-start: -15vh; --x-end: 45vw; --y-end: -10vh; 
+  width: 30vw; height: 30vw; 
+  animation-duration: 28s; 
+  background: #00b4d8; 
+}
+
+#cta-blob3 { 
+  --x-start: 55vw; --y-start: 110vh; --x-end: 15vw; --y-end: 10vh; 
+  width: 28vw; height: 28vw; 
+  animation-duration: 42s; 
+  background: #a7c957; 
+}
+
+#cta-blob4 { 
+  --x-start: 5vw; --y-start: 50vh; --x-end: 75vw; --y-end: 80vh; 
+  width: 38vw; height: 38vw; 
+  animation-duration: 31s; 
+  background: var(--palette-mix-orange); 
+}
+
+#cta-blob5 { 
+  --x-start: 20vw; --y-start: 90vh; --x-end: 80vw; --y-end: -10vh; 
+  width: 32vw; height: 32vw; 
+  animation-duration: 38s; 
+  background: #0077b6; 
+}
+
+#cta-blob6 { 
+  --x-start: 70vw; --y-start: 10vh; --x-end: -10vw; --y-end: 60vh; 
+  width: 25vw; height: 25vw; 
+  animation-duration: 45s; 
+  background: var(--palette-green-dark); 
+}
+
+#cta-blob7 { 
+  --x-start: 10vw; --y-start: 100vh; --x-end: 90vw; --y-end: 0vh; 
+  width: 30vw; height: 30vw; 
+  animation-duration: 33s; 
+  background: linear-gradient(135deg, var(--palette-mix-orange), #b30000); 
+}
+
+#cta-blob8 { 
+  --x-start: 90vw; --y-start: 50vh; --x-end: 10vw; --y-end: 50vh; 
+  width: 25vw; height: 25vw; 
+  animation-duration: 40s; 
+  background: linear-gradient(135deg, var(--palette-mix-orange), #b30000); 
+}
+
+#cta-blob9 { 
+  --x-start: 5vw; --y-start: 95vh; --x-end: 30vw; --y-end: 70vh; 
+  width: 28vw; height: 28vw; 
+  animation-duration: 37s; 
+  background: #455a3e; 
+}
+
+/* === UTILITÁRIOS TECNO-ETÉREOS === */
+
+.glass-input {
+  background: var(--theme-surface-glass);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-input:focus {
+  outline: none;
+  border-color: rgba(228, 130, 0, 0.5);
+  box-shadow: 
+    0 0 0 3px rgba(228, 130, 0, 0.1),
+    0 4px 12px rgba(228, 130, 0, 0.2);
+}
+
+/* Elementos com Fonte Tech */
+.tech-number {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 600;
+  color: var(--theme-primary);
+}
+
+.tech-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--theme-text-secondary);
+}
+
+/* === COMPATIBILIDADE COM CLASSES EXISTENTES === */
+
+/* Manter compatibilidade com classes antigas durante transição */
+.liquid-glass {
+  @apply glass-panel;
+}
+
+.premium-button {
+  @apply tech-button-primary;
+}
+
+.monte-carlo-button {
+  @apply tech-button-monte-carlo;
+}
+
+/* Botão Especialista Premium - Estilo Tecno-Etéreo */
+.tech-button-specialist {
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  color: white;
+  font-weight: 600;
+  padding: 12px 24px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 
+    0 0 20px rgba(255, 255, 255, 0.05),
+    0 0 40px rgba(255, 255, 255, 0.02),
+    0 4px 16px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.tech-button-specialist::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.15),
+    transparent
+  );
+  transition: left 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.tech-button-specialist:hover::before {
+  left: 100%;
+}
+
+.tech-button-specialist:hover {
+  transform: translateY(-2px) scale(1.02);
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 
+    0 0 30px rgba(255, 255, 255, 0.08),
+    0 0 60px rgba(255, 255, 255, 0.05),
+    0 8px 32px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+/* Botão Header - Efeito Tecno-Etéreo para Fundo Branco */
+.tech-button-header {
+  background: rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  border-radius: 12px;
+  color: #000000;
+  font-weight: 600;
+  padding: 12px 24px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 
+    0 4px 16px rgba(0, 0, 0, 0.05),
+    0 8px 32px rgba(0, 0, 0, 0.02),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+.tech-button-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.4),
+    transparent
+  );
+  transition: left 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.tech-button-header:hover::before {
+  left: 100%;
+}
+
+.tech-button-header:hover {
+  transform: translateY(-2px) scale(1.02);
+  border-color: rgba(0, 0, 0, 0.1);
+  color: white;
+  background: rgba(0, 0, 0, 0.7);
+  box-shadow: 
+    0 8px 24px rgba(0, 0, 0, 0.08),
+    0 12px 40px rgba(0, 0, 0, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+/* Logo Header - Efeito Tecno-Etéreo com Reflexo */
+.tech-logo-header {
+  font-weight: bold;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.tech-logo-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  transition: left 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+}
+
+.tech-logo-header:hover::before {
+  left: 100%;
+}
+
+.tech-logo-header:hover {
+  transform: translateY(-2px) scale(1.02);
+  text-shadow: 
+    0 2px 8px rgba(0, 0, 0, 0.2),
+    0 4px 16px rgba(0, 0, 0, 0.1);
+  filter: brightness(1.1);
+}
