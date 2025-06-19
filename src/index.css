@@ -822,40 +822,101 @@
     inset 0 1px 0 rgba(255, 255, 255, 0.6);
 }
 
-/* Logo Header - Efeito Tecno-Etéreo com Reflexo */
+/* Logo Header - Efeito Tecno-Etéreo Sofisticado com Contorno das Letras */
 .tech-logo-header {
   font-weight: bold;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   cursor: pointer;
-  overflow: hidden;
+  overflow: visible;
+  
+  /* Preparação para efeitos de texto */
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.6) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  background-position: -100% 0;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: black;
+  
+  /* Contorno animado usando text-stroke */
+  -webkit-text-stroke: 1px transparent;
+  text-stroke: 1px transparent;
+  
+  /* Suporte para navegadores que não suportam background-clip: text */
+  @supports not (-webkit-background-clip: text) {
+    -webkit-text-fill-color: initial;
+    color: black;
+  }
 }
 
 .tech-logo-header::before {
   content: '';
   position: absolute;
   top: 0;
-  left: -100%;
+  left: 0;
   width: 100%;
   height: 100%;
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(255, 255, 255, 0.3),
+    rgba(255, 255, 255, 0.8),
     transparent
   );
-  transition: left 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  background-size: 50% 100%;
+  background-position: -50% 0;
+  -webkit-background-clip: text;
+  background-clip: text;
+  opacity: 0;
+  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
   pointer-events: none;
-}
-
-.tech-logo-header:hover::before {
-  left: 100%;
 }
 
 .tech-logo-header:hover {
   transform: translateY(-2px) scale(1.02);
+  
+  /* Sombra preta sutil */
   text-shadow: 
     0 2px 8px rgba(0, 0, 0, 0.2),
     0 4px 16px rgba(0, 0, 0, 0.1);
-  filter: brightness(1.1);
+  
+  /* Animação do brilho no texto */
+  background-position: 100% 0;
+  
+  /* Contorno iluminado */
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.3);
+  text-stroke: 1px rgba(255, 255, 255, 0.3);
+  
+  /* Efeito de brilho geral */
+  filter: brightness(1.1) contrast(1.1);
+}
+
+.tech-logo-header:hover::before {
+  opacity: 1;
+  background-position: 100% 0;
+}
+
+/* Animação keyframes para contorno pulsante */
+@keyframes contourGlow {
+  0% {
+    -webkit-text-stroke: 1px transparent;
+    text-stroke: 1px transparent;
+  }
+  50% {
+    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.4);
+    text-stroke: 1px rgba(255, 255, 255, 0.4);
+  }
+  100% {
+    -webkit-text-stroke: 1px transparent;
+    text-stroke: 1px transparent;
+  }
+}
+
+.tech-logo-header:hover {
+  animation: contourGlow 1.2s ease-in-out;
 }
