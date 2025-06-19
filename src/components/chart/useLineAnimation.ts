@@ -17,6 +17,10 @@ export const useLineAnimation = ({
   const [drawingLines, setDrawingLines] = useState<Set<number>>(new Set());
   const timeoutsRef = useRef<NodeJS.Timeout[]>([]);
 
+  const prefersReducedMotion =
+    typeof window !== 'undefined' &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
   console.log('🎨 useLineAnimation:', {
     isShowingLines,
     totalLines,
@@ -38,11 +42,21 @@ export const useLineAnimation = ({
   useEffect(() => {
     if (isShowingLines) {
       console.log('🚀 Starting line drawing animation');
-      
+
       // Reset states
       setAnimatedLines(new Set());
       setDrawingLines(new Set());
       clearAllTimeouts();
+
+      if (prefersReducedMotion) {
+        // Immediately mark all lines as drawn
+        const allLines = new Set<number>();
+        for (let i = 0; i < totalLines; i++) {
+          allLines.add(i);
+        }
+        setAnimatedLines(allLines);
+        return;
+      }
 
       // Schedule each line to start drawing
       for (let i = 0; i < totalLines; i++) {
@@ -74,24 +88,39 @@ export const useLineAnimation = ({
     }
 
     return clearAllTimeouts;
-  }, [isShowingLines, totalLines, delayBetweenLines]);
+  }, [isShowingLines, totalLines, delayBetweenLines, prefersReducedMotion]);
 
   // Get animation state for a specific line
   const getLineAnimationState = (lineIndex: number) => {
     const isDrawing = drawingLines.has(lineIndex);
     const isComplete = animatedLines.has(lineIndex);
-    
+
+    if (prefersReducedMotion) {
+      return {
+        isDrawing: false,
+        isComplete: true,
+        isVisible: true,
+        strokeDasharray: 'none',
+        strokeDashoffset: '0',
+        opacity: 1,
+        animationDelay: '0ms',
+        drawingStyle: {}
+      };
+    }
+
     return {
       isDrawing,
       isComplete,
       isVisible: isDrawing || isComplete,
-      strokeDasharray: isDrawing ? "1000 1000" : "none", // Large dash for drawing effect
-      strokeDashoffset: isDrawing ? "1000" : "0",
+      strokeDasharray: isDrawing ? '1000 1000' : 'none', // Large dash for drawing effect
+      strokeDashoffset: isDrawing ? '1000' : '0',
       opacity: isComplete ? 1 : (isDrawing ? 0.8 : 0),
       animationDelay: `${lineIndex * delayBetweenLines}ms`,
-      drawingStyle: isDrawing ? {
-        animation: `draw-line ${LINE_ANIMATION.STROKE_ANIMATION_DURATION}ms ${LINE_ANIMATION.ANIMATION_CURVE} forwards`
-      } : {}
+      drawingStyle: isDrawing
+        ? {
+            animation: `draw-line ${LINE_ANIMATION.STROKE_ANIMATION_DURATION}ms ${LINE_ANIMATION.ANIMATION_CURVE} forwards`
+          }
+        : {}
     };
   };
 

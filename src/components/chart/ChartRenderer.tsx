@@ -61,18 +61,20 @@ export const ChartRenderer = ({
     <div className="relative h-[400px] w-full bg-white border border-gray-200 rounded-lg p-4">
       {/* CSS for line drawing animation */}
       <style>{`
-        @keyframes draw-line {
-          0% {
-            stroke-dashoffset: 1000;
-            opacity: 0.3;
-          }
-          50% {
-            stroke-dashoffset: 500;
-            opacity: 0.8;
-          }
-          100% {
-            stroke-dashoffset: 0;
-            opacity: 1;
+        @media (prefers-reduced-motion: no-preference) {
+          @keyframes draw-line {
+            0% {
+              stroke-dashoffset: 1000;
+              opacity: 0.3;
+            }
+            50% {
+              stroke-dashoffset: 500;
+              opacity: 0.8;
+            }
+            100% {
+              stroke-dashoffset: 0;
+              opacity: 1;
+            }
           }
         }
       `}</style>
