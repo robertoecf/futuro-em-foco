@@ -9,7 +9,7 @@
   position: absolute;
   top: 0;
   left: 0;
-  width: 100%;  
+  width: 100%;
   height: 100%;
   z-index: 1;
   overflow: hidden;
@@ -37,65 +37,65 @@
 }
 
 /* Posicionamento das Bolhas Aurora */
-#banner-blob1 { 
-  --x-start: -15vw; --y-start: -20vh; --x-end: 25vw; --y-end: 40vh; 
-  width: 35vw; height: 35vw; 
-  animation-duration: 35s; 
-  background: var(--palette-mix-orange); 
+#banner-blob1 {
+  --x-start: -15vw; --y-start: -20vh; --x-end: 25vw; --y-end: 40vh;
+  width: 35vw; height: 35vw;
+  animation-duration: 35s;
+  background: var(--palette-mix-orange);
 }
 
-#banner-blob2 { 
-  --x-start: 85vw; --y-start: -15vh; --x-end: 45vw; --y-end: -10vh; 
-  width: 30vw; height: 30vw; 
-  animation-duration: 28s; 
-  background: #00b4d8; 
+#banner-blob2 {
+  --x-start: 85vw; --y-start: -15vh; --x-end: 45vw; --y-end: -10vh;
+  width: 30vw; height: 30vw;
+  animation-duration: 28s;
+  background: #00b4d8;
 }
 
-#banner-blob3 { 
-  --x-start: 55vw; --y-start: 110vh; --x-end: 15vw; --y-end: 10vh; 
-  width: 28vw; height: 28vw; 
-  animation-duration: 42s; 
-  background: #a7c957; 
+#banner-blob3 {
+  --x-start: 55vw; --y-start: 110vh; --x-end: 15vw; --y-end: 10vh;
+  width: 28vw; height: 28vw;
+  animation-duration: 42s;
+  background: #a7c957;
 }
 
-#banner-blob4 { 
-  --x-start: 5vw; --y-start: 50vh; --x-end: 75vw; --y-end: 80vh; 
-  width: 38vw; height: 38vw; 
-  animation-duration: 31s; 
-  background: var(--palette-mix-orange); 
+#banner-blob4 {
+  --x-start: 5vw; --y-start: 50vh; --x-end: 75vw; --y-end: 80vh;
+  width: 38vw; height: 38vw;
+  animation-duration: 31s;
+  background: var(--palette-mix-orange);
 }
 
-#banner-blob5 { 
-  --x-start: 20vw; --y-start: 90vh; --x-end: 80vw; --y-end: -10vh; 
-  width: 32vw; height: 32vw; 
-  animation-duration: 38s; 
-  background: #0077b6; 
+#banner-blob5 {
+  --x-start: 20vw; --y-start: 90vh; --x-end: 80vw; --y-end: -10vh;
+  width: 32vw; height: 32vw;
+  animation-duration: 38s;
+  background: #0077b6;
 }
 
-#banner-blob6 { 
-  --x-start: 70vw; --y-start: 10vh; --x-end: -10vw; --y-end: 60vh; 
-  width: 25vw; height: 25vw; 
-  animation-duration: 45s; 
-  background: var(--palette-green-dark); 
+#banner-blob6 {
+  --x-start: 70vw; --y-start: 10vh; --x-end: -10vw; --y-end: 60vh;
+  width: 25vw; height: 25vw;
+  animation-duration: 45s;
+  background: var(--palette-green-dark);
 }
 
-#banner-blob7 { 
-  --x-start: 10vw; --y-start: 100vh; --x-end: 90vw; --y-end: 0vh; 
-  width: 30vw; height: 30vw; 
-  animation-duration: 33s; 
-  background: linear-gradient(135deg, var(--palette-mix-orange), #b30000); 
+#banner-blob7 {
+  --x-start: 10vw; --y-start: 100vh; --x-end: 90vw; --y-end: 0vh;
+  width: 30vw; height: 30vw;
+  animation-duration: 33s;
+  background: linear-gradient(135deg, var(--palette-mix-orange), #b30000);
 }
 
-#banner-blob8 { 
-  --x-start: 90vw; --y-start: 50vh; --x-end: 10vw; --y-end: 50vh; 
-  width: 25vw; height: 25vw; 
-  animation-duration: 40s; 
-  background: linear-gradient(135deg, var(--palette-mix-orange), #b30000); 
+#banner-blob8 {
+  --x-start: 90vw; --y-start: 50vh; --x-end: 10vw; --y-end: 50vh;
+  width: 25vw; height: 25vw;
+  animation-duration: 40s;
+  background: linear-gradient(135deg, var(--palette-mix-orange), #b30000);
 }
 
-#banner-blob9 { 
-  --x-start: 5vw; --y-start: 95vh; --x-end: 30vw; --y-end: 70vh; 
-  width: 28vw; height: 28vw; 
-  animation-duration: 37s; 
-  background: #455a3e; 
+#banner-blob9 {
+  --x-start: 5vw; --y-start: 95vh; --x-end: 30vw; --y-end: 70vh;
+  width: 28vw; height: 28vw;
+  animation-duration: 37s;
+  background: #455a3e;
 }
