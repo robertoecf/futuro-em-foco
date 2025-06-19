@@ -38,7 +38,12 @@ const Index = () => {
       {/* Header */}
       <header className="flex justify-between items-center p-6 max-w-7xl mx-auto">
         <div className="text-2xl font-bold">Futuro em Foco</div>
-        <Button className="tech-button-primary">Conheça o planner</Button>
+        <Button 
+          className="tech-button-header"
+          onClick={handleReceivePlanByEmail}
+        >
+          Converse conosco
+        </Button>
       </header>
 
       {/* Hero Section - Banner Laranja */}
