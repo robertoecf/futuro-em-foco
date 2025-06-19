@@ -6,6 +6,7 @@ import { formatYAxis } from './chartUtils';
 import { useLineAnimation } from './useLineAnimation';
 import { useFinalLinesAnimation } from './useFinalLinesAnimation';
 import { LINE_ANIMATION } from '@/components/calculator/constants';
+import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 
 interface ChartRendererProps {
   chartData: any[];
@@ -37,6 +38,8 @@ export const ChartRenderer = ({
     isDrawingFinalLines
   });
 
+  const prefersReducedMotion = usePrefersReducedMotion();
+
   // Generate colors for the 50 lines
   const generateLineColor = (index: number) => {
     const colors = [
@@ -60,8 +63,8 @@ export const ChartRenderer = ({
   return (
     <div className="relative h-[400px] w-full bg-white border border-gray-200 rounded-lg p-4">
       {/* CSS for line drawing animation */}
-      <style>{`
-        @media (prefers-reduced-motion: no-preference) {
+      {!prefersReducedMotion && (
+        <style>{`
           @keyframes draw-line {
             0% {
               stroke-dashoffset: 1000;
@@ -76,8 +79,8 @@ export const ChartRenderer = ({
               opacity: 1;
             }
           }
-        }
-      `}</style>
+        `}</style>
+      )}
 
       <ResponsiveContainer width="100%" height="100%">
         <ComposedChart

@@ -1,6 +1,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { FINAL_LINES_ANIMATION } from '@/components/calculator/constants';
+import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 
 interface UseFinalLinesAnimationProps {
   isDrawingFinalLines: boolean;
@@ -13,9 +14,7 @@ export const useFinalLinesAnimation = ({
   const [drawingLines, setDrawingLines] = useState<Set<string>>(new Set());
   const timeoutsRef = useRef<NodeJS.Timeout[]>([]);
 
-  const prefersReducedMotion =
-    typeof window !== 'undefined' &&
-    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const prefersReducedMotion = usePrefersReducedMotion();
 
   console.log('📈 useFinalLinesAnimation:', {
     isDrawingFinalLines,

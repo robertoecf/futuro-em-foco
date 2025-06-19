@@ -1,5 +1,6 @@
 
 import { useState, useEffect, useRef } from 'react';
+import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 import { LINE_ANIMATION } from '@/components/calculator/constants';
 
 interface UseLineAnimationProps {
@@ -17,9 +18,7 @@ export const useLineAnimation = ({
   const [drawingLines, setDrawingLines] = useState<Set<number>>(new Set());
   const timeoutsRef = useRef<NodeJS.Timeout[]>([]);
 
-  const prefersReducedMotion =
-    typeof window !== 'undefined' &&
-    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const prefersReducedMotion = usePrefersReducedMotion();
 
   console.log('🎨 useLineAnimation:', {
     isShowingLines,
