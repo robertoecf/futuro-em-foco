@@ -87,10 +87,10 @@ const Index = () => {
               as melhores decisões financeiras.
             </p>
             <Button 
-              className="tech-button-primary text-black font-semibold"
+              className="tech-button-specialist"
               onClick={handleReceivePlanByEmail}
             >
-              Quero ajuda de um especialista
+              Consultar um especialista para garantir o meu futuro
             </Button>
           </div>
         </div>

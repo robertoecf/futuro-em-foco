@@ -41,10 +41,10 @@ export const HeroSection = ({ onReceivePlan }: HeroSectionProps) => {
           Vamos entender o seu objetivo e checar a necessidade de ajustes no seu planejamento.
         </p>
         <Button 
-          className="bg-white hover:bg-gray-100 text-black font-semibold"
+          className="tech-button-specialist"
           onClick={handleClick}
         >
-          Consultar um especialista
+          Consultar um especialista para garantir o meu futuro
         </Button>
       </div>
     </div>
