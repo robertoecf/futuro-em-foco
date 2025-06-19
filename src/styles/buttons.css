@@ -1,3 +1,4 @@
+
 /* === BOTÕES PREMIUM TECNO-ETÉREOS === */
 
 /* Botão Primário */
@@ -173,7 +174,7 @@
     inset 0 1px 0 rgba(255, 255, 255, 0.6);
 }
 
-/* Logo Header - Efeito Tecno-Etéreo Sofisticado com Contorno das Letras */
+/* Logo Header - Efeito Tecno-Etéreo Sofisticado CORRIGIDO */
 .tech-logo-header {
   font-weight: bold;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -181,12 +182,12 @@
   cursor: pointer;
   overflow: visible;
   
-  /* Cor preta padrão */
-  color: black;
+  /* Cor preta sólida sempre visível */
+  color: #000000;
   
-  /* Contorno transparente por padrão */
-  -webkit-text-stroke: 1px transparent;
-  text-stroke: 1px transparent;
+  /* Sem contorno por padrão */
+  -webkit-text-stroke: 0;
+  text-stroke: 0;
 }
 
 .tech-logo-header::before {
@@ -220,7 +221,7 @@
     0 2px 8px rgba(0, 0, 0, 0.2),
     0 4px 16px rgba(0, 0, 0, 0.1);
   
-  /* Contorno iluminado */
+  /* Contorno iluminado apenas no hover */
   -webkit-text-stroke: 1px rgba(255, 255, 255, 0.3);
   text-stroke: 1px rgba(255, 255, 255, 0.3);
   

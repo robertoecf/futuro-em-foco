@@ -4,8 +4,9 @@
 @tailwind utilities;
 
 /* === IMPORTS DOS ARQUIVOS DE ESTILO TECNO-ETÉREO === */
+/* IMPORTANTE: base.css deve vir primeiro para definir as variáveis CSS */
 @import './styles/base.css';
+@import './styles/aurora.css';
 @import './styles/components.css';
 @import './styles/buttons.css';
 @import './styles/animations.css';
-@import './styles/aurora.css';

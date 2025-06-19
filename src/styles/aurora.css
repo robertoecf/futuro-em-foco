@@ -2,7 +2,7 @@
 /* === AURORA BACKGROUND - Camada 1 da Hierarquia === */
 
 .aurora-banner {
-  background-color: var(--palette-black);
+  background-color: var(--palette-black, #000000);
   position: relative;
 }
 
@@ -36,12 +36,12 @@
   }
 }
 
-/* Posicionamento das Bolhas Aurora */
+/* Posicionamento das Bolhas Aurora - COM FALLBACKS */
 #banner-blob1 { 
   --x-start: -15vw; --y-start: -20vh; --x-end: 25vw; --y-end: 40vh; 
   width: 35vw; height: 35vw; 
   animation-duration: 35s; 
-  background: var(--palette-mix-orange); 
+  background: var(--palette-mix-orange, #E48200); 
 }
 
 #banner-blob2 { 
@@ -62,7 +62,7 @@
   --x-start: 5vw; --y-start: 50vh; --x-end: 75vw; --y-end: 80vh; 
   width: 38vw; height: 38vw; 
   animation-duration: 31s; 
-  background: var(--palette-mix-orange); 
+  background: var(--palette-mix-orange, #E48200); 
 }
 
 #banner-blob5 { 
@@ -76,21 +76,21 @@
   --x-start: 70vw; --y-start: 10vh; --x-end: -10vw; --y-end: 60vh; 
   width: 25vw; height: 25vw; 
   animation-duration: 45s; 
-  background: var(--palette-green-dark); 
+  background: var(--palette-green-dark, #2F3B29); 
 }
 
 #banner-blob7 { 
   --x-start: 10vw; --y-start: 100vh; --x-end: 90vw; --y-end: 0vh; 
   width: 30vw; height: 30vw; 
   animation-duration: 33s; 
-  background: linear-gradient(135deg, var(--palette-mix-orange), #b30000); 
+  background: linear-gradient(135deg, var(--palette-mix-orange, #E48200), #b30000); 
 }
 
 #banner-blob8 { 
   --x-start: 90vw; --y-start: 50vh; --x-end: 10vw; --y-end: 50vh; 
   width: 25vw; height: 25vw; 
   animation-duration: 40s; 
-  background: linear-gradient(135deg, var(--palette-mix-orange), #b30000); 
+  background: linear-gradient(135deg, var(--palette-mix-orange, #E48200), #b30000); 
 }
 
 #banner-blob9 { 
@@ -102,7 +102,7 @@
 
 /* CTA Aurora Background */
 .aurora-cta-banner {
-  background-color: var(--palette-black);
+  background-color: var(--palette-black, #000000);
   position: relative;
 }
 
@@ -136,12 +136,12 @@
   }
 }
 
-/* Posicionamento CTA Blobs */
+/* Posicionamento CTA Blobs - COM FALLBACKS */
 #cta-blob1 { 
   --x-start: -15vw; --y-start: -20vh; --x-end: 25vw; --y-end: 40vh; 
   width: 35vw; height: 35vw; 
   animation-duration: 35s; 
-  background: var(--palette-mix-orange); 
+  background: var(--palette-mix-orange, #E48200); 
 }
 
 #cta-blob2 { 
@@ -162,7 +162,7 @@
   --x-start: 5vw; --y-start: 50vh; --x-end: 75vw; --y-end: 80vh; 
   width: 38vw; height: 38vw; 
   animation-duration: 31s; 
-  background: var(--palette-mix-orange); 
+  background: var(--palette-mix-orange, #E48200); 
 }
 
 #cta-blob5 { 
@@ -176,21 +176,21 @@
   --x-start: 70vw; --y-start: 10vh; --x-end: -10vw; --y-end: 60vh; 
   width: 25vw; height: 25vw; 
   animation-duration: 45s; 
-  background: var(--palette-green-dark); 
+  background: var(--palette-green-dark, #2F3B29); 
 }
 
 #cta-blob7 { 
   --x-start: 10vw; --y-start: 100vh; --x-end: 90vw; --y-end: 0vh; 
   width: 30vw; height: 30vw; 
   animation-duration: 33s; 
-  background: linear-gradient(135deg, var(--palette-mix-orange), #b30000); 
+  background: linear-gradient(135deg, var(--palette-mix-orange, #E48200), #b30000); 
 }
 
 #cta-blob8 { 
   --x-start: 90vw; --y-start: 50vh; --x-end: 10vw; --y-end: 50vh; 
   width: 25vw; height: 25vw; 
   animation-duration: 40s; 
-  background: linear-gradient(135deg, var(--palette-mix-orange), #b30000); 
+  background: linear-gradient(135deg, var(--palette-mix-orange, #E48200), #b30000); 
 }
 
 #cta-blob9 { 
