@@ -1,37 +1,17 @@
 
-import { ChartControls } from './chart/ChartControls';
-import { ChartInfo } from './chart/ChartInfo';
-import { ExportButton } from './chart/ExportButton';
-import { calculatePossibleRetirementAge } from './chart/chartUtils';
-import { InvestorProfile, CalculationResult } from '@/components/calculator/useCalculator';
-import { MonteCarloResult } from '@/lib/utils';
-import { useChartAnimation } from './chart/ChartAnimationStates';
-import { useChartDataProcessor } from './chart/ChartDataProcessor';
-import { ChartRenderer } from './chart/ChartRenderer';
-import { ProjectingMessage } from './chart/ProjectingMessage';
-import { ProjectingOverlay } from './chart/ProjectingOverlay';
+import { useState } from 'react';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ReferenceLine } from 'recharts';
+import { formatCurrency } from '@/lib/utils';
+import { Card, CardContent } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
 interface ChartComponentProps {
   data: number[];
   accumulationYears: number;
   lifeExpectancy: number;
   currentAge: number;
-  monthlyIncomeTarget?: number;
-  portfolioReturn?: number;
   onLifeExpectancyChange?: (value: number) => void;
-  showLifeExpectancyControl?: boolean;
-  monteCarloData?: MonteCarloResult | null;
-  isCalculating?: boolean;
-  isMonteCarloEnabled?: boolean;
-  onMonteCarloToggle?: (enabled: boolean) => void;
-  initialAmount?: number;
-  monthlyAmount?: number;
-  retirementAge?: number;
-  retirementIncome?: number;
-  investorProfile?: InvestorProfile;
-  calculationResult?: CalculationResult | null;
-  onAnimationComplete?: () => void;
-  lineDrawingDuration?: number;
 }
 
 export const ChartComponent = ({ 
@@ -39,143 +19,121 @@ export const ChartComponent = ({
   accumulationYears, 
   lifeExpectancy = 100,
   currentAge = 30,
-  monthlyIncomeTarget = 0,
-  portfolioReturn = 4,
-  onLifeExpectancyChange,
-  showLifeExpectancyControl = true,
-  monteCarloData,
-  isCalculating = false,
-  isMonteCarloEnabled = false,
-  onMonteCarloToggle,
-  initialAmount = 0,
-  monthlyAmount = 0,
-  retirementAge = 65,
-  retirementIncome = 0,
-  investorProfile = 'moderado',
-  calculationResult = null,
-  onAnimationComplete,
-  lineDrawingDuration = 2000
+  onLifeExpectancyChange 
 }: ChartComponentProps) => {
-  
-  console.log('ChartComponent data:', data);
-  console.log('ChartComponent Monte Carlo data:', monteCarloData);
-  console.log('ChartComponent isCalculating:', isCalculating);
-  console.log('ChartComponent isMonteCarloEnabled:', isMonteCarloEnabled);
-  console.log('ChartComponent lineDrawingDuration:', lineDrawingDuration);
+  const [localLifeExpectancy, setLocalLifeExpectancy] = useState(lifeExpectancy);
 
-  const { animationPhase, isShowingLines, isDrawingFinalLines } = useChartAnimation({
-    isCalculating,
-    isMonteCarloEnabled,
-    monteCarloData,
-    onAnimationComplete
-  });
-
-  const { chartData } = useChartDataProcessor({
-    data,
-    currentAge,
-    accumulationYears,
-    initialAmount,
-    monthlyAmount,
-    monthlyIncomeTarget,
-    monteCarloData,
-    isMonteCarloEnabled
-  });
-
-  const possibleRetirementAge = calculatePossibleRetirementAge(
-    data,
-    monthlyIncomeTarget,
-    portfolioReturn,
-    currentAge,
-    accumulationYears
-  );
-  
-  // Calculate perpetuity wealth based on retirement return and desired income
-  const perpetuityWealth = monthlyIncomeTarget > 0 ? 
-    (monthlyIncomeTarget * 12) / (portfolioReturn / 100) : 0;
-
-  console.log('ChartComponent animationPhase:', animationPhase);
-  console.log('ChartComponent isShowingLines:', isShowingLines);
-  console.log('ChartComponent isDrawingFinalLines:', isDrawingFinalLines);
-
-  const planningInputs = {
-    initialAmount,
-    monthlyAmount,
-    currentAge,
-    retirementAge,
-    lifeExpectancy,
-    retirementIncome,
-    portfolioReturn,
-    investorProfile
+  const handleLifeExpectancyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = parseInt(e.target.value);
+    if (!isNaN(value) && value > 0) {
+      setLocalLifeExpectancy(value);
+      if (onLifeExpectancyChange) {
+        onLifeExpectancyChange(value);
+      }
+    }
   };
 
-  // Show projecting message ONLY during projecting phase
-  if (isMonteCarloEnabled && animationPhase === 'projecting') {
-    return (
-      <div className="w-full">
-        <ProjectingMessage
-          phase="projecting"
-          lifeExpectancy={lifeExpectancy}
-          possibleRetirementAge={possibleRetirementAge}
-          onLifeExpectancyChange={onLifeExpectancyChange || (() => {})}
-          showLifeExpectancyControl={showLifeExpectancyControl}
-        />
-      </div>
-    );
-  }
+  const chartData = data.map((value, index) => {
+    const age = currentAge + index;
+    return {
+      age,
+      patrimonio: value,
+      fase: age < (currentAge + accumulationYears) ? "Acumulação" : "Aposentadoria"
+    };
+  });
+
+  const retirementAge = currentAge + accumulationYears;
+
+  const CustomTooltip = ({ active, payload, label }: any) => {
+    if (active && payload && payload.length) {
+      const phase = payload[0].payload.fase;
+      return (
+        <Card className="p-0 border shadow-md">
+          <CardContent className="p-3">
+            <p className="text-sm font-bold">{`Idade: ${label} anos`}</p>
+            <p className="text-sm">
+              {`Patrimônio: ${formatCurrency(payload[0].value)}`}
+            </p>
+            <p className="text-xs text-gray-500 mt-1">
+              {phase === "Acumulação" ? "Fase de Acumulação" : "Fase de Aposentadoria"}
+            </p>
+          </CardContent>
+        </Card>
+      );
+    }
+    return null;
+  };
 
   return (
-    <div className="w-full">
-      {/* Chart Title */}
-      <div className="mb-6">
-        <h3 className="text-xl font-bold text-gray-900">Gráfico de projeção patrimonial</h3>
-      </div>
-
-      {/* Chart Section with Overlay */}
-      <div className="relative">
-        <div className="chart-container">
-          <ChartRenderer
-            chartData={chartData}
-            possibleRetirementAge={possibleRetirementAge}
-            perpetuityWealth={perpetuityWealth}
-            monteCarloData={monteCarloData}
-            isShowingLines={isShowingLines}
-            isDrawingFinalLines={isDrawingFinalLines}
-            lineDrawingDuration={lineDrawingDuration}
-          />
-        </div>
-        
-        {/* Optimizing Overlay */}
-        <ProjectingOverlay isVisible={animationPhase === 'optimizing'} />
-      </div>
-      
-      {/* Export Button - positioned at bottom right of chart */}
-      <div className="relative">
-        <div className="absolute -top-12 right-4">
-          <ExportButton
-            chartData={chartData}
-            planningInputs={planningInputs}
-            calculationResult={calculationResult}
-          />
-        </div>
-      </div>
-
-      {/* Controls Section - Now above the chart info */}
-      {(showLifeExpectancyControl || onMonteCarloToggle) && (
-        <ChartControls
-          lifeExpectancy={lifeExpectancy}
-          possibleRetirementAge={possibleRetirementAge}
-          isMonteCarloEnabled={isMonteCarloEnabled}
-          onLifeExpectancyChange={onLifeExpectancyChange || (() => {})}
-          onMonteCarloToggle={onMonteCarloToggle || (() => {})}
+    <div className="space-y-4">
+      <div className="flex items-center justify-end space-x-2">
+        <Label htmlFor="life-expectancy" className="text-sm">Expectativa de vida (anos):</Label>
+        <Input
+          id="life-expectancy"
+          type="number"
+          value={localLifeExpectancy}
+          onChange={handleLifeExpectancyChange}
+          className="w-20"
+          min={retirementAge + 1}
         />
-      )}
+      </div>
       
-      {/* Information Section */}
-      <ChartInfo
-        monteCarloData={monteCarloData}
-        perpetuityWealth={perpetuityWealth}
-        possibleRetirementAge={possibleRetirementAge}
-      />
+      <div className="h-[400px] w-full">
+        <ResponsiveContainer width="100%" height="100%">
+          <LineChart
+            data={chartData}
+            margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
+          >
+            <defs>
+              <linearGradient id="accumulationGradient" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="#FF6B00" stopOpacity={0.8}/>
+                <stop offset="95%" stopColor="#FF6B00" stopOpacity={0.2}/>
+              </linearGradient>
+              <linearGradient id="retirementGradient" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="#2563EB" stopOpacity={0.8}/>
+                <stop offset="95%" stopColor="#2563EB" stopOpacity={0.2}/>
+              </linearGradient>
+            </defs>
+            
+            <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+            <XAxis 
+              dataKey="age" 
+              label={{ value: 'Idade', position: 'insideBottom', offset: -10 }}
+              tickFormatter={(value) => `${value}`}
+            />
+            <YAxis 
+              tickFormatter={(value) => `R$${Math.floor(value/1000)}k`}
+              label={{ value: 'Valor (R$)', angle: -90, position: 'insideLeft' }}
+            />
+            <Tooltip content={<CustomTooltip />} />
+            <Legend />
+            
+            {/* Reference line for retirement age */}
+            <ReferenceLine 
+              x={retirementAge} 
+              stroke="#FF6B00" 
+              strokeDasharray="5 5" 
+              label={{ 
+                value: 'Aposentadoria', 
+                position: 'top', 
+                fill: '#FF6B00',
+                fontSize: 12
+              }} 
+            />
+            
+            <Line 
+              type="monotone" 
+              dataKey="patrimonio" 
+              name="Patrimônio"
+              stroke="#FF6B00" 
+              strokeWidth={2}
+              dot={false}
+              activeDot={{ r: 8, stroke: '#FF6B00', strokeWidth: 2, fill: '#fff' }}
+              connectNulls
+            />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
     </div>
   );
 };

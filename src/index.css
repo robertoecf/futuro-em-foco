@@ -3,15 +3,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* === IMPORTAÇÕES MODULARES DO SISTEMA TECNO-ETÉREO === */
-@import './styles/variables.css';
-@import './styles/base.css';
-@import './styles/glassmorphism.css';
-@import './styles/buttons.css';
-@import './styles/aurora.css';
-@import './styles/animations.css';
-@import './styles/utilities.css';
-
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -92,3 +83,45 @@
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 }
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+.orange-red-gradient {
+  background: linear-gradient(135deg, #FF6B00 0%, #B30000 100%);
+}
+
+.chart-container {
+  width: 100%;
+  height: 400px;
+  margin-top: 20px;
+}
+
+.investor-card {
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.investor-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.investor-card.active {
+  border: 2px solid #FF6B00;
+}
+
+.recommendation-card {
+  transition: transform 0.2s;
+}
+
+.recommendation-card:hover {
+  transform: translateY(-5px);
+}
+
