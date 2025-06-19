@@ -38,7 +38,7 @@ const Index = () => {
       {/* Header */}
       <header className="flex justify-between items-center p-6 max-w-7xl mx-auto">
         <div className="text-2xl font-bold">Futuro em Foco</div>
-        <Button className="bg-black hover:bg-gray-800">Conheça o planner</Button>
+        <Button className="tech-button-primary">Conheça o planner</Button>
       </header>
 
       {/* Hero Section - Banner Laranja */}
@@ -46,11 +46,14 @@ const Index = () => {
         <HeroSection onReceivePlan={handleReceivePlanByEmail} />
       </section>
 
-      {/* Calculator Section - Análise Detalhada */}
-      <section className="px-4 sm:px-6 lg:px-8 py-16 bg-gray-50">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-12">
-            <span className="inline-block bg-orange-100 text-orange-800 px-4 py-1 rounded-full text-sm font-medium mb-4">ANÁLISE DETALHADA</span>
+      {/* Calculator Section - Análise Detalhada com Background Tecno-Etéreo */}
+      <section className="px-4 sm:px-6 lg:px-8 py-16 relative">
+        {/* Background Técnico Sutil */}
+        <div className="absolute inset-0 bg-gradient-to-br from-gray-50/80 to-blue-50/30 backdrop-blur-sm"></div>
+        
+        <div className="max-w-7xl mx-auto relative z-10">
+          <div className="text-center mb-12 fade-in-slide-up">
+            <span className="inline-block bg-orange-100 text-orange-800 px-4 py-1 rounded-full text-sm font-medium mb-4 tech-label">ANÁLISE DETALHADA</span>
             <h2 className="text-3xl font-bold">Análise do seu investimento para aposentadoria</h2>
           </div>
           <Calculator />
@@ -68,9 +71,9 @@ const Index = () => {
             <div id="cta-blob4" className="aurora-cta-blob"></div>
             <div id="cta-blob5" className="aurora-cta-blob"></div>
             <div id="cta-blob6" className="aurora-cta-blob"></div>
-            <div id="cta-blob7" className="aurora-cta-blob mix-blob"></div>
-            <div id="cta-blob8" className="aurora-cta-blob mix-blob"></div>
-            <div id="cta-blob9" className="aurora-cta-blob mix-blob"></div>
+            <div id="cta-blob7" className="aurora-cta-blob"></div>
+            <div id="cta-blob8" className="aurora-cta-blob"></div>
+            <div id="cta-blob9" className="aurora-cta-blob"></div>
           </div>
 
           {/* Content */}
@@ -84,7 +87,7 @@ const Index = () => {
               as melhores decisões financeiras.
             </p>
             <Button 
-              className="bg-white hover:bg-gray-100 text-black font-semibold"
+              className="tech-button-primary text-black font-semibold"
               onClick={handleReceivePlanByEmail}
             >
               Quero ajuda de um especialista

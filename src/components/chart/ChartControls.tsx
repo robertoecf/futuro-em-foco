@@ -17,7 +17,7 @@ export const ChartControls = ({
   onMonteCarloToggle
 }: ChartControlsProps) => {
   return (
-    <div className="glass-card p-4 rounded-lg mb-6">
+    <div className="glass-panel p-4 rounded-lg mb-6 fade-in-slide-up">
       <div className="flex items-center justify-between flex-wrap gap-4">
         {/* Monte Carlo Toggle */}
         <div className="flex items-center space-x-3">
@@ -35,8 +35,8 @@ export const ChartControls = ({
             size="sm"
             onClick={() => onMonteCarloToggle(!isMonteCarloEnabled)}
             className={isMonteCarloEnabled 
-              ? "monte-carlo-button text-white font-medium" 
-              : "premium-button text-black font-medium"
+              ? "tech-button-monte-carlo text-white font-medium" 
+              : "tech-button-primary text-black font-medium"
             }
           >
             {isMonteCarloEnabled ? "Voltar" : "Calcular"}
@@ -62,7 +62,7 @@ export const ChartControls = ({
               className="w-20 px-3 py-1 border border-gray-300 rounded-md text-sm font-medium glass-input"
               min={possibleRetirementAge + 1}
             />
-            <span className="text-sm text-gray-500">anos</span>
+            <span className="text-sm text-gray-500 tech-label">anos</span>
           </div>
         </div>
       </div>
