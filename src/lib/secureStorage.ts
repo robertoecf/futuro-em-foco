@@ -1,5 +1,6 @@
 
 import { encryption } from './encryption';
+import { logger } from './logger';
 
 interface StoredData<T = unknown> {
   data: T;
@@ -21,7 +22,7 @@ class SecureStorage {
       const encrypted = encryption.encrypt(storedData);
       localStorage.setItem(`secure_${key}`, encrypted);
     } catch (error) {
-      console.error('Error storing secure data:', error);
+      logger.error('Error storing secure data:', error);
     }
   }
 
@@ -42,7 +43,7 @@ class SecureStorage {
 
       return storedData.data;
     } catch (error) {
-      console.error('Error retrieving secure data:', error);
+      logger.error('Error retrieving secure data:', error);
       return defaultValue;
     }
   }

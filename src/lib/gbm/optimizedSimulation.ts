@@ -2,6 +2,7 @@
 import { generateNormalRandom } from './randomGenerators';
 import { portfolioGBMSimulation } from './portfolioSimulation';
 import { calculateStatistics } from './statistics';
+import { logger } from '../logger';
 import type { BrownianMonteCarloResult } from './types';
 
 // Optimized Monte Carlo with reduced simulation count and performance improvements
@@ -19,7 +20,7 @@ export async function runOptimizedMonteCarloSimulation(
 ): Promise<BrownianMonteCarloResult> {
   const startTime = performance.now();
   
-  console.log('🚀 Starting Optimized Monte Carlo simulation:', {
+  logger.log('🚀 Starting Optimized Monte Carlo simulation:', {
     simulationCount,
     expectedReturn,
     volatility,
@@ -99,7 +100,7 @@ export async function runOptimizedMonteCarloSimulation(
   const statistics = calculateStatistics(allSimulations, totalYears, accumulationYears, simulationCount);
   
   const endTime = performance.now();
-  console.log(`✅ Optimized Monte Carlo completed in ${endTime - startTime}ms:`, {
+  logger.log(`✅ Optimized Monte Carlo completed in ${endTime - startTime}ms:`, {
     successProbability: statistics.successProbability,
     averageReturn: statistics.averageReturn,
     volatilityRealized: statistics.volatilityRealized
