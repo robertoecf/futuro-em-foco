@@ -1,5 +1,6 @@
 
 import { encryption } from './encryption';
+import { logger } from './logger';
 
 interface StoredData {
   data: any;
@@ -45,7 +46,7 @@ class OptimizedStorage {
       this.cache.set(key, storedData.data);
       return storedData.data;
     } catch (error) {
-      console.error('Error retrieving data:', error);
+      logger.error('Error retrieving data:', error);
       return defaultValue;
     }
   }
@@ -84,10 +85,10 @@ class OptimizedStorage {
         localStorage.setItem(`secure_${key}`, encrypted);
       });
 
-      console.log(`📦 Processed batch of ${this.batchQueue.length} storage updates`);
+      logger.log(`📦 Processed batch of ${this.batchQueue.length} storage updates`);
       this.batchQueue = [];
     } catch (error) {
-      console.error('Error processing batch updates:', error);
+      logger.error('Error processing batch updates:', error);
     }
   }
 

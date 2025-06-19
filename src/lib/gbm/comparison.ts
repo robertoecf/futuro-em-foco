@@ -1,5 +1,6 @@
 
 import { runBrownianMonteCarloSimulation } from './mainSimulation';
+import { logger } from '../logger';
 
 // Utility function to compare simple vs GBM Monte Carlo
 export function compareMonteCarloMethods(
@@ -14,7 +15,7 @@ export function compareMonteCarloMethods(
   retirementAnnualReturn: number = 0.04,
   simulationCount: number = 100
 ) {
-  console.log('🔬 Comparing Monte Carlo methods...');
+  logger.log('🔬 Comparing Monte Carlo methods...');
   
   const gbmResults = runBrownianMonteCarloSimulation(
     initialAmount, monthlyContribution, accumulationYears, totalYears,

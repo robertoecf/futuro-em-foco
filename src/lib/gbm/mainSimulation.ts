@@ -3,6 +3,7 @@ import { generateNormalRandom } from './randomGenerators';
 import { portfolioGBMSimulation } from './portfolioSimulation';
 import { calculateStatistics } from './statistics';
 import type { BrownianMonteCarloResult } from './types';
+import { logger } from '../logger';
 
 // Main Geometric Brownian Motion Monte Carlo simulation
 export function runBrownianMonteCarloSimulation(
@@ -19,7 +20,7 @@ export function runBrownianMonteCarloSimulation(
 ): BrownianMonteCarloResult {
   const allSimulations: number[][] = [];
   
-  console.log('🎲 Starting Geometric Brownian Motion Monte Carlo simulation:', {
+  logger.log('🎲 Starting Geometric Brownian Motion Monte Carlo simulation:', {
     simulationCount,
     expectedReturn,
     volatility,
@@ -88,7 +89,7 @@ export function runBrownianMonteCarloSimulation(
   // Calculate percentiles and statistics using the Python reference approach
   const statistics = calculateStatistics(allSimulations, totalYears, accumulationYears, simulationCount);
   
-  console.log('✅ GBM Monte Carlo simulation completed:', {
+  logger.log('✅ GBM Monte Carlo simulation completed:', {
     successProbability: statistics.successProbability,
     averageReturn: statistics.averageReturn,
     volatilityRealized: statistics.volatilityRealized,
