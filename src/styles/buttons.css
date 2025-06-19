@@ -1,0 +1,258 @@
+
+/* === BOTÕES PREMIUM TECNO-ETÉREOS === */
+
+/* Botão Primário */
+.tech-button-primary {
+  background: var(--tech-gradient-glass);
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  border: 1px solid rgba(228, 130, 0, 0.3);
+  border-radius: 12px;
+  color: var(--theme-text-primary);
+  font-weight: 600;
+  padding: 12px 24px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 
+    0 4px 16px rgba(228, 130, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.tech-button-primary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(228, 130, 0, 0.2),
+    transparent
+  );
+  transition: left 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.tech-button-primary:hover::before {
+  left: 100%;
+}
+
+.tech-button-primary:hover {
+  transform: translateY(-2px) scale(1.02);
+  border-color: rgba(228, 130, 0, 0.5);
+  box-shadow: 
+    0 8px 32px rgba(228, 130, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+/* Botão Monte Carlo Especializado */
+.tech-button-monte-carlo {
+  background: linear-gradient(135deg, 
+    rgba(228, 130, 0, 0.9) 0%,
+    rgba(228, 130, 0, 0.7) 100%);
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  border: 1px solid rgba(228, 130, 0, 0.4);
+  border-radius: 12px;
+  color: var(--palette-mix-white);
+  font-weight: 600;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 
+    0 6px 20px rgba(228, 130, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.tech-button-monte-carlo:hover {
+  transform: translateY(-3px) scale(1.02);
+  background: linear-gradient(135deg, 
+    rgba(228, 130, 0, 1) 0%,
+    rgba(228, 130, 0, 0.8) 100%);
+  box-shadow: 
+    0 12px 32px rgba(228, 130, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+/* Botão Especialista Premium - Estilo Tecno-Etéreo */
+.tech-button-specialist {
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  color: white;
+  font-weight: 600;
+  padding: 12px 24px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 
+    0 0 20px rgba(255, 255, 255, 0.05),
+    0 0 40px rgba(255, 255, 255, 0.02),
+    0 4px 16px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.tech-button-specialist::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.15),
+    transparent
+  );
+  transition: left 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.tech-button-specialist:hover::before {
+  left: 100%;
+}
+
+.tech-button-specialist:hover {
+  transform: translateY(-2px) scale(1.02);
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 
+    0 0 30px rgba(255, 255, 255, 0.08),
+    0 0 60px rgba(255, 255, 255, 0.05),
+    0 8px 32px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+/* Botão Header - Efeito Tecno-Etéreo para Fundo Branco */
+.tech-button-header {
+  background: rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  border-radius: 12px;
+  color: #000000;
+  font-weight: 600;
+  padding: 12px 24px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 
+    0 4px 16px rgba(0, 0, 0, 0.05),
+    0 8px 32px rgba(0, 0, 0, 0.02),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+.tech-button-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.4),
+    transparent
+  );
+  transition: left 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.tech-button-header:hover::before {
+  left: 100%;
+}
+
+.tech-button-header:hover {
+  transform: translateY(-2px) scale(1.02);
+  border-color: rgba(0, 0, 0, 0.1);
+  color: white;
+  background: rgba(0, 0, 0, 0.7);
+  box-shadow: 
+    0 8px 24px rgba(0, 0, 0, 0.08),
+    0 12px 40px rgba(0, 0, 0, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+/* Logo Header - Efeito Tecno-Etéreo Sofisticado com Contorno das Letras */
+.tech-logo-header {
+  font-weight: bold;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  cursor: pointer;
+  overflow: visible;
+  
+  /* Preparação para efeitos de texto */
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.6) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  background-position: -100% 0;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: black;
+  
+  /* Contorno animado usando text-stroke */
+  -webkit-text-stroke: 1px transparent;
+  text-stroke: 1px transparent;
+  
+  /* Suporte para navegadores que não suportam background-clip: text */
+  @supports not (-webkit-background-clip: text) {
+    -webkit-text-fill-color: initial;
+    color: black;
+  }
+}
+
+.tech-logo-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.8),
+    transparent
+  );
+  background-size: 50% 100%;
+  background-position: -50% 0;
+  -webkit-background-clip: text;
+  background-clip: text;
+  opacity: 0;
+  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+}
+
+.tech-logo-header:hover {
+  transform: translateY(-2px) scale(1.02);
+  
+  /* Sombra preta sutil */
+  text-shadow: 
+    0 2px 8px rgba(0, 0, 0, 0.2),
+    0 4px 16px rgba(0, 0, 0, 0.1);
+  
+  /* Animação do brilho no texto */
+  background-position: 100% 0;
+  
+  /* Contorno iluminado */
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.3);
+  text-stroke: 1px rgba(255, 255, 255, 0.3);
+  
+  /* Efeito de brilho geral */
+  filter: brightness(1.1) contrast(1.1);
+}
+
+.tech-logo-header:hover::before {
+  opacity: 1;
+  background-position: 100% 0;
+}
+
+.tech-logo-header:hover {
+  animation: contourGlow 1.2s ease-in-out;
+}
