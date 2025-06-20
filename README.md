@@ -60,6 +60,15 @@ This project is built with:
 - shadcn-ui
 - Tailwind CSS
 
+## Environment variables
+
+Create a `.env` file based on `.env.example` and provide values for the following keys:
+
+- `SUPABASE_URL`
+- `SUPABASE_ANON_KEY`
+- `POSTHOG_TOKEN`
+- `POSTHOG_HOST` (defaults to `https://us.i.posthog.com` if unset)
+
 ## How can I deploy this project?
 
 Simply open [Lovable](https://lovable.dev/projects/acd4e9cf-8db5-4a40-a87c-ae282d010ac4) and click on Share -> Publish.
