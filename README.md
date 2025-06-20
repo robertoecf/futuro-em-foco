@@ -80,3 +80,17 @@ Yes, you can!
 To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
 
 Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+
+## Running the Flask demo
+
+The repository includes a small Flask application under `flask_app/` with an example
+endpoint available at `/home`. To view it locally, generate the Tailwind CSS
+stylesheet and start the Flask development server in separate terminals:
+
+```sh
+npx tailwindcss -i ./flask_app/static/input.css -o ./flask_app/static/styles.css --watch
+FLASK_APP=flask_app/app.py flask run
+```
+
+The resulting `flask_app/static/styles.css` file is generated at runtime and is
+ignored by Git, so it should not be committed.
