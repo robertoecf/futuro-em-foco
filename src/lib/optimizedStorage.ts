@@ -114,7 +114,7 @@ class OptimizedStorage {
         const keys = Object.keys(localStorage);
         keys.forEach(key => {
           if (key.startsWith('secure_')) {
-            const value = this.get(key.replace('secure_', ''));
+            const _value = this.get(key.replace('secure_', ''));
             // get() automatically removes expired items
           }
         });
