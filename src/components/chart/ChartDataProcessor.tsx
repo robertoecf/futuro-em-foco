@@ -56,7 +56,7 @@ export const useChartDataProcessor = ({
     }
     
     console.log('🎨 Generating 50 Monte Carlo lines');
-    const lines = [];
+    const lines: number[][] = [];
     const baseData = monteCarloData.scenarios.median;
     
     // Generate 50 varied paths based on the Monte Carlo scenarios
