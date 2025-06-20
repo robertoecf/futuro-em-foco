@@ -34,7 +34,7 @@ const Index = () => {
     <div className="min-h-screen">
       {/* Header */}
       <header className="flex justify-between items-center p-6 max-w-7xl mx-auto">
-        <div className="text-2xl tech-logo-header">Futuro em Foco</div>
+        <div className="text-2xl tech-logo-header">futuro em foco</div>
         <Button 
           className="tech-button-header"
           onClick={handleReceivePlanByEmail}
