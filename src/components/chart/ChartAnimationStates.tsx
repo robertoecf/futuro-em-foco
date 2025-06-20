@@ -1,6 +1,6 @@
 
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { MonteCarloResult } from '@/lib/utils';
 import { MAGIC_MOMENT_TIMERS } from '@/components/calculator/constants';
 
@@ -49,7 +49,7 @@ export const useChartAnimation = ({
   };
 
   // Check if both conditions are met for transition
-  const checkTransitionConditions = () => {
+  const checkTransitionConditions = useCallback(() => {
     const dataReady = monteCarloData && !isCalculating;
     
     console.log('🔍 Checking transition conditions:', {
@@ -68,7 +68,7 @@ export const useChartAnimation = ({
       if (!dataReady) waitingFor.push('Monte Carlo data');
       console.log(`⏳ Waiting for: ${waitingFor.join(' and ')}`);
     }
-  };
+  }, [hasMinimumTimePassed, monteCarloData, isCalculating]);
 
   // Reset animation state when Monte Carlo is disabled
   useEffect(() => {

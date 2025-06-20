@@ -1,5 +1,5 @@
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 import { MonteCarloResult } from '@/lib/utils';
 
 interface ChartDataProcessorProps {
@@ -50,7 +50,7 @@ export const useChartDataProcessor = ({
   };
 
   // Generate 50 Monte Carlo lines when data is available
-  const generateMonteCarloLines = () => {
+  const generateMonteCarloLines = useCallback(() => {
     if (!isMonteCarloEnabled || !monteCarloData) {
       return [];
     }
@@ -80,7 +80,7 @@ export const useChartDataProcessor = ({
     
     console.log('✅ Generated', lines.length, 'Monte Carlo lines');
     return lines;
-  };
+  }, [isMonteCarloEnabled, monteCarloData]);
 
   const savingsLine = calculateSavingsLine();
 
