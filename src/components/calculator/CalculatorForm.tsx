@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { InvestorProfile } from './useCalculator';
 
-interface CalculatorFormProps {
+export interface CalculatorFormProps {
   initialAmount: number;
   monthlyAmount: number;
   currentAge: number;

@@ -37,9 +37,7 @@ export const useCalculatorState = () => {
   const [calculationResult, setCalculationResult] = useState<CalculationResult | null>(null);
   
   // Monte Carlo states - always start disabled unless explicitly loaded from shared plan
-  const [isMonteCarloEnabled, setIsMonteCarloEnabled] = useState(() => 
-    sharedPlanData?.isMonteCarloEnabled ?? false // Force false to prevent auto-loading
-  );
+  const [isMonteCarloEnabled, setIsMonteCarloEnabled] = useState(false);
   const [monteCarloResult, setMonteCarloResult] = useState<MonteCarloResult | null>(null);
   const [isCalculating, setIsCalculating] = useState(false);
 

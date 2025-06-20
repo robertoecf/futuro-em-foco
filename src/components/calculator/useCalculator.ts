@@ -6,38 +6,10 @@ import { useCalculatorEffects } from './useCalculatorEffects';
 export { type InvestorProfile, type CalculationResult } from './types';
 
 export const useCalculator = () => {
-  const {
-    // State values
-    initialAmount,
-    monthlyAmount,
-    currentAge,
-    retirementAge,
-    lifeExpectancy,
-    retirementIncome,
-    portfolioReturn,
-    investorProfile,
-    calculationResult,
-    isMonteCarloEnabled,
-    monteCarloResult,
-    isCalculating,
-    sharedPlanData,
-    // State setters
-    setInitialAmount,
-    setMonthlyAmount,
-    setCurrentAge,
-    setRetirementAge,
-    setLifeExpectancy,
-    setRetirementIncome,
-    setPortfolioReturn,
-    setInvestorProfile,
-    setCalculationResult,
-    setIsMonteCarloEnabled,
-    setMonteCarloResult,
-    setIsCalculating
-  } = useCalculatorState();
+  const state = useCalculatorState();
 
   // Calculate accumulation years based on current and retirement age
-  const accumulationYears = retirementAge - currentAge;
+  const accumulationYears = state.retirementAge - state.currentAge;
 
   const {
     handleMonteCarloToggle,
@@ -50,36 +22,36 @@ export const useCalculator = () => {
     handlePortfolioReturnBlur,
     handleInvestorProfileChange
   } = useCalculatorHandlers({
-    currentAge,
-    retirementAge,
-    setInitialAmount,
-    setMonthlyAmount,
-    setCurrentAge,
-    setRetirementAge,
-    setLifeExpectancy,
-    setRetirementIncome,
-    setPortfolioReturn,
-    setInvestorProfile,
-    setIsMonteCarloEnabled,
-    setIsCalculating,
-    setMonteCarloResult
+    currentAge: state.currentAge,
+    retirementAge: state.retirementAge,
+    setInitialAmount: state.setInitialAmount,
+    setMonthlyAmount: state.setMonthlyAmount,
+    setCurrentAge: state.setCurrentAge,
+    setRetirementAge: state.setRetirementAge,
+    setLifeExpectancy: state.setLifeExpectancy,
+    setRetirementIncome: state.setRetirementIncome,
+    setPortfolioReturn: state.setPortfolioReturn,
+    setInvestorProfile: state.setInvestorProfile,
+    setIsMonteCarloEnabled: state.setIsMonteCarloEnabled,
+    setIsCalculating: state.setIsCalculating,
+    setMonteCarloResult: state.setMonteCarloResult
   });
 
   const { calculatePossibleRetirementAge, calculateProjection } = useCalculatorEffects({
-    initialAmount,
-    monthlyAmount,
-    currentAge,
-    retirementAge,
-    lifeExpectancy,
-    retirementIncome,
-    portfolioReturn,
-    investorProfile,
+    initialAmount: state.initialAmount,
+    monthlyAmount: state.monthlyAmount,
+    currentAge: state.currentAge,
+    retirementAge: state.retirementAge,
+    lifeExpectancy: state.lifeExpectancy,
+    retirementIncome: state.retirementIncome,
+    portfolioReturn: state.portfolioReturn,
+    investorProfile: state.investorProfile,
     accumulationYears,
-    isMonteCarloEnabled,
-    sharedPlanData,
-    setCalculationResult,
-    setIsCalculating,
-    setMonteCarloResult
+    isMonteCarloEnabled: state.isMonteCarloEnabled,
+    sharedPlanData: state.sharedPlanData,
+    setCalculationResult: state.setCalculationResult,
+    setIsCalculating: state.setIsCalculating,
+    setMonteCarloResult: state.setMonteCarloResult
   });
 
   const possibleRetirementAge = calculatePossibleRetirementAge();
@@ -87,24 +59,12 @@ export const useCalculator = () => {
   // Function to finish calculation (called when animation completes)
   const finishCalculation = () => {
     console.log('🏁 Animation finished - calculation complete');
-    setIsCalculating(false);
+    state.setIsCalculating(false);
   };
 
   return {
-    initialAmount,
-    monthlyAmount,
-    currentAge,
-    retirementAge,
+    ...state,
     possibleRetirementAge,
-    lifeExpectancy,
-    retirementIncome,
-    portfolioReturn,
-    investorProfile,
-    calculationResult,
-    accumulationYears,
-    isMonteCarloEnabled,
-    monteCarloResult,
-    isCalculating,
     finishCalculation,
     handleInitialAmountBlur,
     handleMonthlyAmountBlur,
@@ -115,6 +75,7 @@ export const useCalculator = () => {
     handlePortfolioReturnBlur,
     setInvestorProfile: handleInvestorProfileChange,
     handleMonteCarloToggle,
-    calculateProjection
+    calculateProjection,
+    accumulationYears
   };
 };
