@@ -15,5 +15,12 @@
     "allowJs": true,
     "noUnusedLocals": false,
     "strictNullChecks": false
-  }
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "vite-env.d.ts",
+    "vite.config.ts",
+    "tailwind.config.ts"
+  ]
 }

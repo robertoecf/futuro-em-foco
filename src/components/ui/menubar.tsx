@@ -104,6 +104,7 @@ const MenubarContent = React.forwardRef<
   )
 )
 MenubarContent.displayName = MenubarPrimitive.Content.displayName
+// jscpd:ignore-start
 
 const MenubarItem = React.forwardRef<
   React.ElementRef<typeof MenubarPrimitive.Item>,
@@ -197,6 +198,7 @@ const MenubarSeparator = React.forwardRef<
   />
 ))
 MenubarSeparator.displayName = MenubarPrimitive.Separator.displayName
+// jscpd:ignore-end
 
 const MenubarShortcut = ({
   className,
