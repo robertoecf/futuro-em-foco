@@ -57,11 +57,6 @@ export const ChartComponent = ({
   lineDrawingDuration = 2000
 }: ChartComponentProps) => {
   
-  console.log('ChartComponent data:', data);
-  console.log('ChartComponent Monte Carlo data:', monteCarloData);
-  console.log('ChartComponent isCalculating:', isCalculating);
-  console.log('ChartComponent isMonteCarloEnabled:', isMonteCarloEnabled);
-  console.log('ChartComponent lineDrawingDuration:', lineDrawingDuration);
 
   const finalMonteCarloData = monteCarloData === undefined ? null : monteCarloData;
 
@@ -95,9 +90,6 @@ export const ChartComponent = ({
   const perpetuityWealth = monthlyIncomeTarget > 0 ? 
     (monthlyIncomeTarget * 12) / (portfolioReturn / 100) : 0;
 
-  console.log('ChartComponent animationPhase:', animationPhase);
-  console.log('ChartComponent isShowingLines:', isShowingLines);
-  console.log('ChartComponent isDrawingFinalLines:', isDrawingFinalLines);
 
   const planningInputs = {
     initialAmount,

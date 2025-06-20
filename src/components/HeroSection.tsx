@@ -9,9 +9,6 @@ export const HeroSection = ({ onReceivePlan }: HeroSectionProps) => {
   const handleClick = () => {
     if (onReceivePlan) {
       onReceivePlan();
-    } else {
-      // Comportamento padrão se não houver callback
-      console.log('Consultar um especialista clicked');
     }
   };
 

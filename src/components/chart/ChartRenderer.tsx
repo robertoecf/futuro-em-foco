@@ -49,14 +49,6 @@ export const ChartRenderer = ({
     return colors[index % colors.length];
   };
 
-  console.log('📊 ChartRenderer:', {
-    chartDataLength: chartData.length,
-    hasMonteCarloData: !!monteCarloData,
-    isShowingLines,
-    isDrawingFinalLines,
-    lineDrawingDuration,
-    firstDataKeys: chartData[0] ? Object.keys(chartData[0]) : []
-  });
 
   return (
     <div className="relative h-[400px] w-full bg-white border border-gray-200 rounded-lg p-4">

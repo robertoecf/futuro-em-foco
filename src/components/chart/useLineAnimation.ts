@@ -17,13 +17,6 @@ export const useLineAnimation = ({
   const [drawingLines, setDrawingLines] = useState<Set<number>>(new Set());
   const timeoutsRef = useRef<ReturnType<typeof setTimeout>[]>([]);
 
-  console.log('🎨 useLineAnimation:', {
-    isShowingLines,
-    totalLines,
-    drawingDuration,
-    animatedLinesCount: animatedLines.size,
-    drawingLinesCount: drawingLines.size
-  });
 
   // Calculate delay between lines based on total duration
   const delayBetweenLines = drawingDuration / totalLines;
@@ -37,7 +30,6 @@ export const useLineAnimation = ({
   // Start line drawing animation
   useEffect(() => {
     if (isShowingLines) {
-      console.log('🚀 Starting line drawing animation');
       
       // Reset states
       setAnimatedLines(new Set());
@@ -47,12 +39,10 @@ export const useLineAnimation = ({
       // Schedule each line to start drawing
       for (let i = 0; i < totalLines; i++) {
         const startDrawingTimeout = setTimeout(() => {
-          console.log(`✏️ Starting to draw line ${i}`);
           setDrawingLines(prev => new Set([...prev, i]));
 
           // After the drawing animation completes, mark as fully animated
           const completeDrawingTimeout = setTimeout(() => {
-            console.log(`✅ Completed drawing line ${i}`);
             setDrawingLines(prev => {
               const next = new Set(prev);
               next.delete(i);
@@ -67,7 +57,6 @@ export const useLineAnimation = ({
         timeoutsRef.current.push(startDrawingTimeout);
       }
     } else {
-      console.log('🔄 Resetting line animation');
       clearAllTimeouts();
       setAnimatedLines(new Set());
       setDrawingLines(new Set());

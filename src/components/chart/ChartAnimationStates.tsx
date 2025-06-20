@@ -25,15 +25,6 @@ export const useChartAnimation = ({
   const [hasMinimumTimePassed, setHasMinimumTimePassed] = useState(false);
   const timersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
 
-  console.log('🎬 useChartAnimation state:', {
-    isCalculating,
-    isMonteCarloEnabled,
-    hasMonteCarloData: !!monteCarloData,
-    animationPhase,
-    hasStartedAnimation,
-    projectingStartTime,
-    hasMinimumTimePassed
-  });
 
   // Cleanup function for timers
   const clearAllTimers = () => {
@@ -52,28 +43,19 @@ export const useChartAnimation = ({
   const checkTransitionConditions = useCallback(() => {
     const dataReady = monteCarloData && !isCalculating;
     
-    console.log('🔍 Checking transition conditions:', {
-      hasMinimumTimePassed,
-      dataReady: !!dataReady,
-      monteCarloData: !!monteCarloData,
-      isCalculating
-    });
 
     if (hasMinimumTimePassed && dataReady) {
-      console.log('✅ Both conditions met - transitioning to paths phase');
       setAnimationPhase('paths');
     } else {
       const waitingFor: string[] = [];
       if (!hasMinimumTimePassed) waitingFor.push('minimum time (2000ms)');
       if (!dataReady) waitingFor.push('Monte Carlo data');
-      console.log(`⏳ Waiting for: ${waitingFor.join(' and ')}`);
     }
   }, [hasMinimumTimePassed, monteCarloData, isCalculating]);
 
   // Reset animation state when Monte Carlo is disabled
   useEffect(() => {
     if (!isMonteCarloEnabled) {
-      console.log('🔄 Monte Carlo disabled - resetting animation state');
       clearAllTimers();
       setAnimationPhase('final');
       setHasStartedAnimation(false);
@@ -86,17 +68,15 @@ export const useChartAnimation = ({
   // Handle calculation start
   useEffect(() => {
     if (isCalculating && isMonteCarloEnabled && !hasStartedAnimation) {
-      console.log('🚀 Starting calculation - setting projecting phase');
       const startTime = Date.now();
       setProjectingStartTime(startTime);
       setAnimationPhase('projecting');
       setHasStartedAnimation(true);
       setHasMinimumTimePassed(false);
-      console.log('⏱️ Projecting phase started at:', startTime);
 
       // Set timer for minimum time (2000ms)
       addTimer(() => {
-        console.log('⏰ Minimum time (2000ms) has passed');
+        
         setHasMinimumTimePassed(true);
       }, MAGIC_MOMENT_TIMERS.PROJECTING_DURATION);
     }
@@ -105,7 +85,6 @@ export const useChartAnimation = ({
   // Check transition conditions when minimum time passes
   useEffect(() => {
     if (hasMinimumTimePassed && animationPhase === 'projecting') {
-      console.log('⏰ Minimum time passed - checking if data is ready');
       checkTransitionConditions();
     }
   }, [hasMinimumTimePassed, animationPhase, checkTransitionConditions]);
@@ -113,7 +92,6 @@ export const useChartAnimation = ({
   // Check transition conditions when data becomes ready
   useEffect(() => {
     if (isMonteCarloEnabled && monteCarloData && !isCalculating && hasStartedAnimation && animationPhase === 'projecting') {
-      console.log('📊 Monte Carlo data ready - checking if minimum time has passed');
       checkTransitionConditions();
     }
   }, [
@@ -128,21 +106,17 @@ export const useChartAnimation = ({
   // Handle subsequent animation phases
   useEffect(() => {
     if (animationPhase === 'paths') {
-      console.log('🎨 Starting paths phase - will last', MAGIC_MOMENT_TIMERS.PATHS_DURATION, 'ms');
       
       // Phase 1: Paths (6 seconds)
       addTimer(() => {
-        console.log('🔄 Phase 3: Optimizing display...');
         setAnimationPhase('optimizing');
         
         // Phase 2: Optimizing (2 seconds)
         addTimer(() => {
-          console.log('🎯 Phase 4: Drawing final lines...');
           setAnimationPhase('drawing-final');
           
           // Phase 3: Drawing Final Lines (4 seconds)
           addTimer(() => {
-            console.log('✨ Phase 5: Final results');
             setAnimationPhase('final');
             if (onAnimationComplete) {
               onAnimationComplete();

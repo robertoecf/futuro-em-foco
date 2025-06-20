@@ -58,7 +58,6 @@ export const useCalculator = () => {
 
   // Function to finish calculation (called when animation completes)
   const finishCalculation = () => {
-    console.log('🏁 Animation finished - calculation complete');
     state.setIsCalculating(false);
   };
 

@@ -5,7 +5,7 @@ import { runOptimizedMonteCarloSimulation } from '@/lib/gbm/optimizedSimulation'
 import { useDebounce } from '@/hooks/useDebounce';
 import type { PlanningData } from '@/hooks/usePlanningData';
 import type { InvestorProfile, CalculationResult } from './types';
-import { getAccumulationAnnualReturn } from './calculationUtils';
+import { getAccumulationAnnualReturn } from './insights/insightsCalculations';
 
 interface UseCalculatorEffectsProps {
   initialAmount: number;
@@ -96,7 +96,6 @@ export const useCalculatorEffects = ({
   const calculateProjection = useCallback(async () => {
     const startTime = performance.now();
     
-    console.log('🧮 Calculating optimized projection with debounced values:', calculationInputs);
     
     const accumulationAnnualReturn = getAccumulationAnnualReturn(investorProfile);
     const retirementAnnualReturn = debouncedPortfolioReturn / 100;
@@ -115,7 +114,6 @@ export const useCalculatorEffects = ({
     );
     
     const deterministicTime = performance.now();
-    console.log(`✅ Deterministic calculation completed in ${deterministicTime - startTime}ms:`, result);
     
     setCalculationResult({
       finalAmount: result.retirementAmount,
@@ -125,7 +123,6 @@ export const useCalculatorEffects = ({
 
     // Only run Monte Carlo if explicitly enabled - with optimizations
     if (isMonteCarloEnabled) {
-      console.log('🎲 Monte Carlo enabled - starting optimized calculation');
       setIsCalculating(true);
       
       // Use requestIdleCallback if available, otherwise setTimeout
@@ -156,7 +153,6 @@ export const useCalculatorEffects = ({
           );
           
           const monteCarloTime = performance.now();
-          console.log(`💾 Optimized Monte Carlo completed in ${monteCarloTime - deterministicTime}ms:`, gbmResults);
           
           const convertedResults = {
             scenarios: gbmResults.scenarios,
@@ -167,7 +163,6 @@ export const useCalculatorEffects = ({
           setIsCalculating(false);
           
           const totalTime = performance.now();
-          console.log(`🏁 Total calculation time: ${totalTime - startTime}ms`);
           
         } catch (error) {
           console.error('❌ Optimized Monte Carlo calculation failed:', error);
@@ -177,7 +172,6 @@ export const useCalculatorEffects = ({
       });
       
     } else {
-      console.log('📊 Monte Carlo disabled - using deterministic results only');
       setMonteCarloResult(null);
       setIsCalculating(false);
     }
@@ -199,7 +193,6 @@ export const useCalculatorEffects = ({
 
   // Calculate on input changes - now using debounced values
   useEffect(() => {
-    console.log('📊 useEffect triggered with debounced values, recalculating projection');
     calculateProjection();
   }, [calculateProjection]);
 
