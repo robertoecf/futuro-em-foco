@@ -2,7 +2,7 @@
 import { optimizedStorage } from '@/lib/optimizedStorage';
 
 // Function to load data from optimized storage
-export const loadFromStorage = <T>(key: string, defaultValue: T): T => {
+export const loadFromStorage = <T>(key: string, defaultValue: T): T | null => {
   return optimizedStorage.get(key, defaultValue);
 };
 
@@ -20,7 +20,7 @@ export const loadFromSharedPlan = (): PlanningData['planningInputs'] | null => {
   
   if (planId) {
     try {
-      const planData = optimizedStorage.get(`planning_${planId}`);
+      const planData = optimizedStorage.get<PlanningData>(`planning_${planId}`);
       if (planData) {
         return planData.planningInputs;
       }

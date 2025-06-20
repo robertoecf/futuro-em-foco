@@ -63,10 +63,12 @@ export const ChartComponent = ({
   console.log('ChartComponent isMonteCarloEnabled:', isMonteCarloEnabled);
   console.log('ChartComponent lineDrawingDuration:', lineDrawingDuration);
 
+  const finalMonteCarloData = monteCarloData === undefined ? null : monteCarloData;
+
   const { animationPhase, isShowingLines, isDrawingFinalLines } = useChartAnimation({
     isCalculating,
     isMonteCarloEnabled,
-    monteCarloData,
+    monteCarloData: finalMonteCarloData,
     onAnimationComplete
   });
 
@@ -77,7 +79,7 @@ export const ChartComponent = ({
     initialAmount,
     monthlyAmount,
     monthlyIncomeTarget,
-    monteCarloData,
+    monteCarloData: finalMonteCarloData,
     isMonteCarloEnabled
   });
 
@@ -137,7 +139,7 @@ export const ChartComponent = ({
             chartData={chartData}
             possibleRetirementAge={possibleRetirementAge}
             perpetuityWealth={perpetuityWealth}
-            monteCarloData={monteCarloData}
+            monteCarloData={finalMonteCarloData}
             isShowingLines={isShowingLines}
             isDrawingFinalLines={isDrawingFinalLines}
             lineDrawingDuration={lineDrawingDuration}
@@ -172,7 +174,7 @@ export const ChartComponent = ({
       
       {/* Information Section */}
       <ChartInfo
-        monteCarloData={monteCarloData}
+        monteCarloData={finalMonteCarloData}
         perpetuityWealth={perpetuityWealth}
         possibleRetirementAge={possibleRetirementAge}
       />

@@ -4,10 +4,11 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { InfoIcon } from 'lucide-react';
+import type { InvestorProfile } from '@/components/calculator/types';
 
 interface InvestorProfileProps {
-  onProfileSelect: (profile: string) => void;
-  selectedProfile: string;
+  onProfileSelect: (profile: InvestorProfile) => void;
+  selectedProfile: InvestorProfile;
 }
 
 export const InvestorProfiles = ({ onProfileSelect, selectedProfile }: InvestorProfileProps) => {
@@ -68,7 +69,7 @@ export const InvestorProfiles = ({ onProfileSelect, selectedProfile }: InvestorP
             <Card 
               key={profile.id}
               className={`p-6 cursor-pointer investor-card ${selectedProfile === profile.id ? 'active' : ''}`}
-              onClick={() => onProfileSelect(profile.id)}
+              onClick={() => onProfileSelect(profile.id as InvestorProfile)}
             >
               <div className="flex justify-between items-start mb-4">
                 <h3 className="text-xl font-semibold">{profile.title}</h3>
