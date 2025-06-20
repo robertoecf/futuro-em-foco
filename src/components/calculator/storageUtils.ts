@@ -2,8 +2,9 @@
 import { optimizedStorage } from '@/lib/optimizedStorage';
 
 // Function to load data from optimized storage
-export const loadFromStorage = <T>(key: string, defaultValue: T): T | null => {
-  return optimizedStorage.get(key, defaultValue);
+export const loadFromStorage = <T>(key: string, defaultValue: T): T => {
+  const value = optimizedStorage.get<T>(key, defaultValue);
+  return value ?? defaultValue;
 };
 
 // Function to save to optimized storage with batching

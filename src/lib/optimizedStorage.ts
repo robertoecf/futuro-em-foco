@@ -25,14 +25,14 @@ class OptimizedStorage {
   get<T>(key: string, defaultValue: T | null = null): T | null {
     // Check cache first
     if (this.cache.has(key)) {
-      return this.cache.get(key);
+      return this.cache.get(key) as T | null;
     }
 
     try {
       const encrypted = localStorage.getItem(`secure_${key}`);
       if (!encrypted) return defaultValue;
 
-      const storedData: StoredData = encryption.decrypt(encrypted);
+      const storedData = encryption.decrypt<StoredData>(encrypted);
       if (!storedData) return defaultValue;
 
       // Check expiration
@@ -44,7 +44,7 @@ class OptimizedStorage {
 
       // Cache the result
       this.cache.set(key, storedData.data);
-      return storedData.data;
+      return storedData.data as T;
     } catch (error) {
       logger.error('Error retrieving data:', error);
       return defaultValue;
@@ -114,7 +114,7 @@ class OptimizedStorage {
         const keys = Object.keys(localStorage);
         keys.forEach(key => {
           if (key.startsWith('secure_')) {
-            const _value = this.get(key.replace('secure_', ''));
+            this.get(key.replace('secure_', ''));
             // get() automatically removes expired items
           }
         });

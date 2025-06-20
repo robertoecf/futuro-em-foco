@@ -1,24 +1,8 @@
 
 import { memo } from 'react';
-import { CalculatorForm } from './CalculatorForm';
-import type { InvestorProfile } from './types';
+import { CalculatorForm, type CalculatorFormProps } from './CalculatorForm';
 
-interface OptimizedCalculatorFormProps {
-  initialAmount: number;
-  monthlyAmount: number;
-  currentAge: number;
-  retirementAge: number;
-  retirementIncome: number;
-  portfolioReturn: number;
-  investorProfile: InvestorProfile;
-  handleInitialAmountBlur: (value: string) => void;
-  handleMonthlyAmountBlur: (value: string) => void;
-  handleCurrentAgeBlur: (value: string) => void;
-  handleRetirementAgeBlur: (value: string) => void;
-  handleRetirementIncomeBlur: (value: string) => void;
-  handlePortfolioReturnBlur: (value: string) => void;
-  setInvestorProfile: (profile: InvestorProfile) => void;
-}
+type OptimizedCalculatorFormProps = CalculatorFormProps;
 
 // Memoized form component to prevent unnecessary re-renders
 export const OptimizedCalculatorForm = memo<OptimizedCalculatorFormProps>(({

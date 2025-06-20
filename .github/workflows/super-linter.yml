@@ -11,6 +11,8 @@ on:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
+permissions:
+  contents: read
 jobs:
   run-lint:
     runs-on: ubuntu-latest
@@ -30,4 +32,5 @@ jobs:
           VALIDATE_ALL_CODEBASE: false
           DEFAULT_BRANCH: "main"
           VALIDATE_TYPESCRIPT_STANDARD: false
+          FILTER_REGEX_EXCLUDE: "tsconfig\\.app\\.json|tsconfig\\.node\\.json"
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

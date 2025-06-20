@@ -31,7 +31,7 @@ class SecureStorage {
       const encrypted = localStorage.getItem(`secure_${key}`);
       if (!encrypted) return defaultValue;
 
-      const storedData: StoredData<T> = encryption.decrypt(encrypted);
+      const storedData = encryption.decrypt<StoredData<T>>(encrypted);
       if (!storedData) return defaultValue;
 
       // Check expiration
@@ -66,7 +66,7 @@ class SecureStorage {
     const keys = Object.keys(localStorage);
     keys.forEach(key => {
       if (key.startsWith('secure_')) {
-        const _value = this.get(key.replace('secure_', ''));
+        this.get(key.replace('secure_', ''));
         // get() automatically removes expired items
       }
     });
