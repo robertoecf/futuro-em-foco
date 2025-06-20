@@ -15,20 +15,22 @@ export default defineConfig(({ mode }) => {
         interval: 1000
       },
       // Relaxed security headers for Lovable compatibility
-      headers: mode === 'development' ? {
-        'X-Content-Type-Options': 'nosniff',
-        // Removed X-Frame-Options to allow Lovable iframe embedding
-        'X-XSS-Protection': '1; mode=block',
-        'Referrer-Policy': 'strict-origin-when-cross-origin',
-        // Relaxed Permissions-Policy for development
-        'Permissions-Policy': 'camera=(), microphone=()'
-      } : {
-        'X-Content-Type-Options': 'nosniff',
-        'X-Frame-Options': 'DENY',
-        'X-XSS-Protection': '1; mode=block',
-        'Referrer-Policy': 'strict-origin-when-cross-origin',
-        'Permissions-Policy': 'camera=(), microphone=(), geolocation=()'
-      }
+      headers: mode === 'development'
+        ? {
+            'X-Content-Type-Options': 'nosniff',
+            // Removed X-Frame-Options to allow Lovable iframe embedding
+            'X-XSS-Protection': '1; mode=block',
+            'Referrer-Policy': 'strict-origin-when-cross-origin',
+            // Relaxed Permissions-Policy for development
+            'Permissions-Policy': 'camera=(), microphone=()'
+          }
+        : {
+            'X-Content-Type-Options': 'nosniff',
+            'X-Frame-Options': 'DENY',
+            'X-XSS-Protection': '1; mode=block',
+            'Referrer-Policy': 'strict-origin-when-cross-origin',
+            'Permissions-Policy': 'camera=(), microphone=(), geolocation=()'
+          }
     },
     plugins: [
       react()
