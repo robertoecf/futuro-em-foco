@@ -68,6 +68,7 @@ const ContextMenuContent = React.forwardRef<
   </ContextMenuPrimitive.Portal>
 ))
 ContextMenuContent.displayName = ContextMenuPrimitive.Content.displayName
+// jscpd:ignore-start
 
 const ContextMenuItem = React.forwardRef<
   React.ElementRef<typeof ContextMenuPrimitive.Item>,
@@ -162,6 +163,7 @@ const ContextMenuSeparator = React.forwardRef<
   />
 ))
 ContextMenuSeparator.displayName = ContextMenuPrimitive.Separator.displayName
+// jscpd:ignore-end
 
 const ContextMenuShortcut = ({
   className,

@@ -1,6 +1,6 @@
 
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { MonteCarloResult } from '@/lib/utils';
 import { MAGIC_MOMENT_TIMERS } from '@/components/calculator/constants';
 
@@ -23,7 +23,7 @@ export const useChartAnimation = ({
   const [hasStartedAnimation, setHasStartedAnimation] = useState(false);
   const [projectingStartTime, setProjectingStartTime] = useState<number | null>(null);
   const [hasMinimumTimePassed, setHasMinimumTimePassed] = useState(false);
-  const timersRef = useRef<NodeJS.Timeout[]>([]);
+  const timersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
 
   console.log('🎬 useChartAnimation state:', {
     isCalculating,
@@ -49,7 +49,7 @@ export const useChartAnimation = ({
   };
 
   // Check if both conditions are met for transition
-  const checkTransitionConditions = () => {
+  const checkTransitionConditions = useCallback(() => {
     const dataReady = monteCarloData && !isCalculating;
     
     console.log('🔍 Checking transition conditions:', {
@@ -68,7 +68,7 @@ export const useChartAnimation = ({
       if (!dataReady) waitingFor.push('Monte Carlo data');
       console.log(`⏳ Waiting for: ${waitingFor.join(' and ')}`);
     }
-  };
+  }, [hasMinimumTimePassed, monteCarloData, isCalculating]);
 
   // Reset animation state when Monte Carlo is disabled
   useEffect(() => {
@@ -108,7 +108,7 @@ export const useChartAnimation = ({
       console.log('⏰ Minimum time passed - checking if data is ready');
       checkTransitionConditions();
     }
-  }, [hasMinimumTimePassed, animationPhase]);
+  }, [hasMinimumTimePassed, animationPhase, checkTransitionConditions]);
 
   // Check transition conditions when data becomes ready
   useEffect(() => {
@@ -116,7 +116,14 @@ export const useChartAnimation = ({
       console.log('📊 Monte Carlo data ready - checking if minimum time has passed');
       checkTransitionConditions();
     }
-  }, [isMonteCarloEnabled, monteCarloData, isCalculating, hasStartedAnimation, animationPhase]);
+  }, [
+    isMonteCarloEnabled,
+    monteCarloData,
+    isCalculating,
+    hasStartedAnimation,
+    animationPhase,
+    checkTransitionConditions
+  ]);
 
   // Handle subsequent animation phases
   useEffect(() => {

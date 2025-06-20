@@ -2,17 +2,19 @@
 import { optimizedStorage } from '@/lib/optimizedStorage';
 
 // Function to load data from optimized storage
-export const loadFromStorage = (key: string, defaultValue: any) => {
+export const loadFromStorage = <T>(key: string, defaultValue: T): T => {
   return optimizedStorage.get(key, defaultValue);
 };
 
 // Function to save to optimized storage with batching
-export const saveToStorage = (key: string, value: any) => {
+export const saveToStorage = <T>(key: string, value: T): void => {
   optimizedStorage.set(key, value);
 };
 
 // Function to load data from a shared plan
-export const loadFromSharedPlan = () => {
+import type { PlanningData } from '@/hooks/usePlanningData';
+
+export const loadFromSharedPlan = (): PlanningData['planningInputs'] | null => {
   const urlParams = new URLSearchParams(window.location.search);
   const planId = urlParams.get('plan');
   

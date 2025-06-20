@@ -11,7 +11,7 @@ export const useFinalLinesAnimation = ({
 }: UseFinalLinesAnimationProps) => {
   const [animatedLines, setAnimatedLines] = useState<Set<string>>(new Set());
   const [drawingLines, setDrawingLines] = useState<Set<string>>(new Set());
-  const timeoutsRef = useRef<NodeJS.Timeout[]>([]);
+  const timeoutsRef = useRef<ReturnType<typeof setTimeout>[]>([]);
 
   console.log('📈 useFinalLinesAnimation:', {
     isDrawingFinalLines,

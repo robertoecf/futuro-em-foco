@@ -44,15 +44,15 @@ class SimpleEncryption {
     }
   }
 
-  encrypt(data: any): string {
+  encrypt<T>(data: T): string {
     const jsonString = JSON.stringify(data);
     return this.xorEncrypt(jsonString, this.key);
   }
 
-  decrypt(encryptedData: string): any {
+  decrypt<T>(encryptedData: string): T | null {
     const decrypted = this.xorDecrypt(encryptedData, this.key);
     try {
-      return JSON.parse(decrypted);
+      return JSON.parse(decrypted) as T;
     } catch {
       return null;
     }

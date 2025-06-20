@@ -1,10 +1,10 @@
 
-import { useEffect } from 'react'
+import { useEffect, type ReactNode } from 'react'
 import { useLocation } from 'react-router-dom'
 import posthog from '@/lib/posthog'
 
 interface PostHogProviderProps {
-  children: React.ReactNode
+  children: ReactNode
 }
 
 export function PostHogProvider({ children }: PostHogProviderProps) {

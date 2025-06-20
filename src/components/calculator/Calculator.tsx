@@ -23,7 +23,6 @@ export const Calculator: React.FC = () => {
     initialAmount,
     monthlyAmount,
     currentAge,
-    retirementAge,
     possibleRetirementAge,
     lifeExpectancy,
     retirementIncome,

@@ -1,6 +1,7 @@
 
 import { useCallback } from 'react';
 import type { InvestorProfile } from './types';
+import type { MonteCarloResult } from '@/lib/utils';
 import { STORAGE_KEYS } from './constants';
 import { saveToStorage } from './storageUtils';
 
@@ -17,7 +18,7 @@ interface UseCalculatorHandlersProps {
   setInvestorProfile: (value: InvestorProfile) => void;
   setIsMonteCarloEnabled: (value: boolean) => void;
   setIsCalculating: (value: boolean) => void;
-  setMonteCarloResult: (value: any) => void;
+  setMonteCarloResult: (value: MonteCarloResult | null) => void;
 }
 
 export const useCalculatorHandlers = ({

@@ -1,8 +1,9 @@
 
 import { useCallback, useEffect, useMemo } from 'react';
-import { calculateFullProjection, runMonteCarloSimulation, getVolatilityByProfile } from '@/lib/utils';
+import { calculateFullProjection, getVolatilityByProfile, type MonteCarloResult } from '@/lib/utils';
 import { runOptimizedMonteCarloSimulation } from '@/lib/gbm/optimizedSimulation';
 import { useDebounce } from '@/hooks/useDebounce';
+import type { PlanningData } from '@/hooks/usePlanningData';
 import type { InvestorProfile, CalculationResult } from './types';
 import { getAccumulationAnnualReturn } from './calculationUtils';
 
@@ -17,10 +18,10 @@ interface UseCalculatorEffectsProps {
   investorProfile: InvestorProfile;
   accumulationYears: number;
   isMonteCarloEnabled: boolean;
-  sharedPlanData: any;
+  sharedPlanData: PlanningData['planningInputs'] | null;
   setCalculationResult: (result: CalculationResult) => void;
   setIsCalculating: (value: boolean) => void;
-  setMonteCarloResult: (result: any) => void;
+  setMonteCarloResult: (result: MonteCarloResult | null) => void;
 }
 
 export const useCalculatorEffects = ({
@@ -180,7 +181,21 @@ export const useCalculatorEffects = ({
       setMonteCarloResult(null);
       setIsCalculating(false);
     }
-  }, [calculationInputs, isMonteCarloEnabled, setCalculationResult, setIsCalculating, setMonteCarloResult]);
+  }, [
+    calculationInputs,
+    isMonteCarloEnabled,
+    setCalculationResult,
+    setIsCalculating,
+    setMonteCarloResult,
+    accumulationYears,
+    currentAge,
+    debouncedInitialAmount,
+    debouncedMonthlyAmount,
+    debouncedRetirementIncome,
+    debouncedPortfolioReturn,
+    investorProfile,
+    lifeExpectancy
+  ]);
 
   // Calculate on input changes - now using debounced values
   useEffect(() => {

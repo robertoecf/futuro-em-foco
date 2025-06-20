@@ -15,7 +15,7 @@ export const useLineAnimation = ({
 }: UseLineAnimationProps) => {
   const [animatedLines, setAnimatedLines] = useState<Set<number>>(new Set());
   const [drawingLines, setDrawingLines] = useState<Set<number>>(new Set());
-  const timeoutsRef = useRef<NodeJS.Timeout[]>([]);
+  const timeoutsRef = useRef<ReturnType<typeof setTimeout>[]>([]);
 
   console.log('🎨 useLineAnimation:', {
     isShowingLines,
