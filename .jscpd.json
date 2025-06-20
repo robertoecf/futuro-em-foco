@@ -1,0 +1,8 @@
+{
+  "threshold": 1,
+  "ignore": [
+    "node_modules/**",
+    "src/lib/gbm/**",
+    "src/integrations/supabase/**"
+  ]
+}
