@@ -4,9 +4,10 @@ import { Button } from '@/components/ui/button';
 import { Download } from 'lucide-react';
 import { LeadCaptureForm } from '@/components/LeadCaptureForm';
 import { InvestorProfile, CalculationResult } from '@/components/calculator/useCalculator';
+import type { ChartDataPoint } from '@/utils/csvExport';
 
 interface ExportButtonProps {
-  chartData: any[];
+  chartData: ChartDataPoint[];
   planningInputs: {
     initialAmount: number;
     monthlyAmount: number;

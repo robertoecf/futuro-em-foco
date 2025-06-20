@@ -7,7 +7,7 @@ interface UserData {
   wantsExpertEvaluation: boolean;
 }
 
-interface ChartDataPoint {
+export interface ChartDataPoint {
   age: number;
   patrimonio: number;
   poupanca: number;

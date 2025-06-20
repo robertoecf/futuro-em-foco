@@ -3,26 +3,26 @@ import { encryption } from './encryption';
 import { logger } from './logger';
 
 interface StoredData {
-  data: any;
+  data: unknown;
   timestamp: number;
   expiresIn?: number;
 }
 
 interface BatchUpdate {
   key: string;
-  value: any;
+  value: unknown;
   expiresIn?: number;
 }
 
 class OptimizedStorage {
   private readonly DEFAULT_EXPIRY = 30 * 24 * 60 * 60 * 1000; // 30 days
-  private cache = new Map<string, any>();
+  private cache = new Map<string, unknown>();
   private batchQueue: BatchUpdate[] = [];
-  private batchTimer: NodeJS.Timeout | null = null;
+  private batchTimer: ReturnType<typeof setTimeout> | null = null;
   private readonly BATCH_DELAY = 100; // 100ms batch delay
 
   // Get from cache first, then storage
-  get(key: string, defaultValue: any = null): any {
+  get<T>(key: string, defaultValue: T | null = null): T | null {
     // Check cache first
     if (this.cache.has(key)) {
       return this.cache.get(key);
@@ -52,7 +52,7 @@ class OptimizedStorage {
   }
 
   // Batch set operations
-  set(key: string, value: any, expiresIn?: number): void {
+  set<T>(key: string, value: T, expiresIn?: number): void {
     // Update cache immediately
     this.cache.set(key, value);
 

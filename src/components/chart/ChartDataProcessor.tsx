@@ -86,7 +86,7 @@ export const useChartDataProcessor = ({
 
   useEffect(() => {
     monteCarloLinesRef.current = generateMonteCarloLines();
-  }, [monteCarloData, isMonteCarloEnabled]);
+  }, [monteCarloData, isMonteCarloEnabled, generateMonteCarloLines]);
 
   console.log('📊 ChartDataProcessor:', {
     isMonteCarloEnabled,

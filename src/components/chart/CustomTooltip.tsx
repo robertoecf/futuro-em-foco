@@ -2,10 +2,11 @@
 import { formatCurrency } from '@/lib/utils';
 import { Card, CardContent } from '@/components/ui/card';
 import { MonteCarloResult } from '@/lib/utils';
+import type { ChartDataPoint } from '@/utils/csvExport';
 
 interface CustomTooltipProps {
   active?: boolean;
-  payload?: any[];
+  payload?: { payload: ChartDataPoint }[];
   label?: string;
   monteCarloData?: MonteCarloResult | null;
 }

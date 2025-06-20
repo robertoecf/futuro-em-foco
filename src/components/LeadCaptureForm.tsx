@@ -1,12 +1,12 @@
 
-import { useState } from 'react';
+import { useState, type FormEvent } from 'react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
 import { usePlanningData } from '@/hooks/usePlanningData';
 import { useLeadFormValidation } from '@/hooks/useLeadFormValidation';
 import { LeadFormFields } from '@/components/forms/LeadFormFields';
-import { generateSecureExcelFile } from '@/utils/csvExport';
+import { generateSecureExcelFile, type ChartDataPoint } from '@/utils/csvExport';
 import { InvestorProfile, CalculationResult } from '@/components/calculator/useCalculator';
 
 interface LeadCaptureFormProps {
@@ -24,7 +24,7 @@ interface LeadCaptureFormProps {
   };
   calculationResult: CalculationResult | null;
   exportData?: {
-    chartData: any[];
+    chartData: ChartDataPoint[];
     type: 'excel';
   };
 }
@@ -61,7 +61,7 @@ export const LeadCaptureForm = ({
     clearErrors();
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     
     if (!validateForm(formData)) {

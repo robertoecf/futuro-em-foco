@@ -23,7 +23,7 @@ export const useChartAnimation = ({
   const [hasStartedAnimation, setHasStartedAnimation] = useState(false);
   const [projectingStartTime, setProjectingStartTime] = useState<number | null>(null);
   const [hasMinimumTimePassed, setHasMinimumTimePassed] = useState(false);
-  const timersRef = useRef<NodeJS.Timeout[]>([]);
+  const timersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
 
   console.log('🎬 useChartAnimation state:', {
     isCalculating,
@@ -108,7 +108,7 @@ export const useChartAnimation = ({
       console.log('⏰ Minimum time passed - checking if data is ready');
       checkTransitionConditions();
     }
-  }, [hasMinimumTimePassed, animationPhase]);
+  }, [hasMinimumTimePassed, animationPhase, checkTransitionConditions]);
 
   // Check transition conditions when data becomes ready
   useEffect(() => {
@@ -116,7 +116,14 @@ export const useChartAnimation = ({
       console.log('📊 Monte Carlo data ready - checking if minimum time has passed');
       checkTransitionConditions();
     }
-  }, [isMonteCarloEnabled, monteCarloData, isCalculating, hasStartedAnimation, animationPhase]);
+  }, [
+    isMonteCarloEnabled,
+    monteCarloData,
+    isCalculating,
+    hasStartedAnimation,
+    animationPhase,
+    checkTransitionConditions
+  ]);
 
   // Handle subsequent animation phases
   useEffect(() => {

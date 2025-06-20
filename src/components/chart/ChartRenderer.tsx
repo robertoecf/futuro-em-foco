@@ -1,6 +1,7 @@
 
 import { ComposedChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
 import { MonteCarloResult } from '@/lib/utils';
+import type { ChartDataPoint } from '@/utils/csvExport';
 import { CustomTooltip } from './CustomTooltip';
 import { formatYAxis } from './chartUtils';
 import { useLineAnimation } from './useLineAnimation';
@@ -8,7 +9,7 @@ import { useFinalLinesAnimation } from './useFinalLinesAnimation';
 import { LINE_ANIMATION } from '@/components/calculator/constants';
 
 interface ChartRendererProps {
-  chartData: any[];
+  chartData: ChartDataPoint[];
   possibleRetirementAge: number;
   perpetuityWealth: number;
   monteCarloData: MonteCarloResult | null;
