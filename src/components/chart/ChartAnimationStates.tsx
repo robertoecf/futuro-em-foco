@@ -63,7 +63,7 @@ export const useChartAnimation = ({
       console.log('✅ Both conditions met - transitioning to paths phase');
       setAnimationPhase('paths');
     } else {
-      const waitingFor = [];
+      const waitingFor: string[] = [];
       if (!hasMinimumTimePassed) waitingFor.push('minimum time (2000ms)');
       if (!dataReady) waitingFor.push('Monte Carlo data');
       console.log(`⏳ Waiting for: ${waitingFor.join(' and ')}`);
