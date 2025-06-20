@@ -1,5 +1,5 @@
 
-import React, { memo } from 'react';
+import { memo } from 'react';
 import { CalculatorForm } from './CalculatorForm';
 import type { InvestorProfile } from './types';
 

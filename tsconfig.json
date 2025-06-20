@@ -10,17 +10,8 @@
       "@/*": ["./src/*"]
     },
     "noImplicitAny": false,
-    "noUnusedParameters": false,
+    "noUnusedParameters": true,
     "skipLibCheck": true,
-    "allowJs": true,
-    "noUnusedLocals": false,
-    "strictNullChecks": true
-  },
-  "include": [
-    "src/**/*.ts",
-    "src/**/*.tsx",
-    "vite-env.d.ts",
-    "vite.config.ts",
-    "tailwind.config.ts"
-  ]
+    "noUnusedLocals": true
+  }
 }
