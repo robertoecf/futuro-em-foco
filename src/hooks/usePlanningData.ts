@@ -79,7 +79,6 @@ export const usePlanningData = () => {
       };
 
       secureStorage.set(`planning_${planId}`, planningData, 7 * 24 * 60 * 60 * 1000); // 7 days expiry
-      console.log('Planning data saved securely:', planId);
       return planId;
     } catch (error) {
       console.error('Error saving planning data:', error);
@@ -105,14 +104,11 @@ export const usePlanningData = () => {
     const validatedUserData = validateUserData(userData);
     
     // Simulação do envio de email
-    console.log('Sending email to:', validatedUserData.email);
-    console.log('Plan URL:', planUrl);
-    console.log('User data:', validatedUserData);
     
     // Aqui seria integrado com um serviço real de email
     return new Promise((resolve) => {
       setTimeout(() => {
-        console.log('Email sent successfully (simulated)');
+        // Email enviado com sucesso (simulado)
         resolve();
       }, 1000);
     });

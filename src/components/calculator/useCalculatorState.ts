@@ -41,12 +41,6 @@ export const useCalculatorState = () => {
   const [monteCarloResult, setMonteCarloResult] = useState<MonteCarloResult | null>(null);
   const [isCalculating, setIsCalculating] = useState(false);
 
-  // Log initial state for debugging
-  console.log('🏗️ Calculator state initialized:', {
-    isMonteCarloEnabled,
-    hasSharedPlan: !!sharedPlanData,
-    isCalculating
-  });
 
   return {
     // State values

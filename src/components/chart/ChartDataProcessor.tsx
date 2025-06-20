@@ -55,7 +55,6 @@ export const useChartDataProcessor = ({
       return [];
     }
     
-    console.log('🎨 Generating 50 Monte Carlo lines');
     const lines: number[][] = [];
     const baseData = monteCarloData.scenarios.median;
     
@@ -78,7 +77,6 @@ export const useChartDataProcessor = ({
       lines.push(lineData);
     }
     
-    console.log('✅ Generated', lines.length, 'Monte Carlo lines');
     return lines;
   }, [isMonteCarloEnabled, monteCarloData]);
 
@@ -88,11 +86,6 @@ export const useChartDataProcessor = ({
     monteCarloLinesRef.current = generateMonteCarloLines();
   }, [monteCarloData, isMonteCarloEnabled, generateMonteCarloLines]);
 
-  console.log('📊 ChartDataProcessor:', {
-    isMonteCarloEnabled,
-    hasMonteCarloData: !!monteCarloData,
-    monteCarloLinesGenerated: monteCarloLinesRef.current.length
-  });
 
   const chartData = data.map((value, index) => {
     const age = currentAge + index;

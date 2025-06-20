@@ -13,13 +13,6 @@ export const useFinalLinesAnimation = ({
   const [drawingLines, setDrawingLines] = useState<Set<string>>(new Set());
   const timeoutsRef = useRef<ReturnType<typeof setTimeout>[]>([]);
 
-  console.log('📈 useFinalLinesAnimation:', {
-    isDrawingFinalLines,
-    animatedLinesCount: animatedLines.size,
-    drawingLinesCount: drawingLines.size,
-    animatedLines: Array.from(animatedLines),
-    drawingLines: Array.from(drawingLines)
-  });
 
   // Clear all timeouts when component unmounts or animation resets
   const clearAllTimeouts = () => {
@@ -30,7 +23,6 @@ export const useFinalLinesAnimation = ({
   // Start final lines drawing animation
   useEffect(() => {
     if (isDrawingFinalLines) {
-      console.log('🎯 Starting final lines drawing animation');
       
       // Reset states
       setAnimatedLines(new Set());
@@ -40,12 +32,10 @@ export const useFinalLinesAnimation = ({
       // Schedule each final line to start drawing (pessimistic → median → optimistic)
       FINAL_LINES_ANIMATION.LINES.forEach((lineKey, index) => {
         const startDrawingTimeout = setTimeout(() => {
-          console.log(`🖊️ Starting to draw final line: ${lineKey}`);
           setDrawingLines(prev => new Set([...prev, lineKey]));
 
           // After the drawing animation completes, mark as fully animated
           const completeDrawingTimeout = setTimeout(() => {
-            console.log(`✅ Completed drawing final line: ${lineKey}`);
             setDrawingLines(prev => {
               const next = new Set(prev);
               next.delete(lineKey);
@@ -60,7 +50,6 @@ export const useFinalLinesAnimation = ({
         timeoutsRef.current.push(startDrawingTimeout);
       });
     } else {
-      console.log('🔄 Resetting final lines animation');
       clearAllTimeouts();
       setAnimatedLines(new Set());
       setDrawingLines(new Set());
