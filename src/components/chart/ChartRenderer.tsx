@@ -161,26 +161,32 @@ export const ChartRenderer = React.memo(({
             });
             
             return shouldRender500Lines && Array.from({ length: LINE_ANIMATION.TOTAL_LINES }, (_, i) => {
-              const animationState = getLineAnimationState(i);
+              // 🚀 CORREÇÃO: Durante fase 'paths', mostrar todas as linhas imediatamente sem animação complexa
+              const simpleOpacity = 0.6; // Opacidade fixa para visibilidade
+              const lineColor = generateLineColor(i);
+              
+              // 🔍 Log apenas das primeiras 5 linhas para não sobrecarregar console
+              if (i < 5) {
+                console.log(`🎯 RENDERIZANDO LINHA ${i}:`, {
+                  dataKey: `line${i}`,
+                  color: lineColor,
+                  opacity: simpleOpacity,
+                  hasDataKey: !!chartData[0]?.[`line${i}` as keyof typeof chartData[0]]
+                });
+              }
               
               return (
                 <Line
                   key={`monte-carlo-line-${i}`}
                   type="monotone"
                   dataKey={`line${i}`}
-                  stroke={generateLineColor(i)}
-                  strokeWidth={1.8}
-                  strokeOpacity={animationState.opacity}
-                  strokeDasharray={animationState.strokeDasharray}
-                  strokeDashoffset={animationState.strokeDashoffset}
+                  stroke={lineColor}
+                  strokeWidth={1.5}
+                  strokeOpacity={simpleOpacity}
                   dot={false}
                   activeDot={false}
                   connectNulls={false}
                   isAnimationActive={false}
-                  style={{
-                    transition: `opacity ${LINE_ANIMATION.OPACITY_FADE_DURATION}ms ease-out`,
-                    ...animationState.drawingStyle
-                  }}
                 />
               );
             });
