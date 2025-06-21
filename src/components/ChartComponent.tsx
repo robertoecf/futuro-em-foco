@@ -1,3 +1,4 @@
+
 import React, { useMemo } from 'react';
 import { ChartControls } from './chart/ChartControls';
 import { ChartInfo } from './chart/ChartInfo';
@@ -10,7 +11,6 @@ import { useChartDataProcessor } from './chart/ChartDataProcessor';
 import { ChartRenderer } from './chart/ChartRenderer';
 import { ProjectingMessage } from './chart/ProjectingMessage';
 import { ProjectingOverlay } from './chart/ProjectingOverlay';
-import { MagicMomentDebugPanel } from './chart/MagicMomentDebugPanel';
 
 interface ChartComponentProps {
   data: number[];
@@ -61,7 +61,7 @@ export const ChartComponent = React.memo(({
 
   const finalMonteCarloData = monteCarloData === undefined ? null : monteCarloData;
 
-  const { animationPhase, isShowingLines, isShowing50Lines, isDrawingFinalLines, getDebugReport } = useChartAnimation({
+  const { animationPhase, isShowingLines, isShowing50Lines, isDrawingFinalLines } = useChartAnimation({
     isCalculating,
     isMonteCarloEnabled,
     monteCarloData: finalMonteCarloData,
@@ -183,3 +183,4 @@ export const ChartComponent = React.memo(({
     </div>
   );
 });
+

@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef, useMemo } from 'react';
 import { ChartDataPoint } from '@/utils/csvExport';
 import { LINE_ANIMATION } from '@/components/calculator/constants';
@@ -9,7 +10,6 @@ interface OptimizedMonteCarloLinesProps {
   xScale: (value: number) => number;
   yScale: (value: number) => number;
   isShowingLines: boolean;
-  _currentAnimationProgress: number;
 }
 
 export const OptimizedMonteCarloLines = React.memo(({
@@ -18,8 +18,7 @@ export const OptimizedMonteCarloLines = React.memo(({
   height,
   xScale,
   yScale,
-  isShowingLines,
-  _currentAnimationProgress
+  isShowingLines
 }: OptimizedMonteCarloLinesProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationRef = useRef<number>();

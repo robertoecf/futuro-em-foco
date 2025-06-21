@@ -1,3 +1,4 @@
+
 import { useCallback, useEffect, useMemo } from 'react';
 import { calculateFullProjection, getVolatilityByProfile, type MonteCarloResult } from '@/lib/utils';
 // import { runOptimizedMonteCarloSimulation } from '@/lib/gbm/optimizedSimulation';
@@ -49,29 +50,6 @@ export const useCalculatorEffects = ({
   const debouncedRetirementIncome = useDebounce(retirementIncome, 300);
   const debouncedPortfolioReturn = useDebounce(portfolioReturn, 300);
 
-  // Memoize expensive calculations
-  const _calculationInputs = useMemo(() => ({
-    initialAmount: debouncedInitialAmount,
-    monthlyAmount: debouncedMonthlyAmount,
-    currentAge,
-    retirementAge,
-    lifeExpectancy,
-    retirementIncome: debouncedRetirementIncome,
-    portfolioReturn: debouncedPortfolioReturn,
-    investorProfile,
-    accumulationYears
-  }), [
-    debouncedInitialAmount,
-    debouncedMonthlyAmount,
-    currentAge,
-    retirementAge,
-    lifeExpectancy,
-    debouncedRetirementIncome,
-    debouncedPortfolioReturn,
-    investorProfile,
-    accumulationYears
-  ]);
-
   // Calculate possible retirement age based on desired income
   const calculatePossibleRetirementAge = useCallback(() => {
     if (debouncedRetirementIncome <= 0) return retirementAge;
@@ -96,8 +74,6 @@ export const useCalculatorEffects = ({
   }, [debouncedRetirementIncome, debouncedPortfolioReturn, investorProfile, debouncedInitialAmount, debouncedMonthlyAmount, currentAge, retirementAge]);
 
   const calculateProjection = useCallback(async () => {
-    const _startTime = performance.now();
-    
     
     const accumulationAnnualReturn = getAccumulationAnnualReturn(investorProfile);
     const retirementAnnualReturn = debouncedPortfolioReturn / 100;
@@ -114,8 +90,6 @@ export const useCalculatorEffects = ({
       debouncedRetirementIncome,
       retirementAnnualReturn
     );
-    
-    const _deterministicTime = performance.now() - _startTime;
     
     setCalculationResult({
       finalAmount: result.retirementAmount,
@@ -154,8 +128,6 @@ export const useCalculatorEffects = ({
             500 // Increased from 50 to 500 simulations
           );
           
-          const monteCarloStartTime = performance.now();
-          
           const convertedResults = {
             scenarios: gbmResults.scenarios,
             statistics: gbmResults.statistics
@@ -164,10 +136,6 @@ export const useCalculatorEffects = ({
           console.log('✅ MONTE CARLO FINALIZADO - dados prontos para animação');
           setMonteCarloResult(convertedResults);
           setIsCalculating(false);
-          
-          const _monteCarloTime = performance.now() - monteCarloStartTime;
-          
-          const _totalTime = performance.now() - _startTime;
           
         } catch (error) {
           console.error('❌ Optimized Monte Carlo calculation failed:', error);
@@ -219,3 +187,4 @@ export const useCalculatorEffects = ({
     calculateProjection
   };
 };
+

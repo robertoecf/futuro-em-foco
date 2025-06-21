@@ -1,7 +1,8 @@
 
+
 import { useState } from 'react';
 import type { InvestorProfile, CalculationResult } from './types';
-import { DEFAULT_VALUES, STORAGE_KEYS } from './constants';
+import { DEFAULT_VALUES } from './constants';
 import { loadFromStorage, loadFromSharedPlan } from './storageUtils';
 import { MonteCarloResult } from '@/lib/utils';
 
@@ -82,3 +83,4 @@ export const useCalculatorState = () => {
     setIsCalculating
   };
 };
+

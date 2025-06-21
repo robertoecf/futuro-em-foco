@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { ComposedChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
 import { MonteCarloResult } from '@/lib/utils';
@@ -5,10 +6,8 @@ import type { ChartDataPoint } from '@/utils/csvExport';
 import { CustomTooltip } from './CustomTooltip';
 import { formatYAxis } from './chartUtils';
 import { useFinalLinesAnimation } from './useFinalLinesAnimation';
-import { LINE_ANIMATION } from '@/components/calculator/constants';
 
 // Monte Carlo configuration
-const MONTE_CARLO_ALL_LINES = 1001; // Total scenarios calculated
 const MONTE_CARLO_EXHIBITION_LINES = 1001; // Show ALL calculated lines in Scene 2
 
 interface ChartRendererProps {
@@ -31,9 +30,7 @@ export const ChartRenderer = React.memo(({
   monthlyIncomeTarget,
   monteCarloData,
   isShowingLines,
-  isShowing50Lines = false,
   isDrawingFinalLines,
-  lineDrawingDuration = LINE_ANIMATION.DRAWING_DURATION,
   animationPhase = 'final'
 }: ChartRendererProps) => {
   
@@ -314,3 +311,4 @@ export const ChartRenderer = React.memo(({
     </>
   );
 });
+

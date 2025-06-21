@@ -1,6 +1,6 @@
+
 import { useEffect, useRef, useCallback, useMemo } from 'react';
 import { MonteCarloResult } from '@/lib/utils';
-import { LINE_ANIMATION } from '@/components/calculator/constants';
 
 // Monte Carlo configuration
 const MONTE_CARLO_ALL_LINES = 1001; // Total scenarios to calculate
@@ -165,3 +165,4 @@ export const useChartDataProcessor = ({
 
   return { chartData, savingsLine, monteCarloLines: monteCarloLinesRef.current };
 };
+
