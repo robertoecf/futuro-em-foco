@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo } from 'react';
 import { calculateFullProjection, getVolatilityByProfile, type MonteCarloResult } from '@/lib/utils';
-import { runOptimizedMonteCarloSimulation } from '@/lib/gbm/optimizedSimulation';
+// import { runOptimizedMonteCarloSimulation } from '@/lib/gbm/optimizedSimulation';
 import { runUltraOptimizedMonteCarloSimulation } from '@/lib/gbm/ultraOptimizedSimulation';
 import { useDebounce } from '@/hooks/useDebounce';
 import type { PlanningData } from '@/hooks/usePlanningData';

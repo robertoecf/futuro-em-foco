@@ -9,7 +9,7 @@ interface OptimizedMonteCarloLinesProps {
   xScale: (value: number) => number;
   yScale: (value: number) => number;
   isShowingLines: boolean;
-  currentAnimationProgress: number;
+  _currentAnimationProgress: number;
 }
 
 export const OptimizedMonteCarloLines = React.memo(({
@@ -19,7 +19,7 @@ export const OptimizedMonteCarloLines = React.memo(({
   xScale,
   yScale,
   isShowingLines,
-  currentAnimationProgress
+  _currentAnimationProgress
 }: OptimizedMonteCarloLinesProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationRef = useRef<number>();

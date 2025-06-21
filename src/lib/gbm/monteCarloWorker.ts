@@ -1,7 +1,7 @@
 // Monte Carlo simulation worker for parallel processing
 import { portfolioGBMSimulation } from './portfolioSimulation';
 import { generateNormalRandom } from './randomGenerators';
-import { calculateStatistics } from './statistics';
+// import { calculateStatistics } from './statistics';
 
 interface WorkerMessage {
   type: 'START_SIMULATION';
