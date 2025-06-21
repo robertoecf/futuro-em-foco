@@ -94,18 +94,20 @@ export const useChartAnimation = ({
       isCalculating
     });
 
+    // ROTEIRO: Só transiciona para 'paths' se AMBOS: dados prontos E 1999ms passados
     if (hasMinimumTimePassed && dataReady) {
       setAnimationPhase('paths');
-      setShouldShowAllLines(true); // ✅ Mostrar todas as 500 linhas
+      setShouldShowAllLines(true); // ✅ ROTEIRO 2: Desenhar gradualmente as 500 linhas
       magicMomentDebugger.addCheckpoint('Transition to Paths', 'paths', true, true, {
-        message: 'Starting to show all 500 lines'
+        message: 'ROTEIRO 2: Desenhando gradualmente 500 trajetórias'
       });
     } else {
       const waitingFor: string[] = [];
       if (!hasMinimumTimePassed) waitingFor.push('minimum time (1999ms)');
       if (!dataReady) waitingFor.push('Monte Carlo data');
       magicMomentDebugger.addCheckpoint('Waiting for Conditions', animationPhase, !!dataReady, shouldShow50Lines, {
-        waitingFor
+        waitingFor,
+        message: 'AGUARDANDO: Ainda na tela de loading'
       });
     }
   }, [hasMinimumTimePassed, monteCarloData, isCalculating, animationPhase, shouldShow50Lines]);
@@ -153,15 +155,15 @@ export const useChartAnimation = ({
       
       magicMomentDebugger.addCheckpoint('Animation Started', 'projecting', false, false, {
         startTime,
-        message: 'Magic moment começou - fase projecting com 1999ms'
+        message: 'ROTEIRO 1: Projetando futuros possíveis... (mínimo 1999ms)'
       });
 
-      // Set timer for minimum time (1999ms)
+      // ROTEIRO 1: NO MÍNIMO 1999ms mostrando "Projetando futuros possíveis..."
       addTimer(() => {
         setHasMinimumTimePassed(true);
         magicMomentDebugger.addCheckpoint('Minimum Time Passed', 'projecting', false, false, {
           elapsed: Date.now() - startTime,
-          message: 'Tempo mínimo de 1999ms atingido'
+          message: 'Tempo mínimo de 1999ms atingido - aguardando dados'
         });
       }, MAGIC_MOMENT_TIMERS.PROJECTING_DURATION);
     }
@@ -193,10 +195,10 @@ export const useChartAnimation = ({
     if (animationPhase === 'paths') {
       magicMomentDebugger.addCheckpoint('Paths Phase Started', 'paths', true, true, {
         duration: MAGIC_MOMENT_TIMERS.PATHS_DURATION,
-        message: 'Exibindo 500 linhas Monte Carlo'
+        message: 'ROTEIRO 2: Desenhando gradualmente 500 linhas (6 segundos)'
       });
       
-      // Phase 1: Paths (6 seconds) - Mostrar todas as 500 linhas
+      // ROTEIRO 2: Paths (6 seconds) - Desenhar gradualmente todas as 500 linhas
       addTimer(() => {
         setAnimationPhase('optimizing');
         setShouldShowAllLines(false); // ❌ Parar de mostrar todas
@@ -204,24 +206,24 @@ export const useChartAnimation = ({
         
         magicMomentDebugger.addCheckpoint('Optimizing Phase Started', 'optimizing', true, true, {
           duration: MAGIC_MOMENT_TIMERS.OPTIMIZING_DURATION,
-          message: 'Mostrando 50 linhas durante otimização'
+          message: 'ROTEIRO 3: Otimizando visualização... (mínimo 1999ms)'
         });
         
-        // Phase 2: Optimizing (2 seconds) - Mostrar 50 linhas
+        // ROTEIRO 3: Optimizing (1999ms) - "Otimizando visualização..." 
         addTimer(() => {
           setAnimationPhase('drawing-final');
           setShouldShow50Lines(false); // ❌ Parar de mostrar 50
           
           magicMomentDebugger.addCheckpoint('Drawing Final Phase Started', 'drawing-final', true, false, {
             duration: MAGIC_MOMENT_TIMERS.DRAWING_FINAL_DURATION,
-            message: 'Desenhando 3 linhas finais'
+            message: 'ROTEIRO 4: Desenhando com calma as 3 trajetórias finais (1 a 1)'
           });
           
-          // Phase 3: Drawing Final Lines (4 seconds)
+          // ROTEIRO 4: Drawing Final Lines (4 seconds) - Desenhar com calma 1 a 1
           addTimer(() => {
             setAnimationPhase('final');
             magicMomentDebugger.addCheckpoint('Animation Complete', 'final', true, false, {
-              message: 'Momento mágico finalizado'
+              message: 'ROTEIRO COMPLETO: Momento mágico finalizado'
             });
             
             // Gerar relatório final
