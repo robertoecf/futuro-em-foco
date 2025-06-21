@@ -11,13 +11,13 @@ export const DEFAULT_VALUES = {
   MONTE_CARLO_ENABLED: false
 };
 
-// Magic Moment Animation Timers - Cronologia Corrigida
+// Magic Moment Animation Timers - Roteiro Corrigido Conforme Especificado
 export const MAGIC_MOMENT_TIMERS = {
-  PROJECTING_DURATION: 1999, // NO MÍNIMO 1999ms - "Calculando possíveis resultados..."
-  PATHS_DURATION: 6000, // 6 seconds - Desenhar gradualmente as 500 linhas
-  OPTIMIZING_DURATION: 1999, // NO MÍNIMO 1999ms - "Otimizando visualização..." 
-  DRAWING_FINAL_DURATION: 4000, // 4 seconds - Desenhar com calma as 3 linhas finais (1 a 1)
-  TOTAL_ANIMATION_DURATION: 13998 // Total ajustado: 1999 + 6000 + 1999 + 4000
+  PROJECTING_DURATION: 1999, // CENA 1: 1999ms - "Calculando possíveis resultados..."
+  PATHS_DURATION: 3999, // CENA 2: 3999ms - Carregando todas as trajetórias
+  OPTIMIZING_DURATION: 1999, // CENA 3: 1999ms - "Otimizando visualização..." 
+  DRAWING_FINAL_DURATION: 3000, // CENA 4: 3000ms - Desenhar cada linha em 1000ms (3 linhas)
+  TOTAL_ANIMATION_DURATION: 10997 // Total: 1999 + 3999 + 1999 + 3000
 };
 
 // Line Drawing Animation Configuration
@@ -37,11 +37,11 @@ export const LINE_ANIMATION = {
 
 // Final Lines Drawing Animation Configuration
 export const FINAL_LINES_ANIMATION = {
-  DRAWING_DURATION: 4000, // 4 seconds total for final 3 lines
-  DELAY_BETWEEN_LINES: 1200, // 1.2 seconds between each line start
-  STROKE_ANIMATION_DURATION: 2000, // 2 seconds to draw each individual line (slower)
+  DRAWING_DURATION: 3000, // 3 seconds total for final 3 lines (1000ms each)
+  DELAY_BETWEEN_LINES: 1000, // 1000ms between each line start
+  STROKE_ANIMATION_DURATION: 1000, // 1000ms to draw each individual line
   ANIMATION_CURVE: 'ease-out' as const,
-  OPACITY_FADE_DURATION: 400, // Slightly longer fade-in
+  OPACITY_FADE_DURATION: 200, // Quick fade-in
   LINES: ['pessimistic', 'median', 'optimistic'] as const
 };
 

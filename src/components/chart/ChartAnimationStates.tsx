@@ -88,6 +88,14 @@ export const useChartAnimation = ({
   const checkTransitionConditions = useCallback(() => {
     const dataReady = monteCarloData && !isCalculating;
     
+    console.log('🔍 VERIFICANDO TRANSIÇÃO:', {
+      hasMinimumTimePassed,
+      dataReady,
+      isCalculating,
+      animationPhase,
+      monteCarloDataLength: monteCarloData?.scenarios.median.length || 0
+    });
+    
     magicMomentDebugger.addCheckpoint('Checking Transition', animationPhase, !!dataReady, shouldShow50Lines, {
       hasMinimumTimePassed,
       monteCarloDataLength: monteCarloData?.scenarios.median.length || 0,
@@ -98,6 +106,7 @@ export const useChartAnimation = ({
     // 🎯 ROTEIRO CRÍTICO: Só transiciona para 'paths' se AMBOS: dados prontos E 1999ms passados
     // NUNCA antes dos 1999ms, mesmo que os dados estejam prontos
     if (hasMinimumTimePassed && dataReady) {
+      console.log('🎯 TRANSIÇÃO PARA PATHS AUTORIZADA!', { hasMinimumTimePassed, dataReady });
       setAnimationPhase('paths');
       setShouldShowAllLines(true); // ✅ ROTEIRO 2: Desenhar gradualmente as 500 linhas
       magicMomentDebugger.addCheckpoint('Transition to Paths', 'paths', true, true, {
@@ -107,6 +116,7 @@ export const useChartAnimation = ({
       const waitingFor: string[] = [];
       if (!hasMinimumTimePassed) waitingFor.push('minimum time (1999ms)');
       if (!dataReady) waitingFor.push('Monte Carlo data');
+      console.log('⏳ AGUARDANDO CONDIÇÕES:', waitingFor);
       magicMomentDebugger.addCheckpoint('Waiting for Conditions', animationPhase, !!dataReady, shouldShow50Lines, {
         waitingFor,
         message: `AGUARDANDO: ${waitingFor.join(' e ')} - mantendo tela de loading`
@@ -148,6 +158,14 @@ export const useChartAnimation = ({
   useEffect(() => {
     if (isCalculating && isMonteCarloEnabled && !hasStartedAnimation) {
       const startTime = Date.now();
+      console.log('🚀 INICIANDO MOMENTO MÁGICO:', {
+        startTime,
+        projecting_duration: MAGIC_MOMENT_TIMERS.PROJECTING_DURATION,
+        paths_duration: MAGIC_MOMENT_TIMERS.PATHS_DURATION,
+        optimizing_duration: MAGIC_MOMENT_TIMERS.OPTIMIZING_DURATION,
+        drawing_final_duration: MAGIC_MOMENT_TIMERS.DRAWING_FINAL_DURATION
+      });
+      
       setProjectingStartTime(startTime);
       setAnimationPhase('projecting');
       setHasStartedAnimation(true);
@@ -161,10 +179,13 @@ export const useChartAnimation = ({
       });
 
       // ROTEIRO 1: NO MÍNIMO 1999ms mostrando "Calculando possíveis resultados..."
+      console.log('⏰ TIMER 1999ms INICIADO - aguardando tempo mínimo');
       addTimer(() => {
+        const elapsed = Date.now() - startTime;
+        console.log('✅ TIMER 1999ms COMPLETO!', { elapsed, expected: MAGIC_MOMENT_TIMERS.PROJECTING_DURATION });
         setHasMinimumTimePassed(true);
         magicMomentDebugger.addCheckpoint('Minimum Time Passed', 'projecting', false, false, {
-          elapsed: Date.now() - startTime,
+          elapsed,
           message: 'Tempo mínimo de 1999ms atingido - verificando se dados estão prontos'
         });
       }, MAGIC_MOMENT_TIMERS.PROJECTING_DURATION);
