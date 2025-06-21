@@ -102,7 +102,7 @@ export const useChartAnimation = ({
       });
     } else {
       const waitingFor: string[] = [];
-      if (!hasMinimumTimePassed) waitingFor.push('minimum time (2000ms)');
+      if (!hasMinimumTimePassed) waitingFor.push('minimum time (1999ms)');
       if (!dataReady) waitingFor.push('Monte Carlo data');
       magicMomentDebugger.addCheckpoint('Waiting for Conditions', animationPhase, !!dataReady, shouldShow50Lines, {
         waitingFor
@@ -125,6 +125,21 @@ export const useChartAnimation = ({
     }
   }, [isMonteCarloEnabled]);
 
+  // 🎯 CORREÇÃO CRÍTICA: Reset hasStartedAnimation quando Monte Carlo é reativado
+  useEffect(() => {
+    if (isMonteCarloEnabled && !isCalculating) {
+      // Reset animation state when Monte Carlo is re-enabled but not calculating
+      setHasStartedAnimation(false);
+      setAnimationPhase('final');
+      setHasMinimumTimePassed(false);
+      setShouldShow50Lines(false);
+      setShouldShowAllLines(false);
+      magicMomentDebugger.addCheckpoint('Monte Carlo Re-enabled', 'final', false, false, {
+        message: 'Monte Carlo reativado - estado resetado para nova animação'
+      });
+    }
+  }, [isMonteCarloEnabled, isCalculating]);
+
   // Handle calculation start
   useEffect(() => {
     if (isCalculating && isMonteCarloEnabled && !hasStartedAnimation) {
@@ -138,15 +153,15 @@ export const useChartAnimation = ({
       
       magicMomentDebugger.addCheckpoint('Animation Started', 'projecting', false, false, {
         startTime,
-        message: 'Magic moment começou - fase projecting'
+        message: 'Magic moment começou - fase projecting com 1999ms'
       });
 
-      // Set timer for minimum time (2000ms)
+      // Set timer for minimum time (1999ms)
       addTimer(() => {
         setHasMinimumTimePassed(true);
         magicMomentDebugger.addCheckpoint('Minimum Time Passed', 'projecting', false, false, {
           elapsed: Date.now() - startTime,
-          message: 'Tempo mínimo de 2000ms atingido'
+          message: 'Tempo mínimo de 1999ms atingido'
         });
       }, MAGIC_MOMENT_TIMERS.PROJECTING_DURATION);
     }
