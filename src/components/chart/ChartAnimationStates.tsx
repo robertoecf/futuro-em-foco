@@ -18,13 +18,13 @@ interface MagicMomentCheckpoint {
   phase: AnimationPhase;
   dataReady: boolean;
   linesVisible: boolean;
-  details: Record<string, any>;
+  details: Record<string, unknown>;
 }
 
 class MagicMomentDebugger {
   private checkpoints: MagicMomentCheckpoint[] = [];
   
-  addCheckpoint(step: string, phase: AnimationPhase, dataReady: boolean, linesVisible: boolean, details: Record<string, any> = {}) {
+  addCheckpoint(step: string, phase: AnimationPhase, dataReady: boolean, linesVisible: boolean, details: Record<string, unknown> = {}) {
     const checkpoint: MagicMomentCheckpoint = {
       step,
       timestamp: Date.now(),

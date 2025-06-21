@@ -1,13 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 
+interface DebugCheckpoint {
+  step: string;
+  phase: string;
+  dataReady: boolean;
+  linesVisible: boolean;
+  details: {
+    message?: string;
+    [key: string]: unknown;
+  };
+}
+
 interface MagicMomentDebugPanelProps {
   animationPhase: string;
   isShowingLines: boolean;
   isShowing50Lines: boolean;
   isDrawingFinalLines: boolean;
-  monteCarloData: any;
-  getDebugReport?: () => any[];
+  monteCarloData: unknown;
+  getDebugReport?: () => DebugCheckpoint[];
 }
 
 export const MagicMomentDebugPanel: React.FC<MagicMomentDebugPanelProps> = ({
@@ -18,7 +29,7 @@ export const MagicMomentDebugPanel: React.FC<MagicMomentDebugPanelProps> = ({
   monteCarloData,
   getDebugReport
 }) => {
-  const [debugLog, setDebugLog] = useState<any[]>([]);
+  const [debugLog, setDebugLog] = useState<DebugCheckpoint[]>([]);
   const [isVisible, setIsVisible] = useState(false);
 
   // Atualizar log de debug
