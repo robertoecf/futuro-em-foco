@@ -1,6 +1,6 @@
 // Monte Carlo simulation worker for parallel processing
 import { portfolioGBMSimulation } from './portfolioSimulation';
-import { generateNormalRandom } from './randomGenerators';
+import { processSingleSimulation } from './simulationUtils';
 // import { calculateStatistics } from './statistics';
 
 interface WorkerMessage {
@@ -58,47 +58,19 @@ self.onmessage = (event: MessageEvent<WorkerMessage>) => {
       batchSize
     );
     
-    // Process each simulation
+    // Process each simulation using shared utility
     for (let sim = 0; sim < batchSize; sim++) {
       const accumulationPath = accumulationPaths[sim];
-      const retirementStartValue = accumulationPath[accumulationPath.length - 1];
       
-      // Convert to yearly values
-      const yearlyValues: number[] = [];
-      for (let year = 0; year <= accumulationYears; year++) {
-        const monthIndex = year * 12;
-        if (monthIndex < accumulationPath.length) {
-          yearlyValues.push(accumulationPath[monthIndex]);
-        }
-      }
-      
-      // Retirement phase
-      const retirementYears = totalYears - accumulationYears;
-      if (retirementYears > 0) {
-        const retirementVolatility = volatility * 0.7;
-        const monthlyIncome = retirementMonthlyIncome > 0 ? 
-          retirementMonthlyIncome : 
-          retirementStartValue * monthlyIncomeRate;
-        
-        let balance = retirementStartValue;
-        const dt = 1/12;
-        const drift = (retirementAnnualReturn - 0.5 * retirementVolatility * retirementVolatility) * dt;
-        const diff = retirementVolatility * Math.sqrt(dt);
-        
-        for (let year = accumulationYears + 1; year <= totalYears; year++) {
-          for (let month = 1; month <= 12; month++) {
-            balance -= monthlyIncome;
-            
-            if (balance > 0) {
-              const Z = generateNormalRandom();
-              const growthFactor = Math.exp(drift + diff * Z);
-              balance *= growthFactor;
-            }
-          }
-          
-          yearlyValues.push(Math.max(0, balance));
-        }
-      }
+      const yearlyValues = processSingleSimulation(
+        accumulationPath,
+        accumulationYears,
+        totalYears,
+        volatility,
+        retirementMonthlyIncome,
+        monthlyIncomeRate,
+        retirementAnnualReturn
+      );
       
       batchSimulations.push(yearlyValues);
     }

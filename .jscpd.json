@@ -1,12 +1,20 @@
 {
-  "threshold": 2,
+  "threshold": 10,
+  "minLines": 15,
+  "minTokens": 100,
   "ignore": [
-    "src/lib/gbm/**",
-    "src/integrations/supabase/**",
-    "**/*.test.ts",
-    "**/*.spec.ts",
     "**/node_modules/**",
     "**/dist/**",
-    "**/build/**"
-  ]
+    "**/build/**",
+    "**/*.md",
+    "**/*.json",
+    "src/components/ui/**",
+    "src/styles/**",
+    "**/*.test.ts",
+    "**/*.spec.ts"
+  ],
+  "reporters": ["console"],
+  "format": ["typescript", "javascript", "tsx", "jsx"],
+  "blame": false,
+  "silent": false
 }

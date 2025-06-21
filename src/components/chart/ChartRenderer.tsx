@@ -14,6 +14,7 @@ interface ChartRendererProps {
   perpetuityWealth: number;
   monteCarloData: MonteCarloResult | null;
   isShowingLines: boolean;
+  isShowing50Lines?: boolean;
   isDrawingFinalLines: boolean;
   lineDrawingDuration?: number;
 }
@@ -24,6 +25,7 @@ export const ChartRenderer = React.memo(({
   perpetuityWealth,
   monteCarloData,
   isShowingLines,
+  isShowing50Lines = false,
   isDrawingFinalLines,
   lineDrawingDuration = LINE_ANIMATION.DRAWING_DURATION
 }: ChartRendererProps) => {
@@ -34,11 +36,17 @@ export const ChartRenderer = React.memo(({
     drawingDuration: lineDrawingDuration
   });
 
+  const { getLineAnimationState: get50LineAnimationState } = useLineAnimation({
+    isShowingLines: isShowing50Lines,
+    totalLines: 50,
+    drawingDuration: lineDrawingDuration
+  });
+
   const { getFinalLineAnimationState } = useFinalLinesAnimation({
     isDrawingFinalLines
   });
 
-  // Generate colors for the 50 lines
+  // Generate colors for the lines
   const generateLineColor = (index: number) => {
     const colors = [
       '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FECA57', 
@@ -49,6 +57,13 @@ export const ChartRenderer = React.memo(({
     return colors[index % colors.length];
   };
 
+  console.log('🎯 CHART RENDERER DEBUG:', {
+    isShowingLines,
+    isShowing50Lines,
+    isDrawingFinalLines,
+    monteCarloDataAvailable: !!monteCarloData,
+    chartDataLength: chartData.length
+  });
 
   return (
     <div className="relative h-[400px] w-full bg-white border border-gray-200 rounded-lg p-4">
@@ -126,8 +141,8 @@ export const ChartRenderer = React.memo(({
             activeDot={{ r: 6, stroke: '#6B7280', strokeWidth: 2, fill: '#fff' }}
           />
 
-          {/* 50 Monte Carlo lines - fantastic progressive animation */}
-          {monteCarloData && Array.from({ length: LINE_ANIMATION.TOTAL_LINES }, (_, i) => {
+          {/* 🎯 500 Monte Carlo lines - durante fase 'paths' */}
+          {monteCarloData && isShowingLines && Array.from({ length: LINE_ANIMATION.TOTAL_LINES }, (_, i) => {
             const animationState = getLineAnimationState(i);
             
             return (
@@ -152,8 +167,34 @@ export const ChartRenderer = React.memo(({
             );
           })}
 
+          {/* 🎯 50 Monte Carlo lines - durante fase 'optimizing' */}
+          {monteCarloData && isShowing50Lines && Array.from({ length: 50 }, (_, i) => {
+            const animationState = get50LineAnimationState(i);
+            
+            return (
+              <Line
+                key={`monte-carlo-50-line-${i}`}
+                type="monotone"
+                dataKey={`line${i}`}
+                stroke={generateLineColor(i)}
+                strokeWidth={2.2}
+                strokeOpacity={animationState.opacity}
+                strokeDasharray={animationState.strokeDasharray}
+                strokeDashoffset={animationState.strokeDashoffset}
+                dot={false}
+                activeDot={false}
+                connectNulls={false}
+                isAnimationActive={false}
+                style={{
+                  transition: `opacity ${LINE_ANIMATION.OPACITY_FADE_DURATION}ms ease-out`,
+                  ...animationState.drawingStyle
+                }}
+              />
+            );
+          })}
+
           {/* Final Monte Carlo results - with drawing animation during drawing-final phase */}
-          {monteCarloData && (isDrawingFinalLines || (!isShowingLines && !isDrawingFinalLines)) && (
+          {monteCarloData && (isDrawingFinalLines || (!isShowingLines && !isShowing50Lines && !isDrawingFinalLines)) && (
             <>
               {/* Pessimistic Line */}
               {(() => {

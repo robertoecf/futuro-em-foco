@@ -10,6 +10,7 @@ import { useChartDataProcessor } from './chart/ChartDataProcessor';
 import { ChartRenderer } from './chart/ChartRenderer';
 import { ProjectingMessage } from './chart/ProjectingMessage';
 import { ProjectingOverlay } from './chart/ProjectingOverlay';
+import { MagicMomentDebugPanel } from './chart/MagicMomentDebugPanel';
 
 interface ChartComponentProps {
   data: number[];
@@ -60,7 +61,7 @@ export const ChartComponent = React.memo(({
 
   const finalMonteCarloData = monteCarloData === undefined ? null : monteCarloData;
 
-  const { animationPhase, isShowingLines, isDrawingFinalLines } = useChartAnimation({
+  const { animationPhase, isShowingLines, isShowing50Lines, isDrawingFinalLines, getDebugReport } = useChartAnimation({
     isCalculating,
     isMonteCarloEnabled,
     monteCarloData: finalMonteCarloData,
@@ -135,6 +136,7 @@ export const ChartComponent = React.memo(({
             perpetuityWealth={perpetuityWealth}
             monteCarloData={finalMonteCarloData}
             isShowingLines={isShowingLines}
+            isShowing50Lines={isShowing50Lines}
             isDrawingFinalLines={isDrawingFinalLines}
             lineDrawingDuration={lineDrawingDuration}
           />
@@ -172,6 +174,18 @@ export const ChartComponent = React.memo(({
         perpetuityWealth={perpetuityWealth}
         possibleRetirementAge={possibleRetirementAge}
       />
+
+      {/* 🔍 PAINEL DE DEBUG PARA MOMENTO MÁGICO */}
+      {isMonteCarloEnabled && (
+        <MagicMomentDebugPanel
+          animationPhase={animationPhase}
+          isShowingLines={isShowingLines}
+          isShowing50Lines={isShowing50Lines}
+          isDrawingFinalLines={isDrawingFinalLines}
+          monteCarloData={finalMonteCarloData}
+          getDebugReport={getDebugReport}
+        />
+      )}
     </div>
   );
 });
