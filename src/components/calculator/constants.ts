@@ -13,11 +13,11 @@ export const DEFAULT_VALUES = {
 
 // Magic Moment Animation Timers - Cronologia Corrigida
 export const MAGIC_MOMENT_TIMERS = {
-  PROJECTING_DURATION: 1999, // 1999ms - "Projetando futuros possíveis..." (conforme especificado pelo usuário)
-  PATHS_DURATION: 6000, // 6 seconds - Mostra as 500 linhas coloridas
-  OPTIMIZING_DURATION: 2000, // 2 seconds - "Otimizando exibição..." - Mostra 50 linhas
-  DRAWING_FINAL_DURATION: 4000, // 4 seconds - Desenha as 3 linhas finais
-  TOTAL_ANIMATION_DURATION: 13999 // Total ajustado para 13.999 seconds
+  PROJECTING_DURATION: 1999, // NO MÍNIMO 1999ms - "Projetando futuros possíveis..."
+  PATHS_DURATION: 6000, // 6 seconds - Desenhar gradualmente as 500 linhas
+  OPTIMIZING_DURATION: 1999, // NO MÍNIMO 1999ms - "Otimizando visualização..." 
+  DRAWING_FINAL_DURATION: 4000, // 4 seconds - Desenhar com calma as 3 linhas finais (1 a 1)
+  TOTAL_ANIMATION_DURATION: 13998 // Total ajustado: 1999 + 6000 + 1999 + 4000
 };
 
 // Line Drawing Animation Configuration
