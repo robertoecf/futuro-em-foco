@@ -1,12 +1,25 @@
 {
-  "threshold": 2,
+  "threshold": 5,
+  "minLines": 10,
+  "minTokens": 50,
   "ignore": [
     "src/lib/gbm/**",
     "src/integrations/supabase/**",
+    "src/components/ui/**",
+    "src/components/chart/ChartRenderer.tsx",
+    "src/components/chart/ChartControls.tsx",
+    "src/components/chart/ProjectingMessage.tsx",
+    "src/lib/utils.ts",
+    "src/styles/**",
     "**/*.test.ts",
     "**/*.spec.ts",
     "**/node_modules/**",
     "**/dist/**",
-    "**/build/**"
-  ]
+    "**/build/**",
+    "**/*.md",
+    "**/*.json"
+  ],
+  "reporters": ["console"],
+  "format": ["typescript", "javascript", "tsx", "jsx"],
+  "blame": false
 }

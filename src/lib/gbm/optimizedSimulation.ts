@@ -1,8 +1,8 @@
 
-import { generateNormalRandom } from './randomGenerators';
 import { portfolioGBMSimulation } from './portfolioSimulation';
 import { calculateStatistics } from './statistics';
 import { logger } from '../logger';
+import { processSingleSimulation } from './simulationUtils';
 import type { BrownianMonteCarloResult } from './types';
 
 // Optimized Monte Carlo with reduced simulation count and performance improvements
@@ -46,47 +46,19 @@ export async function runOptimizedMonteCarloSimulation(
       currentBatchSize
     );
     
-    // Process each simulation in this batch
+    // Process each simulation in this batch using shared utility
     for (let sim = 0; sim < currentBatchSize; sim++) {
       const accumulationPath = accumulationPaths[sim];
-      const retirementStartValue = accumulationPath[accumulationPath.length - 1];
       
-      // Convert monthly path to yearly for accumulation phase
-      const yearlyValues: number[] = [];
-      for (let year = 0; year <= accumulationYears; year++) {
-        const monthIndex = year * 12;
-        if (monthIndex < accumulationPath.length) {
-          yearlyValues.push(accumulationPath[monthIndex]);
-        }
-      }
-      
-      // Retirement phase using optimized GBM with withdrawals
-      const retirementYears = totalYears - accumulationYears;
-      if (retirementYears > 0) {
-        const retirementVolatility = volatility * 0.7;
-        const monthlyIncome = retirementMonthlyIncome > 0 ? 
-          retirementMonthlyIncome : 
-          retirementStartValue * monthlyIncomeRate;
-        
-        let balance = retirementStartValue;
-        const dt = 1/12;
-        const drift = (retirementAnnualReturn - 0.5 * retirementVolatility * retirementVolatility) * dt;
-        const diff = retirementVolatility * Math.sqrt(dt);
-        
-        for (let year = accumulationYears + 1; year <= totalYears; year++) {
-          for (let month = 1; month <= 12; month++) {
-            balance -= monthlyIncome;
-            
-            if (balance > 0) {
-              const Z = generateNormalRandom();
-              const growthFactor = Math.exp(drift + diff * Z);
-              balance *= growthFactor;
-            }
-          }
-          
-          yearlyValues.push(Math.max(0, balance));
-        }
-      }
+      const yearlyValues = processSingleSimulation(
+        accumulationPath,
+        accumulationYears,
+        totalYears,
+        volatility,
+        retirementMonthlyIncome,
+        monthlyIncomeRate,
+        retirementAnnualReturn
+      );
       
       allSimulations.push(yearlyValues);
     }

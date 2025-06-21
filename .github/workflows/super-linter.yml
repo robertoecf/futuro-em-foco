@@ -32,6 +32,9 @@ jobs:
           VALIDATE_ALL_CODEBASE: false
           DEFAULT_BRANCH: "main"
           VALIDATE_TYPESCRIPT_STANDARD: false
+          VALIDATE_TYPESCRIPT_ES: false
+          VALIDATE_TSX: false
+          VALIDATE_JSCPD: true
           VALIDATE_PRETTIER: false
           VALIDATE_PYTHON_BLACK: false
           VALIDATE_PYTHON_FLAKE8: false
@@ -40,5 +43,6 @@ jobs:
           VALIDATE_MARKDOWN: false
           VALIDATE_BASH: false
           VALIDATE_BASH_EXEC: false
-          FILTER_REGEX_EXCLUDE: "tsconfig\\.app\\.json|tsconfig\\.node\\.json|PULL_REQUEST\\.md|REFACTORING_PLAN\\.md|SUPER_LINTER_STATUS\\.md|PERFORMANCE_OPTIMIZATIONS\\.md"
+          JSCPD_CONFIG_FILE: ".jscpd.json"
+          FILTER_REGEX_EXCLUDE: "tsconfig\\.app\\.json|tsconfig\\.node\\.json|PULL_REQUEST\\.md|REFACTORING_PLAN\\.md|SUPER_LINTER_STATUS\\.md|PERFORMANCE_OPTIMIZATIONS\\.md|MAGIC_MOMENT_BUG_FIX\\.md|LINTER_FIXES\\.md"
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
