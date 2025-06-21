@@ -84,7 +84,7 @@
     "prettier": "^3.5.3",
     "tailwindcss": "^3.4.11",
     "typescript": "^5.8.3",
-    "vite": "^6.3.5"
+    "vite": "^5.4.19"
   },
   "ts-standard": {
     "project": "./tsconfig.eslint.json"
