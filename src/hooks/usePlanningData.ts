@@ -1,4 +1,3 @@
-
 import { useEffect } from 'react';
 import { InvestorProfile, CalculationResult } from '@/components/calculator/useCalculator';
 import { secureStorage } from '@/lib/secureStorage';
@@ -100,8 +99,8 @@ export const usePlanningData = () => {
     return `${baseUrl}/?plan=${planId}`;
   };
 
-  const sendPlanByEmail = async (userData: PlanningData['userData'], planUrl: string): Promise<void> => {
-    const validatedUserData = validateUserData(userData);
+  const sendPlanByEmail = async (userData: PlanningData['userData'], _planUrl: string): Promise<void> => {
+    const _validatedUserData = validateUserData(userData);
     
     // Simulação do envio de email
     
@@ -117,6 +116,8 @@ export const usePlanningData = () => {
   const clearUserData = () => {
     secureStorage.clear();
   };
+
+
 
   return {
     savePlanningData,

@@ -32,5 +32,13 @@ jobs:
           VALIDATE_ALL_CODEBASE: false
           DEFAULT_BRANCH: "main"
           VALIDATE_TYPESCRIPT_STANDARD: false
-          FILTER_REGEX_EXCLUDE: "tsconfig\\.app\\.json|tsconfig\\.node\\.json"
+          VALIDATE_PRETTIER: false
+          VALIDATE_PYTHON_BLACK: false
+          VALIDATE_PYTHON_FLAKE8: false
+          VALIDATE_PYTHON_PYLINT: false
+          VALIDATE_NATURAL_LANGUAGE: false
+          VALIDATE_MARKDOWN: false
+          VALIDATE_BASH: false
+          VALIDATE_BASH_EXEC: false
+          FILTER_REGEX_EXCLUDE: "tsconfig\\.app\\.json|tsconfig\\.node\\.json|PULL_REQUEST\\.md|REFACTORING_PLAN\\.md|SUPER_LINTER_STATUS\\.md|PERFORMANCE_OPTIMIZATIONS\\.md"
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,4 +1,4 @@
-
+import React, { useMemo } from 'react';
 import { ChartControls } from './chart/ChartControls';
 import { ChartInfo } from './chart/ChartInfo';
 import { ExportButton } from './chart/ExportButton';
@@ -34,7 +34,7 @@ interface ChartComponentProps {
   lineDrawingDuration?: number;
 }
 
-export const ChartComponent = ({ 
+export const ChartComponent = React.memo(({ 
   data, 
   accumulationYears, 
   lifeExpectancy = 100,
@@ -78,20 +78,22 @@ export const ChartComponent = ({
     isMonteCarloEnabled
   });
 
-  const possibleRetirementAge = calculatePossibleRetirementAge(
+  const possibleRetirementAge = useMemo(() => calculatePossibleRetirementAge(
     data,
     monthlyIncomeTarget,
     portfolioReturn,
     currentAge,
     accumulationYears
-  );
+  ), [data, monthlyIncomeTarget, portfolioReturn, currentAge, accumulationYears]);
   
   // Calculate perpetuity wealth based on retirement return and desired income
-  const perpetuityWealth = monthlyIncomeTarget > 0 ? 
-    (monthlyIncomeTarget * 12) / (portfolioReturn / 100) : 0;
+  const perpetuityWealth = useMemo(() => monthlyIncomeTarget > 0 ? 
+    (monthlyIncomeTarget * 12) / (portfolioReturn / 100) : 0,
+    [monthlyIncomeTarget, portfolioReturn]
+  );
 
 
-  const planningInputs = {
+  const planningInputs = useMemo(() => ({
     initialAmount,
     monthlyAmount,
     currentAge,
@@ -100,7 +102,7 @@ export const ChartComponent = ({
     retirementIncome,
     portfolioReturn,
     investorProfile
-  };
+  }), [initialAmount, monthlyAmount, currentAge, retirementAge, lifeExpectancy, retirementIncome, portfolioReturn, investorProfile]);
 
   // Show projecting message ONLY during projecting phase
   if (isMonteCarloEnabled && animationPhase === 'projecting') {
@@ -172,4 +174,4 @@ export const ChartComponent = ({
       />
     </div>
   );
-};
+});

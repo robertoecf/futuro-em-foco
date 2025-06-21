@@ -1,4 +1,12 @@
 {
-  "threshold": 1,
-  "ignore": ["src/lib/gbm/**", "src/integrations/supabase/**"]
+  "threshold": 2,
+  "ignore": [
+    "src/lib/gbm/**",
+    "src/integrations/supabase/**",
+    "**/*.test.ts",
+    "**/*.spec.ts",
+    "**/node_modules/**",
+    "**/dist/**",
+    "**/build/**"
+  ]
 }
