@@ -91,15 +91,17 @@ export const useChartAnimation = ({
     magicMomentDebugger.addCheckpoint('Checking Transition', animationPhase, !!dataReady, shouldShow50Lines, {
       hasMinimumTimePassed,
       monteCarloDataLength: monteCarloData?.scenarios.median.length || 0,
-      isCalculating
+      isCalculating,
+      message: hasMinimumTimePassed ? 'Tempo mínimo atingido' : 'Aguardando tempo mínimo'
     });
 
-    // ROTEIRO: Só transiciona para 'paths' se AMBOS: dados prontos E 1999ms passados
+    // 🎯 ROTEIRO CRÍTICO: Só transiciona para 'paths' se AMBOS: dados prontos E 1999ms passados
+    // NUNCA antes dos 1999ms, mesmo que os dados estejam prontos
     if (hasMinimumTimePassed && dataReady) {
       setAnimationPhase('paths');
       setShouldShowAllLines(true); // ✅ ROTEIRO 2: Desenhar gradualmente as 500 linhas
       magicMomentDebugger.addCheckpoint('Transition to Paths', 'paths', true, true, {
-        message: 'ROTEIRO 2: Desenhando gradualmente 500 trajetórias'
+        message: 'ROTEIRO 2: Transição para paths - desenhando gradualmente 500 trajetórias'
       });
     } else {
       const waitingFor: string[] = [];
@@ -107,7 +109,7 @@ export const useChartAnimation = ({
       if (!dataReady) waitingFor.push('Monte Carlo data');
       magicMomentDebugger.addCheckpoint('Waiting for Conditions', animationPhase, !!dataReady, shouldShow50Lines, {
         waitingFor,
-        message: 'AGUARDANDO: Ainda na tela de loading'
+        message: `AGUARDANDO: ${waitingFor.join(' e ')} - mantendo tela de loading`
       });
     }
   }, [hasMinimumTimePassed, monteCarloData, isCalculating, animationPhase, shouldShow50Lines]);
@@ -155,15 +157,15 @@ export const useChartAnimation = ({
       
       magicMomentDebugger.addCheckpoint('Animation Started', 'projecting', false, false, {
         startTime,
-        message: 'ROTEIRO 1: Projetando futuros possíveis... (mínimo 1999ms)'
+        message: 'ROTEIRO 1: Calculando possíveis resultados... (mínimo 1999ms)'
       });
 
-      // ROTEIRO 1: NO MÍNIMO 1999ms mostrando "Projetando futuros possíveis..."
+      // ROTEIRO 1: NO MÍNIMO 1999ms mostrando "Calculando possíveis resultados..."
       addTimer(() => {
         setHasMinimumTimePassed(true);
         magicMomentDebugger.addCheckpoint('Minimum Time Passed', 'projecting', false, false, {
           elapsed: Date.now() - startTime,
-          message: 'Tempo mínimo de 1999ms atingido - aguardando dados'
+          message: 'Tempo mínimo de 1999ms atingido - verificando se dados estão prontos'
         });
       }, MAGIC_MOMENT_TIMERS.PROJECTING_DURATION);
     }
@@ -175,20 +177,6 @@ export const useChartAnimation = ({
       checkTransitionConditions();
     }
   }, [hasMinimumTimePassed, animationPhase, checkTransitionConditions]);
-
-  // Check transition conditions when data becomes ready
-  useEffect(() => {
-    if (isMonteCarloEnabled && monteCarloData && !isCalculating && hasStartedAnimation && animationPhase === 'projecting') {
-      checkTransitionConditions();
-    }
-  }, [
-    isMonteCarloEnabled,
-    monteCarloData,
-    isCalculating,
-    hasStartedAnimation,
-    animationPhase,
-    checkTransitionConditions
-  ]);
 
   // Handle subsequent animation phases
   useEffect(() => {

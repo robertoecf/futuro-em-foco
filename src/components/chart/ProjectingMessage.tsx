@@ -1,4 +1,3 @@
-
 interface ProjectingMessageProps {
   phase: 'projecting' | 'optimizing';
   lifeExpectancy: number;
@@ -16,7 +15,7 @@ export const ProjectingMessage = ({
 }: ProjectingMessageProps) => {
   const messages = {
     projecting: {
-      title: "Projetando futuros possíveis...",
+      title: "Calculando possíveis resultados...",
       subtitle: "Analisando mil cenários diferentes baseados em risco e volatilidade"
     },
     optimizing: {
