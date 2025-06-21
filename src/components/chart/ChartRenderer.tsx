@@ -151,30 +151,40 @@ export const ChartRenderer = React.memo(({
           />
 
           {/* 🎯 500 Monte Carlo lines - durante fase 'paths' */}
-          {monteCarloData && isShowingLines && Array.from({ length: LINE_ANIMATION.TOTAL_LINES }, (_, i) => {
-            const animationState = getLineAnimationState(i);
+          {(() => {
+            const shouldRender500Lines = monteCarloData && isShowingLines;
+            console.log('🎯 RENDERIZAÇÃO 500 LINHAS:', {
+              shouldRender500Lines,
+              monteCarloDataExists: !!monteCarloData,
+              isShowingLines,
+              totalLinesToRender: shouldRender500Lines ? LINE_ANIMATION.TOTAL_LINES : 0
+            });
             
-            return (
-              <Line
-                key={`monte-carlo-line-${i}`}
-                type="monotone"
-                dataKey={`line${i}`}
-                stroke={generateLineColor(i)}
-                strokeWidth={1.8}
-                strokeOpacity={animationState.opacity}
-                strokeDasharray={animationState.strokeDasharray}
-                strokeDashoffset={animationState.strokeDashoffset}
-                dot={false}
-                activeDot={false}
-                connectNulls={false}
-                isAnimationActive={false}
-                style={{
-                  transition: `opacity ${LINE_ANIMATION.OPACITY_FADE_DURATION}ms ease-out`,
-                  ...animationState.drawingStyle
-                }}
-              />
-            );
-          })}
+            return shouldRender500Lines && Array.from({ length: LINE_ANIMATION.TOTAL_LINES }, (_, i) => {
+              const animationState = getLineAnimationState(i);
+              
+              return (
+                <Line
+                  key={`monte-carlo-line-${i}`}
+                  type="monotone"
+                  dataKey={`line${i}`}
+                  stroke={generateLineColor(i)}
+                  strokeWidth={1.8}
+                  strokeOpacity={animationState.opacity}
+                  strokeDasharray={animationState.strokeDasharray}
+                  strokeDashoffset={animationState.strokeDashoffset}
+                  dot={false}
+                  activeDot={false}
+                  connectNulls={false}
+                  isAnimationActive={false}
+                  style={{
+                    transition: `opacity ${LINE_ANIMATION.OPACITY_FADE_DURATION}ms ease-out`,
+                    ...animationState.drawingStyle
+                  }}
+                />
+              );
+            });
+          })()}
 
           {/* 🎯 50 Monte Carlo lines - durante fase 'optimizing' */}
           {monteCarloData && isShowing50Lines && Array.from({ length: 50 }, (_, i) => {

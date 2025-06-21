@@ -286,6 +286,18 @@ export const useChartAnimation = ({
   const isShowingLines = shouldShowAllLines; // 500 linhas durante 'paths'
   const isShowing50Lines = shouldShow50Lines; // 50 linhas durante 'optimizing'
 
+  // 🔍 DEBUG CRÍTICO: Log dos estados das linhas
+  useEffect(() => {
+    console.log('🎯 ESTADOS DAS LINHAS ATUALIZADOS:', {
+      animationPhase,
+      shouldShowAllLines,
+      shouldShow50Lines,
+      isShowingLines,
+      isShowing50Lines,
+      message: `Fase ${animationPhase}: 500 linhas=${isShowingLines}, 50 linhas=${isShowing50Lines}`
+    });
+  }, [animationPhase, shouldShowAllLines, shouldShow50Lines, isShowingLines, isShowing50Lines]);
+
   // 🔍 DEBUG: Log all animation phase changes
   useEffect(() => {
     console.log('📱 MUDANÇA DE FASE DE ANIMAÇÃO:', {
