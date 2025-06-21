@@ -1,6 +1,6 @@
-
-import { useEffect, useRef, useCallback } from 'react';
+import { useEffect, useRef, useCallback, useMemo } from 'react';
 import { MonteCarloResult } from '@/lib/utils';
+import { LINE_ANIMATION } from '@/components/calculator/constants';
 
 interface ChartDataProcessorProps {
   data: number[];
@@ -27,7 +27,7 @@ export const useChartDataProcessor = ({
   const monteCarloLinesRef = useRef<number[][]>([]);
   
   // Calculate savings line
-  const calculateSavingsLine = () => {
+  const savingsLine = useMemo(() => {
     const savingsData: number[] = [];
     let totalSaved = initialAmount;
     
@@ -47,9 +47,9 @@ export const useChartDataProcessor = ({
     }
     
     return savingsData;
-  };
+  }, [data, currentAge, accumulationYears, initialAmount, monthlyAmount, monthlyIncomeTarget]);
 
-  // Generate 50 Monte Carlo lines when data is available
+  // Generate 500 Monte Carlo lines when data is available
   const generateMonteCarloLines = useCallback(() => {
     if (!isMonteCarloEnabled || !monteCarloData) {
       return [];
@@ -58,19 +58,23 @@ export const useChartDataProcessor = ({
     const lines: number[][] = [];
     const baseData = monteCarloData.scenarios.median;
     
-    // Generate 50 varied paths based on the Monte Carlo scenarios
-    for (let lineIndex = 0; lineIndex < 50; lineIndex++) {
+    // Generate 500 varied paths based on the Monte Carlo scenarios
+    for (let lineIndex = 0; lineIndex < LINE_ANIMATION.TOTAL_LINES; lineIndex++) {
       const lineData = baseData.map((value, dataIndex) => {
         // Create variation between pessimistic and optimistic scenarios
         const pessimistic = monteCarloData.scenarios.pessimistic[dataIndex] || value;
         const optimistic = monteCarloData.scenarios.optimistic[dataIndex] || value;
         
-        // Interpolate between scenarios with some randomness
-        const randomFactor = Math.random();
-        const interpolated = pessimistic + (optimistic - pessimistic) * randomFactor;
+        // Use a more sophisticated interpolation for 500 lines
+        const t = lineIndex / (LINE_ANIMATION.TOTAL_LINES - 1);
+        const randomFactor = Math.random() * 0.3 + 0.7; // Between 0.7 and 1.0
         
-        // Add some additional noise for visual variety
-        const noise = (Math.random() - 0.5) * 0.1 * value;
+        // Create a distribution that clusters around the median
+        const normalizedT = Math.pow(t, 2) * (t < 0.5 ? 1 : -1) + 0.5;
+        const interpolated = pessimistic + (optimistic - pessimistic) * normalizedT;
+        
+        // Add controlled noise
+        const noise = (Math.random() - 0.5) * 0.05 * value * randomFactor;
         
         return Math.max(0, interpolated + noise);
       });
@@ -80,14 +84,11 @@ export const useChartDataProcessor = ({
     return lines;
   }, [isMonteCarloEnabled, monteCarloData]);
 
-  const savingsLine = calculateSavingsLine();
-
   useEffect(() => {
     monteCarloLinesRef.current = generateMonteCarloLines();
   }, [monteCarloData, isMonteCarloEnabled, generateMonteCarloLines]);
 
-
-  const chartData = data.map((value, index) => {
+  const chartData = useMemo(() => data.map((value, index) => {
     const age = currentAge + index;
     const baseData = {
       age,
@@ -106,7 +107,7 @@ export const useChartDataProcessor = ({
         percentile75: monteCarloData.statistics.percentile75[index]
       };
 
-      // Add the 50 Monte Carlo lines data
+      // Add the 500 Monte Carlo lines data
       const linesData: Record<string, number> = {};
       monteCarloLinesRef.current.forEach((line, lineIndex) => {
         if (index < line.length) {
@@ -118,7 +119,7 @@ export const useChartDataProcessor = ({
     }
 
     return baseData;
-  });
+  }), [data, currentAge, accumulationYears, savingsLine, monteCarloData]);
 
   return { chartData, savingsLine, monteCarloLines: monteCarloLinesRef.current };
 };

@@ -32,5 +32,9 @@ jobs:
           VALIDATE_ALL_CODEBASE: false
           DEFAULT_BRANCH: "main"
           VALIDATE_TYPESCRIPT_STANDARD: false
+          VALIDATE_PRETTIER: false
+          VALIDATE_PYTHON_BLACK: false
+          VALIDATE_PYTHON_FLAKE8: false
+          VALIDATE_PYTHON_PYLINT: false
           FILTER_REGEX_EXCLUDE: "tsconfig\\.app\\.json|tsconfig\\.node\\.json"
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

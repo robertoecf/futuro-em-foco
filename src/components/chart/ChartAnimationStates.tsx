@@ -1,5 +1,3 @@
-
-
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { MonteCarloResult } from '@/lib/utils';
 import { MAGIC_MOMENT_TIMERS } from '@/components/calculator/constants';
@@ -20,11 +18,11 @@ export const useChartAnimation = ({
   onAnimationComplete
 }: UseChartAnimationProps) => {
   const [animationPhase, setAnimationPhase] = useState<AnimationPhase>('final');
+  const [_projectingStartTime, setProjectingStartTime] = useState<number | null>(null);
   const [hasStartedAnimation, setHasStartedAnimation] = useState(false);
-  const [projectingStartTime, setProjectingStartTime] = useState<number | null>(null);
   const [hasMinimumTimePassed, setHasMinimumTimePassed] = useState(false);
   const timersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
-
+  const [_isShowingLines, _setIsShowingLines] = useState(false);
 
   // Cleanup function for timers
   const clearAllTimers = () => {

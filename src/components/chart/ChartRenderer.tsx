@@ -1,4 +1,4 @@
-
+import React from 'react';
 import { ComposedChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
 import { MonteCarloResult } from '@/lib/utils';
 import type { ChartDataPoint } from '@/utils/csvExport';
@@ -18,7 +18,7 @@ interface ChartRendererProps {
   lineDrawingDuration?: number;
 }
 
-export const ChartRenderer = ({
+export const ChartRenderer = React.memo(({
   chartData,
   possibleRetirementAge,
   perpetuityWealth,
@@ -237,4 +237,4 @@ export const ChartRenderer = ({
       </ResponsiveContainer>
     </div>
   );
-};
+});
