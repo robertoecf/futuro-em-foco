@@ -93,6 +93,7 @@ export const ChartRenderer = React.memo(({
       return (
       <>
         {/* Blur overlay during entire animation - from Calculate click until final lines are completely drawn */}
+        {/* PR: Complete blur and tooltip cursor interaction fix */}
         {(animationPhase !== 'final' || (isDrawingFinalLines && !isAnimationComplete)) && (
           <div 
             className="fixed inset-0 z-40 pointer-events-none"
