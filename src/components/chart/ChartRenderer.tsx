@@ -37,22 +37,34 @@ export const ChartRenderer = React.memo(({
   animationPhase = 'final'
 }: ChartRendererProps) => {
   
-  const { getFinalLineAnimationState } = useFinalLinesAnimation({
+  const { getFinalLineAnimationState, isAnimationComplete } = useFinalLinesAnimation({
     isDrawingFinalLines
   });
 
   // Simple performance optimization during animations
   React.useEffect(() => {
-    if (animationPhase !== 'final') {
+    const isAnimationRunning = animationPhase !== 'final' || (isDrawingFinalLines && !isAnimationComplete);
+    
+    if (isAnimationRunning) {
       document.body.style.pointerEvents = 'none';
+      // Force clear any lingering tooltips during animations
+      const tooltipElements = document.querySelectorAll('.recharts-tooltip-wrapper');
+      tooltipElements.forEach(el => {
+        (el as HTMLElement).style.display = 'none';
+      });
     } else {
       document.body.style.pointerEvents = 'auto';
     }
     
     return () => {
       document.body.style.pointerEvents = 'auto';
+      // Clear tooltips on cleanup
+      const tooltipElements = document.querySelectorAll('.recharts-tooltip-wrapper');
+      tooltipElements.forEach(el => {
+        (el as HTMLElement).style.display = 'none';
+      });
     };
-  }, [animationPhase]);
+  }, [animationPhase, isDrawingFinalLines, isAnimationComplete]);
 
   // Generate colors for the lines
   const generateLineColor = (index: number) => {
@@ -80,8 +92,8 @@ export const ChartRenderer = React.memo(({
 
       return (
       <>
-        {/* Simple blur overlay during entire animation sequence */}
-        {(animationPhase !== 'final') && (
+        {/* Blur overlay during entire animation - from Calculate click until final lines are completely drawn */}
+        {(animationPhase !== 'final' || (isDrawingFinalLines && !isAnimationComplete)) && (
           <div 
             className="fixed inset-0 z-40 pointer-events-none"
             style={{
@@ -93,15 +105,39 @@ export const ChartRenderer = React.memo(({
           />
         )}
         
-        <div className="relative h-[400px] w-full bg-white border border-gray-200 rounded-lg p-4" style={{ zIndex: (animationPhase !== 'final') ? 50 : 'auto' }}>
-
+                <div className="relative h-[400px] w-full bg-white border border-gray-200 rounded-lg p-4" style={{ zIndex: (animationPhase !== 'final') ? 50 : 'auto' }}>
+          {/* CSS for final lines drawing animation */}
+          <style>{`
+            @keyframes draw-line {
+              0% {
+                stroke-dashoffset: 1000;
+                opacity: 0.3;
+              }
+              50% {
+                stroke-dashoffset: 500;
+                opacity: 0.8;
+              }
+              100% {
+                stroke-dashoffset: 0;
+                opacity: 1;
+              }
+            }
+          `}</style>
+ 
 
       <ResponsiveContainer width="100%" height="100%">
         <ComposedChart
           data={chartData}
           margin={{ top: 20, right: 30, left: 80, bottom: 20 }}
           style={{
-            pointerEvents: isShowingLines ? 'none' : 'auto' // Disable mouse interactions during Scene 2
+            pointerEvents: (animationPhase === 'final' && !isDrawingFinalLines) ? 'auto' : 'none' // Enable interactions only when animations are done
+          }}
+          onMouseLeave={() => {
+            // Force clear any active tooltip state when mouse leaves chart area
+            const tooltipElements = document.querySelectorAll('.recharts-tooltip-wrapper');
+            tooltipElements.forEach(el => {
+              (el as HTMLElement).style.display = 'none';
+            });
           }}
         >
           <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
@@ -116,7 +152,13 @@ export const ChartRenderer = React.memo(({
           />
           <Tooltip 
             content={<CustomTooltip monteCarloData={monteCarloData} />} 
-            active={!isShowingLines} // Disable tooltip during Scene 2 animation
+            active={animationPhase === 'final' && !isDrawingFinalLines} // Only allow tooltip when animations are done
+            cursor={animationPhase === 'final' && !isDrawingFinalLines ? { stroke: '#94a3b8', strokeWidth: 1 } : false} // Show cursor line only when hovering and animations done
+            animationDuration={0} // Disable tooltip animation for instant response
+            wrapperStyle={{ 
+              pointerEvents: animationPhase === 'final' && !isDrawingFinalLines ? 'auto' : 'none',
+              zIndex: 1000
+            }}
           />
           
           {/* Savings line - always visible */}
@@ -127,7 +169,7 @@ export const ChartRenderer = React.memo(({
             stroke="#6B7280" 
             strokeWidth={2}
             dot={false}
-            activeDot={isShowingLines ? false : { r: 6, stroke: '#6B7280', strokeWidth: 2, fill: '#fff' }}
+            activeDot={(animationPhase !== 'final' || isDrawingFinalLines) ? false : { r: 6, stroke: '#6B7280', strokeWidth: 2, fill: '#fff' }}
           />
 
           {/* MonteCarloExibitionLines - Scene 2 with simple animation */}
@@ -168,7 +210,7 @@ export const ChartRenderer = React.memo(({
                     strokeDashoffset={isDrawingFinalLines ? animationState.strokeDashoffset : "0"}
                     strokeOpacity={isDrawingFinalLines ? animationState.opacity : 1}
                     dot={false}
-                    activeDot={isShowingLines ? false : { r: 6, stroke: '#DC2626', strokeWidth: 2, fill: '#fff' }}
+                    activeDot={(animationPhase !== 'final' || isDrawingFinalLines) ? false : { r: 6, stroke: '#DC2626', strokeWidth: 2, fill: '#fff' }}
                     isAnimationActive={false}
                     style={isDrawingFinalLines ? animationState.drawingStyle : {}}
                   />
@@ -189,7 +231,7 @@ export const ChartRenderer = React.memo(({
                     strokeDashoffset={isDrawingFinalLines ? animationState.strokeDashoffset : "0"}
                     strokeOpacity={isDrawingFinalLines ? animationState.opacity : 1}
                     dot={false}
-                    activeDot={isShowingLines ? false : { r: 8, stroke: '#3B82F6', strokeWidth: 2, fill: '#fff' }}
+                    activeDot={(animationPhase !== 'final' || isDrawingFinalLines) ? false : { r: 8, stroke: '#3B82F6', strokeWidth: 2, fill: '#fff' }}
                     isAnimationActive={false}
                     style={isDrawingFinalLines ? animationState.drawingStyle : {}}
                   />
@@ -210,7 +252,7 @@ export const ChartRenderer = React.memo(({
                     strokeDashoffset={isDrawingFinalLines ? animationState.strokeDashoffset : "0"}
                     strokeOpacity={isDrawingFinalLines ? animationState.opacity : 1}
                     dot={false}
-                    activeDot={isShowingLines ? false : { r: 6, stroke: '#10B981', strokeWidth: 2, fill: '#fff' }}
+                    activeDot={(animationPhase !== 'final' || isDrawingFinalLines) ? false : { r: 6, stroke: '#10B981', strokeWidth: 2, fill: '#fff' }}
                     isAnimationActive={false}
                     style={isDrawingFinalLines ? animationState.drawingStyle : {}}
                   />
@@ -227,8 +269,8 @@ export const ChartRenderer = React.memo(({
               name="Patrimônio"
               stroke="#FF6B00" 
               strokeWidth={2}
-              dot={false}
-              activeDot={isShowingLines ? false : { r: 8, stroke: '#FF6B00', strokeWidth: 2, fill: '#fff' }}
+                          dot={false}
+            activeDot={(animationPhase !== 'final' || isDrawingFinalLines) ? false : { r: 8, stroke: '#FF6B00', strokeWidth: 2, fill: '#fff' }}
               connectNulls
             />
           )}
