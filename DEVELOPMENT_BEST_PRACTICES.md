@@ -277,4 +277,6 @@ npm run marco-zero && echo "🏆 Excelência mantida!"
 
 ---
 
-*Baseado nas recomendações do Grok e consolidado através da experiência prática do projeto Futuro em Foco Planner.* 
+*Baseado nas recomendações do Grok e consolidado através da experiência prática do projeto Futuro em Foco Planner.*
+
+<!-- Super Linter trigger: Re-run workflow for quality verification --> 
