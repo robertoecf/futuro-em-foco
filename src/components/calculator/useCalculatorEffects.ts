@@ -125,7 +125,7 @@ export const useCalculatorEffects = ({
 
     // Only run Monte Carlo if explicitly calculating (triggered by user click)
     if (isMonteCarloEnabled && isCalculating) {
-      console.log('🎯 EXECUTANDO Monte Carlo - usuário clicou em Calcular');
+              // Executing Monte Carlo calculation
       
       // Use requestIdleCallback if available, otherwise setTimeout
       const scheduleWork = (callback: () => void) => {
@@ -177,7 +177,7 @@ export const useCalculatorEffects = ({
       });
       
     } else {
-      console.log('📊 Monte Carlo não ativo ou não calculando');
+      // Monte Carlo not active
       if (!isMonteCarloEnabled) {
         setMonteCarloResult(null);
       }

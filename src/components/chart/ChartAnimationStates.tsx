@@ -108,21 +108,10 @@ export const useChartAnimation = ({
 
     // 🎯 ROTEIRO CRÍTICO: Só transiciona para 'paths' se AMBOS: dados prontos E 1999ms passados E estamos em projecting
     if (hasMinimumTimePassed && dataReady && animationPhase === 'projecting') {
-      console.log('🎯 TRANSIÇÃO PARA PATHS AUTORIZADA!', { hasMinimumTimePassed, dataReady, animationPhase });
       setAnimationPhase('paths');
-      setShouldShowAllLines(true); // ✅ ROTEIRO 2: Desenhar gradualmente as 500 linhas
+      setShouldShowAllLines(true);
       magicMomentDebugger.addCheckpoint('Transition to Paths', 'paths', true, true, {
-        message: 'ROTEIRO 2: Transição para paths - desenhando gradualmente 500 trajetórias'
-      });
-    } else {
-      const waitingFor: string[] = [];
-      if (!hasMinimumTimePassed) waitingFor.push('minimum time (1999ms)');
-      if (!dataReady) waitingFor.push('Monte Carlo data');
-      if (animationPhase !== 'projecting') waitingFor.push('projecting phase');
-      console.log('⏳ AGUARDANDO CONDIÇÕES:', waitingFor);
-      magicMomentDebugger.addCheckpoint('Waiting for Conditions', animationPhase, !!dataReady, shouldShow50Lines, {
-        waitingFor,
-        message: `AGUARDANDO: ${waitingFor.join(' e ')} - mantendo tela de loading`
+        message: 'Transição para paths - desenhando 500 trajetórias'
       });
     }
   }, [hasMinimumTimePassed, monteCarloData, isCalculating, animationPhase, shouldShow50Lines]);
@@ -158,32 +147,17 @@ export const useChartAnimation = ({
     }
   }, [isMonteCarloEnabled, isCalculating, animationPhase]);
 
-  // 🎯 CORREÇÃO CRÍTICA: Mudar IMEDIATAMENTE para 'projecting' quando isCalculating fica true
+  // Force immediate transition to projecting when calculation starts
   useEffect(() => {
     if (isCalculating && isMonteCarloEnabled && animationPhase !== 'projecting') {
-      console.log('🚀 FORÇANDO MUDANÇA IMEDIATA PARA PROJECTING:', { isCalculating, isMonteCarloEnabled, currentPhase: animationPhase });
       setAnimationPhase('projecting');
     }
   }, [isCalculating, isMonteCarloEnabled, animationPhase]);
 
   // Handle calculation start
   useEffect(() => {
-    console.log('🔍 VERIFICANDO CONDIÇÕES PARA INICIAR ANIMAÇÃO:', {
-      isCalculating,
-      isMonteCarloEnabled,
-      hasStartedAnimation,
-      shouldStart: isCalculating && isMonteCarloEnabled && !hasStartedAnimation
-    });
-    
     if (isCalculating && isMonteCarloEnabled && !hasStartedAnimation) {
       const startTime = Date.now();
-      console.log('🚀 INICIANDO MOMENTO MÁGICO:', {
-        startTime,
-        projecting_duration: MAGIC_MOMENT_TIMERS.PROJECTING_DURATION,
-        paths_duration: MAGIC_MOMENT_TIMERS.PATHS_DURATION,
-        optimizing_duration: MAGIC_MOMENT_TIMERS.OPTIMIZING_DURATION,
-        drawing_final_duration: MAGIC_MOMENT_TIMERS.DRAWING_FINAL_DURATION
-      });
       
       setProjectingStartTime(startTime);
       setAnimationPhase('projecting');
@@ -194,18 +168,14 @@ export const useChartAnimation = ({
       
       magicMomentDebugger.addCheckpoint('Animation Started', 'projecting', false, false, {
         startTime,
-        message: 'ROTEIRO 1: Calculando possíveis resultados... (mínimo 1999ms)'
+        message: 'Animation started'
       });
 
-      // ROTEIRO 1: NO MÍNIMO 1999ms mostrando "Calculando possíveis resultados..."
-      console.log('⏰ TIMER 1999ms INICIADO - aguardando tempo mínimo');
+      // Minimum time before showing paths
       addTimer(() => {
-        const elapsed = Date.now() - startTime;
-        console.log('✅ TIMER 1999ms COMPLETO!', { elapsed, expected: MAGIC_MOMENT_TIMERS.PROJECTING_DURATION });
         setHasMinimumTimePassed(true);
         magicMomentDebugger.addCheckpoint('Minimum Time Passed', 'projecting', false, false, {
-          elapsed,
-          message: 'Tempo mínimo de 1999ms atingido - verificando se dados estão prontos'
+          message: 'Minimum time passed'
         });
       }, MAGIC_MOMENT_TIMERS.PROJECTING_DURATION);
     }
@@ -214,7 +184,6 @@ export const useChartAnimation = ({
   // Check transition conditions when minimum time passes OR when data becomes ready
   useEffect(() => {
     if (hasMinimumTimePassed && animationPhase === 'projecting') {
-      console.log('🕒 TEMPO MÍNIMO ATINGIDO - verificando transição');
       checkTransitionConditions();
     }
   }, [hasMinimumTimePassed, animationPhase, checkTransitionConditions]);
@@ -222,7 +191,6 @@ export const useChartAnimation = ({
   // Also check when data becomes ready
   useEffect(() => {
     if (monteCarloData && !isCalculating && animationPhase === 'projecting' && hasMinimumTimePassed) {
-      console.log('💾 DADOS PRONTOS - verificando transição');
       checkTransitionConditions();
     }
   }, [monteCarloData, isCalculating, animationPhase, hasMinimumTimePassed, checkTransitionConditions]);
@@ -286,29 +254,7 @@ export const useChartAnimation = ({
   const isShowingLines = shouldShowAllLines; // 500 linhas durante 'paths'
   const isShowing50Lines = shouldShow50Lines; // 50 linhas durante 'optimizing'
 
-  // 🔍 DEBUG CRÍTICO: Log dos estados das linhas
-  useEffect(() => {
-    console.log('🎯 ESTADOS DAS LINHAS ATUALIZADOS:', {
-      animationPhase,
-      shouldShowAllLines,
-      shouldShow50Lines,
-      isShowingLines,
-      isShowing50Lines,
-      message: `Fase ${animationPhase}: 500 linhas=${isShowingLines}, 50 linhas=${isShowing50Lines}`
-    });
-  }, [animationPhase, shouldShowAllLines, shouldShow50Lines, isShowingLines, isShowing50Lines]);
-
-  // 🔍 DEBUG: Log all animation phase changes
-  useEffect(() => {
-    console.log('📱 MUDANÇA DE FASE DE ANIMAÇÃO:', {
-      newPhase: animationPhase,
-      timestamp: Date.now(),
-      isCalculating,
-      isMonteCarloEnabled,
-      hasStartedAnimation,
-      hasMinimumTimePassed
-    });
-  }, [animationPhase, isCalculating, isMonteCarloEnabled, hasStartedAnimation, hasMinimumTimePassed]);
+  // Clean animation state management
 
   return {
     animationPhase,

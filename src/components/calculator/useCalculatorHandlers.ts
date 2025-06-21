@@ -62,7 +62,7 @@ export const useCalculatorHandlers = ({
     } else {
       // When enabling (clicking "Calcular"), start the calculation immediately
       // The animation system will handle the timing
-      console.log('🚀 ATIVANDO Monte Carlo - iniciando cálculo');
+      // Activating Monte Carlo calculation;
       setIsCalculating(true);
     }
   }, [setIsMonteCarloEnabled, setIsCalculating, setMonteCarloResult]);

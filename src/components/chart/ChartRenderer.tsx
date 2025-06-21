@@ -57,22 +57,11 @@ export const ChartRenderer = React.memo(({
     return colors[index % colors.length];
   };
 
-  console.log('🎯 CHART RENDERER DEBUG:', {
-    isShowingLines,
-    isShowing50Lines,
-    isDrawingFinalLines,
-    monteCarloDataAvailable: !!monteCarloData,
-    chartDataLength: chartData.length,
-    // 🔍 DETALHES CRÍTICOS PARA DEBUG
-    firstLineData: chartData[0]?.line0,
-    hasLine0: !!chartData[0]?.line0,
-    hasLine1: !!chartData[0]?.line1,
-    hasLine10: !!chartData[0]?.line10,
-    totalLinesInData: Object.keys(chartData[0] || {}).filter(key => key.startsWith('line')).length,
-    // Verificar se as linhas estão sendo renderizadas
-    willRenderMonteCarloLines: monteCarloData && isShowingLines,
-    totalLinesToRender: monteCarloData && isShowingLines ? LINE_ANIMATION.TOTAL_LINES : 0
-  });
+  // Simple debug for chart rendering
+  if (!chartData?.length) {
+    console.log('⚠️ Chart: No data available');
+    return null;
+  }
 
   return (
     <div className="relative h-[400px] w-full bg-white border border-gray-200 rounded-lg p-4">
@@ -150,49 +139,33 @@ export const ChartRenderer = React.memo(({
             activeDot={{ r: 6, stroke: '#6B7280', strokeWidth: 2, fill: '#fff' }}
           />
 
-          {/* 🎯 500 Monte Carlo lines - durante fase 'paths' */}
-          {(() => {
-            const shouldRender500Lines = monteCarloData && isShowingLines;
-            console.log('🎯 RENDERIZAÇÃO 500 LINHAS:', {
-              shouldRender500Lines,
-              monteCarloDataExists: !!monteCarloData,
-              isShowingLines,
-              totalLinesToRender: shouldRender500Lines ? LINE_ANIMATION.TOTAL_LINES : 0
-            });
+          {/* Monte Carlo 500 lines */}
+          {monteCarloData && isShowingLines && Array.from({ length: LINE_ANIMATION.TOTAL_LINES }, (_, i) => {
+            const animationState = getLineAnimationState(i);
             
-            return shouldRender500Lines && Array.from({ length: LINE_ANIMATION.TOTAL_LINES }, (_, i) => {
-              // 🚀 CORREÇÃO: Durante fase 'paths', mostrar todas as linhas imediatamente sem animação complexa
-              const simpleOpacity = 0.6; // Opacidade fixa para visibilidade
-              const lineColor = generateLineColor(i);
-              
-              // 🔍 Log apenas das primeiras 5 linhas para não sobrecarregar console
-              if (i < 5) {
-                console.log(`🎯 RENDERIZANDO LINHA ${i}:`, {
-                  dataKey: `line${i}`,
-                  color: lineColor,
-                  opacity: simpleOpacity,
-                  hasDataKey: !!chartData[0]?.[`line${i}` as keyof typeof chartData[0]]
-                });
-              }
-              
-              return (
-                <Line
-                  key={`monte-carlo-line-${i}`}
-                  type="monotone"
-                  dataKey={`line${i}`}
-                  stroke={lineColor}
-                  strokeWidth={1.5}
-                  strokeOpacity={simpleOpacity}
-                  dot={false}
-                  activeDot={false}
-                  connectNulls={false}
-                  isAnimationActive={false}
-                />
-              );
-            });
-          })()}
+            return (
+              <Line
+                key={`monte-carlo-line-${i}`}
+                type="monotone"
+                dataKey={`line${i}`}
+                stroke={generateLineColor(i)}
+                strokeWidth={1.5}
+                strokeOpacity={animationState.opacity}
+                strokeDasharray={animationState.strokeDasharray}
+                strokeDashoffset={animationState.strokeDashoffset}
+                dot={false}
+                activeDot={false}
+                connectNulls={false}
+                isAnimationActive={false}
+                style={{
+                  transition: `opacity ${LINE_ANIMATION.OPACITY_FADE_DURATION}ms ease-out`,
+                  ...animationState.drawingStyle
+                }}
+              />
+            );
+          })}
 
-          {/* 🎯 50 Monte Carlo lines - durante fase 'optimizing' */}
+          {/* Monte Carlo 50 lines */}
           {monteCarloData && isShowing50Lines && Array.from({ length: 50 }, (_, i) => {
             const animationState = get50LineAnimationState(i);
             

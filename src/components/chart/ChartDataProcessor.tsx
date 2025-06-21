@@ -132,27 +132,7 @@ export const useChartDataProcessor = ({
 
       const finalData = { ...baseData, ...monteCarloData_final, ...linesData };
       
-      // 🔍 DEBUG: Log do primeiro ponto de dados para verificar se as linhas estão incluídas
-      if (index === 0) {
-        const finalDataAny = finalData as any;
-        console.log('🎯 PRIMEIRO PONTO DE DADOS CHART:', {
-          age: finalData.age,
-          patrimonio: finalData.patrimonio,
-          poupanca: finalData.poupanca,
-          pessimistic: finalData.pessimistic,
-          median: finalData.median,
-          optimistic: finalData.optimistic,
-          // Verificar se as linhas estão incluídas
-          hasLine0: !!finalDataAny.line0,
-          hasLine1: !!finalDataAny.line1,
-          hasLine10: !!finalDataAny.line10,
-          hasLine100: !!finalDataAny.line100,
-          line0Value: finalDataAny.line0,
-          line1Value: finalDataAny.line1,
-          totalLinesIncluded: Object.keys(finalData).filter(key => key.startsWith('line')).length,
-          totalMonteCarloLines: monteCarloLinesRef.current.length
-        });
-      }
+      // Data point ready with Monte Carlo lines
 
       return finalData;
     }

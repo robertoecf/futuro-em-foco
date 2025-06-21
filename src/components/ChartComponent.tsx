@@ -120,7 +120,7 @@ export const ChartComponent = React.memo(({
     );
   }
 
-  console.log('📊 EXIBINDO CHART NORMAL:', { isMonteCarloEnabled, animationPhase, isCalculating });
+  // Chart is ready to render
 
   return (
     <div className="w-full">
@@ -177,17 +177,7 @@ export const ChartComponent = React.memo(({
         possibleRetirementAge={possibleRetirementAge}
       />
 
-      {/* 🔍 PAINEL DE DEBUG PARA MOMENTO MÁGICO */}
-      {isMonteCarloEnabled && (
-        <MagicMomentDebugPanel
-          animationPhase={animationPhase}
-          isShowingLines={isShowingLines}
-          isShowing50Lines={isShowing50Lines}
-          isDrawingFinalLines={isDrawingFinalLines}
-          monteCarloData={finalMonteCarloData}
-          getDebugReport={getDebugReport}
-        />
-      )}
+      {/* Debug panel removed for cleaner UI */}
     </div>
   );
 });
