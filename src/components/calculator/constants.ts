@@ -14,8 +14,8 @@ export const DEFAULT_VALUES = {
 // Magic Moment Animation Timers - Cronologia Corrigida
 export const MAGIC_MOMENT_TIMERS = {
   PROJECTING_DURATION: 2000, // 2 seconds - "Projetando futuros possíveis..." (reduzido de 3000ms)
-  PATHS_DURATION: 6000, // 6 seconds - Mostra as 50 linhas coloridas
-  OPTIMIZING_DURATION: 2000, // 2 seconds - "Otimizando exibição..."
+  PATHS_DURATION: 6000, // 6 seconds - Mostra as 500 linhas coloridas
+  OPTIMIZING_DURATION: 2000, // 2 seconds - "Otimizando exibição..." - Mostra 50 linhas
   DRAWING_FINAL_DURATION: 4000, // 4 seconds - Desenha as 3 linhas finais
   TOTAL_ANIMATION_DURATION: 14000 // 14 seconds total (reduzido de 15 para 14)
 };
