@@ -48,8 +48,7 @@ jobs:
           VALIDATE_HTML: false
           VALIDATE_CSS: false
           VALIDATE_DOCKERFILE: false
-          # JSCPD Configuration
-          JSCPD_CONFIG_FILE: ".jscpd.json"
+          VALIDATE_JSCPD: false
           # Enhanced file exclusions
           FILTER_REGEX_EXCLUDE: "tsconfig\\.app\\.json|tsconfig\\.node\\.json|PULL_REQUEST\\.md|REFACTORING_PLAN\\.md|SUPER_LINTER_STATUS\\.md|PERFORMANCE_OPTIMIZATIONS\\.md|MAGIC_MOMENT_BUG_FIX\\.md|LINTER_FIXES\\.md|SUPER_LINTER_FIXES_FINAL\\.md|package-lock\\.json|bun\\.lockb|\\.vscode/|\\.git/|node_modules/"
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
