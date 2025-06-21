@@ -136,11 +136,13 @@ export const ChartComponent = React.memo(({
             chartData={chartData}
             possibleRetirementAge={possibleRetirementAge}
             perpetuityWealth={perpetuityWealth}
+            monthlyIncomeTarget={monthlyIncomeTarget}
             monteCarloData={finalMonteCarloData}
             isShowingLines={isShowingLines}
             isShowing50Lines={isShowing50Lines}
             isDrawingFinalLines={isDrawingFinalLines}
             lineDrawingDuration={lineDrawingDuration}
+            animationPhase={animationPhase}
           />
         </div>
         

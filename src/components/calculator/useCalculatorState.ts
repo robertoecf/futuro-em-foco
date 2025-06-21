@@ -9,30 +9,40 @@ export const useCalculatorState = () => {
   // Try to load from shared plan first
   const sharedPlanData = loadFromSharedPlan();
 
-  // State variables - loading from localStorage or shared plan
+  // Force use new default values - temporary override for migration
+  const shouldUseNewDefaults = true; // Set to true to force new defaults
+
+  const getValueOrDefault = <T>(key: string, defaultValue: T): T => {
+    if (shouldUseNewDefaults) {
+      return defaultValue; // Always use new defaults for now
+    }
+    return sharedPlanData ? (sharedPlanData as any)[key] : loadFromStorage(key, defaultValue);
+  };
+
+  // State variables - using new defaults temporarily
   const [initialAmount, setInitialAmount] = useState(() => 
-    sharedPlanData?.initialAmount ?? loadFromStorage(STORAGE_KEYS.INITIAL_AMOUNT, DEFAULT_VALUES.INITIAL_AMOUNT)
+    getValueOrDefault('initialAmount', DEFAULT_VALUES.INITIAL_AMOUNT)
   );
   const [monthlyAmount, setMonthlyAmount] = useState(() => 
-    sharedPlanData?.monthlyAmount ?? loadFromStorage(STORAGE_KEYS.MONTHLY_AMOUNT, DEFAULT_VALUES.MONTHLY_AMOUNT)
+    getValueOrDefault('monthlyAmount', DEFAULT_VALUES.MONTHLY_AMOUNT)
   );
   const [currentAge, setCurrentAge] = useState(() => 
-    sharedPlanData?.currentAge ?? loadFromStorage(STORAGE_KEYS.CURRENT_AGE, DEFAULT_VALUES.CURRENT_AGE)
+    getValueOrDefault('currentAge', DEFAULT_VALUES.CURRENT_AGE)
   );
   const [retirementAge, setRetirementAge] = useState(() => 
-    sharedPlanData?.retirementAge ?? loadFromStorage(STORAGE_KEYS.RETIREMENT_AGE, DEFAULT_VALUES.RETIREMENT_AGE)
+    getValueOrDefault('retirementAge', DEFAULT_VALUES.RETIREMENT_AGE)
   );
   const [lifeExpectancy, setLifeExpectancy] = useState(() => 
-    sharedPlanData?.lifeExpectancy ?? loadFromStorage(STORAGE_KEYS.LIFE_EXPECTANCY, DEFAULT_VALUES.LIFE_EXPECTANCY)
+    getValueOrDefault('lifeExpectancy', DEFAULT_VALUES.LIFE_EXPECTANCY)
   );
   const [retirementIncome, setRetirementIncome] = useState(() => 
-    sharedPlanData?.retirementIncome ?? loadFromStorage(STORAGE_KEYS.RETIREMENT_INCOME, DEFAULT_VALUES.RETIREMENT_INCOME)
+    getValueOrDefault('retirementIncome', DEFAULT_VALUES.RETIREMENT_INCOME)
   );
   const [portfolioReturn, setPortfolioReturn] = useState(() => 
-    sharedPlanData?.portfolioReturn ?? loadFromStorage(STORAGE_KEYS.PORTFOLIO_RETURN, DEFAULT_VALUES.PORTFOLIO_RETURN)
+    getValueOrDefault('portfolioReturn', DEFAULT_VALUES.PORTFOLIO_RETURN)
   );
   const [investorProfile, setInvestorProfile] = useState<InvestorProfile>(() => 
-    sharedPlanData?.investorProfile ?? loadFromStorage(STORAGE_KEYS.INVESTOR_PROFILE, DEFAULT_VALUES.INVESTOR_PROFILE)
+    getValueOrDefault('investorProfile', DEFAULT_VALUES.INVESTOR_PROFILE)
   );
   const [calculationResult, setCalculationResult] = useState<CalculationResult | null>(null);
   

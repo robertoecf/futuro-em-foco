@@ -17,7 +17,7 @@ export const ChartControls = ({
   onMonteCarloToggle
 }: ChartControlsProps) => {
   return (
-    <div className="glass-panel p-4 rounded-lg mb-6 fade-in-slide-up">
+    <div className="glass-panel p-4 rounded-lg mb-6">
       <div className="flex items-center justify-between flex-wrap gap-4">
         {/* Monte Carlo Toggle */}
         <div className="flex items-center space-x-3">

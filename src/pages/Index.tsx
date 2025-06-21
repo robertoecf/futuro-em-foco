@@ -54,7 +54,7 @@ const Index = () => {
         <div className="absolute inset-0 bg-gradient-to-br from-gray-50/80 to-blue-50/30 backdrop-blur-sm"></div>
         
         <div className="max-w-7xl mx-auto relative z-10">
-          <div className="text-center mb-12 fade-in-slide-up">
+          <div className="text-center mb-12">
             <span className="inline-block bg-orange-100 text-orange-800 px-4 py-1 rounded-full text-sm font-medium mb-4 tech-label">ANÁLISE DETALHADA</span>
             <h2 className="text-3xl font-bold">Análise do seu investimento para aposentadoria</h2>
           </div>

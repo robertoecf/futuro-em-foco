@@ -21,7 +21,7 @@ export const InsightCard: React.FC<InsightCardProps> = ({
   showValueAsDescription = false
 }) => {
   return (
-    <Card className="p-6 insight-card fade-in-slide-up">
+    <Card className="p-6 insight-card">
       <div className="text-center">
         <h3 className="text-lg font-semibold mb-2 text-gray-800">{title}</h3>
         {!showValueAsDescription && (

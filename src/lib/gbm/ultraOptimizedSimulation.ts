@@ -122,7 +122,7 @@ const createWorker = () => {
   return new Worker(workerUrl);
 };
 
-// Ultra-optimized Monte Carlo simulation for 500 paths
+// Ultra-optimized Monte Carlo simulation for 1001 paths
 export async function runUltraOptimizedMonteCarloSimulation(
   initialAmount: number,
   monthlyContribution: number,
@@ -133,7 +133,7 @@ export async function runUltraOptimizedMonteCarloSimulation(
   monthlyIncomeRate: number = 0.004,
   retirementMonthlyIncome: number = 0,
   retirementAnnualReturn: number = 0.04,
-  simulationCount: number = 500
+  simulationCount: number = 1001
 ): Promise<BrownianMonteCarloResult> {
   const startTime = performance.now();
   

@@ -91,19 +91,11 @@ export const useChartAnimation = ({
   const checkTransitionConditions = useCallback(() => {
     const dataReady = monteCarloData && !isCalculating;
     
-    console.log('🔍 VERIFICANDO TRANSIÇÃO:', {
-      hasMinimumTimePassed,
-      dataReady,
-      isCalculating,
-      animationPhase,
-      monteCarloDataLength: monteCarloData?.scenarios.median.length || 0
-    });
-    
     magicMomentDebugger.addCheckpoint('Checking Transition', animationPhase, !!dataReady, shouldShow50Lines, {
       hasMinimumTimePassed,
       monteCarloDataLength: monteCarloData?.scenarios.median.length || 0,
       isCalculating,
-      message: hasMinimumTimePassed ? 'Tempo mínimo atingido' : 'Aguardando tempo mínimo'
+      message: hasMinimumTimePassed ? 'Minimum time passed' : 'Waiting minimum time'
     });
 
     // 🎯 ROTEIRO CRÍTICO: Só transiciona para 'paths' se AMBOS: dados prontos E 1999ms passados E estamos em projecting
@@ -136,7 +128,7 @@ export const useChartAnimation = ({
     if (isMonteCarloEnabled && !isCalculating && animationPhase === 'final') {
       // Só reset se estivermos na fase final (animação completa)
       // NÃO reset durante a animação quando isCalculating fica false
-      console.log('🔄 RESET SEGURO - animação já finalizada');
+      // Safe reset after animation complete
       setHasStartedAnimation(false);
       setHasMinimumTimePassed(false);
       setShouldShow50Lines(false);
@@ -200,44 +192,41 @@ export const useChartAnimation = ({
     if (animationPhase === 'paths') {
       magicMomentDebugger.addCheckpoint('Paths Phase Started', 'paths', true, true, {
         duration: MAGIC_MOMENT_TIMERS.PATHS_DURATION,
-        message: 'ROTEIRO 2: Desenhando gradualmente 500 linhas (3999ms)'
+        message: 'Drawing 500 lines'
       });
       
-      // ROTEIRO 2: Paths (6 seconds) - Desenhar gradualmente todas as 500 linhas
+      // Show 500 lines for 2 seconds, then optimize
       addTimer(() => {
         setAnimationPhase('optimizing');
-        setShouldShowAllLines(false); // ❌ Parar de mostrar todas
-        setShouldShow50Lines(true);   // ✅ Mostrar apenas 50 linhas
+        setShouldShowAllLines(false);
+        setShouldShow50Lines(true);
         
         magicMomentDebugger.addCheckpoint('Optimizing Phase Started', 'optimizing', true, true, {
           duration: MAGIC_MOMENT_TIMERS.OPTIMIZING_DURATION,
-          message: 'ROTEIRO 3: Otimizando visualização... (mínimo 1999ms)'
+          message: 'Optimizing visualization'
         });
         
-        // ROTEIRO 3: Optimizing (1999ms) - "Otimizando visualização..." 
+        // Show 50 lines for 1 second, then final
         addTimer(() => {
           setAnimationPhase('drawing-final');
-          setShouldShow50Lines(false); // ❌ Parar de mostrar 50
+          setShouldShow50Lines(false);
           
           magicMomentDebugger.addCheckpoint('Drawing Final Phase Started', 'drawing-final', true, false, {
             duration: MAGIC_MOMENT_TIMERS.DRAWING_FINAL_DURATION,
-            message: 'ROTEIRO 4: Desenhando com calma as 3 trajetórias finais (1 a 1)'
+            message: 'Drawing final lines'
           });
           
-          // ROTEIRO 4: Drawing Final Lines (4 seconds) - Desenhar com calma 1 a 1
+          // Show final result after 2 seconds
           addTimer(() => {
             setAnimationPhase('final');
             magicMomentDebugger.addCheckpoint('Animation Complete', 'final', true, false, {
-              message: 'ROTEIRO COMPLETO: Momento mágico finalizado'
+              message: 'Animation complete'
             });
-            
-            // Gerar relatório final
-            magicMomentDebugger.getFlowReport();
             
             if (onAnimationComplete) {
               onAnimationComplete();
             }
-          }, MAGIC_MOMENT_TIMERS.DRAWING_FINAL_DURATION);
+                      }, MAGIC_MOMENT_TIMERS.DRAWING_FINAL_DURATION);
         }, MAGIC_MOMENT_TIMERS.OPTIMIZING_DURATION);
       }, MAGIC_MOMENT_TIMERS.PATHS_DURATION);
     }

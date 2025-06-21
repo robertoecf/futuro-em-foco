@@ -2,6 +2,9 @@ import { useEffect, useRef, useCallback, useMemo } from 'react';
 import { MonteCarloResult } from '@/lib/utils';
 import { LINE_ANIMATION } from '@/components/calculator/constants';
 
+// Monte Carlo configuration
+const MONTE_CARLO_ALL_LINES = 1001; // Total scenarios to calculate
+
 interface ChartDataProcessorProps {
   data: number[];
   currentAge: number;
@@ -49,32 +52,30 @@ export const useChartDataProcessor = ({
     return savingsData;
   }, [data, currentAge, accumulationYears, initialAmount, monthlyAmount, monthlyIncomeTarget]);
 
-  // Generate 500 Monte Carlo lines when data is available
+  // Generate MonteCarloAllLines (1001) when data is available
   const generateMonteCarloLines = useCallback(() => {
     if (!isMonteCarloEnabled || !monteCarloData) {
-      console.log('🚫 NÃO GERANDO LINHAS MONTE CARLO:', { isMonteCarloEnabled, hasMonteCarloData: !!monteCarloData });
+      console.log('🚫 MonteCarloAllLines generation skipped:', { isMonteCarloEnabled, hasMonteCarloData: !!monteCarloData });
       return [];
     }
     
-    console.log('🎲 GERANDO LINHAS MONTE CARLO:', {
-      totalLines: LINE_ANIMATION.TOTAL_LINES,
-      baseDataLength: monteCarloData.scenarios.median.length,
-      pessimisticLength: monteCarloData.scenarios.pessimistic.length,
-      optimisticLength: monteCarloData.scenarios.optimistic.length
+    console.log('🎲 Generating MonteCarloAllLines:', { 
+      totalLines: MONTE_CARLO_ALL_LINES,
+      medianDataLength: monteCarloData.scenarios.median.length 
     });
     
     const lines: number[][] = [];
     const baseData = monteCarloData.scenarios.median;
     
-    // Generate 500 varied paths based on the Monte Carlo scenarios
-    for (let lineIndex = 0; lineIndex < LINE_ANIMATION.TOTAL_LINES; lineIndex++) {
+    // Generate 1001 varied paths based on the Monte Carlo scenarios
+    for (let lineIndex = 0; lineIndex < MONTE_CARLO_ALL_LINES; lineIndex++) {
       const lineData = baseData.map((value, dataIndex) => {
         // Create variation between pessimistic and optimistic scenarios
         const pessimistic = monteCarloData.scenarios.pessimistic[dataIndex] || value;
         const optimistic = monteCarloData.scenarios.optimistic[dataIndex] || value;
         
-        // Use a more sophisticated interpolation for 500 lines
-        const t = lineIndex / (LINE_ANIMATION.TOTAL_LINES - 1);
+        // Use a more sophisticated interpolation for 1001 lines
+        const t = lineIndex / (MONTE_CARLO_ALL_LINES - 1);
         const randomFactor = Math.random() * 0.3 + 0.7; // Between 0.7 and 1.0
         
         // Create a distribution that clusters around the median
@@ -89,21 +90,31 @@ export const useChartDataProcessor = ({
       lines.push(lineData);
     }
     
-    console.log('✅ LINHAS MONTE CARLO GERADAS:', {
+    console.log('✅ MonteCarloAllLines generated:', {
       totalLinesGenerated: lines.length,
       firstLineLength: lines[0]?.length || 0,
-      firstLineFirstValue: lines[0]?.[0] || 0,
-      lastLineFirstValue: lines[lines.length - 1]?.[0] || 0
+      lastLineLength: lines[lines.length - 1]?.length || 0
     });
     
     return lines;
   }, [isMonteCarloEnabled, monteCarloData]);
 
   useEffect(() => {
+    console.log('🔄 useEffect triggered - generating lines:', { 
+      isMonteCarloEnabled, 
+      hasMonteCarloData: !!monteCarloData 
+    });
     monteCarloLinesRef.current = generateMonteCarloLines();
   }, [monteCarloData, isMonteCarloEnabled, generateMonteCarloLines]);
 
-  const chartData = useMemo(() => data.map((value, index) => {
+  const chartData = useMemo(() => {
+    // Generate lines immediately if not already generated
+    if (isMonteCarloEnabled && monteCarloData && monteCarloLinesRef.current.length === 0) {
+      console.log('🚨 Generating lines immediately in chartData useMemo');
+      monteCarloLinesRef.current = generateMonteCarloLines();
+    }
+    
+    return data.map((value, index) => {
     const age = currentAge + index;
     const baseData = {
       age,
@@ -122,13 +133,24 @@ export const useChartDataProcessor = ({
         percentile75: monteCarloData.statistics.percentile75[index]
       };
 
-      // Add the 500 Monte Carlo lines data
+      // Add the MonteCarloAllLines (1001) data
       const linesData: Record<string, number> = {};
       monteCarloLinesRef.current.forEach((line, lineIndex) => {
         if (index < line.length) {
           linesData[`line${lineIndex}`] = line[index];
         }
       });
+
+      // Debug first data point
+      if (index === 0) {
+        console.log('🔍 MonteCarloAllLines Data Debug:', {
+          totalLinesGenerated: monteCarloLinesRef.current.length,
+          firstLineLength: monteCarloLinesRef.current[0]?.length || 0,
+          hasLine0: !!linesData.line0,
+          line0Value: linesData.line0,
+          totalDataKeys: Object.keys(linesData).length
+        });
+      }
 
       const finalData = { ...baseData, ...monteCarloData_final, ...linesData };
       
@@ -138,7 +160,8 @@ export const useChartDataProcessor = ({
     }
 
     return baseData;
-  }), [data, currentAge, accumulationYears, savingsLine, monteCarloData]);
+  });
+  }, [data, currentAge, accumulationYears, savingsLine, monteCarloData, isMonteCarloEnabled, generateMonteCarloLines]);
 
   return { chartData, savingsLine, monteCarloLines: monteCarloLinesRef.current };
 };

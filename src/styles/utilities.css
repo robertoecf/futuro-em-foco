@@ -74,13 +74,7 @@
   position: relative;
 }
 
-.insight-card:hover {
-  transform: translateY(-4px) scale(1.01);
-  box-shadow: 
-    0 16px 40px rgba(0, 0, 0, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1),
-    0 0 0 1px rgba(228, 130, 0, 0.15);
-}
+/* Hover effects removed for instant loading performance */
 
 /* Monte Carlo Results Cards */
 .monte-carlo-card {
@@ -110,12 +104,7 @@
   -webkit-mask-composite: xor;
 }
 
-.monte-carlo-card:hover {
-  transform: translateY(-6px) scale(1.02);
-  box-shadow: 
-    0 20px 60px rgba(0, 0, 0, 0.15),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
-}
+/* Monte Carlo hover effects removed for performance */
 
 /* Chart Container */
 .chart-container {
@@ -146,32 +135,11 @@
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.chart-info-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 
-    0 8px 24px rgba(0, 0, 0, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
-}
+/* Chart info hover effects removed for performance */
 
 /* === ANIMAÇÕES TECNO-ETÉREAS === */
 
-/* fadeInSlideUp - Animação Padrão Conforme Manual */
-@keyframes fadeInSlideUp {
-  0% {
-    opacity: 0;
-    transform: translateY(20px) scale(0.95);
-    filter: blur(4px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-    filter: blur(0);
-  }
-}
-
-.fade-in-slide-up {
-  animation: fadeInSlideUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
+/* Animations removed for instant loading performance */
 
 /* Investor Profile Cards */
 .investor-card {
@@ -188,13 +156,7 @@
   overflow: hidden;
 }
 
-.investor-card:hover {
-  transform: translateY(-8px) scale(1.03);
-  box-shadow: 
-    0 20px 60px rgba(0, 0, 0, 0.15),
-    0 0 0 2px rgba(228, 130, 0, 0.3),
-    inset 0 1px 0 rgba(255, 255, 255, 0.08);
-}
+/* Investor card hover effects removed for performance */
 
 .investor-card.active {
   background: linear-gradient(135deg, 
@@ -220,13 +182,7 @@
   position: relative;
 }
 
-.recommendation-card:hover {
-  transform: translateY(-6px) scale(1.02);
-  box-shadow: 
-    0 20px 50px rgba(0, 0, 0, 0.12),
-    inset 0 1px 0 rgba(255, 255, 255, 0.08),
-    0 0 0 1px rgba(228, 130, 0, 0.2);
-}
+/* Recommendation card hover effects removed for performance */
 /* === UTILITÁRIOS TECNO-ETÉREOS === */
 
 .glass-input {
