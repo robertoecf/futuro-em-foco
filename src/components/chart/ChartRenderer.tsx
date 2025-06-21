@@ -62,7 +62,16 @@ export const ChartRenderer = React.memo(({
     isShowing50Lines,
     isDrawingFinalLines,
     monteCarloDataAvailable: !!monteCarloData,
-    chartDataLength: chartData.length
+    chartDataLength: chartData.length,
+    // 🔍 DETALHES CRÍTICOS PARA DEBUG
+    firstLineData: chartData[0]?.line0,
+    hasLine0: !!chartData[0]?.line0,
+    hasLine1: !!chartData[0]?.line1,
+    hasLine10: !!chartData[0]?.line10,
+    totalLinesInData: Object.keys(chartData[0] || {}).filter(key => key.startsWith('line')).length,
+    // Verificar se as linhas estão sendo renderizadas
+    willRenderMonteCarloLines: monteCarloData && isShowingLines,
+    totalLinesToRender: monteCarloData && isShowingLines ? LINE_ANIMATION.TOTAL_LINES : 0
   });
 
   return (

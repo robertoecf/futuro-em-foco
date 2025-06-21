@@ -1,4 +1,3 @@
-
 import { useCalculatorState } from './useCalculatorState';
 import { useCalculatorHandlers } from './useCalculatorHandlers';
 import { useCalculatorEffects } from './useCalculatorEffects';
@@ -48,6 +47,7 @@ export const useCalculator = () => {
     investorProfile: state.investorProfile,
     accumulationYears,
     isMonteCarloEnabled: state.isMonteCarloEnabled,
+    isCalculating: state.isCalculating,
     sharedPlanData: state.sharedPlanData,
     setCalculationResult: state.setCalculationResult,
     setIsCalculating: state.setIsCalculating,

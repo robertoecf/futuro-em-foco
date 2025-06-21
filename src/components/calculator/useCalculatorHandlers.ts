@@ -1,4 +1,3 @@
-
 import { useCallback } from 'react';
 import type { InvestorProfile } from './types';
 import type { MonteCarloResult } from '@/lib/utils';
@@ -50,13 +49,21 @@ export const useCalculatorHandlers = ({
   }, [setIsCalculating]);
 
   const handleMonteCarloToggle = useCallback((enabled: boolean) => {
+    console.log('🎬 BOTÃO CALCULAR CLICADO:', { enabled, wasEnabled: !enabled });
+    
     setIsMonteCarloEnabled(enabled);
     saveToStorage(STORAGE_KEYS.MONTE_CARLO_ENABLED, enabled);
     
     // If disabling, immediately clear results and stop calculating
     if (!enabled) {
+      console.log('🔄 DESATIVANDO Monte Carlo');
       setIsCalculating(false);
       setMonteCarloResult(null);
+    } else {
+      // When enabling (clicking "Calcular"), start the calculation immediately
+      // The animation system will handle the timing
+      console.log('🚀 ATIVANDO Monte Carlo - iniciando cálculo');
+      setIsCalculating(true);
     }
   }, [setIsMonteCarloEnabled, setIsCalculating, setMonteCarloResult]);
 

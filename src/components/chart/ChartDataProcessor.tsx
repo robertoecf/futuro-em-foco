@@ -52,8 +52,16 @@ export const useChartDataProcessor = ({
   // Generate 500 Monte Carlo lines when data is available
   const generateMonteCarloLines = useCallback(() => {
     if (!isMonteCarloEnabled || !monteCarloData) {
+      console.log('🚫 NÃO GERANDO LINHAS MONTE CARLO:', { isMonteCarloEnabled, hasMonteCarloData: !!monteCarloData });
       return [];
     }
+    
+    console.log('🎲 GERANDO LINHAS MONTE CARLO:', {
+      totalLines: LINE_ANIMATION.TOTAL_LINES,
+      baseDataLength: monteCarloData.scenarios.median.length,
+      pessimisticLength: monteCarloData.scenarios.pessimistic.length,
+      optimisticLength: monteCarloData.scenarios.optimistic.length
+    });
     
     const lines: number[][] = [];
     const baseData = monteCarloData.scenarios.median;
@@ -80,6 +88,13 @@ export const useChartDataProcessor = ({
       });
       lines.push(lineData);
     }
+    
+    console.log('✅ LINHAS MONTE CARLO GERADAS:', {
+      totalLinesGenerated: lines.length,
+      firstLineLength: lines[0]?.length || 0,
+      firstLineFirstValue: lines[0]?.[0] || 0,
+      lastLineFirstValue: lines[lines.length - 1]?.[0] || 0
+    });
     
     return lines;
   }, [isMonteCarloEnabled, monteCarloData]);
@@ -115,7 +130,31 @@ export const useChartDataProcessor = ({
         }
       });
 
-      return { ...baseData, ...monteCarloData_final, ...linesData };
+      const finalData = { ...baseData, ...monteCarloData_final, ...linesData };
+      
+      // 🔍 DEBUG: Log do primeiro ponto de dados para verificar se as linhas estão incluídas
+      if (index === 0) {
+        const finalDataAny = finalData as any;
+        console.log('🎯 PRIMEIRO PONTO DE DADOS CHART:', {
+          age: finalData.age,
+          patrimonio: finalData.patrimonio,
+          poupanca: finalData.poupanca,
+          pessimistic: finalData.pessimistic,
+          median: finalData.median,
+          optimistic: finalData.optimistic,
+          // Verificar se as linhas estão incluídas
+          hasLine0: !!finalDataAny.line0,
+          hasLine1: !!finalDataAny.line1,
+          hasLine10: !!finalDataAny.line10,
+          hasLine100: !!finalDataAny.line100,
+          line0Value: finalDataAny.line0,
+          line1Value: finalDataAny.line1,
+          totalLinesIncluded: Object.keys(finalData).filter(key => key.startsWith('line')).length,
+          totalMonteCarloLines: monteCarloLinesRef.current.length
+        });
+      }
+
+      return finalData;
     }
 
     return baseData;

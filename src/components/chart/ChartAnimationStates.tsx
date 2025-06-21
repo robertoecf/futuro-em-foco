@@ -61,7 +61,10 @@ export const useChartAnimation = ({
   monteCarloData,
   onAnimationComplete
 }: UseChartAnimationProps) => {
-  const [animationPhase, setAnimationPhase] = useState<AnimationPhase>('final');
+  // 🎯 CORREÇÃO CRÍTICA: Inicializar com 'projecting' se já estiver calculando
+  const [animationPhase, setAnimationPhase] = useState<AnimationPhase>(
+    isCalculating && isMonteCarloEnabled ? 'projecting' : 'final'
+  );
   const [_projectingStartTime, setProjectingStartTime] = useState<number | null>(null);
   const [hasStartedAnimation, setHasStartedAnimation] = useState(false);
   const [hasMinimumTimePassed, setHasMinimumTimePassed] = useState(false);
@@ -103,10 +106,9 @@ export const useChartAnimation = ({
       message: hasMinimumTimePassed ? 'Tempo mínimo atingido' : 'Aguardando tempo mínimo'
     });
 
-    // 🎯 ROTEIRO CRÍTICO: Só transiciona para 'paths' se AMBOS: dados prontos E 1999ms passados
-    // NUNCA antes dos 1999ms, mesmo que os dados estejam prontos
-    if (hasMinimumTimePassed && dataReady) {
-      console.log('🎯 TRANSIÇÃO PARA PATHS AUTORIZADA!', { hasMinimumTimePassed, dataReady });
+    // 🎯 ROTEIRO CRÍTICO: Só transiciona para 'paths' se AMBOS: dados prontos E 1999ms passados E estamos em projecting
+    if (hasMinimumTimePassed && dataReady && animationPhase === 'projecting') {
+      console.log('🎯 TRANSIÇÃO PARA PATHS AUTORIZADA!', { hasMinimumTimePassed, dataReady, animationPhase });
       setAnimationPhase('paths');
       setShouldShowAllLines(true); // ✅ ROTEIRO 2: Desenhar gradualmente as 500 linhas
       magicMomentDebugger.addCheckpoint('Transition to Paths', 'paths', true, true, {
@@ -116,6 +118,7 @@ export const useChartAnimation = ({
       const waitingFor: string[] = [];
       if (!hasMinimumTimePassed) waitingFor.push('minimum time (1999ms)');
       if (!dataReady) waitingFor.push('Monte Carlo data');
+      if (animationPhase !== 'projecting') waitingFor.push('projecting phase');
       console.log('⏳ AGUARDANDO CONDIÇÕES:', waitingFor);
       magicMomentDebugger.addCheckpoint('Waiting for Conditions', animationPhase, !!dataReady, shouldShow50Lines, {
         waitingFor,
@@ -141,21 +144,37 @@ export const useChartAnimation = ({
 
   // 🎯 CORREÇÃO CRÍTICA: Reset hasStartedAnimation quando Monte Carlo é reativado
   useEffect(() => {
-    if (isMonteCarloEnabled && !isCalculating) {
-      // Reset animation state when Monte Carlo is re-enabled but not calculating
+    if (isMonteCarloEnabled && !isCalculating && animationPhase === 'final') {
+      // Só reset se estivermos na fase final (animação completa)
+      // NÃO reset durante a animação quando isCalculating fica false
+      console.log('🔄 RESET SEGURO - animação já finalizada');
       setHasStartedAnimation(false);
-      setAnimationPhase('final');
       setHasMinimumTimePassed(false);
       setShouldShow50Lines(false);
       setShouldShowAllLines(false);
-      magicMomentDebugger.addCheckpoint('Monte Carlo Re-enabled', 'final', false, false, {
-        message: 'Monte Carlo reativado - estado resetado para nova animação'
+      magicMomentDebugger.addCheckpoint('Safe Reset', 'final', false, false, {
+        message: 'Reset seguro após animação completa'
       });
     }
-  }, [isMonteCarloEnabled, isCalculating]);
+  }, [isMonteCarloEnabled, isCalculating, animationPhase]);
+
+  // 🎯 CORREÇÃO CRÍTICA: Mudar IMEDIATAMENTE para 'projecting' quando isCalculating fica true
+  useEffect(() => {
+    if (isCalculating && isMonteCarloEnabled && animationPhase !== 'projecting') {
+      console.log('🚀 FORÇANDO MUDANÇA IMEDIATA PARA PROJECTING:', { isCalculating, isMonteCarloEnabled, currentPhase: animationPhase });
+      setAnimationPhase('projecting');
+    }
+  }, [isCalculating, isMonteCarloEnabled, animationPhase]);
 
   // Handle calculation start
   useEffect(() => {
+    console.log('🔍 VERIFICANDO CONDIÇÕES PARA INICIAR ANIMAÇÃO:', {
+      isCalculating,
+      isMonteCarloEnabled,
+      hasStartedAnimation,
+      shouldStart: isCalculating && isMonteCarloEnabled && !hasStartedAnimation
+    });
+    
     if (isCalculating && isMonteCarloEnabled && !hasStartedAnimation) {
       const startTime = Date.now();
       console.log('🚀 INICIANDO MOMENTO MÁGICO:', {
@@ -192,19 +211,28 @@ export const useChartAnimation = ({
     }
   }, [isCalculating, isMonteCarloEnabled, hasStartedAnimation]);
 
-  // Check transition conditions when minimum time passes
+  // Check transition conditions when minimum time passes OR when data becomes ready
   useEffect(() => {
     if (hasMinimumTimePassed && animationPhase === 'projecting') {
+      console.log('🕒 TEMPO MÍNIMO ATINGIDO - verificando transição');
       checkTransitionConditions();
     }
   }, [hasMinimumTimePassed, animationPhase, checkTransitionConditions]);
+
+  // Also check when data becomes ready
+  useEffect(() => {
+    if (monteCarloData && !isCalculating && animationPhase === 'projecting' && hasMinimumTimePassed) {
+      console.log('💾 DADOS PRONTOS - verificando transição');
+      checkTransitionConditions();
+    }
+  }, [monteCarloData, isCalculating, animationPhase, hasMinimumTimePassed, checkTransitionConditions]);
 
   // Handle subsequent animation phases
   useEffect(() => {
     if (animationPhase === 'paths') {
       magicMomentDebugger.addCheckpoint('Paths Phase Started', 'paths', true, true, {
         duration: MAGIC_MOMENT_TIMERS.PATHS_DURATION,
-        message: 'ROTEIRO 2: Desenhando gradualmente 500 linhas (6 segundos)'
+        message: 'ROTEIRO 2: Desenhando gradualmente 500 linhas (3999ms)'
       });
       
       // ROTEIRO 2: Paths (6 seconds) - Desenhar gradualmente todas as 500 linhas
@@ -257,6 +285,18 @@ export const useChartAnimation = ({
   // 🎯 CORREÇÃO: Lógica corrigida para exibição das linhas
   const isShowingLines = shouldShowAllLines; // 500 linhas durante 'paths'
   const isShowing50Lines = shouldShow50Lines; // 50 linhas durante 'optimizing'
+
+  // 🔍 DEBUG: Log all animation phase changes
+  useEffect(() => {
+    console.log('📱 MUDANÇA DE FASE DE ANIMAÇÃO:', {
+      newPhase: animationPhase,
+      timestamp: Date.now(),
+      isCalculating,
+      isMonteCarloEnabled,
+      hasStartedAnimation,
+      hasMinimumTimePassed
+    });
+  }, [animationPhase, isCalculating, isMonteCarloEnabled, hasStartedAnimation, hasMinimumTimePassed]);
 
   return {
     animationPhase,

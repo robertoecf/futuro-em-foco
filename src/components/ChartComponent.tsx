@@ -120,6 +120,8 @@ export const ChartComponent = React.memo(({
     );
   }
 
+  console.log('📊 EXIBINDO CHART NORMAL:', { isMonteCarloEnabled, animationPhase, isCalculating });
+
   return (
     <div className="w-full">
       {/* Chart Title */}

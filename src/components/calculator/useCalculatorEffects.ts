@@ -18,6 +18,7 @@ interface UseCalculatorEffectsProps {
   investorProfile: InvestorProfile;
   accumulationYears: number;
   isMonteCarloEnabled: boolean;
+  isCalculating: boolean;
   sharedPlanData: PlanningData['planningInputs'] | null;
   setCalculationResult: (result: CalculationResult) => void;
   setIsCalculating: (value: boolean) => void;
@@ -35,6 +36,7 @@ export const useCalculatorEffects = ({
   investorProfile,
   accumulationYears,
   isMonteCarloEnabled,
+  isCalculating,
   sharedPlanData,
   setCalculationResult,
   setIsCalculating,
@@ -121,9 +123,9 @@ export const useCalculatorEffects = ({
       monthlyIncome: result.monthlyIncome
     });
 
-    // Only run Monte Carlo if explicitly enabled - with optimizations
-    if (isMonteCarloEnabled) {
-      setIsCalculating(true);
+    // Only run Monte Carlo if explicitly calculating (triggered by user click)
+    if (isMonteCarloEnabled && isCalculating) {
+      console.log('🎯 EXECUTANDO Monte Carlo - usuário clicou em Calcular');
       
       // Use requestIdleCallback if available, otherwise setTimeout
       const scheduleWork = (callback: () => void) => {
@@ -159,6 +161,7 @@ export const useCalculatorEffects = ({
             statistics: gbmResults.statistics
           };
           
+          console.log('✅ MONTE CARLO FINALIZADO - dados prontos para animação');
           setMonteCarloResult(convertedResults);
           setIsCalculating(false);
           
@@ -174,8 +177,13 @@ export const useCalculatorEffects = ({
       });
       
     } else {
-      setMonteCarloResult(null);
-      setIsCalculating(false);
+      console.log('📊 Monte Carlo não ativo ou não calculando');
+      if (!isMonteCarloEnabled) {
+        setMonteCarloResult(null);
+      }
+      if (!isCalculating) {
+        // Don't set to false if we're supposed to be calculating
+      }
     }
   }, [
     isMonteCarloEnabled,
