@@ -47,14 +47,14 @@
   height: 100%;
   z-index: 1;
   overflow: hidden;
-  filter: blur(100px) saturate(1.5);
+  filter: blur(50px) saturate(1.5);
   pointer-events: none;
 }
 
 .aurora-cta-blob {
   position: absolute;
   border-radius: 50%;
-  opacity: 0.7;
+  opacity: 0.8;
   will-change: transform;
   contain: layout paint;
   animation: moveCTABlob 25s infinite alternate;
@@ -70,66 +70,66 @@
   }
 }
 
-/* Posicionamento CTA Blobs */
+/* Posicionamento CTA Blobs - TODOS CENTRALIZADOS NO VIEWPORT - MAIS RÁPIDAS */
 #cta-blob1 {
-  --x-start: -15vw; --y-start: -20vh; --x-end: 25vw; --y-end: 40vh;
+  --x-start: 20vw; --y-start: 30vh; --x-end: 25vw; --y-end: 40vh;
   width: 35vw; height: 35vw;
-  animation-duration: 35s;
+  animation-duration: 25s;
   background: var(--palette-mix-orange);
 }
 
 #cta-blob2 {
-  --x-start: 85vw; --y-start: -15vh; --x-end: 45vw; --y-end: -10vh;
+  --x-start: 50vw; --y-start: 20vh; --x-end: 45vw; --y-end: -10vh;
   width: 30vw; height: 30vw;
-  animation-duration: 28s;
+  animation-duration: 20s;
   background: #00b4d8;
 }
 
 #cta-blob3 {
-  --x-start: 55vw; --y-start: 110vh; --x-end: 15vw; --y-end: 10vh;
+  --x-start: 10vw; --y-start: 60vh; --x-end: 15vw; --y-end: 10vh;
   width: 28vw; height: 28vw;
-  animation-duration: 42s;
+  animation-duration: 30s;
   background: #a7c957;
 }
 
 #cta-blob4 {
-  --x-start: 5vw; --y-start: 50vh; --x-end: 75vw; --y-end: 80vh;
+  --x-start: 60vw; --y-start: 40vh; --x-end: 75vw; --y-end: 80vh;
   width: 38vw; height: 38vw;
-  animation-duration: 31s;
+  animation-duration: 22s;
   background: var(--palette-mix-orange);
 }
 
 #cta-blob5 {
-  --x-start: 20vw; --y-start: 90vh; --x-end: 80vw; --y-end: -10vh;
+  --x-start: 30vw; --y-start: 50vh; --x-end: 80vw; --y-end: -10vh;
   width: 32vw; height: 32vw;
-  animation-duration: 38s;
+  animation-duration: 27s;
   background: #0077b6;
 }
 
 #cta-blob6 {
-  --x-start: 70vw; --y-start: 10vh; --x-end: -10vw; --y-end: 60vh;
+  --x-start: 70vw; --y-start: 25vh; --x-end: -10vw; --y-end: 60vh;
   width: 25vw; height: 25vw;
-  animation-duration: 45s;
+  animation-duration: 32s;
   background: var(--palette-green-dark);
 }
 
 #cta-blob7 {
-  --x-start: 10vw; --y-start: 100vh; --x-end: 90vw; --y-end: 0vh;
+  --x-start: 40vw; --y-start: 35vh; --x-end: 90vw; --y-end: 0vh;
   width: 30vw; height: 30vw;
-  animation-duration: 33s;
+  animation-duration: 24s;
   background: linear-gradient(135deg, var(--palette-mix-orange), #b30000);
 }
 
 #cta-blob8 {
-  --x-start: 90vw; --y-start: 50vh; --x-end: 10vw; --y-end: 50vh;
+  --x-start: 15vw; --y-start: 45vh; --x-end: 10vw; --y-end: 50vh;
   width: 25vw; height: 25vw;
-  animation-duration: 40s;
+  animation-duration: 28s;
   background: linear-gradient(135deg, var(--palette-mix-orange), #b30000);
 }
 
 #cta-blob9 {
-  --x-start: 5vw; --y-start: 95vh; --x-end: 30vw; --y-end: 70vh;
+  --x-start: 55vw; --y-start: 55vh; --x-end: 30vw; --y-end: 70vh;
   width: 28vw; height: 28vw;
-  animation-duration: 37s;
+  animation-duration: 26s;
   background: #455a3e;
 }
