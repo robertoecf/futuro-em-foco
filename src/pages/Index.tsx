@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Calculator } from '@/components/calculator/Calculator';
 import { HeroSection } from '@/components/HeroSection';
 import { LeadCaptureForm } from '@/components/LeadCaptureForm';
-import { useCalculator } from '@/components/calculator/hooks/useCalculator';
+import { useCalculator } from '@/components/calculator/useCalculator';
 import { MatrixRain } from '@/components/MatrixRain';
 import { useOverscroll } from '@/hooks/useOverscroll';
 

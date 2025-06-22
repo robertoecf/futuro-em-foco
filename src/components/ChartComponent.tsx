@@ -2,7 +2,7 @@ import React, { useMemo, useState, useEffect } from 'react';
 import { ChartControls } from './chart/ChartControls';
 import { ChartInfo } from './chart/ChartInfo';
 import { calculatePossibleRetirementAge } from './chart/utils/chartUtils';
-import { InvestorProfile, CalculationResult } from '@/components/calculator/hooks/useCalculator';
+import { InvestorProfile, CalculationResult } from '@/components/calculator/useCalculator';
 import { MonteCarloResult } from '@/lib/utils';
 import { useChartAnimation } from './chart/ChartAnimationStates';
 import { useChartDataProcessor } from './chart/ChartDataProcessor';
