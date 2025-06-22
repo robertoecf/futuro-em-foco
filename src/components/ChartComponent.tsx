@@ -1,5 +1,4 @@
-
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { ChartControls } from './chart/ChartControls';
 import { ChartInfo } from './chart/ChartInfo';
 import { ExportButton } from './chart/ExportButton';
@@ -58,6 +57,8 @@ export const ChartComponent = React.memo(({
   lineDrawingDuration = 2000
 }: ChartComponentProps) => {
   
+  // State for chart settings
+  const [showGrid, setShowGrid] = useState(true);
 
   const finalMonteCarloData = monteCarloData === undefined ? null : monteCarloData;
 
@@ -105,45 +106,48 @@ export const ChartComponent = React.memo(({
     investorProfile
   }), [initialAmount, monthlyAmount, currentAge, retirementAge, lifeExpectancy, retirementIncome, portfolioReturn, investorProfile]);
 
-  // Show projecting message ONLY during projecting phase
-  if (isMonteCarloEnabled && animationPhase === 'projecting') {
-    return (
-      <div className="w-full">
-        <ProjectingMessage
-          phase="projecting"
-          lifeExpectancy={lifeExpectancy}
-          possibleRetirementAge={possibleRetirementAge}
-          onLifeExpectancyChange={onLifeExpectancyChange || (() => {})}
-          showLifeExpectancyControl={showLifeExpectancyControl}
-        />
-      </div>
-    );
-  }
-
   // Chart is ready to render
-
   return (
     <div className="w-full">
       {/* Chart Title */}
       <div className="mb-6">
-        <h3 className="text-xl font-bold text-gray-900">Gráfico de projeção patrimonial</h3>
+                  <h3 className="text-xl font-bold text-white">Gráfico de projeção patrimonial</h3>
       </div>
+
+      {/* Controls Section - Always visible above the chart */}
+      {(showLifeExpectancyControl || onMonteCarloToggle) && (
+        <ChartControls
+          lifeExpectancy={lifeExpectancy}
+          possibleRetirementAge={possibleRetirementAge}
+          isMonteCarloEnabled={isMonteCarloEnabled}
+          onLifeExpectancyChange={onLifeExpectancyChange || (() => {})}
+          onMonteCarloToggle={onMonteCarloToggle || (() => {})}
+          showGrid={showGrid}
+          onGridToggle={setShowGrid}
+        />
+      )}
 
       {/* Chart Section with Overlay */}
       <div className="relative">
-        <div className="chart-container">
-          <ChartRenderer
-            chartData={chartData}
-            possibleRetirementAge={possibleRetirementAge}
-            perpetuityWealth={perpetuityWealth}
-            monthlyIncomeTarget={monthlyIncomeTarget}
-            monteCarloData={finalMonteCarloData}
-            isShowingLines={isShowingLines}
-            isShowing50Lines={isShowing50Lines}
-            isDrawingFinalLines={isDrawingFinalLines}
-            lineDrawingDuration={lineDrawingDuration}
-            animationPhase={animationPhase}
-          />
+        <div className="chart-container glass-panel">
+          {/* Show projecting message OR chart renderer */}
+          {isMonteCarloEnabled && animationPhase === 'projecting' ? (
+            <ProjectingAnimation />
+          ) : (
+            <ChartRenderer
+              chartData={chartData}
+              possibleRetirementAge={possibleRetirementAge}
+              perpetuityWealth={perpetuityWealth}
+              monthlyIncomeTarget={monthlyIncomeTarget}
+              monteCarloData={finalMonteCarloData}
+              isShowingLines={isShowingLines}
+              isShowing50Lines={isShowing50Lines}
+              isDrawingFinalLines={isDrawingFinalLines}
+              lineDrawingDuration={lineDrawingDuration}
+              animationPhase={animationPhase}
+              showGrid={showGrid}
+            />
+          )}
         </div>
         
         {/* Optimizing Overlay */}
@@ -160,17 +164,6 @@ export const ChartComponent = React.memo(({
           />
         </div>
       </div>
-
-      {/* Controls Section - Now above the chart info */}
-      {(showLifeExpectancyControl || onMonteCarloToggle) && (
-        <ChartControls
-          lifeExpectancy={lifeExpectancy}
-          possibleRetirementAge={possibleRetirementAge}
-          isMonteCarloEnabled={isMonteCarloEnabled}
-          onLifeExpectancyChange={onLifeExpectancyChange || (() => {})}
-          onMonteCarloToggle={onMonteCarloToggle || (() => {})}
-        />
-      )}
       
       {/* Information Section */}
       <ChartInfo
@@ -183,4 +176,25 @@ export const ChartComponent = React.memo(({
     </div>
   );
 });
+
+// Simple Snake Animation Component
+const ProjectingAnimation: React.FC = () => {
+  return (
+    <div className="flex flex-col items-center justify-center h-full">
+      <div className="text-center">
+        {/* Snake loading animation */}
+        <div className="relative mb-6">
+          <div className="flex items-center justify-center space-x-1">
+            <div className="w-3 h-3 bg-red-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+            <div className="w-3 h-3 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+            <div className="w-3 h-3 bg-green-500 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+          </div>
+        </div>
+        
+                 <p className="text-lg font-medium text-white">Calculando possíveis resultados...</p>
+         <p className="text-sm text-gray-300 mt-2">Calculando 1001 futuros possíveis</p>
+      </div>
+    </div>
+  );
+};
 

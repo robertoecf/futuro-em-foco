@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { ComposedChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
 import { MonteCarloResult } from '@/lib/utils';
@@ -21,6 +20,7 @@ interface ChartRendererProps {
   isDrawingFinalLines: boolean;
   lineDrawingDuration?: number;
   animationPhase?: 'projecting' | 'paths' | 'optimizing' | 'drawing-final' | 'final';
+  showGrid?: boolean;
 }
 
 export const ChartRenderer = React.memo(({
@@ -31,7 +31,8 @@ export const ChartRenderer = React.memo(({
   monteCarloData,
   isShowingLines,
   isDrawingFinalLines,
-  animationPhase = 'final'
+  animationPhase = 'final',
+  showGrid = true
 }: ChartRendererProps) => {
   
   const { getFinalLineAnimationState, isAnimationComplete } = useFinalLinesAnimation({
@@ -44,22 +45,12 @@ export const ChartRenderer = React.memo(({
     
     if (isAnimationRunning) {
       document.body.style.pointerEvents = 'none';
-      // Force clear any lingering tooltips during animations
-      const tooltipElements = document.querySelectorAll('.recharts-tooltip-wrapper');
-      tooltipElements.forEach(el => {
-        (el as HTMLElement).style.display = 'none';
-      });
     } else {
       document.body.style.pointerEvents = 'auto';
     }
     
     return () => {
       document.body.style.pointerEvents = 'auto';
-      // Clear tooltips on cleanup
-      const tooltipElements = document.querySelectorAll('.recharts-tooltip-wrapper');
-      tooltipElements.forEach(el => {
-        (el as HTMLElement).style.display = 'none';
-      });
     };
   }, [animationPhase, isDrawingFinalLines, isAnimationComplete]);
 
@@ -103,10 +94,25 @@ export const ChartRenderer = React.memo(({
           />
         )}
         
-                <div className="relative h-[400px] w-full bg-white border border-gray-200 rounded-lg p-4" style={{ zIndex: (animationPhase !== 'final') ? 50 : 'auto' }}>
+                <div className="relative h-[400px] w-full bg-white/50 border border-gray-200 rounded-lg p-4" style={{ zIndex: (animationPhase !== 'final') ? 50 : 'auto' }}>
           {/* CSS for final lines drawing animation */}
           <style>{`
             @keyframes draw-line {
+              0% {
+                stroke-dashoffset: 1000;
+                opacity: 0.3;
+              }
+              50% {
+                stroke-dashoffset: 500;
+                opacity: 0.8;
+              }
+              100% {
+                stroke-dashoffset: 0;
+                opacity: 1;
+              }
+            }
+            
+            @keyframes draw-dashed-line {
               0% {
                 stroke-dashoffset: 1000;
                 opacity: 0.3;
@@ -130,15 +136,8 @@ export const ChartRenderer = React.memo(({
           style={{
             pointerEvents: (animationPhase === 'final' && !isDrawingFinalLines) ? 'auto' : 'none' // Enable interactions only when animations are done
           }}
-          onMouseLeave={() => {
-            // Force clear any active tooltip state when mouse leaves chart area
-            const tooltipElements = document.querySelectorAll('.recharts-tooltip-wrapper');
-            tooltipElements.forEach(el => {
-              (el as HTMLElement).style.display = 'none';
-            });
-          }}
         >
-          <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+          {showGrid && <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />}
           <XAxis 
             dataKey="age" 
             label={{ value: 'Idade', position: 'insideBottom', offset: -10 }}
@@ -150,11 +149,9 @@ export const ChartRenderer = React.memo(({
           />
           <Tooltip 
             content={<CustomTooltip monteCarloData={monteCarloData} />} 
-            active={animationPhase === 'final' && !isDrawingFinalLines} // Only allow tooltip when animations are done
-            cursor={animationPhase === 'final' && !isDrawingFinalLines ? { stroke: '#94a3b8', strokeWidth: 1 } : false} // Show cursor line only when hovering and animations done
-            animationDuration={0} // Disable tooltip animation for instant response
+            cursor={animationPhase === 'final' && !isDrawingFinalLines ? { stroke: '#94a3b8', strokeWidth: 1, strokeDasharray: '5 5' } : false} 
+            animationDuration={0}
             wrapperStyle={{ 
-              pointerEvents: animationPhase === 'final' && !isDrawingFinalLines ? 'auto' : 'none',
               zIndex: 1000
             }}
           />

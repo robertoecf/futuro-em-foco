@@ -47,8 +47,8 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
       {/* Left Panel - Dados Atuais */}
-      <div className="bg-white p-6 rounded-lg border">
-        <h3 className="text-xl font-semibold mb-6 text-gray-800">Dados Atuais</h3>
+      <div className="bg-white/50 p-6 rounded-lg border">
+        <h3 className="text-xl font-semibold mb-6 text-white">Dados Atuais</h3>
         
         <div className="space-y-6">
           <div className="space-y-2">
@@ -85,8 +85,8 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({
       </div>
 
       {/* Right Panel - Configurações de Aposentadoria */}
-      <div className="bg-white p-6 rounded-lg border">
-        <h3 className="text-xl font-semibold mb-6 text-gray-800">Configurações de Aposentadoria</h3>
+      <div className="bg-white/50 p-6 rounded-lg border">
+        <h3 className="text-xl font-semibold mb-6 text-white">Configurações de Aposentadoria</h3>
         
         <div className="space-y-6">
           <div className="space-y-2">
@@ -110,9 +110,9 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({
               placeholder="Deixe 0 para cálculo automático"
             />
             {retirementIncome === 0 && (
-              <p className="text-xs text-gray-500 mt-1">
-                O valor será calculado automaticamente com base no patrimônio acumulado
-              </p>
+                          <p className="text-xs text-gray-300 mt-1">
+              O valor será calculado automaticamente com base no patrimônio acumulado
+            </p>
             )}
           </div>
 
@@ -126,7 +126,7 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({
               onBlur={(e) => handlePortfolioReturnBlur(e.target.value)}
               placeholder="Ex: 4.0"
             />
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="text-xs text-gray-300 mt-1">
               Taxa de retorno anual esperada durante a aposentadoria
             </p>
           </div>

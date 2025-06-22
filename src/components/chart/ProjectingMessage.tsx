@@ -28,23 +28,23 @@ export const ProjectingMessage = ({
 
   return (
     <div className="w-full">
-      <div className="relative h-[400px] w-full bg-white border border-gray-200 rounded-lg p-4 flex items-center justify-center">
+      <div className="relative h-[400px] w-full bg-white/50 border border-gray-200 rounded-lg p-4 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-orange-500 mx-auto mb-6"></div>
-          <h3 className="text-2xl font-bold text-gray-800 mb-2">{currentMessage.title}</h3>
-          <p className="text-gray-600">{currentMessage.subtitle}</p>
+          <h3 className="text-2xl font-bold text-white mb-2">{currentMessage.title}</h3>
+          <p className="text-gray-300">{currentMessage.subtitle}</p>
         </div>
       </div>
       
       {/* Controls Section */}
       {showLifeExpectancyControl && (
-        <div className="bg-gray-50 p-4 rounded-lg mb-6">
+                    <div className="bg-gray-50/50 p-4 rounded-lg mb-6">
           <div className="flex items-center justify-between flex-wrap gap-4">
             {/* Monte Carlo Toggle */}
             <div className="flex items-center space-x-3">
               <div>
-                <h3 className="text-sm font-medium text-gray-900">Simulação Probabilística | Método de Monte Carlo</h3>
-                <p className="text-xs text-gray-500">
+                <h3 className="text-sm font-medium text-white">Simulação Probabilística | Método de Monte Carlo</h3>
+                <p className="text-xs text-gray-300">
                   {phase === 'projecting' ? 'Calculando mil cenários aleatórios...' : 'Otimizando visualização...'}
                 </p>
               </div>
@@ -58,7 +58,7 @@ export const ProjectingMessage = ({
 
             {/* Life Expectancy Control */}
             <div className="flex items-center space-x-3">
-              <label htmlFor="life-expectancy" className="text-sm font-medium text-gray-700">
+              <label htmlFor="life-expectancy" className="text-sm font-medium text-white">
                 Expectativa de vida:
               </label>
               <div className="flex items-center space-x-2">
@@ -75,7 +75,7 @@ export const ProjectingMessage = ({
                   className="w-20 px-3 py-1 border border-gray-300 rounded-md text-sm font-medium"
                   min={possibleRetirementAge + 1}
                 />
-                <span className="text-sm text-gray-500">anos</span>
+                <span className="text-sm text-gray-300">anos</span>
               </div>
             </div>
           </div>

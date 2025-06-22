@@ -34,7 +34,7 @@ export const ExportButton = ({ chartData, planningInputs, calculationResult }: E
         onClick={handleExportClick}
         variant="outline"
         size="sm"
-        className="bg-white hover:bg-gray-50 border-gray-300 text-gray-700 p-2"
+        className="bg-white/50 hover:bg-white/70 border-gray-300 text-gray-800 p-2"
       >
         <Download className="w-4 h-4" />
       </Button>

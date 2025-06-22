@@ -6,9 +6,10 @@
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 16px;
   box-shadow: 
-    0 8px 32px rgba(0, 0, 0, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.05);
+    0 0 32px rgba(255, 255, 255, 0.1),
+    0 0 64px rgba(255, 255, 255, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.05);
   position: relative;
   overflow: hidden;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -33,9 +34,10 @@
 .glass-panel:hover {
   transform: translateY(-4px) scale(1.01);
   box-shadow: 
-    0 16px 48px rgba(0, 0, 0, 0.15),
-    inset 0 1px 0 rgba(255, 255, 255, 0.15),
-    0 0 0 1px rgba(228, 130, 0, 0.2);
+    0 0 48px rgba(255, 255, 255, 0.2),
+    0 0 96px rgba(255, 255, 255, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25),
+    0 0 0 1px rgba(228, 130, 0, 0.4);
 }
 /* Cards Refinados */
 .glass-card {
@@ -45,8 +47,9 @@
   border: 1px solid rgba(255, 255, 255, 0.05);
   border-radius: 16px;
   box-shadow: 
-    0 8px 32px rgba(0, 0, 0, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    0 0 32px rgba(255, 255, 255, 0.08),
+    0 0 64px rgba(255, 255, 255, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
@@ -55,9 +58,10 @@
 .glass-card:hover {
   transform: translateY(-2px);
   box-shadow: 
-    0 12px 40px rgba(0, 0, 0, 0.12),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1),
-    0 0 0 1px rgba(228, 130, 0, 0.1);
+    0 0 40px rgba(255, 255, 255, 0.15),
+    0 0 80px rgba(255, 255, 255, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    0 0 0 1px rgba(228, 130, 0, 0.3);
 }
 
 /* Insight Cards Especializado */
@@ -68,8 +72,9 @@
   border: 1px solid rgba(255, 255, 255, 0.05);
   border-radius: 12px;
   box-shadow: 
-    0 6px 24px rgba(0, 0, 0, 0.06),
-    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    0 0 24px rgba(255, 255, 255, 0.08),
+    0 0 48px rgba(255, 255, 255, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
 }
@@ -85,8 +90,9 @@
   border-radius: 16px;
   background-clip: padding-box;
   box-shadow: 
-    0 12px 40px rgba(0, 0, 0, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    0 0 40px rgba(255, 255, 255, 0.12),
+    0 0 80px rgba(255, 255, 255, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
   position: relative;
   overflow: hidden;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -108,18 +114,11 @@
 
 /* Chart Container */
 .chart-container {
-  background: var(--theme-surface-container-bg);
-  backdrop-filter: blur(40px);
-  -webkit-backdrop-filter: blur(40px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 16px;
-  box-shadow: 
-    0 12px 40px rgba(0, 0, 0, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.08);
   position: relative;
   width: 100%;
   height: 400px;
   margin-top: 20px;
+  /* Glass panel styles will be applied via glass-panel class */
 }
 
 /* Chart Info Cards */
@@ -130,8 +129,9 @@
   border: 1px solid rgba(255, 255, 255, 0.05);
   border-radius: 12px;
   box-shadow: 
-    0 4px 16px rgba(0, 0, 0, 0.05),
-    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    0 0 16px rgba(255, 255, 255, 0.08),
+    0 0 32px rgba(255, 255, 255, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -146,11 +146,12 @@
   background: var(--theme-surface-container-bg);
   backdrop-filter: blur(40px);
   -webkit-backdrop-filter: blur(40px);
-  border: 2px solid rgba(255, 255, 255, 0.03);
+  border: 2px solid rgba(255, 255, 255, 0.1);
   border-radius: 16px;
   box-shadow: 
-    0 8px 32px rgba(0, 0, 0, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    0 0 32px rgba(255, 255, 255, 0.1),
+    0 0 64px rgba(255, 255, 255, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
@@ -173,11 +174,12 @@
   background: var(--theme-surface-container-bg);
   backdrop-filter: blur(40px);
   -webkit-backdrop-filter: blur(40px);
-  border: 1px solid rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 16px;
   box-shadow: 
-    0 8px 32px rgba(0, 0, 0, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    0 0 32px rgba(255, 255, 255, 0.1),
+    0 0 64px rgba(255, 255, 255, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
 }

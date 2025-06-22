@@ -37,8 +37,8 @@ export const LINE_ANIMATION = {
 
 // Final Lines Drawing Animation Configuration
 export const FINAL_LINES_ANIMATION = {
-  DRAWING_DURATION: 3000, // 3 seconds total for final 3 lines (1000ms each)
-  DELAY_BETWEEN_LINES: 1000, // 1000ms between each line start
+  DRAWING_DURATION: 3000, // 3 seconds total for final 3 lines - all synchronized
+  DELAY_BETWEEN_LINES: 0, // All lines start at the same time for synchronized animation
   STROKE_ANIMATION_DURATION: 1000, // 1000ms to draw each individual line
   ANIMATION_CURVE: 'ease-out' as const,
   OPACITY_FADE_DURATION: 200, // Quick fade-in

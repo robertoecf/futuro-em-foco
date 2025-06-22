@@ -53,8 +53,8 @@
     --palette-mix-white: #FEFFFB;
     
     /* Sistema de Theming Reativo - Modo Claro */
-    --theme-surface: rgba(254, 255, 251, 0.85);
-    --theme-surface-container-bg: rgba(254, 255, 251, 0.9);
+          --theme-surface: rgba(254, 255, 251, 0.5);
+    --theme-surface-container-bg: rgba(254, 255, 251, 0.5);
     --theme-surface-glass: rgba(254, 255, 251, 0.15);
     --theme-primary: #E48200;
     --theme-on-primary: #FEFFFB;
@@ -109,8 +109,8 @@
     --sidebar-ring: 217.2 91.2% 59.8%;
 
     /* Sistema de Theming Reativo - Modo Escuro */
-    --theme-surface: rgba(15, 42, 60, 0.85);
-    --theme-surface-container-bg: rgba(15, 42, 60, 0.9);
+          --theme-surface: rgba(15, 42, 60, 0.5);
+    --theme-surface-container-bg: rgba(15, 42, 60, 0.5);
     --theme-surface-glass: rgba(15, 42, 60, 0.15);
     --theme-primary: #E48200;
     --theme-on-primary: #FEFFFB;

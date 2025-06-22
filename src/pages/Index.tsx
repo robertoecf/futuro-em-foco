@@ -31,10 +31,10 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-black">
       {/* Header */}
       <header className="flex justify-between items-center p-6 max-w-7xl mx-auto">
-        <div className="text-2xl tech-logo-header">futuro em foco</div>
+        <div className="text-2xl tech-logo-header text-white">futuro em foco</div>
         <Button 
           className="tech-button-header"
           onClick={handleReceivePlanByEmail}
@@ -51,12 +51,11 @@ const Index = () => {
       {/* Calculator Section - Análise Detalhada com Background Tecno-Etéreo */}
       <section className="px-4 sm:px-6 lg:px-8 py-16 relative">
         {/* Background Técnico Sutil */}
-        <div className="absolute inset-0 bg-gradient-to-br from-gray-50/80 to-blue-50/30 backdrop-blur-sm"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-black/80 to-gray-900/30 backdrop-blur-sm"></div>
         
         <div className="max-w-7xl mx-auto relative z-10">
-          <div className="text-center mb-12">
-            <span className="inline-block bg-orange-100 text-orange-800 px-4 py-1 rounded-full text-sm font-medium mb-4 tech-label">ANÁLISE DETALHADA</span>
-            <h2 className="text-3xl font-bold">Análise do seu investimento para aposentadoria</h2>
+          <div className="text-center mb-8">
+            <span className="inline-block bg-orange-100 text-orange-800 px-4 py-1 rounded-full text-sm font-medium tech-label">ANÁLISE DETALHADA</span>
           </div>
           <Calculator />
         </div>
@@ -99,7 +98,7 @@ const Index = () => {
       </section>
 
       {/* Footer */}
-      <footer className="px-4 sm:px-6 lg:px-8 py-12 bg-gray-100 text-sm text-gray-500">
+      <footer className="px-4 sm:px-6 lg:px-8 py-12 bg-black text-sm text-gray-400">
         <div className="max-w-7xl mx-auto">
           <p className="text-center">
             As informações contidas neste material são de caráter exclusivamente informativo e não devem ser entendidas como oferta, recomendação ou análise de investimento.

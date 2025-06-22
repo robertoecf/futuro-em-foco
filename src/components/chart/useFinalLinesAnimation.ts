@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from 'react';
 import { FINAL_LINES_ANIMATION } from '@/components/calculator/constants';
 
@@ -63,15 +62,22 @@ export const useFinalLinesAnimation = ({
     const isDrawing = drawingLines.has(lineKey);
     const isComplete = animatedLines.has(lineKey);
     
+    // Define if line should be dashed (pessimistic and optimistic are always dashed)
+    const shouldBeDashed = lineKey === 'pessimistic' || lineKey === 'optimistic';
+    
     return {
       isDrawing,
       isComplete,
       isVisible: isDrawing || isComplete,
-      strokeDasharray: isDrawing ? "1000 1000" : "none", // Large dash for drawing effect
+      strokeDasharray: isDrawing 
+        ? (shouldBeDashed ? "5 5 1000 1000" : "1000 1000") // Combine dash pattern with draw effect
+        : (shouldBeDashed ? "5 5" : "none"),
       strokeDashoffset: isDrawing ? "1000" : "0",
       opacity: isComplete ? 1 : (isDrawing ? 0.8 : 0),
       drawingStyle: isDrawing ? {
-        animation: `draw-line ${FINAL_LINES_ANIMATION.STROKE_ANIMATION_DURATION}ms ${FINAL_LINES_ANIMATION.ANIMATION_CURVE} forwards`
+        animation: shouldBeDashed 
+          ? `draw-dashed-line ${FINAL_LINES_ANIMATION.STROKE_ANIMATION_DURATION}ms ${FINAL_LINES_ANIMATION.ANIMATION_CURVE} forwards`
+          : `draw-line ${FINAL_LINES_ANIMATION.STROKE_ANIMATION_DURATION}ms ${FINAL_LINES_ANIMATION.ANIMATION_CURVE} forwards`
       } : {}
     };
   };

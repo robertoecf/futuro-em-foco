@@ -60,9 +60,9 @@ export const InvestorProfiles = ({ onProfileSelect, selectedProfile }: InvestorP
 
   return (
     <TooltipProvider delayDuration={0} skipDelayDuration={0}>
-      <div className="space-y-6">
-        <h2 className="text-2xl font-bold">Perfil do Investidor</h2>
-        <p className="text-gray-600 mb-6">De acordo com o seu perfil de investidor, o seu perfil é o que melhor se adequa às suas expectativas:</p>
+              <div className="space-y-6">
+          <h2 className="text-2xl font-bold text-black">Perfil do Investidor</h2>
+        <p className="text-gray-300 mb-6">De acordo com o seu perfil de investidor, o seu perfil é o que melhor se adequa às suas expectativas:</p>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {profiles.map((profile) => (
@@ -72,15 +72,15 @@ export const InvestorProfiles = ({ onProfileSelect, selectedProfile }: InvestorP
               onClick={() => onProfileSelect(profile.id as InvestorProfile)}
             >
               <div className="flex justify-between items-start mb-4">
-                <h3 className="text-xl font-semibold">{profile.title}</h3>
+                <h3 className="text-xl font-semibold text-white">{profile.title}</h3>
                 {selectedProfile === profile.id && (
                   <Badge className="bg-green-500">Selecionado</Badge>
                 )}
               </div>
               
-              <p className="text-sm text-gray-600 mb-4">{profile.description}</p>
+              <p className="text-sm text-white mb-4">{profile.description}</p>
               
-              <div className="space-y-2 text-sm">
+              <div className="space-y-2 text-sm text-white">
                 <p>Retorno anual esperado: <span className="font-semibold">{(profile.annualReturn * 100).toFixed(1)}%</span></p>
                 
                 <div className="flex items-center gap-1">
@@ -89,7 +89,7 @@ export const InvestorProfiles = ({ onProfileSelect, selectedProfile }: InvestorP
                   <Tooltip open={openTooltips[`${profile.id}-volatility`]}>
                     <TooltipTrigger asChild>
                       <InfoIcon 
-                        className="h-3 w-3 text-gray-400 hover:text-gray-600 cursor-pointer" 
+                        className="h-3 w-3 text-gray-300 hover:text-white cursor-pointer" 
                         onClick={(e) => {
                           e.stopPropagation();
                           handleTooltipClick(`${profile.id}-volatility`);
@@ -112,7 +112,7 @@ export const InvestorProfiles = ({ onProfileSelect, selectedProfile }: InvestorP
                   <Tooltip open={openTooltips[`${profile.id}-maxloss`]}>
                     <TooltipTrigger asChild>
                       <InfoIcon 
-                        className="h-3 w-3 text-gray-400 hover:text-gray-600 cursor-pointer" 
+                        className="h-3 w-3 text-gray-300 hover:text-white cursor-pointer" 
                         onClick={(e) => {
                           e.stopPropagation();
                           handleTooltipClick(`${profile.id}-maxloss`);
