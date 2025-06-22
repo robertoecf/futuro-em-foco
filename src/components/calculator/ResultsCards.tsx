@@ -62,10 +62,6 @@ export const ResultsCards: React.FC<ResultsCardsProps> = ({
         subtitle: "25% dos casos",
         wealth: pessimisticWealth,
         income: pessimisticIncome,
-        bgColor: "bg-red-50",
-        borderColor: "border-red-200",
-        textColor: "text-white",
-        subtitleColor: "text-white",
         icon: TrendingDown,
         iconColor: "text-red-500"
       },
@@ -74,10 +70,6 @@ export const ResultsCards: React.FC<ResultsCardsProps> = ({
         subtitle: "50% dos casos",
         wealth: medianWealth,
         income: medianIncome,
-        bgColor: "bg-blue-50",
-        borderColor: "border-blue-200",
-        textColor: "text-white",
-        subtitleColor: "text-white",
         icon: Minus,
         iconColor: "text-blue-500"
       },
@@ -86,10 +78,6 @@ export const ResultsCards: React.FC<ResultsCardsProps> = ({
         subtitle: "75% dos casos",
         wealth: optimisticWealth,
         income: optimisticIncome,
-        bgColor: "bg-green-50",
-        borderColor: "border-green-200",
-        textColor: "text-white",
-        subtitleColor: "text-white",
         icon: TrendingUp,
         iconColor: "text-green-500"
       }
@@ -108,32 +96,32 @@ export const ResultsCards: React.FC<ResultsCardsProps> = ({
           {scenarios.map((scenario, index) => {
             const IconComponent = scenario.icon;
             return (
-              <Card key={index} className={`p-6 monte-carlo-card ${scenario.bgColor} ${scenario.borderColor} hover:shadow-lg transition-shadow duration-200`}>
+              <Card key={index} className="p-6 glass-card">
                 <div className="text-center space-y-4">
                   {/* Header com ícone */}
                   <div className="flex items-center justify-center space-x-2">
                     <IconComponent className={`w-5 h-5 ${scenario.iconColor}`} />
-                    <h4 className={`text-lg font-bold ${scenario.textColor}`}>{scenario.title}</h4>
+                    <h4 className="text-lg font-bold text-white">{scenario.title}</h4>
                   </div>
                   
-                  <p className={`text-sm font-medium ${scenario.subtitleColor}`}>{scenario.subtitle}</p>
+                  <p className="text-sm font-medium text-white">{scenario.subtitle}</p>
                   
                   {/* Patrimônio */}
                   <div className="space-y-1">
-                    <p className={`text-xs ${scenario.subtitleColor} uppercase tracking-wide`}>
+                    <p className="text-xs text-white uppercase tracking-wide">
                       Patrimônio aos {retirementAge} anos
                     </p>
-                    <p className={`text-2xl font-bold ${scenario.textColor}`}>
+                    <p className="text-2xl font-bold text-white">
                       {formatCurrency(scenario.wealth)}
                     </p>
                   </div>
                   
                   {/* Renda Mensal */}
-                  <div className="space-y-1 pt-2 border-t border-gray-200">
-                    <p className={`text-xs ${scenario.subtitleColor} uppercase tracking-wide`}>
+                  <div className="space-y-1 pt-2 border-t border-white/20">
+                    <p className="text-xs text-white uppercase tracking-wide">
                       Renda mensal sustentável
                     </p>
-                    <p className={`text-lg font-semibold ${scenario.textColor}`}>
+                    <p className="text-lg font-semibold text-white">
                       {formatCurrency(scenario.income)}
                     </p>
                   </div>
@@ -154,8 +142,8 @@ export const ResultsCards: React.FC<ResultsCardsProps> = ({
           
           <Card className="p-4 glass-card">
             <div className="text-center">
-              <p className="text-sm text-blue-700 font-medium">Probabilidade de sucesso</p>
-              <p className="text-xl font-bold text-blue-900">
+              <p className="text-sm text-white font-medium">Probabilidade de sucesso</p>
+              <p className="text-xl font-bold text-white">
                 {(monteCarloResult.statistics.successProbability * 100).toFixed(1)}%
               </p>
             </div>
@@ -163,8 +151,8 @@ export const ResultsCards: React.FC<ResultsCardsProps> = ({
           
           <Card className="p-4 glass-card">
             <div className="text-center">
-              <p className="text-sm text-orange-700 font-medium">Duração da renda</p>
-              <p className="text-xl font-bold text-orange-900">{lifeExpectancy - retirementAge} anos</p>
+              <p className="text-sm text-white font-medium">Duração da renda</p>
+              <p className="text-xl font-bold text-white">{lifeExpectancy - retirementAge} anos</p>
             </div>
           </Card>
         </div>

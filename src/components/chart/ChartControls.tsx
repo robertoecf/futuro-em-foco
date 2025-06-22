@@ -58,7 +58,7 @@ export const ChartControls = ({
               <Settings className="w-4 h-4" />
             </Button>
           </PopoverTrigger>
-          <PopoverContent className="w-80 glass-panel">
+          <PopoverContent className="w-80 glass-card !bg-transparent border-white/20">
             <div className="space-y-4">
               <h4 className="text-sm font-semibold text-white">Configurações</h4>
               
@@ -78,7 +78,7 @@ export const ChartControls = ({
                         onLifeExpectancyChange(value);
                       }
                     }}
-                    className="flex-1 px-3 py-2 border border-gray-300 rounded-md text-sm font-medium glass-input"
+                    className="flex-1 px-3 py-2 text-sm font-medium glass-input"
                     min={possibleRetirementAge + 1}
                   />
                   <span className="text-sm text-gray-500 tech-label">anos</span>
