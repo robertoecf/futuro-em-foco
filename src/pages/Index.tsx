@@ -89,7 +89,7 @@ const Index = () => {
         </div>
         
         {/* Navigation Arrow */}
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2">
+        <div className="absolute bottom-16 left-1/2 transform -translate-x-1/2">
           <div 
             className="section-arrow cursor-pointer"
             onClick={() => document.getElementById('calculator-section')?.scrollIntoView({ behavior: 'smooth' })}
@@ -108,9 +108,9 @@ const Index = () => {
         </div>
         
         {/* Navigation Arrow */}
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2">
+        <div className="absolute bottom-12 left-1/2 transform -translate-x-1/2">
           <div 
-            className="section-arrow cursor-pointer"
+            className="section-arrow cursor-pointer animate-bounce"
             onClick={() => document.getElementById('cta-section')?.scrollIntoView({ behavior: 'smooth' })}
           >
             ∨
@@ -119,9 +119,9 @@ const Index = () => {
       </section>
 
       {/* CTA Section - Centralized */}
-      <div className="flex justify-center">
+      <div className="flex justify-center mt-48">
         <div className="w-full max-w-6xl px-4 sm:px-6 lg:px-8">
-          <section className="min-h-screen flex items-center justify-center relative pb-16">
+          <section id="cta-section" className="min-h-screen flex items-center justify-center relative pb-24">
             <div className="aurora-banner text-white p-12 md:p-16 lg:p-20 rounded-3xl relative overflow-hidden" style={{ width: '100%', display: 'block' }}>
               {/* Aurora Background */}
               <div id="aurora-cta-background">
@@ -184,7 +184,7 @@ const Index = () => {
 
       {/* Bottom indicator to show dynamic header */}
       {showBottomIndicator && (
-        <div className="fixed bottom-8 right-8 z-40 animate-pulse">
+        <div className="fixed bottom-12 right-8 z-40 animate-pulse">
           <div 
             className="section-arrow bg-black/80 backdrop-blur-sm border border-white/20 rounded-full w-12 h-12 flex items-center justify-center cursor-pointer hover:bg-black/90 transition-all duration-300"
             onClick={() => window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'smooth' })}
