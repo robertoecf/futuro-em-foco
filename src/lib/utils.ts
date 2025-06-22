@@ -44,8 +44,15 @@ export interface MonteCarloResult {
 export type { BrownianMonteCarloResult } from './brownianMotionUtils';
 export { runBrownianMonteCarloSimulation, compareMonteCarloMethods } from './brownianMotionUtils';
 
-// Re-export da função centralizada
-export { getVolatilityByProfile } from './calculations/financialCalculations';
+// Volatilidade por perfil de investidor
+export function getVolatilityByProfile(profile: string): number {
+  switch (profile) {
+    case 'conservador': return 0.08; // 8%
+    case 'moderado': return 0.12;    // 12%
+    case 'arrojado': return 0.18;    // 18%
+    default: return 0.12;
+  }
+}
 
 // Simulação Monte Carlo
 export function runMonteCarloSimulation(

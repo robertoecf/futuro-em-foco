@@ -1,15 +1,12 @@
-// 🚨 DEPRECATED: Este hook foi consolidado no useCalculator.ts
-// Use `import { useCalculator } from './useCalculator'` em vez deste arquivo
-// Este arquivo será removido na próxima fase de limpeza
 
 import { useCallback, useEffect } from 'react';
-import { calculateFullProjection, type MonteCarloResult } from '@/lib/utils';
+import { calculateFullProjection, getVolatilityByProfile, type MonteCarloResult } from '@/lib/utils';
 // import { runOptimizedMonteCarloSimulation } from '@/lib/gbm/optimizedSimulation';
 import { runUltraOptimizedMonteCarloSimulation } from '@/lib/gbm/ultraOptimizedSimulation';
 import { useDebounce } from '@/hooks/useDebounce';
 import type { PlanningData } from '@/hooks/usePlanningData';
 import type { InvestorProfile, CalculationResult } from './types';
-import { getAccumulationAnnualReturn, getVolatilityByProfile } from '@/lib/calculations/financialCalculations';
+import { getAccumulationAnnualReturn } from './insights/insightsCalculations';
 
 interface UseCalculatorEffectsProps {
   initialAmount: number;
@@ -29,9 +26,6 @@ interface UseCalculatorEffectsProps {
   setMonteCarloResult: (result: MonteCarloResult | null) => void;
 }
 
-/**
- * @deprecated Use useCalculator instead - this will be removed in Phase 3
- */
 export const useCalculatorEffects = ({
   initialAmount,
   monthlyAmount,
@@ -161,7 +155,6 @@ export const useCalculatorEffects = ({
     }
   }, [
     isMonteCarloEnabled,
-    isCalculating,
     setCalculationResult,
     setIsCalculating,
     setMonteCarloResult,

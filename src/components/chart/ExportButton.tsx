@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Download } from 'lucide-react';
@@ -33,7 +34,7 @@ export const ExportButton = ({ chartData, planningInputs, calculationResult }: E
         onClick={handleExportClick}
         variant="outline"
         size="sm"
-        className="bg-white/5 hover:bg-white/10 border-gray-300 text-white p-2"
+        className="bg-white/50 hover:bg-white/70 border-gray-300 text-gray-800 p-2"
       >
         <Download className="w-4 h-4" />
       </Button>

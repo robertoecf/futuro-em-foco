@@ -1,9 +1,3 @@
-// 🚨 DEPRECATED: Este arquivo foi movido para src/lib/calculations/financialCalculations.ts
-// Use `import { functionName } from '@/lib/calculations/financialCalculations'` em vez deste arquivo
-// Este arquivo será removido na próxima fase de limpeza
-
-// Re-exports para manter compatibilidade temporária
-export * from '@/lib/calculations/financialCalculations';
 
 import type { InvestorProfile } from '../types';
 
