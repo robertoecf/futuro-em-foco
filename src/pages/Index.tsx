@@ -5,6 +5,7 @@ import { LeadCaptureForm } from '@/components/LeadCaptureForm';
 import { useCalculator } from '@/components/calculator/useCalculator';
 import { MatrixRain } from '@/components/MatrixRain';
 import { useOverscroll } from '@/hooks/useOverscroll';
+import { Button } from '@/components/ui/button';
 
 const Index = () => {
   const [isLeadFormOpen, setIsLeadFormOpen] = useState(false);
@@ -82,7 +83,7 @@ const Index = () => {
       {/* Hero Section - Centralized */}
       <section className="min-h-screen flex items-center justify-center relative">
         <div className="flex justify-center">
-          <div className="w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="w-full max-w-6xl px-4 sm:px-6 lg:px-8">
             <HeroSection onReceivePlan={() => setIsLeadFormOpen(true)} />
           </div>
         </div>
@@ -101,7 +102,7 @@ const Index = () => {
       {/* Analysis Section - Centralized */}
       <section id="calculator-section" className="min-h-screen flex items-center justify-center relative py-16">
         <div className="flex justify-center">
-          <div className="w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="w-full max-w-6xl px-4 sm:px-6 lg:px-8">
             <Calculator />
           </div>
         </div>
@@ -118,36 +119,37 @@ const Index = () => {
       </section>
 
       {/* CTA Section - Centralized */}
-      <section id="cta-section" className="min-h-screen flex items-center justify-center relative py-16">
+      <section id="cta-section" className="min-h-screen flex items-center justify-center relative">
         <div className="flex justify-center">
-          <div className="w-full max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="aurora-cta-banner rounded-3xl p-8 md:p-16 text-center relative overflow-hidden">
-              {/* CTA Aurora Background */}
-              <div id="aurora-cta-background">
-                <div id="cta-blob1" className="aurora-cta-blob"></div>
-                <div id="cta-blob2" className="aurora-cta-blob"></div>
-                <div id="cta-blob3" className="aurora-cta-blob"></div>
-                <div id="cta-blob4" className="aurora-cta-blob"></div>
-                <div id="cta-blob5" className="aurora-cta-blob"></div>
-                <div id="cta-blob6" className="aurora-cta-blob"></div>
-                <div id="cta-blob7" className="aurora-cta-blob"></div>
-                <div id="cta-blob8" className="aurora-cta-blob"></div>
-                <div id="cta-blob9" className="aurora-cta-blob"></div>
+          <div className="w-full max-w-6xl px-4 sm:px-6 lg:px-8">
+            <div className="aurora-banner text-white p-12 md:p-16 lg:p-20 rounded-3xl relative overflow-hidden" style={{ width: '100%', display: 'block' }}>
+              {/* Aurora Background */}
+              <div id="aurora-banner-background">
+                <div id="banner-blob1" className="aurora-banner-blob"></div>
+                <div id="banner-blob2" className="aurora-banner-blob"></div>
+                <div id="banner-blob3" className="aurora-banner-blob"></div>
+                <div id="banner-blob4" className="aurora-banner-blob"></div>
+                <div id="banner-blob5" className="aurora-banner-blob"></div>
+                <div id="banner-blob6" className="aurora-banner-blob"></div>
+                <div id="banner-blob7" className="aurora-banner-blob mix-blob"></div>
+                <div id="banner-blob8" className="aurora-banner-blob mix-blob"></div>
+                <div id="banner-blob9" className="aurora-banner-blob mix-blob"></div>
               </div>
-              
-              <div className="relative z-10 max-w-3xl mx-auto">
-                <h2 className="text-4xl md:text-5xl font-bold text-white mb-4 whitespace-pre-line">
-                  {"Pronto para impulsionar \nsua jornada?"}
-                </h2>
-                <p className="text-lg text-white/90 mb-8 whitespace-pre-line">
-                  {"Transforme seus sonhos objetivos em realidade \ncom um plano de gestão patrimonial sob medida."}
+
+              {/* Content */}
+              <div className="relative z-10 text-center">
+                <h1 className="text-4xl md:text-5xl font-bold mb-4">
+                  Pronto para impulsionar sua jornada?
+                </h1>
+                <p className="text-lg mb-8 opacity-90">
+                  Transforme seus sonhos objetivos em realidade com um plano de gestão patrimonial sob medida.
                 </p>
-                <button
+                <Button
                   onClick={() => setIsLeadFormOpen(true)}
-                  className="tech-button-specialist-cta px-8 py-4 text-lg"
+                  className="tech-button-specialist-cta"
                 >
                   Consultar um especialista para garantir o meu futuro
-                </button>
+                </Button>
               </div>
             </div>
           </div>
@@ -158,7 +160,7 @@ const Index = () => {
       {showHeader && (
         <header className="fixed top-0 left-0 right-0 z-50 bg-black/90 backdrop-blur-sm border-b border-white/10 transition-all duration-300">
           <div className="flex justify-center">
-            <div className="w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div className="w-full max-w-6xl px-4 sm:px-6 lg:px-8">
               <div className="flex items-center justify-between h-16">
                 <div 
                   className="tech-logo-header text-white text-xl cursor-pointer"
@@ -194,7 +196,7 @@ const Index = () => {
       {/* Footer */}
       <footer className="py-4 bg-black">
         <div className="flex justify-center">
-          <div className="w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="w-full max-w-6xl px-4 sm:px-6 lg:px-8">
             <p className="text-center text-xs text-gray-700 opacity-30 leading-tight">
               As informações contidas neste material são de caráter exclusivamente informativo e não devem ser entendidas como oferta, recomendação ou análise de investimento.
               O Futuro em Foco Planner não garante que os rendimentos futuros serão iguais aos apresentados neste simulador.

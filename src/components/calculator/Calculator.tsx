@@ -19,6 +19,45 @@ const ComponentLoader = () => (
 );
 
 export const Calculator: React.FC = () => {
+  // Estado para controlar se o momento mágico está ativo
+  const [isMagicMomentActive, setIsMagicMomentActive] = React.useState(false);
+  
+  // Ref para o container do gráfico
+  const chartRef = React.useRef<HTMLDivElement>(null);
+  
+  // Efeito para controlar scroll e cursor durante momento mágico
+  React.useEffect(() => {
+    if (isMagicMomentActive) {
+      // Rolar para o gráfico e bloquear scroll
+      if (chartRef.current) {
+        chartRef.current.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'center' 
+        });
+      }
+      
+      // Bloquear scroll do body e esconder cursor
+      document.body.style.overflow = 'hidden';
+      document.documentElement.style.overflow = 'hidden';
+      document.body.style.cursor = 'none';
+      document.documentElement.style.cursor = 'none';
+    } else {
+      // Liberar scroll e mostrar cursor quando momento mágico termina
+      document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
+      document.body.style.cursor = '';
+      document.documentElement.style.cursor = '';
+    }
+    
+    // Cleanup ao desmontar componente
+    return () => {
+      document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
+      document.body.style.cursor = '';
+      document.documentElement.style.cursor = '';
+    };
+  }, [isMagicMomentActive]);
+  
   const {
     initialAmount,
     monthlyAmount,
@@ -47,13 +86,17 @@ export const Calculator: React.FC = () => {
   
   return (
     <div className="w-full max-w-6xl mx-auto space-y-16">
-      {/* Investor Profile Section */}
-      <div>
+      {/* Investor Profile Section - Hidden during magic moment */}
+      <div className={`transition-all duration-300 ${
+        isMagicMomentActive ? 'invisible pointer-events-none' : 'visible'
+      }`}>
         <InvestorProfiles onProfileSelect={setInvestorProfile} selectedProfile={investorProfile} />
       </div>
 
-      {/* Parameters Section */}
-      <div className="mb-12">
+      {/* Parameters Section - Hidden during magic moment */}
+      <div className={`mb-12 transition-all duration-300 ${
+        isMagicMomentActive ? 'invisible pointer-events-none' : 'visible'
+      }`}>
         <div className="mb-6">
           <h3 className="text-xl font-bold text-white">Parâmetros</h3>
         </div>
@@ -77,20 +120,24 @@ export const Calculator: React.FC = () => {
         />
       </div>
         
-      {/* Insights Section */}
-      <InsightsCards
-        initialAmount={initialAmount}
-        monthlyAmount={monthlyAmount}
-        currentAge={currentAge}
-        retirementAge={possibleRetirementAge}
-        lifeExpectancy={lifeExpectancy}
-        retirementIncome={retirementIncome}
-        portfolioReturn={portfolioReturn}
-        investorProfile={investorProfile}
-      />
+      {/* Insights Section - Hidden during magic moment */}
+      <div className={`transition-all duration-300 ${
+        isMagicMomentActive ? 'invisible pointer-events-none' : 'visible'
+      }`}>
+        <InsightsCards
+          initialAmount={initialAmount}
+          monthlyAmount={monthlyAmount}
+          currentAge={currentAge}
+          retirementAge={possibleRetirementAge}
+          lifeExpectancy={lifeExpectancy}
+          retirementIncome={retirementIncome}
+          portfolioReturn={portfolioReturn}
+          investorProfile={investorProfile}
+        />
+      </div>
 
       {/* Lazy-loaded Chart */}
-      <div className="mb-8">
+      <div className="mb-8" ref={chartRef}>
         <Suspense fallback={<ComponentLoader />}>
           <ChartComponent 
             data={calculationResult?.yearlyValues || []} 
@@ -112,26 +159,35 @@ export const Calculator: React.FC = () => {
             investorProfile={investorProfile}
             calculationResult={calculationResult}
             onAnimationComplete={finishCalculation}
+            onMagicMomentStateChange={setIsMagicMomentActive}
           />
         </Suspense>
       </div>
 
-      {/* Results Cards */}
-      <ResultsCards
-        calculationResult={calculationResult}
-        retirementAge={possibleRetirementAge}
-        lifeExpectancy={lifeExpectancy}
-        initialAmount={initialAmount}
-        monteCarloResult={monteCarloResult}
-        isMonteCarloEnabled={isMonteCarloEnabled}
-        currentAge={currentAge}
-        portfolioReturn={portfolioReturn}
-      />
+      {/* Results Cards - Hidden during magic moment */}
+      <div className={`transition-all duration-300 ${
+        isMagicMomentActive ? 'invisible pointer-events-none' : 'visible'
+      }`}>
+        <ResultsCards
+          calculationResult={calculationResult}
+          retirementAge={possibleRetirementAge}
+          lifeExpectancy={lifeExpectancy}
+          initialAmount={initialAmount}
+          monteCarloResult={monteCarloResult}
+          isMonteCarloEnabled={isMonteCarloEnabled}
+          currentAge={currentAge}
+          portfolioReturn={portfolioReturn}
+        />
+      </div>
 
-      {/* Lazy-loaded Recommendations Section */}
-      <Suspense fallback={<ComponentLoader />}>
-        <Recommendations investorProfile={investorProfile} />
-      </Suspense>
+      {/* Lazy-loaded Recommendations Section - Hidden during magic moment */}
+      <div className={`transition-all duration-300 ${
+        isMagicMomentActive ? 'invisible pointer-events-none' : 'visible'
+      }`}>
+        <Suspense fallback={<ComponentLoader />}>
+          <Recommendations investorProfile={investorProfile} />
+        </Suspense>
+      </div>
     </div>
   );
 };
