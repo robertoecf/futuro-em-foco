@@ -210,9 +210,9 @@ export async function runUltraOptimizedMonteCarloSimulation(
   
   return {
     scenarios: {
-      pessimistic: statistics.percentile25,
-      median: statistics.percentile50,
-      optimistic: statistics.percentile75
+      pessimistic: statistics.percentile5,   // P5: pior 5% dos cenários
+      median: statistics.percentile50,       // P50: mediana (cenário central)
+      optimistic: statistics.percentile95    // P95: melhor 5% dos cenários
     },
     statistics
   };

@@ -115,11 +115,25 @@ export function runMonteCarloSimulation(
   for (let yearIndex = 0; yearIndex < yearCount; yearIndex++) {
     const yearValues = allSimulations.map(sim => sim[yearIndex]).sort((a, b) => a - b);
     
-    percentile5.push(yearValues[Math.floor(simulationCount * 0.05)]);
-    percentile25.push(yearValues[Math.floor(simulationCount * 0.25)]);
-    percentile50.push(yearValues[Math.floor(simulationCount * 0.50)]);
-    percentile75.push(yearValues[Math.floor(simulationCount * 0.75)]);
-    percentile95.push(yearValues[Math.floor(simulationCount * 0.95)]);
+    // Calculate percentiles with linear interpolation (like numpy default)
+    const calculatePercentile = (arr: number[], p: number): number => {
+      const n = arr.length;
+      const index = (n - 1) * p;
+      const lower = Math.floor(index);
+      const upper = Math.ceil(index);
+      const weight = index - lower;
+      
+      if (upper >= n) return arr[n - 1];
+      if (lower < 0) return arr[0];
+      
+      return arr[lower] * (1 - weight) + arr[upper] * weight;
+    };
+    
+    percentile5.push(calculatePercentile(yearValues, 0.05));
+    percentile25.push(calculatePercentile(yearValues, 0.25));
+    percentile50.push(calculatePercentile(yearValues, 0.50));
+    percentile75.push(calculatePercentile(yearValues, 0.75));
+    percentile95.push(calculatePercentile(yearValues, 0.95));
     
     // Calculate standard deviation for this year
     const mean = yearValues.reduce((sum, val) => sum + val, 0) / simulationCount;
@@ -134,9 +148,9 @@ export function runMonteCarloSimulation(
   
   return {
     scenarios: {
-      pessimistic: percentile25,
-      median: percentile50,
-      optimistic: percentile75
+      pessimistic: percentile5,   // P5: pior 5% dos cenários
+      median: percentile50,       // P50: mediana (cenário central)  
+      optimistic: percentile95    // P95: melhor 5% dos cenários
     },
     statistics: {
       percentile5,

@@ -59,15 +59,15 @@ export const ResultsCards: React.FC<ResultsCardsProps> = ({
     const scenarios = [
       {
         title: "Cenário Pessimista",
-        subtitle: "25% dos casos",
+        subtitle: "5% chance de resultado pior",
         wealth: pessimisticWealth,
         income: pessimisticIncome,
         icon: TrendingDown,
         iconColor: "text-red-500"
       },
       {
-        title: "Cenário Neutro",
-        subtitle: "50% dos casos",
+        title: "Cenário Mediano",
+        subtitle: "50% dos cenários",
         wealth: medianWealth,
         income: medianIncome,
         icon: Minus,
@@ -75,7 +75,7 @@ export const ResultsCards: React.FC<ResultsCardsProps> = ({
       },
       {
         title: "Cenário Otimista",
-        subtitle: "75% dos casos",
+        subtitle: "5% chance de resultado melhor",
         wealth: optimisticWealth,
         income: optimisticIncome,
         icon: TrendingUp,
@@ -88,7 +88,8 @@ export const ResultsCards: React.FC<ResultsCardsProps> = ({
         {/* Título das Projeções Monte Carlo */}
         <div className="text-center">
           <h3 className="text-xl font-bold text-white mb-2">Projeções Patrimoniais (Monte Carlo)</h3>
-          <p className="text-sm text-white">Baseado em 100 simulações considerando volatilidade do mercado</p>
+          <p className="text-sm text-white">Baseado em 1001 simulações considerando volatilidade do mercado</p>
+          <p className="text-xs text-gray-300 mt-1">Percentis P5, P50 e P95 da distribuição de resultados</p>
         </div>
 
         {/* Cards das Três Projeções */}
@@ -105,6 +106,13 @@ export const ResultsCards: React.FC<ResultsCardsProps> = ({
                   </div>
                   
                   <p className="text-sm font-medium text-white">{scenario.subtitle}</p>
+                  
+                  {/* Explicação científica */}
+                  <p className="text-xs text-gray-300 leading-relaxed">
+                    {index === 0 && "Apenas 5% dos cenários simulados apresentam resultado pior"}
+                    {index === 1 && "Resultado típico esperado - mediana das simulações"}
+                    {index === 2 && "Apenas 5% dos cenários simulados apresentam resultado melhor"}
+                  </p>
                   
                   {/* Patrimônio */}
                   <div className="space-y-1">

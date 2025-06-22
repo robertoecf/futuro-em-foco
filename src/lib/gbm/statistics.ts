@@ -21,12 +21,25 @@ export function calculateStatistics(
       .sort((a, b) => a - b);
     
     if (yearValues.length > 0) {
-      // Calculate percentiles exactly like numpy.percentile
-      percentile5.push(yearValues[Math.floor(yearValues.length * 0.05)]);
-      percentile25.push(yearValues[Math.floor(yearValues.length * 0.25)]);
-      percentile50.push(yearValues[Math.floor(yearValues.length * 0.50)]);
-      percentile75.push(yearValues[Math.floor(yearValues.length * 0.75)]);
-      percentile95.push(yearValues[Math.floor(yearValues.length * 0.95)]);
+      // Calculate percentiles with linear interpolation (like numpy default)
+      const calculatePercentile = (arr: number[], p: number): number => {
+        const n = arr.length;
+        const index = (n - 1) * p;
+        const lower = Math.floor(index);
+        const upper = Math.ceil(index);
+        const weight = index - lower;
+        
+        if (upper >= n) return arr[n - 1];
+        if (lower < 0) return arr[0];
+        
+        return arr[lower] * (1 - weight) + arr[upper] * weight;
+      };
+      
+      percentile5.push(calculatePercentile(yearValues, 0.05));
+      percentile25.push(calculatePercentile(yearValues, 0.25));
+      percentile50.push(calculatePercentile(yearValues, 0.50));
+      percentile75.push(calculatePercentile(yearValues, 0.75));
+      percentile95.push(calculatePercentile(yearValues, 0.95));
       
       // Calculate standard deviation for this year
       const mean = yearValues.reduce((sum, val) => sum + val, 0) / yearValues.length;
