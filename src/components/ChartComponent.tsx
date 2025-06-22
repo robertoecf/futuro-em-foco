@@ -111,7 +111,7 @@ export const ChartComponent = React.memo(({
     <div className="w-full">
       {/* Chart Title */}
       <div className="mb-6">
-                  <h3 className="text-xl font-bold text-white">Gráfico de projeção patrimonial</h3>
+                  <h3 className="text-xl font-bold text-black">Gráfico de projeção patrimonial</h3>
       </div>
 
       {/* Controls Section - Always visible above the chart */}
@@ -191,8 +191,8 @@ const ProjectingAnimation: React.FC = () => {
           </div>
         </div>
         
-                 <p className="text-lg font-medium text-white">Calculando possíveis resultados...</p>
-         <p className="text-sm text-gray-300 mt-2">Calculando 1001 futuros possíveis</p>
+                 <p className="text-lg font-medium text-black">Calculando possíveis resultados...</p>
+         <p className="text-sm text-gray-800 mt-2">Calculando 1001 futuros possíveis</p>
       </div>
     </div>
   );

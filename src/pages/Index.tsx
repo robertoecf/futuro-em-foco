@@ -98,7 +98,7 @@ const Index = () => {
       </section>
 
       {/* Footer */}
-      <footer className="px-4 sm:px-6 lg:px-8 py-12 bg-black text-sm text-gray-400">
+      <footer className="px-4 sm:px-6 lg:px-8 py-12 bg-black text-sm text-gray-600">
         <div className="max-w-7xl mx-auto">
           <p className="text-center">
             As informações contidas neste material são de caráter exclusivamente informativo e não devem ser entendidas como oferta, recomendação ou análise de investimento.

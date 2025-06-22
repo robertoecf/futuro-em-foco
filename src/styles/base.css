@@ -53,8 +53,8 @@
     --palette-mix-white: #FEFFFB;
     
     /* Sistema de Theming Reativo - Modo Claro */
-          --theme-surface: rgba(254, 255, 251, 0.5);
-    --theme-surface-container-bg: rgba(254, 255, 251, 0.5);
+          --theme-surface: rgba(254, 255, 251, 0.25);
+    --theme-surface-container-bg: rgba(254, 255, 251, 0.25);
     --theme-surface-glass: rgba(254, 255, 251, 0.15);
     --theme-primary: #E48200;
     --theme-on-primary: #FEFFFB;

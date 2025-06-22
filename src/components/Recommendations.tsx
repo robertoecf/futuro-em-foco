@@ -85,7 +85,7 @@ export const Recommendations = ({ investorProfile }: RecommendationsProps) => {
                 {rec.icon}
               </div>
               <h3 className="text-lg font-semibold mb-2">{rec.title}</h3>
-              <p className="text-gray-300">{rec.description}</p>
+              <p className="text-gray-800">{rec.description}</p>
             </div>
           </Card>
         ))}

@@ -47,7 +47,7 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
       {/* Left Panel - Dados Atuais */}
-      <div className="bg-white/50 p-6 rounded-lg border">
+      <div className="bg-transparent p-6 rounded-lg border border-white/20">
         <h3 className="text-xl font-semibold mb-6 text-white">Dados Atuais</h3>
         
         <div className="space-y-6">
@@ -85,7 +85,7 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({
       </div>
 
       {/* Right Panel - Configurações de Aposentadoria */}
-      <div className="bg-white/50 p-6 rounded-lg border">
+      <div className="bg-transparent p-6 rounded-lg border border-white/20">
         <h3 className="text-xl font-semibold mb-6 text-white">Configurações de Aposentadoria</h3>
         
         <div className="space-y-6">

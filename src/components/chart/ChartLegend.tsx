@@ -9,7 +9,7 @@ interface ChartLegendProps {
 
 export const ChartLegend = ({ monteCarloData, perpetuityWealth }: ChartLegendProps) => {
   return (
-    <div className="mt-4 flex flex-col gap-2 text-xs text-gray-300">
+    <div className="mt-4 flex flex-col gap-2 text-xs text-gray-800">
       {/* Monte Carlo Legend */}
       {monteCarloData && (
         <div className="space-y-1">

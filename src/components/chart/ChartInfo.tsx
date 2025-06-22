@@ -19,35 +19,35 @@ export const ChartInfo = ({
       {/* Legenda dos Cenários */}
       <Card className="p-4 chart-info-card">
         <div className="flex items-center gap-2 mb-3">
-          <BarChart3 className="h-4 w-4 text-gray-300" />
-          <h4 className="text-sm font-semibold text-white">Cenários</h4>
+          <BarChart3 className="h-4 w-4 text-gray-800" />
+          <h4 className="text-sm font-semibold text-black">Cenários</h4>
         </div>
         
         {monteCarloData ? <div className="space-y-2">
             <div className="flex items-center gap-2">
               <div className="w-6 h-0.5 bg-green-500 border-t-2 border-dashed border-green-500"></div>
-              <span className="text-xs text-gray-300">Otimista (75º percentil)</span>
+              <span className="text-xs text-gray-800">Otimista (75º percentil)</span>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-6 h-0.5 bg-blue-500"></div>
-              <span className="text-xs text-gray-300">Neutro (50º percentil)</span>
+              <span className="text-xs text-gray-800">Neutro (50º percentil)</span>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-6 h-0.5 bg-red-600 border-t-2 border-dashed border-red-600"></div>
-              <span className="text-xs text-gray-300">Pessimista (25º percentil)</span>
+              <span className="text-xs text-gray-800">Pessimista (25º percentil)</span>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-6 h-0.5 bg-gray-500"></div>
-              <span className="text-xs text-gray-300">Total Poupado</span>
+              <span className="text-xs text-gray-800">Total Poupado</span>
             </div>
           </div> : <div className="space-y-2">
             <div className="flex items-center gap-2">
               <div className="w-6 h-0.5 bg-orange-500"></div>
-              <span className="text-xs text-gray-300">Patrimônio Projetado</span>
+              <span className="text-xs text-gray-800">Patrimônio Projetado</span>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-6 h-0.5 bg-gray-500"></div>
-              <span className="text-xs text-gray-300">Total Poupado</span>
+              <span className="text-xs text-gray-800">Total Poupado</span>
             </div>
           </div>}
       </Card>
@@ -55,14 +55,14 @@ export const ChartInfo = ({
       {/* Métricas Chave */}
       <Card className="p-4 chart-info-card">
         <div className="flex items-center gap-2 mb-3">
-          <TrendingUp className="h-4 w-4 text-green-400" />
-          <h4 className="text-sm font-semibold text-white">Métricas Chave</h4>
+          <TrendingUp className="h-4 w-4 text-green-600" />
+          <h4 className="text-sm font-semibold text-black">Métricas Chave</h4>
         </div>
         
         <div className="space-y-3">
           {monteCarloData?.statistics.successProbability &&             <div>
-              <p className="text-xs text-gray-300 mb-1">Probabilidade de Sucesso</p>
-              <p className="text-lg font-bold text-green-400">
+              <p className="text-xs text-gray-800 mb-1">Probabilidade de Sucesso</p>
+              <p className="text-lg font-bold text-green-600">
                 {(monteCarloData.statistics.successProbability * 100).toFixed(1)}%
               </p>
             </div>}
@@ -72,17 +72,17 @@ export const ChartInfo = ({
       {/* Linhas de Referência */}
       <Card className="p-4 chart-info-card">
         <div className="flex items-center gap-2 mb-3">
-          <Target className="h-4 w-4 text-gray-300" />
-          <h4 className="text-sm font-semibold text-white">Referências</h4>
+          <Target className="h-4 w-4 text-gray-800" />
+          <h4 className="text-sm font-semibold text-black">Referências</h4>
         </div>
         
         <div className="space-y-3">
           <div>
             <div className="flex items-center gap-2 mb-1">
               <div className="w-4 h-0.5 border-t-2 border-dashed border-gray-500"></div>
-              <span className="text-xs text-gray-300">Independência financeira</span>
+              <span className="text-xs text-gray-800">Independência financeira</span>
             </div>
-            <p className="text-sm font-semibold text-white">
+            <p className="text-sm font-semibold text-black">
               {possibleRetirementAge} anos
             </p>
           </div>
@@ -90,9 +90,9 @@ export const ChartInfo = ({
           {perpetuityWealth > 0 && <div>
               <div className="flex items-center gap-2 mb-1">
                 <div className="w-4 h-0.5 border-t-2 border-dashed border-gray-500"></div>
-                <span className="text-xs text-gray-300">Patrimônio Perpetuidade</span>
+                <span className="text-xs text-gray-800">Patrimônio Perpetuidade</span>
               </div>
-              <p className="text-xs text-gray-300">
+              <p className="text-xs text-gray-800">
                 {formatCurrency(perpetuityWealth)}
               </p>
             </div>}

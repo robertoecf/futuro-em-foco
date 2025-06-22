@@ -42,12 +42,12 @@ export const CustomTooltip = ({ active, payload, label, monteCarloData }: Custom
           </p>
         )}
         
-        <p className="text-xs text-gray-300 mt-1">
+        <p className="text-xs text-gray-600 mt-1">
           {phase === "Acumulação" ? "Fase de Acumulação" : "Fase de Aposentadoria"}
         </p>
         
         {/* Show savings line value as last item */}
-        <p className="text-sm text-gray-300 mt-1">
+        <p className="text-sm text-gray-600 mt-1">
           {`Total Poupado: ${formatCurrency(data.poupanca || 0)}`}
         </p>
       </CardContent>

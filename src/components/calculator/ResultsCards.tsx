@@ -100,8 +100,8 @@ export const ResultsCards: React.FC<ResultsCardsProps> = ({
       <div className="space-y-6 mb-8">
         {/* Título das Projeções Monte Carlo */}
         <div className="text-center">
-          <h3 className="text-xl font-bold text-white mb-2">Projeções Patrimoniais (Monte Carlo)</h3>
-          <p className="text-sm text-gray-300">Baseado em 100 simulações considerando volatilidade do mercado</p>
+          <h3 className="text-xl font-bold text-black mb-2">Projeções Patrimoniais (Monte Carlo)</h3>
+          <p className="text-sm text-gray-800">Baseado em 100 simulações considerando volatilidade do mercado</p>
         </div>
 
         {/* Cards das Três Projeções */}
@@ -148,8 +148,8 @@ export const ResultsCards: React.FC<ResultsCardsProps> = ({
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6">
           <Card className="p-4 glass-card">
             <div className="text-center">
-              <p className="text-sm text-gray-300 font-medium">Investimento inicial</p>
-              <p className="text-xl font-bold text-white">{formatCurrency(initialAmount)}</p>
+              <p className="text-sm text-gray-800 font-medium">Investimento inicial</p>
+              <p className="text-xl font-bold text-black">{formatCurrency(initialAmount)}</p>
             </div>
           </Card>
           
@@ -177,23 +177,23 @@ export const ResultsCards: React.FC<ResultsCardsProps> = ({
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
       <Card className="p-4 glass-card">
-        <p className="text-sm text-gray-300">Investimento inicial</p>
-        <p className="text-2xl font-bold text-white">{formatCurrency(initialAmount)}</p>
+        <p className="text-sm text-gray-800">Investimento inicial</p>
+        <p className="text-2xl font-bold text-black">{formatCurrency(initialAmount)}</p>
       </Card>
       
       <Card className="p-4 glass-card">
-        <p className="text-sm text-gray-300">Patrimônio aos {retirementAge} anos</p>
-        <p className="text-2xl font-bold text-white">{formatCurrency(calculationResult.finalAmount)}</p>
+        <p className="text-sm text-gray-800">Patrimônio aos {retirementAge} anos</p>
+        <p className="text-2xl font-bold text-black">{formatCurrency(calculationResult.finalAmount)}</p>
       </Card>
       
       <Card className="p-4 glass-card">
-        <p className="text-sm text-gray-300">Renda mensal na aposentadoria</p>
-        <p className="text-2xl font-bold text-white">{formatCurrency(calculationResult.monthlyIncome)}</p>
+        <p className="text-sm text-gray-800">Renda mensal na aposentadoria</p>
+        <p className="text-2xl font-bold text-black">{formatCurrency(calculationResult.monthlyIncome)}</p>
       </Card>
       
       <Card className="p-4 glass-card">
-        <p className="text-sm text-gray-300">Duração da renda</p>
-        <p className="text-2xl font-bold text-white">{lifeExpectancy - retirementAge} anos</p>
+        <p className="text-sm text-gray-800">Duração da renda</p>
+        <p className="text-2xl font-bold text-black">{lifeExpectancy - retirementAge} anos</p>
       </Card>
     </div>
   );
