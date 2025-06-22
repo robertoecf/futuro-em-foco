@@ -85,7 +85,7 @@ export const Calculator: React.FC = () => {
   } = useCalculator();
   
   return (
-    <div className="w-full max-w-6xl mx-auto space-y-16">
+    <div className="w-full space-y-16">
       {/* Investor Profile Section - Hidden during magic moment */}
       <div className={`transition-all duration-300 ${
         isMagicMomentActive ? 'invisible pointer-events-none' : 'visible'

@@ -3,6 +3,7 @@
 .aurora-banner {
   background-color: var(--palette-black);
   position: relative;
+  overflow: hidden;
   box-shadow: 
     0 0 18px rgba(255, 255, 255, 0.045),
     0 0 36px rgba(255, 255, 255, 0.03),

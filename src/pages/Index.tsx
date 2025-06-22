@@ -100,7 +100,7 @@ const Index = () => {
       </section>
 
       {/* Analysis Section - Centralized */}
-      <section id="calculator-section" className="min-h-screen flex items-center justify-center relative py-16">
+      <section id="calculator-section" className="min-h-screen flex items-center justify-center relative">
         <div className="flex justify-center">
           <div className="w-full max-w-6xl px-4 sm:px-6 lg:px-8">
             <Calculator />
@@ -119,21 +119,21 @@ const Index = () => {
       </section>
 
       {/* CTA Section - Centralized */}
-      <section id="cta-section" className="min-h-screen flex items-center justify-center relative">
-        <div className="flex justify-center">
-          <div className="w-full max-w-6xl px-4 sm:px-6 lg:px-8">
+      <div className="flex justify-center">
+        <div className="w-full max-w-6xl px-4 sm:px-6 lg:px-8">
+          <section className="min-h-screen flex items-center justify-center relative pb-16">
             <div className="aurora-banner text-white p-12 md:p-16 lg:p-20 rounded-3xl relative overflow-hidden" style={{ width: '100%', display: 'block' }}>
               {/* Aurora Background */}
-              <div id="aurora-banner-background">
-                <div id="banner-blob1" className="aurora-banner-blob"></div>
-                <div id="banner-blob2" className="aurora-banner-blob"></div>
-                <div id="banner-blob3" className="aurora-banner-blob"></div>
-                <div id="banner-blob4" className="aurora-banner-blob"></div>
-                <div id="banner-blob5" className="aurora-banner-blob"></div>
-                <div id="banner-blob6" className="aurora-banner-blob"></div>
-                <div id="banner-blob7" className="aurora-banner-blob mix-blob"></div>
-                <div id="banner-blob8" className="aurora-banner-blob mix-blob"></div>
-                <div id="banner-blob9" className="aurora-banner-blob mix-blob"></div>
+              <div id="aurora-cta-background">
+                <div id="cta-blob1" className="aurora-banner-blob"></div>
+                <div id="cta-blob2" className="aurora-banner-blob"></div>
+                <div id="cta-blob3" className="aurora-banner-blob"></div>
+                <div id="cta-blob4" className="aurora-banner-blob"></div>
+                <div id="cta-blob5" className="aurora-banner-blob"></div>
+                <div id="cta-blob6" className="aurora-banner-blob"></div>
+                <div id="cta-blob7" className="aurora-banner-blob mix-blob"></div>
+                <div id="cta-blob8" className="aurora-banner-blob mix-blob"></div>
+                <div id="cta-blob9" className="aurora-banner-blob mix-blob"></div>
               </div>
 
               {/* Content */}
@@ -152,9 +152,11 @@ const Index = () => {
                 </Button>
               </div>
             </div>
-          </div>
+          </section>
         </div>
-      </section>
+      </div>
+
+
 
       {/* Dynamic Header - Visible at top and bottom */}
       {showHeader && (
