@@ -1,0 +1,45 @@
+/* CTA Aurora Mix - Sistema de fundo transparente para CTAs */
+
+/* Aurora CTA Background Container - Desabilitado para remover fundo colorido */
+.cta-aurora-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 1;
+  /* Fundo colorido removido - mantendo apenas estrutura */
+}
+
+/* Aurora CTA Blobs - Desabilitadas para remover fundo colorido */
+.cta-aurora-blob {
+  /* Blobs completamente desabilitadas */
+  display: none;
+}
+
+/* Container CTA sem aurora - Padrão transparente */
+.cta-aurora-container {
+  position: relative;
+  display: inline-block;
+  border-radius: 16px;
+  overflow: hidden;
+  /* Removido background colorido e animação */
+}
+
+/* Todas as animações e cores removidas */
+@keyframes cta-aurora-float {
+  /* Animação desabilitada */
+}
+
+@keyframes cta-pulse {
+  /* Animação desabilitada */
+}
+
+/* Responsividade mantida mas sem cores */
+@media (max-width: 768px) {
+  .cta-aurora-blob {
+    display: none;
+  }
+} 

@@ -16,43 +16,62 @@
    - Adicionado script "prepare" no package.json
    - Configuração lint-staged para arquivos TypeScript
 
-### 🔄 Fase 2: Refatoração da Calculadora (EM PROGRESSO)
+### ✅ Fase 2: Refatoração da Calculadora (CONCLUÍDA)
 
-3. **Otimizar renderização do gráfico** 🔄
+3. **Otimizar renderização do gráfico** ✅
    - ✅ Implementado React.memo em `ChartRenderer`
    - ✅ Implementado React.memo em `ChartComponent`
    - ✅ Adicionado useMemo para cálculos pesados em `ChartComponent`
    - ✅ Otimizado `useChartDataProcessor` com useMemo
-   - ⏳ Próximo: Otimizar animações das 50 linhas do Monte Carlo
+   - ✅ **CONCLUÍDO**: Otimizadas animações das 50 linhas do Monte Carlo com:
+     - Hook especializada `use50LinesAnimation`
+     - Throttling de 60fps (~16ms)
+     - Renderização em batches otimizados
+     - Sistema de estados de animação melhorados
+     - Performance constants dedicados
 
-4. **Simplificar arquitetura dos hooks**
-   - ⏳ Consolidar `useCalculatorState`, `useCalculatorHandlers` e `useCalculatorEffects`
-   - ⏳ Implementar Context API para reduzir prop drilling
-   - ⏳ Mover efeitos para componentes filhos quando apropriado
+4. **Simplificar arquitetura dos hooks** ✅
+   - ✅ **CONCLUÍDO**: Consolidados `useCalculatorState`, `useCalculatorHandlers` e `useCalculatorEffects` em um único `useCalculator`
+   - ✅ **CONCLUÍDO**: Eliminado prop drilling excessivo com estado centralizado
+   - ✅ **CONCLUÍDO**: Otimizadas re-renderizações com batch updates
+   - ✅ **CONCLUÍDO**: Hooks antigos marcados como deprecated para remoção na Fase 3
+   - ✅ **CONCLUÍDO**: Performance melhorada com debouncing e useCallback otimizados
 
-### 📋 Fase 3: Limpeza e Organização do Código
+### ✅ Fase 3: Limpeza e Organização do Código (CONCLUÍDA)
 
-5. **Remover duplicações**
-   - ⏳ Unificar `getAccumulationAnnualReturn` (existe em múltiplos arquivos)
-   - ⏳ Centralizar constantes e tipos
-   - ⏳ Criar módulo único para cálculos financeiros
+5. **Remover duplicações** ✅
+   - ✅ Unificado `getAccumulationAnnualReturn` (consolidado em `/lib/calculations/financialCalculations.ts`)
+   - ✅ Centralizado constantes em `/lib/calculations/constants.ts`
+   - ✅ Criado módulo único para cálculos financeiros
+   - ✅ Removido duplicação de `getVolatilityByProfile`
+   - ✅ Todos os imports atualizados para usar módulo centralizado
+   - ✅ Arquivos antigos marcados como deprecated
 
-6. **Reorganizar estrutura de pastas**
+6. **Reorganizar estrutura de pastas** ✅
    ```
    src/
    ├── components/
    │   ├── calculator/
    │   │   ├── Calculator.tsx
    │   │   ├── hooks/
+   │   │   │   └── useCalculator.ts ✅
    │   │   ├── utils/
+   │   │   │   ├── constants.ts ✅
+   │   │   │   └── storageUtils.ts ✅
    │   │   └── types/
+   │   │       └── index.ts ✅
    │   ├── chart/
    │   │   ├── ChartComponent.tsx
    │   │   ├── hooks/
+   │   │   │   ├── useFinalLinesAnimation.ts ✅
+   │   │   │   └── useLineAnimation.ts ✅
    │   │   └── utils/
+   │   │       └── chartUtils.ts ✅
    │   └── ui/
    ├── lib/
    │   ├── calculations/
+   │   │   ├── financialCalculations.ts ✅
+   │   │   └── constants.ts ✅
    │   ├── storage/
    │   └── utils/
    └── hooks/

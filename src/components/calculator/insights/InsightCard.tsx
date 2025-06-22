@@ -23,7 +23,7 @@ export const InsightCard: React.FC<InsightCardProps> = ({
   return (
     <Card className="p-6 insight-card">
       <div className="text-center">
-        <h3 className="text-lg font-semibold mb-2 text-black">{title}</h3>
+        <h3 className="text-lg font-semibold mb-2 text-white">{title}</h3>
         {!showValueAsDescription && (
           <p className="text-2xl font-bold text-orange-600 mb-2 tech-number">
             {isCurrency 
@@ -32,7 +32,7 @@ export const InsightCard: React.FC<InsightCardProps> = ({
             }
           </p>
         )}
-        <p className={`text-sm text-gray-800 ${showValueAsDescription ? 'text-lg font-semibold text-orange-600 tech-number' : ''}`}>
+        <p className={`text-sm text-white ${showValueAsDescription ? 'text-lg font-semibold text-orange-600 tech-number' : ''}`}>
           {description}
         </p>
       </div>

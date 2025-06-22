@@ -52,10 +52,10 @@ export const Calculator: React.FC = () => {
         <InvestorProfiles onProfileSelect={setInvestorProfile} selectedProfile={investorProfile} />
       </div>
 
-      <Card className="p-6 shadow-lg glass-card">
-        {/* Parameters Section Title */}
+      {/* Parameters Section */}
+      <div className="mb-12">
         <div className="mb-6">
-          <h3 className="text-xl font-bold text-black">Parâmetros</h3>
+          <h3 className="text-xl font-bold text-white">Parâmetros</h3>
         </div>
 
         {/* Optimized Input Form */}
@@ -75,58 +75,58 @@ export const Calculator: React.FC = () => {
           handlePortfolioReturnBlur={handlePortfolioReturnBlur}
           setInvestorProfile={setInvestorProfile}
         />
+      </div>
         
-        {/* Insights Section */}
-        <InsightsCards
-          initialAmount={initialAmount}
-          monthlyAmount={monthlyAmount}
-          currentAge={currentAge}
-          retirementAge={possibleRetirementAge}
-          lifeExpectancy={lifeExpectancy}
-          retirementIncome={retirementIncome}
-          portfolioReturn={portfolioReturn}
-          investorProfile={investorProfile}
-        />
+      {/* Insights Section */}
+      <InsightsCards
+        initialAmount={initialAmount}
+        monthlyAmount={monthlyAmount}
+        currentAge={currentAge}
+        retirementAge={possibleRetirementAge}
+        lifeExpectancy={lifeExpectancy}
+        retirementIncome={retirementIncome}
+        portfolioReturn={portfolioReturn}
+        investorProfile={investorProfile}
+      />
 
-        {/* Lazy-loaded Chart */}
-        <div className="mb-8">
-          <Suspense fallback={<ComponentLoader />}>
-            <ChartComponent 
-              data={calculationResult?.yearlyValues || []} 
-              accumulationYears={accumulationYears}
-              lifeExpectancy={lifeExpectancy}
-              currentAge={currentAge}
-              monthlyIncomeTarget={retirementIncome}
-              portfolioReturn={portfolioReturn}
-              onLifeExpectancyChange={handleLifeExpectancyChange} 
-              showLifeExpectancyControl={true}
-              monteCarloData={monteCarloResult}
-              isCalculating={isCalculating}
-              isMonteCarloEnabled={isMonteCarloEnabled}
-              onMonteCarloToggle={handleMonteCarloToggle}
-              initialAmount={initialAmount}
-              monthlyAmount={monthlyAmount}
-              retirementAge={possibleRetirementAge}
-              retirementIncome={retirementIncome}
-              investorProfile={investorProfile}
-              calculationResult={calculationResult}
-              onAnimationComplete={finishCalculation}
-            />
-          </Suspense>
-        </div>
+      {/* Lazy-loaded Chart */}
+      <div className="mb-8">
+        <Suspense fallback={<ComponentLoader />}>
+          <ChartComponent 
+            data={calculationResult?.yearlyValues || []} 
+            accumulationYears={accumulationYears}
+            lifeExpectancy={lifeExpectancy}
+            currentAge={currentAge}
+            monthlyIncomeTarget={retirementIncome}
+            portfolioReturn={portfolioReturn}
+            onLifeExpectancyChange={handleLifeExpectancyChange} 
+            showLifeExpectancyControl={true}
+            monteCarloData={monteCarloResult}
+            isCalculating={isCalculating}
+            isMonteCarloEnabled={isMonteCarloEnabled}
+            onMonteCarloToggle={handleMonteCarloToggle}
+            initialAmount={initialAmount}
+            monthlyAmount={monthlyAmount}
+            retirementAge={possibleRetirementAge}
+            retirementIncome={retirementIncome}
+            investorProfile={investorProfile}
+            calculationResult={calculationResult}
+            onAnimationComplete={finishCalculation}
+          />
+        </Suspense>
+      </div>
 
-        {/* Results Cards */}
-        <ResultsCards
-          calculationResult={calculationResult}
-          retirementAge={possibleRetirementAge}
-          lifeExpectancy={lifeExpectancy}
-          initialAmount={initialAmount}
-          monteCarloResult={monteCarloResult}
-          isMonteCarloEnabled={isMonteCarloEnabled}
-          currentAge={currentAge}
-          portfolioReturn={portfolioReturn}
-        />
-      </Card>
+      {/* Results Cards */}
+      <ResultsCards
+        calculationResult={calculationResult}
+        retirementAge={possibleRetirementAge}
+        lifeExpectancy={lifeExpectancy}
+        initialAmount={initialAmount}
+        monteCarloResult={monteCarloResult}
+        isMonteCarloEnabled={isMonteCarloEnabled}
+        currentAge={currentAge}
+        portfolioReturn={portfolioReturn}
+      />
 
       {/* Lazy-loaded Recommendations Section */}
       <Suspense fallback={<ComponentLoader />}>

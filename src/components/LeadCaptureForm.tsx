@@ -113,9 +113,9 @@ export const LeadCaptureForm = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-md">
+      <DialogContent className="max-w-md glass-card border border-white/8">
         <DialogHeader>
-          <DialogTitle>
+          <DialogTitle className="text-white">
             {isExportMode ? 'Download dos dados' : 'Receber plano por email'}
           </DialogTitle>
         </DialogHeader>
@@ -128,10 +128,19 @@ export const LeadCaptureForm = ({
           />
 
           <div className="flex gap-2 pt-4">
-            <Button type="button" variant="outline" onClick={onClose} className="flex-1">
+            <Button 
+              type="button" 
+              variant="outline" 
+              onClick={onClose} 
+              className="flex-1 bg-transparent border border-white/8 text-white hover:bg-white/5 hover:scale-105 transition-all"
+            >
               Cancelar
             </Button>
-            <Button type="submit" disabled={isSubmitting} className="flex-1">
+            <Button 
+              type="submit" 
+              disabled={isSubmitting} 
+              className="flex-1 bg-orange-500 hover:bg-orange-600 text-white hover:scale-105 transition-all disabled:opacity-50"
+            >
               {isSubmitting ? 'Processando...' : (isExportMode ? 'Baixar Excel' : 'Receber plano')}
             </Button>
           </div>

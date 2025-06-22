@@ -3,8 +3,8 @@ import { ComposedChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveCo
 import { MonteCarloResult } from '@/lib/utils';
 import type { ChartDataPoint } from '@/utils/csvExport';
 import { CustomTooltip } from './CustomTooltip';
-import { formatYAxis } from './chartUtils';
-import { useFinalLinesAnimation } from './useFinalLinesAnimation';
+import { formatYAxis } from './utils/chartUtils';
+import { useFinalLinesAnimation } from './hooks/useFinalLinesAnimation';
 
 // Monte Carlo configuration
 const MONTE_CARLO_EXHIBITION_LINES = 1001; // Show ALL calculated lines in Scene 2
@@ -27,32 +27,21 @@ export const ChartRenderer = React.memo(({
   chartData,
   possibleRetirementAge,
   perpetuityWealth,
-  monthlyIncomeTarget,
+  monthlyIncomeTarget: _monthlyIncomeTarget,
   monteCarloData,
   isShowingLines,
+  isShowing50Lines: _isShowing50Lines,
   isDrawingFinalLines,
   animationPhase = 'final',
   showGrid = true
 }: ChartRendererProps) => {
   
-  const { getFinalLineAnimationState, isAnimationComplete } = useFinalLinesAnimation({
+  const { getFinalLineAnimationState, isAnimationComplete: _isAnimationComplete } = useFinalLinesAnimation({
     isDrawingFinalLines
   });
 
-  // Simple performance optimization during animations
-  React.useEffect(() => {
-    const isAnimationRunning = animationPhase !== 'final' || (isDrawingFinalLines && !isAnimationComplete);
-    
-    if (isAnimationRunning) {
-      document.body.style.pointerEvents = 'none';
-    } else {
-      document.body.style.pointerEvents = 'auto';
-    }
-    
-    return () => {
-      document.body.style.pointerEvents = 'auto';
-    };
-  }, [animationPhase, isDrawingFinalLines, isAnimationComplete]);
+  // Estado para controlar se as bolinhas devem estar visíveis
+  const shouldShowActiveDots = animationPhase === 'final' && !isDrawingFinalLines;
 
   // Generate colors for the lines
   const generateLineColor = (index: number) => {
@@ -71,240 +60,234 @@ export const ChartRenderer = React.memo(({
     return null;
   }
 
+  // Debug para identificar mudanças de escala
+  if (isDrawingFinalLines) {
+    console.log(`🎯 Scale Debug [${animationPhase}]:`, {
+      possibleRetirementAge,
+      perpetuityWealth,
+      hasMonteCarloData: !!monteCarloData,
+      chartDataLength: chartData?.length
+    });
+  }
+
   // Simple debug for Scene 2
   if (isShowingLines) {
     console.log('Rendering Monte Carlo lines:', MONTE_CARLO_EXHIBITION_LINES);
   }
 
-
-
-      return (
-      <>
-        {/* Blur overlay during entire animation - from Calculate click until final lines are completely drawn */}
-        {/* PR: Complete blur and tooltip cursor interaction fix */}
-        {(animationPhase !== 'final' || (isDrawingFinalLines && !isAnimationComplete)) && (
-          <div 
-            className="fixed inset-0 z-40 pointer-events-none"
+  return (
+    <>
+      <div className="relative h-[400px] w-full p-4">
+        <ResponsiveContainer width="100%" height="100%">
+          <ComposedChart
+            data={chartData}
+            margin={typeof window !== 'undefined' && window.innerWidth < 640 ? 
+              { top: 10, right: 10, left: 60, bottom: 10 } : 
+              { top: 20, right: 30, left: 80, bottom: 20 }
+            }
             style={{
-              backdropFilter: 'blur(8px)',
-              WebkitBackdropFilter: 'blur(8px)',
-              background: 'rgba(0, 0, 0, 0.1)',
-              transition: 'all 300ms ease-out'
+              cursor: shouldShowActiveDots ? 'crosshair' : 'none',
+              pointerEvents: shouldShowActiveDots ? 'auto' : 'none'
             }}
-          />
-        )}
-        
-                <div className="relative h-[400px] w-full bg-white/50 border border-gray-200 rounded-lg p-4" style={{ zIndex: (animationPhase !== 'final') ? 50 : 'auto' }}>
-          {/* CSS for final lines drawing animation */}
-          <style>{`
-            @keyframes draw-line {
-              0% {
-                stroke-dashoffset: 1000;
-                opacity: 0.3;
+          >
+            {showGrid && <CartesianGrid strokeDasharray="3 3" stroke="#ffffff20" />}
+            <XAxis 
+              dataKey="age" 
+              label={typeof window !== 'undefined' && window.innerWidth < 640 ? 
+                undefined : 
+                { value: 'Idade', position: 'insideBottom', offset: -10, fill: '#ffffff' }
               }
-              50% {
-                stroke-dashoffset: 500;
-                opacity: 0.8;
-              }
-              100% {
-                stroke-dashoffset: 0;
-                opacity: 1;
-              }
-            }
+              tickFormatter={(value) => `${value}`}
+              tick={{ 
+                fill: '#ffffff',
+                fontSize: typeof window !== 'undefined' && window.innerWidth < 640 ? 10 : 12
+              }}
+              axisLine={{ stroke: '#ffffff40' }}
+              tickLine={{ stroke: '#ffffff40' }}
+              interval={0}
+              ticks={(() => {
+                // Idades de 10 em 10 anos
+                const intervalTicks = chartData.filter((_, index) => index % 10 === 0 || index === chartData.length - 1).map(d => d.age);
+                
+                // Idades importantes que sempre devem aparecer
+                const importantAges: number[] = [];
+                
+                // Idade da independência financeira
+                if (possibleRetirementAge && possibleRetirementAge > 0) {
+                  importantAges.push(possibleRetirementAge);
+                }
+                
+                // Idade de aposentadoria (assumindo que é chartData[accumulationPeriod])
+                const retirementAge = chartData.find(d => d.fase === "Aposentadoria")?.age;
+                if (retirementAge && retirementAge !== possibleRetirementAge) {
+                  importantAges.push(retirementAge);
+                }
+                
+                // Combina todos os ticks e remove duplicatas
+                const allTicks = [...new Set([...intervalTicks, ...importantAges])].sort((a, b) => a - b);
+                return allTicks;
+              })()}
+            />
+            <YAxis 
+              tickFormatter={formatYAxis}
+              width={typeof window !== 'undefined' && window.innerWidth < 640 ? 60 : 80}
+              tick={{ 
+                fill: '#ffffff',
+                fontSize: typeof window !== 'undefined' && window.innerWidth < 640 ? 10 : 12
+              }}
+              axisLine={{ stroke: '#ffffff40' }}
+              tickLine={{ stroke: '#ffffff40' }}
+              tickCount={typeof window !== 'undefined' && window.innerWidth < 640 ? 4 : 6}
+            />
             
-            @keyframes draw-dashed-line {
-              0% {
-                stroke-dashoffset: 1000;
-                opacity: 0.3;
-              }
-              50% {
-                stroke-dashoffset: 500;
-                opacity: 0.8;
-              }
-              100% {
-                stroke-dashoffset: 0;
-                opacity: 1;
-              }
-            }
-          `}</style>
- 
-
-      <ResponsiveContainer width="100%" height="100%">
-        <ComposedChart
-          data={chartData}
-          margin={{ top: 20, right: 30, left: 80, bottom: 20 }}
-          style={{
-            pointerEvents: (animationPhase === 'final' && !isDrawingFinalLines) ? 'auto' : 'none' // Enable interactions only when animations are done
-          }}
-        >
-          {showGrid && <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />}
-          <XAxis 
-            dataKey="age" 
-            label={{ value: 'Idade', position: 'insideBottom', offset: -10 }}
-            tickFormatter={(value) => `${value}`}
-          />
-          <YAxis 
-            tickFormatter={formatYAxis}
-            width={80}
-          />
-          <Tooltip 
-            content={<CustomTooltip monteCarloData={monteCarloData} />} 
-            cursor={animationPhase === 'final' && !isDrawingFinalLines ? { stroke: '#94a3b8', strokeWidth: 1, strokeDasharray: '5 5' } : false} 
-            animationDuration={0}
-            wrapperStyle={{ 
-              zIndex: 1000
-            }}
-          />
-          
-          {/* Savings line - always visible */}
-          <Line 
-            type="monotone" 
-            dataKey="poupanca" 
-            name="Total Poupado"
-            stroke="#6B7280" 
-            strokeWidth={2}
-            dot={false}
-            activeDot={(animationPhase !== 'final' || isDrawingFinalLines) ? false : { r: 6, stroke: '#6B7280', strokeWidth: 2, fill: '#fff' }}
-          />
-
-          {/* MonteCarloExibitionLines - Scene 2 with simple animation */}
-          {isShowingLines && Array.from({ length: MONTE_CARLO_EXHIBITION_LINES }, (_, lineIndex) => (
-            <Line
-              key={`monte-carlo-exhibition-line-${lineIndex}`}
-              type="monotone"
-              dataKey={`line${lineIndex}`}
-              stroke={generateLineColor(lineIndex)}
-              strokeWidth={1}
-              strokeOpacity={0.3}
-              dot={false}
-              activeDot={false}
-              connectNulls={false}
-              isAnimationActive={true}
-              animationBegin={lineIndex * 2} // Simple staggered animation
-              animationDuration={600}
-              animationEasing="ease-out"
-            />
-          ))}
-
-          {/* This section removed - Scene 3 only shows "optimizing" message */}
-
-          {/* MonteCarloFinalLines - Only visible in Scene 4 */}
-          {monteCarloData && !isShowingLines && (
-            <>
-              {/* Pessimistic Line */}
-              {(() => {
-                const animationState = getFinalLineAnimationState('pessimistic');
-                return (
-                  <Line 
-                    type="monotone" 
-                    dataKey="pessimistic" 
-                    name="Cenário Pessimista"
-                    stroke="#DC2626" 
-                    strokeWidth={2}
-                    strokeDasharray={isDrawingFinalLines ? animationState.strokeDasharray : "5 5"}
-                    strokeDashoffset={isDrawingFinalLines ? animationState.strokeDashoffset : "0"}
-                    strokeOpacity={isDrawingFinalLines ? animationState.opacity : 1}
-                    dot={false}
-                    activeDot={(animationPhase !== 'final' || isDrawingFinalLines) ? false : { r: 6, stroke: '#DC2626', strokeWidth: 2, fill: '#fff' }}
-                    isAnimationActive={false}
-                    style={isDrawingFinalLines ? animationState.drawingStyle : {}}
-                  />
-                );
-              })()}
-              
-              {/* Median Line */}
-              {(() => {
-                const animationState = getFinalLineAnimationState('median');
-                return (
-                  <Line 
-                    type="monotone" 
-                    dataKey="median" 
-                    name="Cenário Neutro"
-                    stroke="#3B82F6" 
-                    strokeWidth={3}
-                    strokeDasharray={isDrawingFinalLines ? animationState.strokeDasharray : "none"}
-                    strokeDashoffset={isDrawingFinalLines ? animationState.strokeDashoffset : "0"}
-                    strokeOpacity={isDrawingFinalLines ? animationState.opacity : 1}
-                    dot={false}
-                    activeDot={(animationPhase !== 'final' || isDrawingFinalLines) ? false : { r: 8, stroke: '#3B82F6', strokeWidth: 2, fill: '#fff' }}
-                    isAnimationActive={false}
-                    style={isDrawingFinalLines ? animationState.drawingStyle : {}}
-                  />
-                );
-              })()}
-              
-              {/* Optimistic Line */}
-              {(() => {
-                const animationState = getFinalLineAnimationState('optimistic');
-                return (
-                  <Line 
-                    type="monotone" 
-                    dataKey="optimistic" 
-                    name="Cenário Otimista"
-                    stroke="#10B981" 
-                    strokeWidth={2}
-                    strokeDasharray={isDrawingFinalLines ? animationState.strokeDasharray : "5 5"}
-                    strokeDashoffset={isDrawingFinalLines ? animationState.strokeDashoffset : "0"}
-                    strokeOpacity={isDrawingFinalLines ? animationState.opacity : 1}
-                    dot={false}
-                    activeDot={(animationPhase !== 'final' || isDrawingFinalLines) ? false : { r: 6, stroke: '#10B981', strokeWidth: 2, fill: '#fff' }}
-                    isAnimationActive={false}
-                    style={isDrawingFinalLines ? animationState.drawingStyle : {}}
-                  />
-                );
-              })()}
-            </>
-          )}
-
-          {/* Regular patrimonio line - only when Monte Carlo is disabled */}
-          {!monteCarloData && (
-            <Line 
-              type="monotone" 
-              dataKey="patrimonio" 
-              name="Patrimônio"
-              stroke="#FF6B00" 
-              strokeWidth={2}
-                          dot={false}
-            activeDot={(animationPhase !== 'final' || isDrawingFinalLines) ? false : { r: 8, stroke: '#FF6B00', strokeWidth: 2, fill: '#fff' }}
-              connectNulls
-            />
-          )}
-
-          {/* Reference lines - Only visible when there's a monthly income target */}
-          {monthlyIncomeTarget > 0 && (
-            <>
+            {/* 🎯 VOLTA SIMPLES: Linhas de referência normais - problema é mudança de escala */}
+            {/* Linha de Independência Financeira */}
+            {(possibleRetirementAge > 0 || monteCarloData) && (
               <ReferenceLine 
-                x={possibleRetirementAge} 
+                x={possibleRetirementAge > 0 ? possibleRetirementAge : 65} 
                 stroke="#9CA3AF" 
                 strokeDasharray="5 5" 
                 strokeWidth={2}
                 label={{ 
                   value: 'Independência financeira', 
                   position: 'top', 
-                  fill: '#6B7280',
-                  fontSize: 11
+                  fill: '#ffffff',
+                  fontSize: typeof window !== 'undefined' && window.innerWidth < 640 ? 10 : 11
                 }} 
               />
-              
-              {perpetuityWealth > 0 && (
-                <ReferenceLine 
-                  y={perpetuityWealth} 
-                  stroke="#9CA3AF" 
-                  strokeDasharray="8 4" 
+            )}
+            
+            {/* Linha de Patrimônio Perpetuidade */}
+            {(perpetuityWealth > 0 || monteCarloData) && (
+              <ReferenceLine 
+                y={perpetuityWealth > 0 ? perpetuityWealth : 1000000} 
+                stroke="#9CA3AF" 
+                strokeDasharray="8 4" 
+                strokeWidth={2}
+                label={{ 
+                  value: 'Patrimônio Perpetuidade', 
+                  position: 'insideTopRight', 
+                  fill: '#ffffff',
+                  fontSize: typeof window !== 'undefined' && window.innerWidth < 640 ? 10 : 11
+                }} 
+              />
+            )}
+
+            {shouldShowActiveDots && (
+              <Tooltip 
+                content={<CustomTooltip monteCarloData={monteCarloData} shouldShow={shouldShowActiveDots} />} 
+                cursor={false} // Remove a linha pontilhada vertical
+                animationDuration={0}
+                wrapperStyle={{ 
+                  zIndex: 9999,
+                  pointerEvents: 'auto'
+                }}
+                allowEscapeViewBox={{ x: true, y: true }} // Permite tooltip escapar dos limites para melhor posicionamento
+                isAnimationActive={false} // Desabilita animações para resposta mais rápida
+                offset={10} // Adiciona um pequeno offset para melhor posicionamento
+              />
+            )}
+            
+            {/* Savings line - always visible */}
+            <Line 
+              type="monotone" 
+              dataKey="poupanca" 
+              name="Total Poupado"
+              stroke="#6B7280" 
+              strokeWidth={2}
+              dot={false}
+              activeDot={shouldShowActiveDots ? { r: 6, stroke: '#6B7280', strokeWidth: 2, fill: '#fff' } : false}
+            />
+
+            {/* MonteCarloExibitionLines - Scene 2 with simple animation - TOOLTIPS DESABILITADOS */}
+            {isShowingLines && Array.from({ length: MONTE_CARLO_EXHIBITION_LINES }, (_, lineIndex) => (
+              <Line
+                key={`monte-carlo-exhibition-line-${lineIndex}`}
+                type="monotone"
+                dataKey={`line${lineIndex}`}
+                stroke={generateLineColor(lineIndex)}
+                strokeWidth={1}
+                strokeOpacity={0.3}
+                dot={false}
+                activeDot={false}
+                connectNulls={false}
+                isAnimationActive={true}
+                animationBegin={lineIndex * 2} // Simple staggered animation
+                animationDuration={600}
+                animationEasing="ease-out"
+                style={{ pointerEvents: 'none' }} // DESABILITA TOOLTIPS PARA PERFORMANCE
+              />
+            ))}
+
+            {/* 🎯 CORREÇÃO: Linhas SEMPRE renderizadas - escala fixa, só animação visual */}
+            {monteCarloData && !isShowingLines && (
+              <>
+                {/* Pessimistic Line - SEMPRE PRESENTE NO DOM */}
+                <Line 
+                  type="monotone" 
+                  dataKey="pessimistic" 
+                  name="Cenário Pessimista"
+                  stroke="#DC2626" 
                   strokeWidth={2}
-                  label={{ 
-                    value: 'Patrimônio Perpetuidade', 
-                    position: 'insideTopRight', 
-                    fill: '#6B7280',
-                    fontSize: 11
-                  }} 
+                  strokeDasharray={getFinalLineAnimationState('pessimistic').strokeDasharray}
+                  strokeDashoffset={getFinalLineAnimationState('pessimistic').strokeDashoffset}
+                  strokeOpacity={getFinalLineAnimationState('pessimistic').opacity}
+                  dot={false}
+                  activeDot={shouldShowActiveDots ? { r: 6, stroke: '#DC2626', strokeWidth: 2, fill: '#fff' } : false}
+                  isAnimationActive={false}
+                  style={getFinalLineAnimationState('pessimistic').drawingStyle}
                 />
-              )}
-            </>
-          )}
-        </ComposedChart>
-      </ResponsiveContainer>
-    </div>
+                
+                {/* Median Line - SEMPRE PRESENTE NO DOM */}
+                <Line 
+                  type="monotone" 
+                  dataKey="median" 
+                  name="Cenário Neutro"
+                  stroke="#3B82F6" 
+                  strokeWidth={3}
+                  strokeDasharray={getFinalLineAnimationState('median').strokeDasharray}
+                  strokeDashoffset={getFinalLineAnimationState('median').strokeDashoffset}
+                  strokeOpacity={getFinalLineAnimationState('median').opacity}
+                  dot={false}
+                  activeDot={shouldShowActiveDots ? { r: 8, stroke: '#3B82F6', strokeWidth: 2, fill: '#fff' } : false}
+                  isAnimationActive={false}
+                  style={getFinalLineAnimationState('median').drawingStyle}
+                />
+                
+                {/* Optimistic Line - SEMPRE PRESENTE NO DOM */}
+                <Line 
+                  type="monotone" 
+                  dataKey="optimistic" 
+                  name="Cenário Otimista"
+                  stroke="#10B981" 
+                  strokeWidth={2}
+                  strokeDasharray={getFinalLineAnimationState('optimistic').strokeDasharray}
+                  strokeDashoffset={getFinalLineAnimationState('optimistic').strokeDashoffset}
+                  strokeOpacity={getFinalLineAnimationState('optimistic').opacity}
+                  dot={false}
+                  activeDot={shouldShowActiveDots ? { r: 6, stroke: '#10B981', strokeWidth: 2, fill: '#fff' } : false}
+                  isAnimationActive={false}
+                  style={getFinalLineAnimationState('optimistic').drawingStyle}
+                />
+              </>
+            )}
+
+            {/* Regular patrimonio line - only when Monte Carlo is disabled */}
+            {!monteCarloData && (
+              <Line 
+                type="monotone" 
+                dataKey="patrimonio" 
+                name="Patrimônio"
+                stroke="#FF6B00" 
+                strokeWidth={2}
+                dot={false}
+                activeDot={shouldShowActiveDots ? { r: 8, stroke: '#FF6B00', strokeWidth: 2, fill: '#fff' } : false}
+                connectNulls
+              />
+            )}
+          </ComposedChart>
+        </ResponsiveContainer>
+      </div>
     </>
   );
 });

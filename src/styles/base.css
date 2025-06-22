@@ -53,9 +53,9 @@
     --palette-mix-white: #FEFFFB;
     
     /* Sistema de Theming Reativo - Modo Claro */
-          --theme-surface: rgba(254, 255, 251, 0.25);
-    --theme-surface-container-bg: rgba(254, 255, 251, 0.25);
-    --theme-surface-glass: rgba(254, 255, 251, 0.15);
+          --theme-surface: rgba(0, 0, 0, 1);
+    --theme-surface-container-bg: rgba(0, 0, 0, 1);
+    --theme-surface-glass: rgba(0, 0, 0, 1);
     --theme-primary: #E48200;
     --theme-on-primary: #FEFFFB;
     --theme-secondary: #0F2A3C;
@@ -67,8 +67,8 @@
     
     /* Gradientes Técnicos */
     --tech-gradient-primary: linear-gradient(135deg, rgba(228, 130, 0, 0.1), rgba(15, 42, 60, 0.05));
-    --tech-gradient-surface: linear-gradient(135deg, rgba(254, 255, 251, 0.95), rgba(248, 250, 252, 0.9));
-    --tech-gradient-glass: linear-gradient(135deg, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.05));
+    --tech-gradient-surface: linear-gradient(135deg, rgba(0, 0, 0, 1), rgba(0, 0, 0, 1));
+    --tech-gradient-glass: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
   }
 
   .dark {
@@ -109,9 +109,9 @@
     --sidebar-ring: 217.2 91.2% 59.8%;
 
     /* Sistema de Theming Reativo - Modo Escuro */
-          --theme-surface: rgba(15, 42, 60, 0.5);
-    --theme-surface-container-bg: rgba(15, 42, 60, 0.5);
-    --theme-surface-glass: rgba(15, 42, 60, 0.15);
+          --theme-surface: rgba(0, 0, 0, 1);
+    --theme-surface-container-bg: rgba(0, 0, 0, 1);
+    --theme-surface-glass: rgba(0, 0, 0, 1);
     --theme-primary: #E48200;
     --theme-on-primary: #FEFFFB;
     --theme-secondary: #2F3B29;
@@ -123,8 +123,8 @@
     
     /* Gradientes Técnicos - Modo Escuro */
     --tech-gradient-primary: linear-gradient(135deg, rgba(228, 130, 0, 0.2), rgba(47, 59, 41, 0.1));
-    --tech-gradient-surface: linear-gradient(135deg, rgba(15, 42, 60, 0.95), rgba(47, 59, 41, 0.8));
-    --tech-gradient-glass: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.02));
+    --tech-gradient-surface: linear-gradient(135deg, rgba(0, 0, 0, 1), rgba(0, 0, 0, 1));
+    --tech-gradient-glass: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
   }
 }
 
@@ -133,17 +133,36 @@
     @apply border-border;
   }
 
+  html {
+    /* Easter Egg Matrix - Overscroll preto com códigos verdes */
+    overscroll-behavior: none;
+    background: #000000;
+  }
+
   body {
     @apply bg-background text-foreground;
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    background: #ffffff;
-    background: radial-gradient(circle, rgba(255, 255, 255, 1) 0%, rgba(199, 199, 199, 0.8) 100%);
+    background: #000000;
     position: relative;
     overflow-x: hidden;
+    min-height: 100vh;
+  }
+
+  /* Matrix Easter Egg - Códigos caindo nas áreas de overscroll */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -2;
+    background: #000000;
+    pointer-events: none;
   }
 
   /* Grade Técnica Sutil - Camada 2 da Hierarquia */
-  body::before {
+  body::after {
     content: '';
     position: fixed;
     top: 0;
@@ -162,5 +181,97 @@
   /* Tipografia Estruturada */
   .font-tech {
     font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* Matrix Rain Effect - Easter Egg */
+  .matrix-rain {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    pointer-events: none;
+    background: #000000;
+    overflow: hidden;
+  }
+
+  .matrix-column {
+    position: absolute;
+    top: -100%;
+    color: #00ff00;
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    line-height: 1.2;
+    white-space: pre;
+    animation: matrix-fall linear infinite;
+    text-shadow: 0 0 8px #00ff00, 0 0 12px #00ff00;
+    font-weight: bold;
+  }
+
+  @keyframes matrix-fall {
+    0% {
+      transform: translateY(-100vh);
+      opacity: 0.8;
+    }
+    10% {
+      opacity: 1;
+    }
+    90% {
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(100vh);
+      opacity: 0;
+    }
+  }
+
+  /* Variações de velocidade para o efeito Matrix */
+  .matrix-column:nth-child(odd) {
+    animation-duration: 4s;
+  }
+  
+  .matrix-column:nth-child(even) {
+    animation-duration: 5s;
+  }
+  
+  .matrix-column:nth-child(3n) {
+    animation-duration: 3s;
+  }
+  
+  .matrix-column:nth-child(4n) {
+    animation-duration: 6s;
+  }
+  
+  .matrix-column:nth-child(5n) {
+    animation-duration: 3.5s;
+  }
+
+  /* Variações de cor verde para mais realismo */
+  .matrix-column:nth-child(7n) {
+    color: #00cc00;
+    text-shadow: 0 0 8px #00cc00, 0 0 12px #00cc00;
+  }
+  
+  .matrix-column:nth-child(11n) {
+    color: #00aa00;
+    text-shadow: 0 0 8px #00aa00, 0 0 12px #00aa00;
+  }
+  
+  .matrix-column:nth-child(13n) {
+    color: #00dd00;
+    text-shadow: 0 0 8px #00dd00, 0 0 12px #00dd00;
+  }
+
+  .matrix-column:nth-child(17n) {
+    color: #00ff88;
+    text-shadow: 0 0 8px #00ff88, 0 0 12px #00ff88;
+  }
+}
+
+/* Matrix Rain Component - Ativado durante overscroll */
+@media (hover: hover) {
+  html:hover .matrix-rain {
+    display: block;
   }
 }
