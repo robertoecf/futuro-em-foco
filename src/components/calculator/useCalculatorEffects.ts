@@ -114,7 +114,7 @@ export const useCalculatorEffects = ({
         try {
           const volatility = getVolatilityByProfile(investorProfile);
           
-          // Use ultra-optimized version for 500 simulations
+          // Use ultra-optimized version for 1001 simulations
           const gbmResults = await runUltraOptimizedMonteCarloSimulation(
             debouncedInitialAmount,
             debouncedMonthlyAmount,
@@ -125,7 +125,7 @@ export const useCalculatorEffects = ({
             monthlyIncomeRate,
             debouncedRetirementIncome,
             retirementAnnualReturn,
-            500 // Increased from 50 to 500 simulations
+            1001 // Increased from 500 to 1001 simulations
           );
           
           const convertedResults = {
