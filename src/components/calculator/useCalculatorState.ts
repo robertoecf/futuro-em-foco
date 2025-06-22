@@ -1,4 +1,6 @@
-
+// 🚨 DEPRECATED: Este hook foi consolidado no useCalculator.ts
+// Use `import { useCalculator } from './useCalculator'` em vez deste arquivo
+// Este arquivo será removido na próxima fase de limpeza
 
 import { useState } from 'react';
 import type { InvestorProfile, CalculationResult } from './types';
@@ -6,6 +8,9 @@ import { DEFAULT_VALUES } from './constants';
 import { loadFromStorage, loadFromSharedPlan } from './storageUtils';
 import { MonteCarloResult } from '@/lib/utils';
 
+/**
+ * @deprecated Use useCalculator instead - this will be removed in Phase 3
+ */
 export const useCalculatorState = () => {
   // Try to load from shared plan first
   const sharedPlanData = loadFromSharedPlan();
@@ -17,6 +22,7 @@ export const useCalculatorState = () => {
     if (shouldUseNewDefaults) {
       return defaultValue; // Always use new defaults for now
     }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return sharedPlanData ? (sharedPlanData as any)[key] : loadFromStorage(key, defaultValue);
   };
 

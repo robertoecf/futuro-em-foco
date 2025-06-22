@@ -1,4 +1,3 @@
-
 import { formatCurrency } from '@/lib/utils';
 import { MonteCarloResult } from '@/lib/utils';
 
@@ -9,12 +8,12 @@ interface ChartLegendProps {
 
 export const ChartLegend = ({ monteCarloData, perpetuityWealth }: ChartLegendProps) => {
   return (
-    <div className="mt-4 flex flex-col gap-2 text-xs text-gray-800">
+    <div className="mt-4 flex flex-col gap-2 text-xs text-white">
       {/* Monte Carlo Legend */}
       {monteCarloData && (
         <div className="space-y-1">
           <div className="flex items-center gap-2">
-            <div className="w-6 h-0.5 bg-green-500 border-dashed border-2"></div>
+            <div className="w-6 h-0.5 bg-green-500 border-dashed border-t-2 border-green-500"></div>
             <span>Cenário Otimista (75º percentil)</span>
           </div>
           <div className="flex items-center gap-2">
@@ -22,7 +21,7 @@ export const ChartLegend = ({ monteCarloData, perpetuityWealth }: ChartLegendPro
             <span>Cenário Neutro (50º percentil)</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-6 h-0.5 bg-red-600 border-dashed border-2"></div>
+            <div className="w-6 h-0.5 bg-red-600 border-dashed border-t-2 border-red-600"></div>
             <span>Cenário Pessimista (25º percentil)</span>
           </div>
           {monteCarloData.statistics.successProbability && (
@@ -47,12 +46,18 @@ export const ChartLegend = ({ monteCarloData, perpetuityWealth }: ChartLegendPro
         <span>Total Poupado</span>
       </div>
       
-      {/* Perpetuity Legend Item */}
+      {/* Reference Lines - Only show when they are visible */}
       {perpetuityWealth > 0 && (
-        <div className="flex items-center gap-2">
-          <div className="w-6 h-0.5 border-t-2 border-dashed border-gray-500"></div>
-          <span>Patrimônio para Perpetuidade: {formatCurrency(perpetuityWealth)} (renda indefinida sem esgotar o capital)</span>
-        </div>
+        <>
+          <div className="flex items-center gap-2">
+            <div className="w-6 h-0.5 border-t-2 border-dashed border-gray-400 bg-transparent"></div>
+            <span>Idade da Independência Financeira</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-6 h-0.5 border-t-2 border-dashed border-gray-400 bg-transparent"></div>
+            <span>Patrimônio para Perpetuidade: {formatCurrency(perpetuityWealth)}</span>
+          </div>
+        </>
       )}
     </div>
   );

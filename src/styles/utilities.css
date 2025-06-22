@@ -1,17 +1,16 @@
+/* Variáveis CSS para transparências */
+:root {
+  --glass-transparency: 0.033;
+}
+
 /* Painéis de Vidro Inteligente - Camada 3 da Hierarquia */
 .glass-panel {
-  background: var(--theme-surface-container-bg);
-  backdrop-filter: blur(40px);
-  -webkit-backdrop-filter: blur(40px);
+  background: rgba(0, 0, 0, 1);
+  backdrop-filter: blur(2px);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 16px;
   box-shadow: 
-    0 0 32px rgba(255, 255, 255, 0.1),
-    0 0 64px rgba(255, 255, 255, 0.05),
-    inset 0 1px 0 rgba(255, 255, 255, 0.2),
-    inset 0 -1px 0 rgba(255, 255, 255, 0.05);
-  position: relative;
-  overflow: hidden;
+    0 4px 16px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.045);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -32,66 +31,39 @@
 }
 
 .glass-panel:hover {
-  transform: translateY(-4px) scale(1.01);
+  transform: scale(1.02);
   box-shadow: 
-    0 0 48px rgba(255, 255, 255, 0.2),
-    0 0 96px rgba(255, 255, 255, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.25),
-    0 0 0 1px rgba(228, 130, 0, 0.4);
+    0 8px 24px rgba(0, 0, 0, 0.4),
+    0 0 16px rgba(255, 165, 0, 0.045),
+    inset 0 1px 0 rgba(255, 255, 255, 0.045);
 }
 /* Cards Refinados */
 .glass-card {
-  background: var(--theme-surface-container-bg);
-  backdrop-filter: blur(40px);
-  -webkit-backdrop-filter: blur(40px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 16px;
-  box-shadow: 
-    0 0 32px rgba(255, 255, 255, 0.08),
-    0 0 64px rgba(255, 255, 255, 0.04),
-    inset 0 1px 0 rgba(255, 255, 255, 0.15);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
-  overflow: hidden;
-}
-
-.glass-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 
-    0 0 40px rgba(255, 255, 255, 0.15),
-    0 0 80px rgba(255, 255, 255, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.2),
-    0 0 0 1px rgba(228, 130, 0, 0.3);
+  background: rgba(255, 255, 255, var(--glass-transparency));
+  backdrop-filter: blur(2px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all 0.3s ease;
 }
 
 /* Insight Cards Especializado */
 .insight-card {
-  background: var(--tech-gradient-surface);
-  backdrop-filter: blur(40px);
-  -webkit-backdrop-filter: blur(40px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 12px;
-  box-shadow: 
-    0 0 24px rgba(255, 255, 255, 0.08),
-    0 0 48px rgba(255, 255, 255, 0.04),
-    inset 0 1px 0 rgba(255, 255, 255, 0.15);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
+  background: rgba(255, 255, 255, var(--glass-transparency));
+  backdrop-filter: blur(2px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all 0.3s ease;
 }
-
-/* Hover effects removed for instant loading performance */
 
 /* Monte Carlo Results Cards */
 .monte-carlo-card {
   background: var(--theme-surface-container-bg);
-  backdrop-filter: blur(40px);
-  -webkit-backdrop-filter: blur(40px);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
   border: 2px solid transparent;
   border-radius: 16px;
   background-clip: padding-box;
   box-shadow: 
-    0 0 40px rgba(255, 255, 255, 0.12),
-    0 0 80px rgba(255, 255, 255, 0.06),
+    0 0 20px rgba(255, 255, 255, 0.06),
+    0 0 40px rgba(255, 255, 255, 0.03),
     inset 0 1px 0 rgba(255, 255, 255, 0.15);
   position: relative;
   overflow: hidden;
@@ -110,87 +82,93 @@
   -webkit-mask-composite: xor;
 }
 
-/* Monte Carlo hover effects removed for performance */
-
 /* Chart Container */
 .chart-container {
   position: relative;
   width: 100%;
   height: 400px;
   margin-top: 20px;
-  /* Glass panel styles will be applied via glass-panel class */
+  background: rgba(255, 255, 255, var(--glass-transparency));
+  backdrop-filter: blur(2px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
 }
 
 /* Chart Info Cards */
 .chart-info-card {
-  background: var(--tech-gradient-surface);
-  backdrop-filter: blur(40px);
-  -webkit-backdrop-filter: blur(40px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 12px;
-  box-shadow: 
-    0 0 16px rgba(255, 255, 255, 0.08),
-    0 0 32px rgba(255, 255, 255, 0.04),
-    inset 0 1px 0 rgba(255, 255, 255, 0.15);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: rgba(255, 255, 255, var(--glass-transparency));
+  backdrop-filter: blur(2px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all 0.3s ease;
 }
-
-/* Chart info hover effects removed for performance */
 
 /* === ANIMAÇÕES TECNO-ETÉREAS === */
 
 /* Animations removed for instant loading performance */
 
-/* Investor Profile Cards */
+/* Investor Profile Cards with Enhanced Hover Effects */
 .investor-card {
-  background: var(--theme-surface-container-bg);
-  backdrop-filter: blur(40px);
-  -webkit-backdrop-filter: blur(40px);
-  border: 2px solid rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
-  box-shadow: 
-    0 0 32px rgba(255, 255, 255, 0.1),
-    0 0 64px rgba(255, 255, 255, 0.05),
-    inset 0 1px 0 rgba(255, 255, 255, 0.15);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: rgba(255, 255, 255, var(--glass-transparency));
+  backdrop-filter: blur(2px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
 }
 
-/* Investor card hover effects removed for performance */
+.investor-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 165, 0, 0.1),
+    transparent
+  );
+  transition: left 0.6s ease;
+}
+
+.investor-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 
+    0 20px 40px rgba(0, 0, 0, 0.3),
+    0 10px 20px rgba(255, 165, 0, 0.2),
+    0 0 30px rgba(255, 165, 0, 0.1);
+  border-color: rgba(255, 165, 0, 0.3);
+}
+
+.investor-card:hover::before {
+  left: 100%;
+}
 
 .investor-card.active {
   background: linear-gradient(135deg, 
     rgba(228, 130, 0, 0.15) 0%,
-    rgba(228, 130, 0, 0.05) 100%);
+    rgba(0, 0, 0, 1) 100%);
   border: 2px solid rgba(228, 130, 0, 0.5);
   box-shadow: 
-    0 12px 48px rgba(228, 130, 0, 0.3),
+    0 12px 24px rgba(228, 130, 0, 0.15),
     inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
 /* Recommendation Cards */
 .recommendation-card {
-  background: var(--theme-surface-container-bg);
-  backdrop-filter: blur(40px);
-  -webkit-backdrop-filter: blur(40px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
-  box-shadow: 
-    0 0 32px rgba(255, 255, 255, 0.1),
-    0 0 64px rgba(255, 255, 255, 0.05),
-    inset 0 1px 0 rgba(255, 255, 255, 0.15);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
+  background: rgba(255, 255, 255, var(--glass-transparency));
+  backdrop-filter: blur(2px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all 0.3s ease;
 }
 
-/* Recommendation card hover effects removed for performance */
 /* === UTILITÁRIOS TECNO-ETÉREOS === */
 
 .glass-input {
   background: var(--theme-surface-glass);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
   border: 1px solid rgba(255, 255, 255, 0.05);
   border-radius: 8px;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -225,4 +203,270 @@
 /* Manter compatibilidade com classes antigas durante transição */
 .liquid-glass {
   @apply glass-panel;
+}
+
+/* Section Navigation Arrows */
+.section-arrow {
+  font-size: 1.5rem;
+  color: rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  user-select: none;
+  font-weight: 300;
+}
+
+.section-arrow:hover {
+  color: rgba(255, 255, 255, 0.8);
+  transform: translateY(2px);
+}
+
+/* Smooth Scroll Behavior */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Magic Moment - Desativar TODAS as animações e movimentações desnecessárias */
+.magic-moment-active * {
+  animation-duration: 0s !important;
+  animation-delay: 0s !important;
+  transition-duration: 0s !important;
+  transition-delay: 0s !important;
+  transform: none !important;
+  cursor: none !important;
+}
+
+/* Exceções APENAS para elementos essenciais dentro do gráfico e mensagens */
+.magic-moment-active .aurora-loader,
+.magic-moment-active .aurora-dot,
+.magic-moment-active .animate-pulse,
+.magic-moment-active .chart-container *,
+.magic-moment-active .projecting-message *,
+.magic-moment-active .recharts-wrapper * {
+  animation-duration: revert !important;
+  animation-delay: revert !important;
+  transition-duration: revert !important;
+  transition-delay: revert !important;
+  transform: revert !important;
+}
+
+/* Força a animação do loading mesmo quando outras animações estão desativadas */
+.aurora-loader {
+  animation: unset !important;
+}
+
+.aurora-dot {
+  animation: sequencial-pulse 1.2s ease-in-out infinite !important;
+  animation-delay: var(--delay) !important;
+}
+
+/* Permitir apenas transições específicas para fade-out da lâmina preta */
+.magic-moment-active .transition-opacity {
+  transition-duration: revert !important;
+  transition-delay: revert !important;
+}
+
+
+
+/* Section Spacing */
+.section-divider {
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.1),
+    transparent
+  );
+  margin: 2rem 0;
+}
+
+/* Loading Circular - FOCOS DE LUZ COLORIDOS */
+.aurora-loader {
+  position: relative !important;
+  width: 80px !important;
+  height: 80px !important;
+  margin: 0 auto !important;
+}
+
+.aurora-dot {
+  position: absolute !important;
+  width: 10px !important;
+  height: 10px !important;
+  border-radius: 50% !important;
+  top: 50% !important;
+  left: 50% !important;
+  margin: -5px 0 0 -5px !important;
+  opacity: 0.1 !important;
+  animation: light-fade 2s ease-in-out infinite !important;
+  box-shadow: 0 0 0 rgba(255, 255, 255, 0) !important;
+  transition: all 0.3s ease !important;
+}
+
+/* Cores e posições dos focos de luz - 10 pontos com 5 cores */
+.aurora-dot:nth-child(1) { 
+  background: #4A90E2 !important; /* Azul */
+  transform: rotate(0deg) translateY(-32px) !important; 
+  animation-delay: 0s !important; 
+}
+.aurora-dot:nth-child(2) { 
+  background: #50C878 !important; /* Verde */
+  transform: rotate(36deg) translateY(-32px) !important; 
+  animation-delay: 0.2s !important; 
+}
+.aurora-dot:nth-child(3) { 
+  background: #FF8C00 !important; /* Laranja */
+  transform: rotate(72deg) translateY(-32px) !important; 
+  animation-delay: 0.4s !important; 
+}
+.aurora-dot:nth-child(4) { 
+  background: #FF4444 !important; /* Vermelho */
+  transform: rotate(108deg) translateY(-32px) !important; 
+  animation-delay: 0.6s !important; 
+}
+.aurora-dot:nth-child(5) { 
+  background: #9B59B6 !important; /* Roxo */
+  transform: rotate(144deg) translateY(-32px) !important; 
+  animation-delay: 0.8s !important; 
+}
+.aurora-dot:nth-child(6) { 
+  background: #4A90E2 !important; /* Azul */
+  transform: rotate(180deg) translateY(-32px) !important; 
+  animation-delay: 1.0s !important; 
+}
+.aurora-dot:nth-child(7) { 
+  background: #50C878 !important; /* Verde */
+  transform: rotate(216deg) translateY(-32px) !important; 
+  animation-delay: 1.2s !important; 
+}
+.aurora-dot:nth-child(8) { 
+  background: #FF8C00 !important; /* Laranja */
+  transform: rotate(252deg) translateY(-32px) !important; 
+  animation-delay: 1.4s !important; 
+}
+.aurora-dot:nth-child(9) { 
+  background: #FF4444 !important; /* Vermelho */
+  transform: rotate(288deg) translateY(-32px) !important; 
+  animation-delay: 1.6s !important; 
+}
+.aurora-dot:nth-child(10) { 
+  background: #9B59B6 !important; /* Roxo */
+  transform: rotate(324deg) translateY(-32px) !important; 
+  animation-delay: 1.8s !important; 
+}
+
+/* Animação de fade in/out suave com efeito de foco de luz */
+@keyframes light-fade {
+  0% {
+    opacity: 0.1 !important;
+    box-shadow: 0 0 0 rgba(255, 255, 255, 0) !important;
+  }
+  
+  50% {
+    opacity: 1 !important;
+    box-shadow: 0 0 15px currentColor, 0 0 30px currentColor !important;
+  }
+  
+  100% {
+    opacity: 0.1 !important;
+    box-shadow: 0 0 0 rgba(255, 255, 255, 0) !important;
+  }
+}
+
+/* Results Card Effects - Boxes menores em segunda camada */
+.results-card {
+  background: rgba(255, 255, 255, var(--glass-transparency));
+  backdrop-filter: blur(2px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  transition: all 0.3s ease;
+}
+
+/* Form Panel Cards - Painéis internos do formulário */
+.form-panel-card {
+  background: rgba(255, 255, 255, var(--glass-transparency));
+  backdrop-filter: blur(2px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all 0.3s ease;
+}
+
+/* Custom Input Styling - Seguindo padrão dos outros elementos */
+.glass-input {
+  background: transparent !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  color: white !important;
+  border-radius: 8px !important;
+  transition: all 0.3s ease !important;
+  position: relative !important;
+}
+
+.glass-input:focus {
+  outline: none !important;
+  border-color: rgba(228, 130, 0, 0.5) !important;
+  box-shadow: 
+    0 0 0 3px rgba(228, 130, 0, 0.1),
+    0 4px 12px rgba(228, 130, 0, 0.2) !important;
+  ring: none !important;
+}
+
+.glass-input::placeholder {
+  color: rgb(156, 163, 175) !important;
+}
+
+/* Remove setas padrão dos inputs numéricos */
+.glass-input::-webkit-outer-spin-button,
+.glass-input::-webkit-inner-spin-button {
+  -webkit-appearance: none !important;
+  margin: 0 !important;
+}
+
+.glass-input[type=number] {
+  -moz-appearance: textfield !important;
+}
+
+/* Container para input com setas customizadas */
+.input-with-arrows {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 120px;
+}
+
+.input-with-arrows input {
+  width: 100% !important;
+  height: 36px !important;
+  padding: 8px 32px 8px 12px !important;
+  font-size: 14px !important;
+}
+
+/* Setas customizadas minimalistas */
+.input-arrows {
+  position: absolute;
+  right: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  z-index: 10;
+}
+
+.input-arrow {
+  width: 14px;
+  height: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.4);
+  transition: all 0.3s ease;
+  user-select: none;
+  font-size: 9px;
+  font-weight: 300;
+}
+
+.input-arrow:hover {
+  color: rgba(255, 255, 255, 0.8);
+  transform: translateY(-1px);
+}
+
+.input-arrow:active {
+  transform: translateY(0);
+  color: rgba(228, 130, 0, 0.8);
 }

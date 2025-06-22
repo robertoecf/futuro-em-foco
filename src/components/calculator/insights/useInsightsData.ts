@@ -1,4 +1,3 @@
-
 import { formatCurrency } from '@/lib/utils';
 import type { InvestorProfile } from '../types';
 import {
@@ -11,7 +10,7 @@ import {
   calculateDepletingIncome,
   calculateSuggestedMonthlyContribution,
   calculateMinimumAccumulationReturn
-} from './insightsCalculations';
+} from '@/lib/calculations/financialCalculations';
 
 interface UseInsightsDataProps {
   initialAmount: number;
@@ -59,7 +58,7 @@ export const useInsightsData = ({
     
     return {
       value: sustentavel,
-      description: `${formatCurrency(sustentavel)} (perpetuidade) | ${formatCurrency(minimo)} (até ${lifeExpectancy} anos)`
+      description: `${formatCurrency(sustentavel)} (perpetuidade)\n${formatCurrency(minimo)} (até ${lifeExpectancy} anos)`
     };
   };
 

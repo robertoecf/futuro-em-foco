@@ -99,11 +99,12 @@ export const useChartAnimation = ({
     });
 
     // 🎯 ROTEIRO CRÍTICO: Só transiciona para 'paths' se AMBOS: dados prontos E 1999ms passados E estamos em projecting
+    // CENA 1 → CENA 2: Tempo mínimo de 1999ms SEMPRE respeitado
     if (hasMinimumTimePassed && dataReady && animationPhase === 'projecting') {
       setAnimationPhase('paths');
       setShouldShowAllLines(true);
-      magicMomentDebugger.addCheckpoint('Transition to Paths', 'paths', true, true, {
-        message: 'Transição para paths - desenhando 500 trajetórias'
+      magicMomentDebugger.addCheckpoint('Transition to Paths (CENA 2)', 'paths', true, true, {
+        message: 'CENA 1→2: Transição após 1999ms mínimos + dados prontos'
       });
     }
   }, [hasMinimumTimePassed, monteCarloData, isCalculating, animationPhase, shouldShow50Lines]);
@@ -163,11 +164,11 @@ export const useChartAnimation = ({
         message: 'Animation started'
       });
 
-      // Minimum time before showing paths
+      // CENA 1: Minimum time de 1999ms SEMPRE respeitado, mesmo que dados carreguem antes
       addTimer(() => {
         setHasMinimumTimePassed(true);
-        magicMomentDebugger.addCheckpoint('Minimum Time Passed', 'projecting', false, false, {
-          message: 'Minimum time passed'
+        magicMomentDebugger.addCheckpoint('Minimum Time Passed (1999ms)', 'projecting', false, false, {
+          message: 'Tempo mínimo de 1999ms respeitado - pode transicionar'
         });
       }, MAGIC_MOMENT_TIMERS.PROJECTING_DURATION);
     }
@@ -190,37 +191,38 @@ export const useChartAnimation = ({
   // Handle subsequent animation phases
   useEffect(() => {
     if (animationPhase === 'paths') {
-      magicMomentDebugger.addCheckpoint('Paths Phase Started', 'paths', true, true, {
+      magicMomentDebugger.addCheckpoint('CENA 2 Started', 'paths', true, true, {
         duration: MAGIC_MOMENT_TIMERS.PATHS_DURATION,
-        message: 'Drawing 500 lines'
+        message: 'CENA 2: Mostrando 1001 linhas com tooltips desabilitados'
       });
       
-      // Show 500 lines for 2 seconds, then optimize
-      addTimer(() => {
-        setAnimationPhase('optimizing');
-        setShouldShowAllLines(false);
-        setShouldShow50Lines(true);
+              // CENA 2 → CENA 3: Show 1001 lines for 3999ms, then show optimizing message
+        addTimer(() => {
+          setAnimationPhase('optimizing');
+          setShouldShowAllLines(false);
+          setShouldShow50Lines(false); // CENA 3: Apenas mensagem "Otimizando..."
         
-        magicMomentDebugger.addCheckpoint('Optimizing Phase Started', 'optimizing', true, true, {
+        magicMomentDebugger.addCheckpoint('CENA 3 Started', 'optimizing', true, false, {
           duration: MAGIC_MOMENT_TIMERS.OPTIMIZING_DURATION,
-          message: 'Optimizing visualization'
+          message: 'CENA 3: Mesmo formato da CENA 1 com texto "Otimizando exibição..."'
         });
         
-        // Show 50 lines for 1 second, then final
+        // CENA 3: Show optimizing message for 1999ms, then final
         addTimer(() => {
           setAnimationPhase('drawing-final');
           setShouldShow50Lines(false);
+          setShouldShowAllLines(false); // 🎯 CORREÇÃO: Garantir que todas as linhas sejam ocultadas na CENA 4
           
-          magicMomentDebugger.addCheckpoint('Drawing Final Phase Started', 'drawing-final', true, false, {
+          magicMomentDebugger.addCheckpoint('CENA 4 Started', 'drawing-final', true, false, {
             duration: MAGIC_MOMENT_TIMERS.DRAWING_FINAL_DURATION,
-            message: 'Drawing final lines'
+            message: 'CENA 4: Desenhando 3 linhas finais'
           });
           
-          // Show final result after 2 seconds
+          // CENA 4: Show final result after 3000ms
           addTimer(() => {
             setAnimationPhase('final');
             magicMomentDebugger.addCheckpoint('Animation Complete', 'final', true, false, {
-              message: 'Animation complete'
+              message: 'Momento mágico completo'
             });
             
             if (onAnimationComplete) {

@@ -1,4 +1,3 @@
-
 import { Card } from '@/components/ui/card';
 import { formatCurrency } from '@/lib/utils';
 import { MonteCarloResult } from '@/lib/utils';
@@ -19,49 +18,55 @@ export const ChartInfo = ({
       {/* Legenda dos Cenários */}
       <Card className="p-4 chart-info-card">
         <div className="flex items-center gap-2 mb-3">
-          <BarChart3 className="h-4 w-4 text-gray-800" />
-          <h4 className="text-sm font-semibold text-black">Cenários</h4>
+          <BarChart3 className="h-4 w-4 text-white" />
+          <h4 className="text-sm font-semibold text-white">Cenários</h4>
         </div>
         
-        {monteCarloData ? <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <div className="w-6 h-0.5 bg-green-500 border-t-2 border-dashed border-green-500"></div>
-              <span className="text-xs text-gray-800">Otimista (75º percentil)</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-6 h-0.5 bg-blue-500"></div>
-              <span className="text-xs text-gray-800">Neutro (50º percentil)</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-6 h-0.5 bg-red-600 border-t-2 border-dashed border-red-600"></div>
-              <span className="text-xs text-gray-800">Pessimista (25º percentil)</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-6 h-0.5 bg-gray-500"></div>
-              <span className="text-xs text-gray-800">Total Poupado</span>
-            </div>
-          </div> : <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <div className="w-6 h-0.5 bg-orange-500"></div>
-              <span className="text-xs text-gray-800">Patrimônio Projetado</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-6 h-0.5 bg-gray-500"></div>
-              <span className="text-xs text-gray-800">Total Poupado</span>
-            </div>
-          </div>}
+        <div className="space-y-2">
+          {monteCarloData ? (
+            <>
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                <span className="text-xs text-white">Otimista (75º percentil)</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                <span className="text-xs text-white">Neutro (50º percentil)</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 bg-red-500 rounded-full"></div>
+                <span className="text-xs text-white">Pessimista (25º percentil)</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 bg-gray-500 rounded-full"></div>
+                <span className="text-xs text-white">Total Poupado</span>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 bg-orange-500 rounded-full"></div>
+                <span className="text-xs text-white">Patrimônio Projetado</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 bg-gray-500 rounded-full"></div>
+                <span className="text-xs text-white">Total Poupado</span>
+              </div>
+            </>
+          )}
+        </div>
       </Card>
 
       {/* Métricas Chave */}
       <Card className="p-4 chart-info-card">
         <div className="flex items-center gap-2 mb-3">
           <TrendingUp className="h-4 w-4 text-green-600" />
-          <h4 className="text-sm font-semibold text-black">Métricas Chave</h4>
+          <h4 className="text-sm font-semibold text-white">Métricas Chave</h4>
         </div>
         
         <div className="space-y-3">
           {monteCarloData?.statistics.successProbability &&             <div>
-              <p className="text-xs text-gray-800 mb-1">Probabilidade de Sucesso</p>
+              <p className="text-xs text-white mb-1">Probabilidade de Sucesso</p>
               <p className="text-lg font-bold text-green-600">
                 {(monteCarloData.statistics.successProbability * 100).toFixed(1)}%
               </p>
@@ -69,33 +74,33 @@ export const ChartInfo = ({
         </div>
       </Card>
 
-      {/* Linhas de Referência */}
+      {/* Referências */}
       <Card className="p-4 chart-info-card">
         <div className="flex items-center gap-2 mb-3">
-          <Target className="h-4 w-4 text-gray-800" />
-          <h4 className="text-sm font-semibold text-black">Referências</h4>
+          <Target className="h-4 w-4 text-white" />
+          <h4 className="text-sm font-semibold text-white">Referências</h4>
         </div>
         
-        <div className="space-y-3">
-          <div>
-            <div className="flex items-center gap-2 mb-1">
-              <div className="w-4 h-0.5 border-t-2 border-dashed border-gray-500"></div>
-              <span className="text-xs text-gray-800">Independência financeira</span>
+        <div className="space-y-2">
+          <div className="border-l-2 border-gray-400 pl-2">
+            <div className="flex items-center gap-2">
+              <div className="w-4 h-0.5 border-t-2 border-dashed border-gray-400 bg-transparent"></div>
+              <span className="text-xs text-white">Independência financeira</span>
             </div>
-            <p className="text-sm font-semibold text-black">
+            <p className="text-sm font-semibold text-white">
               {possibleRetirementAge} anos
             </p>
           </div>
           
-          {perpetuityWealth > 0 && <div>
-              <div className="flex items-center gap-2 mb-1">
-                <div className="w-4 h-0.5 border-t-2 border-dashed border-gray-500"></div>
-                <span className="text-xs text-gray-800">Patrimônio Perpetuidade</span>
-              </div>
-              <p className="text-xs text-gray-800">
-                {formatCurrency(perpetuityWealth)}
-              </p>
-            </div>}
+          <div className="border-l-2 border-gray-400 pl-2">
+            <div className="flex items-center gap-2">
+              <div className="w-4 h-0.5 border-t-2 border-dashed border-gray-400 bg-transparent"></div>
+              <span className="text-xs text-white">Patrimônio Perpetuidade</span>
+            </div>
+            <p className="text-xs text-white">
+              {formatCurrency(perpetuityWealth)}
+            </p>
+          </div>
         </div>
       </Card>
     </div>;

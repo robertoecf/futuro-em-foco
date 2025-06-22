@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card } from '@/components/ui/card';
 import { formatCurrency } from '@/lib/utils';
@@ -21,9 +20,9 @@ export const InsightCard: React.FC<InsightCardProps> = ({
   showValueAsDescription = false
 }) => {
   return (
-    <Card className="p-6 insight-card">
-      <div className="text-center">
-        <h3 className="text-lg font-semibold mb-2 text-black">{title}</h3>
+    <Card className="p-4 insight-card">
+      <h3 className="text-lg font-semibold mb-2 text-white">{title}</h3>
+      <div className="space-y-2">
         {!showValueAsDescription && (
           <p className="text-2xl font-bold text-orange-600 mb-2 tech-number">
             {isCurrency 
@@ -32,7 +31,7 @@ export const InsightCard: React.FC<InsightCardProps> = ({
             }
           </p>
         )}
-        <p className={`text-sm text-gray-800 ${showValueAsDescription ? 'text-lg font-semibold text-orange-600 tech-number' : ''}`}>
+        <p className={`text-sm text-white whitespace-pre-line ${showValueAsDescription ? 'text-lg font-semibold text-orange-600 tech-number' : ''}`}>
           {description}
         </p>
       </div>

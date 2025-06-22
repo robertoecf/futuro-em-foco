@@ -20,7 +20,7 @@ export const LeadFormFields = ({ formData, formErrors, onFormDataChange }: LeadF
   return (
     <>
       <div>
-        <Label htmlFor="name">Nome *</Label>
+        <Label htmlFor="name" className="text-white">Nome *</Label>
         <Input
           id="name"
           type="text"
@@ -29,14 +29,15 @@ export const LeadFormFields = ({ formData, formErrors, onFormDataChange }: LeadF
           placeholder="Seu nome completo"
           maxLength={100}
           required
+          className="bg-transparent border border-white/8 text-white placeholder:text-white/60"
         />
         {formErrors.name && (
-          <p className="text-sm text-red-600 mt-1">{formErrors.name}</p>
+          <p className="text-sm text-red-400 mt-1">{formErrors.name}</p>
         )}
       </div>
 
       <div>
-        <Label htmlFor="email">Email *</Label>
+        <Label htmlFor="email" className="text-white">Email *</Label>
         <Input
           id="email"
           type="email"
@@ -45,14 +46,15 @@ export const LeadFormFields = ({ formData, formErrors, onFormDataChange }: LeadF
           placeholder="seu@email.com"
           maxLength={100}
           required
+          className="bg-transparent border border-white/8 text-white placeholder:text-white/60"
         />
         {formErrors.email && (
-          <p className="text-sm text-red-600 mt-1">{formErrors.email}</p>
+          <p className="text-sm text-red-400 mt-1">{formErrors.email}</p>
         )}
       </div>
 
       <div>
-        <Label htmlFor="phone">Telefone</Label>
+        <Label htmlFor="phone" className="text-white">Telefone</Label>
         <Input
           id="phone"
           type="tel"
@@ -60,9 +62,10 @@ export const LeadFormFields = ({ formData, formErrors, onFormDataChange }: LeadF
           onChange={(e) => onFormDataChange({ phone: e.target.value })}
           placeholder="(11) 99999-9999"
           maxLength={15}
+          className="bg-transparent border border-white/8 text-white placeholder:text-white/60"
         />
         {formErrors.phone && (
-          <p className="text-sm text-red-600 mt-1">{formErrors.phone}</p>
+          <p className="text-sm text-red-400 mt-1">{formErrors.phone}</p>
         )}
       </div>
 
@@ -73,8 +76,9 @@ export const LeadFormFields = ({ formData, formErrors, onFormDataChange }: LeadF
           onCheckedChange={(checked) => 
             onFormDataChange({ wantsExpertEvaluation: checked as boolean })
           }
+          className="border-white/8 data-[state=checked]:bg-orange-500 data-[state=checked]:border-orange-500"
         />
-        <Label htmlFor="expert" className="text-sm">
+        <Label htmlFor="expert" className="text-sm text-white">
           Quero avaliação de um especialista
         </Label>
       </div>

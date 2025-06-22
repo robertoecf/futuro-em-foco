@@ -1,6 +1,6 @@
-
 import React from 'react';
 import { Input } from '@/components/ui/input';
+import { NumberInputWithArrows } from '@/components/ui/NumberInputWithArrows';
 import { Label } from '@/components/ui/label';
 import { InvestorProfile } from './useCalculator';
 
@@ -47,18 +47,18 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
       {/* Left Panel - Dados Atuais */}
-      <div className="bg-transparent p-6 rounded-lg border border-white/20">
+      <div className="form-panel-card p-6 rounded-lg">
         <h3 className="text-xl font-semibold mb-6 text-white">Dados Atuais</h3>
         
         <div className="space-y-6">
           <div className="space-y-2">
             <Label htmlFor="current-age">Idade Atual</Label>
-            <Input
+            <NumberInputWithArrows
               id="current-age"
-              type="number"
-              defaultValue={currentAge}
-              onBlur={(e) => handleCurrentAgeBlur(e.target.value)}
+              value={currentAge}
+              onBlur={(value) => handleCurrentAgeBlur(value)}
               min={1}
+              max={100}
             />
           </div>
           
@@ -69,6 +69,7 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({
               type="text"
               defaultValue={formatInputCurrency(initialAmount)}
               onBlur={(e) => handleInitialAmountBlur(e.target.value)}
+              className="glass-input"
             />
           </div>
           
@@ -79,24 +80,25 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({
               type="text"
               defaultValue={formatInputCurrency(monthlyAmount)}
               onBlur={(e) => handleMonthlyAmountBlur(e.target.value)}
+              className="glass-input"
             />
           </div>
         </div>
       </div>
 
       {/* Right Panel - Configurações de Aposentadoria */}
-      <div className="bg-transparent p-6 rounded-lg border border-white/20">
+      <div className="form-panel-card p-6 rounded-lg">
         <h3 className="text-xl font-semibold mb-6 text-white">Configurações de Aposentadoria</h3>
         
         <div className="space-y-6">
           <div className="space-y-2">
             <Label htmlFor="retirement-age">Idade de Aposentadoria</Label>
-            <Input
+            <NumberInputWithArrows
               id="retirement-age"
-              type="number"
-              defaultValue={retirementAge}
-              onBlur={(e) => handleRetirementAgeBlur(e.target.value)}
+              value={retirementAge}
+              onBlur={(value) => handleRetirementAgeBlur(value)}
               min={currentAge + 1}
+              max={100}
             />
           </div>
 
@@ -108,9 +110,10 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({
               defaultValue={formatInputCurrency(retirementIncome)}
               onBlur={(e) => handleRetirementIncomeBlur(e.target.value)}
               placeholder="Deixe 0 para cálculo automático"
+              className="glass-input"
             />
             {retirementIncome === 0 && (
-                          <p className="text-xs text-gray-300 mt-1">
+                          <p className="text-xs text-white mt-1">
               O valor será calculado automaticamente com base no patrimônio acumulado
             </p>
             )}
@@ -118,15 +121,16 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({
 
           <div className="space-y-2">
             <Label htmlFor="portfolio-return">Retorno do Portfólio na Aposentadoria (%)</Label>
-            <Input
+            <NumberInputWithArrows
               id="portfolio-return"
-              type="number"
-              step="0.1"
-              defaultValue={portfolioReturn}
-              onBlur={(e) => handlePortfolioReturnBlur(e.target.value)}
+              value={portfolioReturn}
+              onBlur={(value) => handlePortfolioReturnBlur(value)}
+              min={0.1}
+              max={50}
+              step={0.1}
               placeholder="Ex: 4.0"
             />
-            <p className="text-xs text-gray-300 mt-1">
+            <p className="text-xs text-white mt-1">
               Taxa de retorno anual esperada durante a aposentadoria
             </p>
           </div>

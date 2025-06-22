@@ -1,3 +1,7 @@
+// 🚨 DEPRECATED: Este hook foi consolidado no useCalculator.ts
+// Use `import { useCalculator } from './useCalculator'` em vez deste arquivo
+// Este arquivo será removido na próxima fase de limpeza
+
 import { useCallback } from 'react';
 import type { InvestorProfile } from './types';
 import type { MonteCarloResult } from '@/lib/utils';
@@ -20,6 +24,9 @@ interface UseCalculatorHandlersProps {
   setMonteCarloResult: (value: MonteCarloResult | null) => void;
 }
 
+/**
+ * @deprecated Use useCalculator instead - this will be removed in Phase 3
+ */
 export const useCalculatorHandlers = ({
   currentAge,
   retirementAge,

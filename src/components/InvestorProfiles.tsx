@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -61,8 +60,10 @@ export const InvestorProfiles = ({ onProfileSelect, selectedProfile }: InvestorP
   return (
     <TooltipProvider delayDuration={0} skipDelayDuration={0}>
               <div className="space-y-6">
-          <h2 className="text-2xl font-bold text-black">Perfil do Investidor</h2>
-        <p className="text-gray-300 mb-6">De acordo com o seu perfil de investidor, o seu perfil é o que melhor se adequa às suas expectativas:</p>
+          <div className="mb-8">
+            <h2 className="text-2xl font-bold text-white">Perfil do Investidor</h2>
+            <p className="text-gray-300 mb-6">De acordo com o seu perfil de investidor, o seu perfil é o que melhor se adequa às suas expectativas:</p>
+          </div>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {profiles.map((profile) => (
@@ -74,7 +75,7 @@ export const InvestorProfiles = ({ onProfileSelect, selectedProfile }: InvestorP
               <div className="flex justify-between items-start mb-4">
                 <h3 className="text-xl font-semibold text-white">{profile.title}</h3>
                 {selectedProfile === profile.id && (
-                  <Badge className="bg-green-500">Selecionado</Badge>
+                  <Badge className="bg-orange-500/75 text-white border-orange-400">Selecionado</Badge>
                 )}
               </div>
               
