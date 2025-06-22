@@ -5,6 +5,7 @@ import type { ChartDataPoint } from '@/utils/csvExport';
 import { CustomTooltip } from './CustomTooltip';
 import { formatYAxis } from './utils/chartUtils';
 import { useFinalLinesAnimation } from './hooks/useFinalLinesAnimation';
+import { ChartVisibilityState } from './ChartInfo';
 
 // Monte Carlo configuration
 const MONTE_CARLO_EXHIBITION_LINES = 1001; // Show ALL calculated lines in Scene 2
@@ -21,6 +22,7 @@ interface ChartRendererProps {
   lineDrawingDuration?: number;
   animationPhase?: 'projecting' | 'paths' | 'optimizing' | 'drawing-final' | 'final';
   showGrid?: boolean;
+  visibility?: ChartVisibilityState;
 }
 
 export const ChartRenderer = React.memo(({
@@ -33,7 +35,8 @@ export const ChartRenderer = React.memo(({
   isShowing50Lines: _isShowing50Lines,
   isDrawingFinalLines,
   animationPhase = 'final',
-  showGrid = true
+  showGrid = true,
+  visibility
 }: ChartRendererProps) => {
   
   const { getFinalLineAnimationState, isAnimationComplete: _isAnimationComplete } = useFinalLinesAnimation({
@@ -82,8 +85,8 @@ export const ChartRenderer = React.memo(({
           <ComposedChart
             data={chartData}
             margin={typeof window !== 'undefined' && window.innerWidth < 640 ? 
-              { top: 10, right: 10, left: 60, bottom: 10 } : 
-              { top: 20, right: 30, left: 80, bottom: 20 }
+              { top: 10, right: 10, left: 10, bottom: 10 } : 
+              { top: 20, right: 30, left: 30, bottom: 20 }
             }
             style={{
               cursor: shouldShowActiveDots ? 'crosshair' : 'none',
@@ -130,7 +133,7 @@ export const ChartRenderer = React.memo(({
             />
             <YAxis 
               tickFormatter={formatYAxis}
-              width={typeof window !== 'undefined' && window.innerWidth < 640 ? 60 : 80}
+              width={typeof window !== 'undefined' && window.innerWidth < 640 ? 50 : 60}
               tick={{ 
                 fill: '#ffffff',
                 fontSize: typeof window !== 'undefined' && window.innerWidth < 640 ? 10 : 12
@@ -142,7 +145,8 @@ export const ChartRenderer = React.memo(({
             
             {/* 🎯 VOLTA SIMPLES: Linhas de referência normais - problema é mudança de escala */}
             {/* Linha de Independência Financeira */}
-            {(possibleRetirementAge > 0 || monteCarloData) && (
+            {(possibleRetirementAge > 0 || monteCarloData) && 
+             (visibility?.references.financialIndependence !== false) && (
               <ReferenceLine 
                 x={possibleRetirementAge > 0 ? possibleRetirementAge : 65} 
                 stroke="#9CA3AF" 
@@ -158,7 +162,8 @@ export const ChartRenderer = React.memo(({
             )}
             
             {/* Linha de Patrimônio Perpetuidade */}
-            {(perpetuityWealth > 0 || monteCarloData) && (
+            {(perpetuityWealth > 0 || monteCarloData) && 
+             (visibility?.references.perpetuityWealth !== false) && (
               <ReferenceLine 
                 y={perpetuityWealth > 0 ? perpetuityWealth : 1000000} 
                 stroke="#9CA3AF" 
@@ -188,18 +193,21 @@ export const ChartRenderer = React.memo(({
               />
             )}
             
-            {/* Savings line - always visible, no animation after Magic Moment */}
-            <Line 
-              type="monotone" 
-              dataKey="poupanca" 
-              name="Total Poupado"
-              stroke="#6B7280" 
-              strokeWidth={2}
-              dot={false}
-              activeDot={shouldShowActiveDots ? { r: 6, stroke: '#6B7280', strokeWidth: 2, fill: '#fff' } : false}
-              isAnimationActive={false}
-              animationDuration={0}
-            />
+            {/* Savings line - controlled by visibility */}
+            {(visibility?.scenarios.totalSaved !== false) && (
+              <Line 
+                type="monotone" 
+                dataKey="poupanca" 
+                name="Total Poupado"
+                stroke="#6B7280" 
+                strokeWidth={2}
+                strokeDasharray="8 4"
+                dot={false}
+                activeDot={shouldShowActiveDots ? { r: 6, stroke: '#6B7280', strokeWidth: 2, fill: '#fff' } : false}
+                isAnimationActive={false}
+                animationDuration={0}
+              />
+            )}
 
             {/* MonteCarloExibitionLines - Scene 2 with simple animation - TOOLTIPS DESABILITADOS */}
             {isShowingLines && Array.from({ length: MONTE_CARLO_EXHIBITION_LINES }, (_, lineIndex) => (
@@ -224,58 +232,64 @@ export const ChartRenderer = React.memo(({
             {/* 🎯 CORREÇÃO: Linhas SEMPRE renderizadas - escala fixa, só animação visual */}
             {monteCarloData && !isShowingLines && (
               <>
-                {/* Pessimistic Line - SEMPRE PRESENTE NO DOM */}
-                <Line 
-                  type="monotone" 
-                  dataKey="pessimistic" 
-                  name="Cenário Pessimista"
-                  stroke="#DC2626" 
-                  strokeWidth={2}
-                  strokeDasharray={getFinalLineAnimationState('pessimistic').strokeDasharray}
-                  strokeDashoffset={getFinalLineAnimationState('pessimistic').strokeDashoffset}
-                  strokeOpacity={getFinalLineAnimationState('pessimistic').opacity}
-                  dot={false}
-                  activeDot={shouldShowActiveDots ? { r: 6, stroke: '#DC2626', strokeWidth: 2, fill: '#fff' } : false}
-                  isAnimationActive={false}
-                  style={getFinalLineAnimationState('pessimistic').drawingStyle}
-                />
+                {/* Pessimistic Line - controlled by visibility */}
+                {(visibility?.scenarios.pessimistic !== false) && (
+                  <Line 
+                    type="monotone" 
+                    dataKey="pessimistic" 
+                    name="Cenário Pessimista"
+                    stroke="#DC2626" 
+                    strokeWidth={2}
+                    strokeDasharray={getFinalLineAnimationState('pessimistic').strokeDasharray}
+                    strokeDashoffset={getFinalLineAnimationState('pessimistic').strokeDashoffset}
+                    strokeOpacity={getFinalLineAnimationState('pessimistic').opacity}
+                    dot={false}
+                    activeDot={shouldShowActiveDots ? { r: 6, stroke: '#DC2626', strokeWidth: 2, fill: '#fff' } : false}
+                    isAnimationActive={false}
+                    style={getFinalLineAnimationState('pessimistic').drawingStyle}
+                  />
+                )}
                 
-                {/* Median Line - SEMPRE PRESENTE NO DOM */}
-                <Line 
-                  type="monotone" 
-                  dataKey="median" 
-                  name="Cenário Neutro"
-                  stroke="#3B82F6" 
-                  strokeWidth={3}
-                  strokeDasharray={getFinalLineAnimationState('median').strokeDasharray}
-                  strokeDashoffset={getFinalLineAnimationState('median').strokeDashoffset}
-                  strokeOpacity={getFinalLineAnimationState('median').opacity}
-                  dot={false}
-                  activeDot={shouldShowActiveDots ? { r: 8, stroke: '#3B82F6', strokeWidth: 2, fill: '#fff' } : false}
-                  isAnimationActive={false}
-                  style={getFinalLineAnimationState('median').drawingStyle}
-                />
+                {/* Median Line - controlled by visibility */}
+                {(visibility?.scenarios.neutral !== false) && (
+                  <Line 
+                    type="monotone" 
+                    dataKey="median" 
+                    name="Cenário Neutro"
+                    stroke="#3B82F6" 
+                    strokeWidth={3}
+                    strokeDasharray={getFinalLineAnimationState('median').strokeDasharray}
+                    strokeDashoffset={getFinalLineAnimationState('median').strokeDashoffset}
+                    strokeOpacity={getFinalLineAnimationState('median').opacity}
+                    dot={false}
+                    activeDot={shouldShowActiveDots ? { r: 8, stroke: '#3B82F6', strokeWidth: 2, fill: '#fff' } : false}
+                    isAnimationActive={false}
+                    style={getFinalLineAnimationState('median').drawingStyle}
+                  />
+                )}
                 
-                {/* Optimistic Line - SEMPRE PRESENTE NO DOM */}
-                <Line 
-                  type="monotone" 
-                  dataKey="optimistic" 
-                  name="Cenário Otimista"
-                  stroke="#10B981" 
-                  strokeWidth={2}
-                  strokeDasharray={getFinalLineAnimationState('optimistic').strokeDasharray}
-                  strokeDashoffset={getFinalLineAnimationState('optimistic').strokeDashoffset}
-                  strokeOpacity={getFinalLineAnimationState('optimistic').opacity}
-                  dot={false}
-                  activeDot={shouldShowActiveDots ? { r: 6, stroke: '#10B981', strokeWidth: 2, fill: '#fff' } : false}
-                  isAnimationActive={false}
-                  style={getFinalLineAnimationState('optimistic').drawingStyle}
-                />
+                {/* Optimistic Line - controlled by visibility */}
+                {(visibility?.scenarios.optimistic !== false) && (
+                  <Line 
+                    type="monotone" 
+                    dataKey="optimistic" 
+                    name="Cenário Otimista"
+                    stroke="#10B981" 
+                    strokeWidth={2}
+                    strokeDasharray={getFinalLineAnimationState('optimistic').strokeDasharray}
+                    strokeDashoffset={getFinalLineAnimationState('optimistic').strokeDashoffset}
+                    strokeOpacity={getFinalLineAnimationState('optimistic').opacity}
+                    dot={false}
+                    activeDot={shouldShowActiveDots ? { r: 6, stroke: '#10B981', strokeWidth: 2, fill: '#fff' } : false}
+                    isAnimationActive={false}
+                    style={getFinalLineAnimationState('optimistic').drawingStyle}
+                  />
+                )}
               </>
             )}
 
-            {/* Regular patrimonio line - only when Monte Carlo is disabled */}
-            {!monteCarloData && (
+            {/* Regular patrimonio line - only when Monte Carlo is disabled and visibility allows */}
+            {!monteCarloData && (visibility?.scenarios.patrimony !== false) && (
               <Line 
                 type="monotone" 
                 dataKey="patrimonio" 

@@ -1,6 +1,6 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import { ChartControls } from './chart/ChartControls';
-import { ChartInfo } from './chart/ChartInfo';
+import { ChartInfo, ChartVisibilityState } from './chart/ChartInfo';
 import { calculatePossibleRetirementAge } from './chart/utils/chartUtils';
 import { InvestorProfile, CalculationResult } from '@/components/calculator/useCalculator';
 import { MonteCarloResult } from '@/lib/utils';
@@ -59,6 +59,19 @@ export const ChartComponent = React.memo(({
   
   // State for chart settings
   const [showGrid, setShowGrid] = useState(false);
+  const [chartVisibility, setChartVisibility] = useState<ChartVisibilityState>({
+    scenarios: {
+      optimistic: true,
+      neutral: true,
+      pessimistic: true,
+      totalSaved: true,
+      patrimony: true
+    },
+    references: {
+      financialIndependence: false,
+      perpetuityWealth: false
+    }
+  });
 
   const finalMonteCarloData = monteCarloData === undefined ? null : monteCarloData;
 
@@ -199,6 +212,7 @@ export const ChartComponent = React.memo(({
               lineDrawingDuration={lineDrawingDuration}
               animationPhase={animationPhase}
               showGrid={showGrid}
+              visibility={chartVisibility}
             />
           )}
         </div>
@@ -214,6 +228,7 @@ export const ChartComponent = React.memo(({
           monteCarloData={finalMonteCarloData}
           perpetuityWealth={perpetuityWealth}
           possibleRetirementAge={possibleRetirementAge}
+          onVisibilityChange={setChartVisibility}
         />
       </div>
 

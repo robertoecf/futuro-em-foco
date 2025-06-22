@@ -12,7 +12,7 @@ export const HeroSection = ({ onReceivePlan }: HeroSectionProps) => {
   };
 
   return (
-    <div className="aurora-banner text-white p-12 md:p-16 lg:p-20 rounded-3xl relative overflow-hidden" style={{ width: '100%', display: 'block' }}>
+    <div className="aurora-banner text-white p-8 sm:p-12 md:p-12 lg:p-12 xl:p-14 rounded-3xl relative overflow-hidden" style={{ width: '100%', display: 'block' }}>
       {/* Aurora Background */}
       <div id="aurora-banner-background">
         <div id="banner-blob1" className="aurora-banner-blob"></div>
@@ -28,7 +28,7 @@ export const HeroSection = ({ onReceivePlan }: HeroSectionProps) => {
 
       {/* Content */}
       <div className="relative z-10 text-center">
-        <h1 className="text-4xl md:text-5xl font-bold mb-4">
+        <h1 className="text-3xl sm:text-4xl md:text-4xl lg:text-5xl xl:text-5xl font-bold mb-4 leading-tight">
           Quer garantir sua aposentadoria tranquila?
         </h1>
         <p className="text-lg mb-8 opacity-90">

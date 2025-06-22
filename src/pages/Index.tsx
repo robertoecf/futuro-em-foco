@@ -83,7 +83,7 @@ const Index = () => {
       {/* Hero Section - Centralized */}
       <section className="min-h-screen flex items-center justify-center relative">
         <div className="flex justify-center">
-          <div className="w-full max-w-6xl px-4 sm:px-6 lg:px-8">
+          <div className="w-full max-w-7xl px-4 sm:px-6 lg:px-4">
             <HeroSection onReceivePlan={() => setIsLeadFormOpen(true)} />
           </div>
         </div>
@@ -102,7 +102,7 @@ const Index = () => {
       {/* Analysis Section - Centralized */}
       <section id="calculator-section" className="min-h-screen flex items-center justify-center relative">
         <div className="flex justify-center">
-          <div className="w-full max-w-6xl px-4 sm:px-6 lg:px-8">
+          <div className="w-full max-w-7xl px-4 sm:px-6 lg:px-4">
             <Calculator />
           </div>
         </div>
@@ -120,7 +120,7 @@ const Index = () => {
 
       {/* CTA Section - Centralized */}
       <div className="flex justify-center mt-48">
-        <div className="w-full max-w-6xl px-4 sm:px-6 lg:px-8">
+        <div className="w-full max-w-7xl px-4 sm:px-6 lg:px-4">
           <section id="cta-section" className="min-h-screen flex items-center justify-center relative pb-24">
             <div className="aurora-banner text-white p-12 md:p-16 lg:p-20 rounded-3xl relative overflow-hidden" style={{ width: '100%', display: 'block' }}>
               {/* Aurora Background */}
@@ -142,7 +142,7 @@ const Index = () => {
                   Pronto para impulsionar sua jornada?
                 </h1>
                 <p className="text-lg mb-8 opacity-90">
-                  Transforme seus sonhos objetivos em realidade com um plano de gestão patrimonial sob medida.
+                  Transforme seus objetivos em realidade com um plano de gestão patrimonial sob medida.
                 </p>
                 <Button
                   onClick={() => setIsLeadFormOpen(true)}
@@ -162,7 +162,7 @@ const Index = () => {
       {showHeader && (
         <header className="fixed top-0 left-0 right-0 z-50 bg-black/90 backdrop-blur-sm border-b border-white/10 transition-all duration-300">
           <div className="flex justify-center">
-            <div className="w-full max-w-6xl px-4 sm:px-6 lg:px-8">
+            <div className="w-full max-w-7xl px-4 sm:px-6 lg:px-4">
               <div className="flex items-center justify-between h-16">
                 <div 
                   className="tech-logo-header text-white text-xl cursor-pointer"
@@ -198,7 +198,7 @@ const Index = () => {
       {/* Footer */}
       <footer className="py-4 bg-black">
         <div className="flex justify-center">
-          <div className="w-full max-w-6xl px-4 sm:px-6 lg:px-8">
+          <div className="w-full max-w-7xl px-4 sm:px-6 lg:px-4">
             <p className="text-center text-xs text-gray-700 opacity-30 leading-tight">
               As informações contidas neste material são de caráter exclusivamente informativo e não devem ser entendidas como oferta, recomendação ou análise de investimento.
               O Futuro em Foco Planner não garante que os rendimentos futuros serão iguais aos apresentados neste simulador.
