@@ -32,7 +32,7 @@ export const ProjectingMessage = ({
         <div className="text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-orange-500 mx-auto mb-6"></div>
           <h3 className="text-2xl font-bold text-white mb-2">{currentMessage.title}</h3>
-          <p className="text-gray-800">{currentMessage.subtitle}</p>
+                      <p className="text-white">{currentMessage.subtitle}</p>
         </div>
       </div>
       
@@ -44,7 +44,7 @@ export const ProjectingMessage = ({
             <div className="flex items-center space-x-3">
               <div>
                 <h3 className="text-sm font-medium text-white">Simulação Probabilística | Método de Monte Carlo</h3>
-                <p className="text-xs text-gray-800">
+                                  <p className="text-xs text-white">
                   {phase === 'projecting' ? 'Calculando mil cenários aleatórios...' : 'Otimizando visualização...'}
                 </p>
               </div>
@@ -75,7 +75,7 @@ export const ProjectingMessage = ({
                   className="w-20 px-3 py-1 border border-gray-300 rounded-md text-sm font-medium"
                   min={possibleRetirementAge + 1}
                 />
-                <span className="text-sm text-gray-800">anos</span>
+                <span className="text-sm text-white">anos</span>
               </div>
             </div>
           </div>

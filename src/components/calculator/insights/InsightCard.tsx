@@ -32,7 +32,7 @@ export const InsightCard: React.FC<InsightCardProps> = ({
             }
           </p>
         )}
-        <p className={`text-sm text-gray-800 ${showValueAsDescription ? 'text-lg font-semibold text-orange-600 tech-number' : ''}`}>
+        <p className={`text-sm text-white ${showValueAsDescription ? 'text-lg font-semibold text-orange-600 tech-number' : ''}`}>
           {description}
         </p>
       </div>
