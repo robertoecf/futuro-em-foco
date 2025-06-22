@@ -1,4 +1,3 @@
-
 import { Button } from '@/components/ui/button';
 
 interface HeroSectionProps {
@@ -13,7 +12,7 @@ export const HeroSection = ({ onReceivePlan }: HeroSectionProps) => {
   };
 
   return (
-    <div className="aurora-banner text-white p-8 md:p-16 rounded-3xl relative overflow-hidden">
+    <div className="aurora-banner text-white p-12 md:p-16 lg:p-20 rounded-3xl relative overflow-hidden" style={{ width: '100%', display: 'block' }}>
       {/* Aurora Background */}
       <div id="aurora-banner-background">
         <div id="banner-blob1" className="aurora-banner-blob"></div>
@@ -28,7 +27,7 @@ export const HeroSection = ({ onReceivePlan }: HeroSectionProps) => {
       </div>
 
       {/* Content */}
-      <div className="max-w-3xl relative z-10">
+      <div className="relative z-10 text-center">
         <h1 className="text-4xl md:text-5xl font-bold mb-4">
           Quer garantir sua aposentadoria tranquila?
         </h1>
