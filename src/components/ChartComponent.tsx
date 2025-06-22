@@ -146,9 +146,6 @@ export const ChartComponent = React.memo(({
             onMonteCarloToggle={onMonteCarloToggle || (() => {})}
             showGrid={showGrid}
             onGridToggle={setShowGrid}
-            chartData={chartData}
-            planningInputs={planningInputs}
-            calculationResult={calculationResult}
           />
         </div>
       )}

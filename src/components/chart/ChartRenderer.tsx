@@ -175,7 +175,7 @@ export const ChartRenderer = React.memo(({
 
             {shouldShowActiveDots && (
               <Tooltip 
-                content={<CustomTooltip monteCarloData={monteCarloData} shouldShow={shouldShowActiveDots} />} 
+                content={<CustomTooltip monteCarloData={monteCarloData} />} 
                 cursor={false} // Remove a linha pontilhada vertical
                 animationDuration={0}
                 wrapperStyle={{ 
@@ -188,7 +188,7 @@ export const ChartRenderer = React.memo(({
               />
             )}
             
-            {/* Savings line - always visible */}
+            {/* Savings line - always visible, no animation after Magic Moment */}
             <Line 
               type="monotone" 
               dataKey="poupanca" 
@@ -197,6 +197,8 @@ export const ChartRenderer = React.memo(({
               strokeWidth={2}
               dot={false}
               activeDot={shouldShowActiveDots ? { r: 6, stroke: '#6B7280', strokeWidth: 2, fill: '#fff' } : false}
+              isAnimationActive={false}
+              animationDuration={0}
             />
 
             {/* MonteCarloExibitionLines - Scene 2 with simple animation - TOOLTIPS DESABILITADOS */}
