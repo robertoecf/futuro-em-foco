@@ -20,7 +20,7 @@ export const ChartInfo = ({
       <Card className="p-4 chart-info-card">
         <div className="flex items-center gap-2 mb-3">
           <BarChart3 className="h-4 w-4 text-gray-800" />
-          <h4 className="text-sm font-semibold text-black">Cenários</h4>
+          <h4 className="text-sm font-semibold text-white">Cenários</h4>
         </div>
         
         {monteCarloData ? <div className="space-y-2">
@@ -56,7 +56,7 @@ export const ChartInfo = ({
       <Card className="p-4 chart-info-card">
         <div className="flex items-center gap-2 mb-3">
           <TrendingUp className="h-4 w-4 text-green-600" />
-          <h4 className="text-sm font-semibold text-black">Métricas Chave</h4>
+          <h4 className="text-sm font-semibold text-white">Métricas Chave</h4>
         </div>
         
         <div className="space-y-3">
@@ -73,7 +73,7 @@ export const ChartInfo = ({
       <Card className="p-4 chart-info-card">
         <div className="flex items-center gap-2 mb-3">
           <Target className="h-4 w-4 text-gray-800" />
-          <h4 className="text-sm font-semibold text-black">Referências</h4>
+          <h4 className="text-sm font-semibold text-white">Referências</h4>
         </div>
         
         <div className="space-y-3">
@@ -82,7 +82,7 @@ export const ChartInfo = ({
               <div className="w-4 h-0.5 border-t-2 border-dashed border-gray-500"></div>
               <span className="text-xs text-gray-800">Independência financeira</span>
             </div>
-            <p className="text-sm font-semibold text-black">
+            <p className="text-sm font-semibold text-white">
               {possibleRetirementAge} anos
             </p>
           </div>

@@ -55,7 +55,7 @@ export const Calculator: React.FC = () => {
       <Card className="p-6 shadow-lg glass-card">
         {/* Parameters Section Title */}
         <div className="mb-6">
-          <h3 className="text-xl font-bold text-black">Parâmetros</h3>
+                        <h3 className="text-xl font-bold text-white">Parâmetros</h3>
         </div>
 
         {/* Optimized Input Form */}

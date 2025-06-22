@@ -10,7 +10,7 @@ export const ProjectingOverlay = ({ isVisible }: ProjectingOverlayProps) => {
           <div className="absolute inset-0 bg-white/50 backdrop-blur-sm flex items-center justify-center z-10 rounded-lg">
       <div className="text-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-4 border-orange-500 mx-auto mb-4"></div>
-        <h3 className="text-xl font-bold text-black mb-1">Otimizando exibição...</h3>
+        <h3 className="text-xl font-bold text-white mb-1">Otimizando exibição...</h3>
         <p className="text-gray-800 text-sm">Preparando visualização dos cenários finais</p>
       </div>
     </div>
