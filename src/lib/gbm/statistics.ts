@@ -35,13 +35,13 @@ export function calculateStatistics(
     }
   }
   
-  // Calculate success probability and realized statistics
-  const retirementValues = allSimulations.map(sim => sim[accumulationYears] || 0);
-  const successfulSimulations = retirementValues.filter(val => val > 0).length;
+  // Calculate success probability: scenarios with patrimônio > 0 at life expectancy
+  const lifeExpectancyValues = allSimulations.map(sim => sim[sim.length - 1] || 0);
+  const successfulSimulations = lifeExpectancyValues.filter(val => val > 0).length;
   const successProbability = successfulSimulations / simulationCount;
   
   // Calculate average realized return and volatility
-  const finalValues = allSimulations.map(sim => sim[sim.length - 1] || 0);
+  const finalValues = lifeExpectancyValues;
   const averageReturn = finalValues.reduce((sum, val) => sum + val, 0) / finalValues.length;
   const finalVariance = finalValues.reduce((sum, val) => sum + Math.pow(val - averageReturn, 2), 0) / finalValues.length;
   const volatilityRealized = Math.sqrt(finalVariance) / averageReturn;

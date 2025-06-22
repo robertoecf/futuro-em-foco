@@ -83,7 +83,14 @@ const createWorker = () => {
         // Retirement phase
         const retirementYears = totalYears - accumulationYears;
         if (retirementYears > 0) {
-          const retirementVolatility = volatility * 0.7;
+          // Calculate retirement volatility based on return:
+          // ≤4% a.a. → 1% volatility (default)
+          // >4% a.a. → +2 bps volatility per 1 bps return above 4%
+          const baseVolatility = 0.01; // 1% base volatility
+          const baseReturn = 0.04; // 4% base return
+          const retirementVolatility = retirementAnnualReturn <= baseReturn 
+            ? baseVolatility 
+            : baseVolatility + ((retirementAnnualReturn - baseReturn) * 2);
           const monthlyIncome = retirementMonthlyIncome > 0 ? 
             retirementMonthlyIncome : 
             retirementStartValue * monthlyIncomeRate;

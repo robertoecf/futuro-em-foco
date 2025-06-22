@@ -5,6 +5,24 @@ import { MonteCarloResult } from '@/lib/utils';
 // Monte Carlo configuration
 const MONTE_CARLO_ALL_LINES = 1001; // Total scenarios to calculate
 
+// Approximation of inverse normal CDF for percentile mapping
+function approximateInverseNormal(p: number): number {
+  // Clamp percentile to valid range
+  p = Math.max(0.0001, Math.min(0.9999, p));
+  
+  // Beasley-Springer-Moro approximation
+  const a0 = 2.515517, a1 = 0.802853, a2 = 0.010328;
+  const b1 = 1.432788, b2 = 0.189269, b3 = 0.001308;
+  
+  if (p < 0.5) {
+    const t = Math.sqrt(-2 * Math.log(p));
+    return -((a2 * t + a1) * t + a0) / (((b3 * t + b2) * t + b1) * t + 1);
+  } else {
+    const t = Math.sqrt(-2 * Math.log(1 - p));
+    return ((a2 * t + a1) * t + a0) / (((b3 * t + b2) * t + b1) * t + 1);
+  }
+}
+
 interface ChartDataProcessorProps {
   data: number[];
   currentAge: number;
@@ -67,25 +85,36 @@ export const useChartDataProcessor = ({
     const lines: number[][] = [];
     const baseData = monteCarloData.scenarios.median;
     
-    // Generate 1001 varied paths based on the Monte Carlo scenarios
+    // Generate 1001 varied paths using realistic statistical distribution
     for (let lineIndex = 0; lineIndex < MONTE_CARLO_ALL_LINES; lineIndex++) {
       const lineData = baseData.map((value, dataIndex) => {
-        // Create variation between pessimistic and optimistic scenarios
         const pessimistic = monteCarloData.scenarios.pessimistic[dataIndex] || value;
+        const median = monteCarloData.scenarios.median[dataIndex] || value;
         const optimistic = monteCarloData.scenarios.optimistic[dataIndex] || value;
         
-        // Use a more sophisticated interpolation for 1001 lines
-        const t = lineIndex / (MONTE_CARLO_ALL_LINES - 1);
-        const randomFactor = Math.random() * 0.3 + 0.7; // Between 0.7 and 1.0
+        // Generate normal distribution around median
+        // Using Box-Muller transform for proper gaussian distribution
+        const u1 = Math.random();
+        const u2 = Math.random();
+        const standardNormal = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
         
-        // Create a distribution that clusters around the median
-        const normalizedT = Math.pow(t, 2) * (t < 0.5 ? 1 : -1) + 0.5;
-        const interpolated = pessimistic + (optimistic - pessimistic) * normalizedT;
+        // Map line index to percentile (0 to 1)
+        const percentile = lineIndex / (MONTE_CARLO_ALL_LINES - 1);
         
-        // Add controlled noise
-        const noise = (Math.random() - 0.5) * 0.05 * value * randomFactor;
+        // Use inverse normal CDF approximation to map percentile to standard normal
+        const normalValue = approximateInverseNormal(percentile);
         
-        return Math.max(0, interpolated + noise);
+        // Estimate standard deviation from percentiles
+        // P25 ≈ median - 0.674σ, P75 ≈ median + 0.674σ
+        const stdDev = (optimistic - pessimistic) / (2 * 0.674);
+        
+        // Generate value using normal distribution centered on median
+        const simulatedValue = median + (normalValue * stdDev);
+        
+        // Add small random variation to avoid identical lines
+        const noise = (Math.random() - 0.5) * 0.02 * Math.abs(simulatedValue);
+        
+        return Math.max(0, simulatedValue + noise);
       });
       lines.push(lineData);
     }

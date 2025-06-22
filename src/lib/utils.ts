@@ -127,9 +127,9 @@ export function runMonteCarloSimulation(
     standardDeviation.push(Math.sqrt(variance));
   }
   
-  // Calculate success probability (simplified: if retirement value > 0)
-  const retirementValues = allSimulations.map(sim => sim[accumulationYears]);
-  const successfulSimulations = retirementValues.filter(val => val > 0).length;
+  // Calculate success probability: scenarios with patrimônio > 0 at life expectancy
+  const lifeExpectancyValues = allSimulations.map(sim => sim[sim.length - 1] || 0);
+  const successfulSimulations = lifeExpectancyValues.filter(val => val > 0).length;
   const successProbability = successfulSimulations / simulationCount;
   
   return {
