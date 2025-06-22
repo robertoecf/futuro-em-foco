@@ -24,8 +24,8 @@ export const MAGIC_MOMENT_TIMERS = {
 export const LINE_ANIMATION = {
   DRAWING_DURATION: 2000, // 2 seconds total for all lines to appear (configurable)
   ANIMATION_CURVE: 'ease-out' as const,
-  TOTAL_LINES: 500, // Aumentado de 50 para 500
-  BATCH_SIZE: 50, // Renderizar em lotes de 50 linhas
+  TOTAL_LINES: 1001, // Aumentado de 500 para 1001
+  BATCH_SIZE: 100, // Renderizar em lotes de 100 linhas (otimizado para 1001)
   get DELAY_BETWEEN_LINES() {
     return this.DRAWING_DURATION / this.TOTAL_LINES; // Auto-calculated delay
   },

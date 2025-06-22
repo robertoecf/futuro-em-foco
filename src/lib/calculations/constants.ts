@@ -37,7 +37,7 @@ export const CALCULATION_CONSTANTS = {
 // Simulação Monte Carlo
 export const MONTE_CARLO = {
   // Número de simulações padrão
-  DEFAULT_SIMULATIONS: 500,
+  DEFAULT_SIMULATIONS: 1001,
   
   // Número de simulações para "magic moment"
   MAGIC_MOMENT_SIMULATIONS: 1001,
