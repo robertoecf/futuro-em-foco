@@ -1,8 +1,8 @@
+
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Switch } from '@/components/ui/switch';
 import { Settings } from 'lucide-react';
-import { useState } from 'react';
 
 interface ChartControlsProps {
   lifeExpectancy: number;

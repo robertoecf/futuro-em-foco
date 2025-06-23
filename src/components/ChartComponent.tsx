@@ -48,9 +48,6 @@ export const ChartComponent = React.memo(({
   onMonteCarloToggle,
   initialAmount = 0,
   monthlyAmount = 0,
-  retirementAge = 65,
-  retirementIncome = 0,
-  investorProfile = 'moderado',
   onAnimationComplete,
   onMagicMomentStateChange,
   lineDrawingDuration = 2000

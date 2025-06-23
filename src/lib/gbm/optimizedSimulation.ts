@@ -69,7 +69,7 @@ export async function runOptimizedMonteCarloSimulation(
     }
   }
   
-  const statistics = calculateStatistics(allSimulations, totalYears, accumulationYears, simulationCount);
+  const statistics = calculateStatistics(allSimulations, totalYears, simulationCount);
   
   const endTime = performance.now();
   logger.log(`✅ Optimized Monte Carlo completed in ${endTime - startTime}ms:`, {
