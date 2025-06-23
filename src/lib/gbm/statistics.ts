@@ -3,7 +3,6 @@
 export function calculateStatistics(
   allSimulations: number[][],
   totalYears: number,
-  accumulationYears: number,
   simulationCount: number
 ) {
   const yearCount = totalYears + 1;

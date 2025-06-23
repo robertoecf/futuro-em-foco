@@ -1,6 +1,4 @@
-
 import React, { Suspense, lazy } from 'react';
-import { Card } from '@/components/ui/card';
 import { useCalculator } from './useCalculator';
 import { OptimizedCalculatorForm } from './OptimizedCalculatorForm';
 import { ResultsCards } from './ResultsCards';
@@ -83,6 +81,7 @@ export const Calculator: React.FC = () => {
     setInvestorProfile,
     handleMonteCarloToggle
   } = useCalculator();
+  
   
   return (
     <div className="w-full space-y-20 mb-32 px-10">

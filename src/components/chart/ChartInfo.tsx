@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+
+import { useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { formatCurrency } from '@/lib/utils';
 import { MonteCarloResult } from '@/lib/utils';

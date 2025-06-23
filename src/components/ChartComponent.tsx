@@ -1,3 +1,4 @@
+
 import React, { useMemo, useState, useEffect } from 'react';
 import { ChartControls } from './chart/ChartControls';
 import { ChartInfo, ChartVisibilityState } from './chart/ChartInfo';
@@ -7,7 +8,6 @@ import { MonteCarloResult } from '@/lib/utils';
 import { useChartAnimation } from './chart/ChartAnimationStates';
 import { useChartDataProcessor } from './chart/ChartDataProcessor';
 import { ChartRenderer } from './chart/ChartRenderer';
-// ProjectingMessage removed as it's not used in this component
 
 interface ChartComponentProps {
   data: number[];
@@ -51,7 +51,6 @@ export const ChartComponent = React.memo(({
   retirementAge = 65,
   retirementIncome = 0,
   investorProfile = 'moderado',
-  calculationResult = null,
   onAnimationComplete,
   onMagicMomentStateChange,
   lineDrawingDuration = 2000
@@ -117,18 +116,6 @@ export const ChartComponent = React.memo(({
     (monthlyIncomeTarget * 12) / (portfolioReturn / 100) : 0,
     [monthlyIncomeTarget, portfolioReturn]
   );
-
-
-  const planningInputs = useMemo(() => ({
-    initialAmount,
-    monthlyAmount,
-    currentAge,
-    retirementAge,
-    lifeExpectancy,
-    retirementIncome,
-    portfolioReturn,
-    investorProfile
-  }), [initialAmount, monthlyAmount, currentAge, retirementAge, lifeExpectancy, retirementIncome, portfolioReturn, investorProfile]);
 
   // Chart is ready to render
   return (
@@ -236,6 +223,3 @@ export const ChartComponent = React.memo(({
     </div>
   );
 });
-
-
-
