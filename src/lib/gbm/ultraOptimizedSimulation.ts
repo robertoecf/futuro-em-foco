@@ -1,3 +1,4 @@
+
 import { calculateStatistics } from './statistics';
 import { logger } from '../logger';
 import type { BrownianMonteCarloResult } from './types';
@@ -198,7 +199,7 @@ export async function runUltraOptimizedMonteCarloSimulation(
   const allSimulations = results.flat();
   
   // Calculate statistics
-  const statistics = calculateStatistics(allSimulations, totalYears, accumulationYears, simulationCount);
+  const statistics = calculateStatistics(allSimulations, totalYears, simulationCount);
   
   const endTime = performance.now();
   logger.log(`✅ Ultra-Optimized Monte Carlo completed in ${endTime - startTime}ms:`, {

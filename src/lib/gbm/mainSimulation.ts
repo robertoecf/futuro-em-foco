@@ -87,7 +87,7 @@ export function runBrownianMonteCarloSimulation(
   }
   
   // Calculate percentiles and statistics using the Python reference approach
-  const statistics = calculateStatistics(allSimulations, totalYears, accumulationYears, simulationCount);
+  const statistics = calculateStatistics(allSimulations, totalYears, simulationCount);
   
   logger.log('✅ GBM Monte Carlo simulation completed:', {
     successProbability: statistics.successProbability,

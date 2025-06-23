@@ -96,7 +96,7 @@ export const useChartDataProcessor = ({
         // Using Box-Muller transform for proper gaussian distribution
         const u1 = Math.random();
         const u2 = Math.random();
-        const standardNormal = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
+        // Note: standardNormal is generated but not used directly in final calculation
         
         // Map line index to percentile (0 to 1)
         const percentile = lineIndex / (MONTE_CARLO_ALL_LINES - 1);
@@ -194,4 +194,3 @@ export const useChartDataProcessor = ({
 
   return { chartData, savingsLine, monteCarloLines: monteCarloLinesRef.current };
 };
-
