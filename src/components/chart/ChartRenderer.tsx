@@ -23,6 +23,7 @@ interface ChartRendererProps {
   animationPhase?: 'projecting' | 'paths' | 'optimizing' | 'drawing-final' | 'final';
   showGrid?: boolean;
   visibility?: ChartVisibilityState;
+  userRetirementAge?: number;
 }
 
 export const ChartRenderer = React.memo(({
@@ -36,7 +37,8 @@ export const ChartRenderer = React.memo(({
   isDrawingFinalLines,
   animationPhase = 'final',
   showGrid = true,
-  visibility
+  visibility,
+  userRetirementAge
 }: ChartRendererProps) => {
   
   const { getFinalLineAnimationState, isAnimationComplete: _isAnimationComplete } = useFinalLinesAnimation({
@@ -45,6 +47,55 @@ export const ChartRenderer = React.memo(({
 
   // Estado para controlar se as bolinhas devem estar visíveis
   const shouldShowActiveDots = animationPhase === 'final' && !isDrawingFinalLines;
+
+  // 🎯 ABORDAGEM DIRETA: Garantir idades importantes nos ticks
+  const allTicks = (() => {
+    if (!chartData || chartData.length === 0) return [];
+    
+    const minAge = chartData[0].age;
+    const maxAge = chartData[chartData.length - 1].age;
+    
+    // ✨ TICKS OBRIGATÓRIOS 
+    const mandatoryTicks: number[] = [minAge]; // Sempre início
+    
+    // 🔥 PRIORIDADE ABSOLUTA: Idade de aposentadoria (60)
+    if (userRetirementAge && userRetirementAge > 0) {
+      mandatoryTicks.push(userRetirementAge);
+    }
+    
+    // ⭐ SEGUNDA PRIORIDADE: Idade calculada (53)
+    if (possibleRetirementAge && possibleRetirementAge > 0) {
+      mandatoryTicks.push(possibleRetirementAge);
+    }
+    
+    // 📊 TICKS INTERMEDIÁRIOS: Múltiplos de 10 que não conflitam
+    for (let age = Math.ceil(minAge / 10) * 10; age <= maxAge; age += 10) {
+      // Só adiciona se não estiver muito próximo das idades importantes
+      const tooClose = mandatoryTicks.some(tick => Math.abs(tick - age) < 3);
+      if (!tooClose) {
+        mandatoryTicks.push(age);
+      }
+    }
+    
+    // Sempre fim
+    mandatoryTicks.push(maxAge);
+    
+    // Remove duplicatas e ordena
+    const finalTicks = [...new Set(mandatoryTicks)].sort((a, b) => a - b);
+    
+    // 🐛 DEBUG: Verificação explicit
+    console.log('🎯 TICKS DIRETOS - DEVE INCLUIR 53 E 60:', {
+      minAge,
+      maxAge,
+      idadeAposentadoria: userRetirementAge,
+      idadeCalculada: possibleRetirementAge,
+      finalTicks,
+      includes53: finalTicks.includes(53),
+      includes60: finalTicks.includes(60)
+    });
+    
+    return finalTicks;
+  })();
 
   // Generate colors for the lines
   const generateLineColor = (index: number) => {
@@ -94,6 +145,7 @@ export const ChartRenderer = React.memo(({
             }}
           >
             {showGrid && <CartesianGrid strokeDasharray="3 3" stroke="#ffffff20" />}
+            
             <XAxis 
               dataKey="age" 
               label={typeof window !== 'undefined' && window.innerWidth < 640 ? 
@@ -107,29 +159,8 @@ export const ChartRenderer = React.memo(({
               }}
               axisLine={{ stroke: '#ffffff40' }}
               tickLine={{ stroke: '#ffffff40' }}
-              interval={0}
-              ticks={(() => {
-                // Idades de 10 em 10 anos
-                const intervalTicks = chartData.filter((_, index) => index % 10 === 0 || index === chartData.length - 1).map(d => d.age);
-                
-                // Idades importantes que sempre devem aparecer
-                const importantAges: number[] = [];
-                
-                // Idade da independência financeira
-                if (possibleRetirementAge && possibleRetirementAge > 0) {
-                  importantAges.push(possibleRetirementAge);
-                }
-                
-                // Idade de aposentadoria (assumindo que é chartData[accumulationPeriod])
-                const retirementAge = chartData.find(d => d.fase === "Aposentadoria")?.age;
-                if (retirementAge && retirementAge !== possibleRetirementAge) {
-                  importantAges.push(retirementAge);
-                }
-                
-                // Combina todos os ticks e remove duplicatas
-                const allTicks = [...new Set([...intervalTicks, ...importantAges])].sort((a, b) => a - b);
-                return allTicks;
-              })()}
+              ticks={allTicks}
+              domain={['dataMin', 'dataMax']}
             />
             <YAxis 
               tickFormatter={formatYAxis}
@@ -154,7 +185,8 @@ export const ChartRenderer = React.memo(({
                 strokeWidth={2}
                 label={{ 
                   value: 'Independência financeira', 
-                  position: 'top', 
+                  position: 'bottom',
+                  offset: 15,
                   fill: '#ffffff',
                   fontSize: typeof window !== 'undefined' && window.innerWidth < 640 ? 10 : 11
                 }} 

@@ -1,13 +1,12 @@
-
-import React, { useMemo, useState, useEffect } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { ChartControls } from './chart/ChartControls';
-import { ChartInfo, ChartVisibilityState } from './chart/ChartInfo';
-import { calculatePossibleRetirementAge } from './chart/utils/chartUtils';
-import { InvestorProfile, CalculationResult } from '@/components/calculator/useCalculator';
-import { MonteCarloResult } from '@/lib/utils';
-import { useChartAnimation } from './chart/ChartAnimationStates';
-import { useChartDataProcessor } from './chart/ChartDataProcessor';
 import { ChartRenderer } from './chart/ChartRenderer';
+import { ChartInfo } from './chart/ChartInfo';
+import { useChartDataProcessor } from './chart/ChartDataProcessor';
+import { useChartAnimation } from './chart/ChartAnimationStates';
+import type { MonteCarloResult } from '@/lib/utils';
+import type { InvestorProfile, CalculationResult } from './calculator/types';
+import type { ChartVisibilityState } from './chart/ChartInfo';
 
 interface ChartComponentProps {
   data: number[];
@@ -48,6 +47,10 @@ export const ChartComponent = React.memo(({
   onMonteCarloToggle,
   initialAmount = 0,
   monthlyAmount = 0,
+  retirementAge,
+  retirementIncome,
+  investorProfile,
+  calculationResult,
   onAnimationComplete,
   onMagicMomentStateChange,
   lineDrawingDuration = 2000
@@ -100,13 +103,8 @@ export const ChartComponent = React.memo(({
     isMonteCarloEnabled
   });
 
-  const possibleRetirementAge = useMemo(() => calculatePossibleRetirementAge(
-    data,
-    monthlyIncomeTarget,
-    portfolioReturn,
-    currentAge,
-    accumulationYears
-  ), [data, monthlyIncomeTarget, portfolioReturn, currentAge, accumulationYears]);
+  // Use the retirement age calculated once in useCalculator - no duplicate calculation
+  const possibleRetirementAge = retirementAge || (currentAge + accumulationYears);
   
   // Calculate perpetuity wealth based on retirement return and desired income
   const perpetuityWealth = useMemo(() => monthlyIncomeTarget > 0 ? 
@@ -197,6 +195,7 @@ export const ChartComponent = React.memo(({
               animationPhase={animationPhase}
               showGrid={showGrid}
               visibility={chartVisibility}
+              userRetirementAge={retirementAge}
             />
           )}
         </div>
@@ -212,6 +211,7 @@ export const ChartComponent = React.memo(({
           monteCarloData={finalMonteCarloData}
           perpetuityWealth={perpetuityWealth}
           possibleRetirementAge={possibleRetirementAge}
+          userRetirementAge={retirementAge}
           onVisibilityChange={setChartVisibility}
         />
       </div>

@@ -82,7 +82,6 @@ export const Calculator: React.FC = () => {
     handleMonteCarloToggle
   } = useCalculator();
   
-  
   return (
     <div className="w-full space-y-20 mb-32 px-10">
       {/* Investor Profile Section - Hidden during magic moment */}
@@ -132,6 +131,7 @@ export const Calculator: React.FC = () => {
           retirementIncome={retirementIncome}
           portfolioReturn={portfolioReturn}
           investorProfile={investorProfile}
+          possibleRetirementAge={possibleRetirementAge}
         />
       </div>
 

@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { formatCurrency } from '@/lib/utils';
@@ -9,6 +8,7 @@ interface ChartInfoProps {
   monteCarloData?: MonteCarloResult | null;
   perpetuityWealth: number;
   possibleRetirementAge: number;
+  userRetirementAge?: number;
   onVisibilityChange?: (visibility: ChartVisibilityState) => void;
 }
 
@@ -30,8 +30,10 @@ export const ChartInfo = ({
   monteCarloData,
   perpetuityWealth,
   possibleRetirementAge,
+  userRetirementAge,
   onVisibilityChange
 }: ChartInfoProps) => {
+  
   const [visibility, setVisibility] = useState<ChartVisibilityState>({
     scenarios: {
       optimistic: true,
@@ -216,7 +218,15 @@ export const ChartInfo = ({
         <div className="space-y-3">
           <ReferenceItem
             label="Independência financeira"
-            value={`${possibleRetirementAge} anos`}
+            value={`${(() => {
+              // 🎯 PRIORIDADE ABSOLUTA: Idade de aposentadoria do usuário
+              if (userRetirementAge) {
+                return userRetirementAge;
+              }
+              
+              // 🔄 FALLBACK: Idade calculada apenas se usuário não definiu
+              return possibleRetirementAge;
+            })()} anos`}
             reference="financialIndependence"
           />
           

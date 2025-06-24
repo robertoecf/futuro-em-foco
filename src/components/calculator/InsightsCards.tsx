@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { InsightCard } from './insights/InsightCard';
 import { useInsightsData } from './insights/useInsightsData';
@@ -13,6 +12,7 @@ interface InsightsCardsProps {
   retirementIncome: number;
   portfolioReturn: number;
   investorProfile: InvestorProfile;
+  possibleRetirementAge: number;
 }
 
 export const InsightsCards: React.FC<InsightsCardsProps> = (props) => {

@@ -1,4 +1,3 @@
-
 import { formatCurrency } from '@/lib/utils';
 import type { InvestorProfile } from '../types';
 import {
@@ -6,7 +5,6 @@ import {
   calculateAccumulatedWealth,
   calculateRequiredWealthSustainable,
   calculateRequiredWealthDepleting,
-  calculatePossibleRetirementAge,
   calculateSustainableIncome,
   calculateDepletingIncome,
   calculateSuggestedMonthlyContribution,
@@ -22,6 +20,7 @@ interface UseInsightsDataProps {
   retirementIncome: number;
   portfolioReturn: number;
   investorProfile: InvestorProfile;
+  possibleRetirementAge: number;
 }
 
 export const useInsightsData = ({
@@ -32,7 +31,8 @@ export const useInsightsData = ({
   lifeExpectancy,
   retirementIncome,
   portfolioReturn,
-  investorProfile
+  investorProfile,
+  possibleRetirementAge
 }: UseInsightsDataProps) => {
   const accumulationYears = retirementAge - currentAge;
   const retirementYears = lifeExpectancy - retirementAge;
@@ -75,15 +75,7 @@ export const useInsightsData = ({
     },
     {
       title: "Idade possível aposentadoria",
-      value: calculatePossibleRetirementAge(
-        currentAge,
-        retirementIncome,
-        retirementYears,
-        retirementAnnualReturn,
-        initialAmount,
-        monthlyAmount,
-        accumulationAnnualReturn
-      ),
+      value: possibleRetirementAge,
       description: "Com a renda desejada",
       isCurrency: false,
       suffix: " anos"
