@@ -180,6 +180,15 @@ const Index = () => {
                   futuro em foco
                 </div>
                 <div className="flex items-center space-x-8">
+                  <a href="/ferramenta-completa" className="text-white/80 hover:text-white transition-colors text-sm">
+                    Ferramenta Completa
+                  </a>
+                  <a href="/mapa-patrimonial" className="text-white/80 hover:text-white transition-colors text-sm">
+                    Mapa Patrimonial
+                  </a>
+                  <a href="/projecao-patrimonial" className="text-white/80 hover:text-white transition-colors text-sm">
+                    Projeção Patrimonial
+                  </a>
                   <button onClick={() => setIsLeadFormOpen(true)} className="tech-button-header dark:text-white text-gray-900">
                     Converse conosco
                   </button>

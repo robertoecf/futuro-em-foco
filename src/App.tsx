@@ -7,6 +7,9 @@ import { PostHogProvider } from '@/components/PostHogProvider';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import Index from './pages/Index';
 import NotFound from './pages/NotFound';
+import FerramentaCompleta from "./pages/FerramentaCompleta";
+import MapaPatrimonial from "./pages/MapaPatrimonial";
+import ProjecaoPatrimonial from "./pages/ProjecaoPatrimonial";
 
 const queryClient = new QueryClient();
 
@@ -20,6 +23,9 @@ const App = () => (
         <PostHogProvider>
           <Routes>
             <Route path="/" element={<Index />} />
+            <Route path="/ferramenta-completa" element={<FerramentaCompleta />} />
+            <Route path="/mapa-patrimonial" element={<MapaPatrimonial />} />
+            <Route path="/projecao-patrimonial" element={<ProjecaoPatrimonial />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
