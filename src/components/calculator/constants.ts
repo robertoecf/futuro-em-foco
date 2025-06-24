@@ -1,12 +1,12 @@
 // Default values - Updated to match production parameters
 export const DEFAULT_VALUES = {
-  INITIAL_AMOUNT: 100000,
-  MONTHLY_AMOUNT: 7500,
-  CURRENT_AGE: 26,
-  RETIREMENT_AGE: 50,
-  LIFE_EXPECTANCY: 100,
-  RETIREMENT_INCOME: 15000,  
-  PORTFOLIO_RETURN: 4, // 4% default
+  INITIAL_AMOUNT: 1000000,  // R$ 1.000.000
+  MONTHLY_AMOUNT: 5000,     // R$ 5.000
+  CURRENT_AGE: 30,          // 30 anos
+  RETIREMENT_AGE: 60,       // 60 anos
+  LIFE_EXPECTANCY: 100,     // 100 anos
+  RETIREMENT_INCOME: 20000, // R$ 20.000
+  PORTFOLIO_RETURN: 4,      // 4% default
   INVESTOR_PROFILE: 'moderado' as const,
   MONTE_CARLO_ENABLED: false
 };
