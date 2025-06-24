@@ -1,4 +1,3 @@
-
 import { useState, type FormEvent } from 'react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -40,7 +39,8 @@ export const LeadCaptureForm = ({
     name: '',
     email: '',
     phone: '',
-    wantsExpertEvaluation: false
+    wantsExpertEvaluation: true,
+    patrimonioRange: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
@@ -56,7 +56,8 @@ export const LeadCaptureForm = ({
       name: '',
       email: '',
       phone: '',
-      wantsExpertEvaluation: false
+      wantsExpertEvaluation: true,
+      patrimonioRange: ''
     });
     clearErrors();
   };
@@ -116,7 +117,7 @@ export const LeadCaptureForm = ({
       <DialogContent className="max-w-md glass-card border border-white/8">
         <DialogHeader>
           <DialogTitle className="text-white">
-            {isExportMode ? 'Download dos dados' : 'Receber plano por email'}
+            {isExportMode ? 'Download dos dados' : 'Dados para contato'}
           </DialogTitle>
         </DialogHeader>
         
@@ -134,14 +135,14 @@ export const LeadCaptureForm = ({
               onClick={onClose} 
               className="flex-1 bg-transparent border border-white/8 text-white hover:bg-white/5 hover:scale-105 transition-all"
             >
-              Cancelar
+              Desistir
             </Button>
             <Button 
               type="submit" 
               disabled={isSubmitting} 
               className="flex-1 bg-orange-500 hover:bg-orange-600 text-white hover:scale-105 transition-all disabled:opacity-50"
             >
-              {isSubmitting ? 'Processando...' : (isExportMode ? 'Baixar Excel' : 'Receber plano')}
+              {isSubmitting ? 'Processando...' : (isExportMode ? 'Baixar Excel' : 'Confirmar')}
             </Button>
           </div>
         </form>

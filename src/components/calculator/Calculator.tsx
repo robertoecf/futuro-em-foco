@@ -87,7 +87,7 @@ export const Calculator: React.FC = () => {
       {/* Investor Profile Section - Hidden during magic moment */}
       <div className={`transition-all duration-300 ${
         isMagicMomentActive ? 'invisible pointer-events-none' : 'visible'
-      }`}>
+      } mt-7`}>
         <InvestorProfiles onProfileSelect={setInvestorProfile} selectedProfile={investorProfile} />
       </div>
 

@@ -148,7 +148,7 @@ const Index = () => {
                   onClick={() => setIsLeadFormOpen(true)}
                   className="tech-button-specialist-cta"
                 >
-                  Consultar um especialista para garantir o meu futuro
+                  Receber plano por email
                 </Button>
               </div>
             </div>

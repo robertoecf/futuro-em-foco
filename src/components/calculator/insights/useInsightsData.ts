@@ -32,12 +32,35 @@ export const useInsightsData = ({
   retirementIncome,
   portfolioReturn,
   investorProfile,
-  possibleRetirementAge
+  possibleRetirementAge: _possibleRetirementAge
 }: UseInsightsDataProps) => {
   const accumulationYears = retirementAge - currentAge;
   const retirementYears = lifeExpectancy - retirementAge;
   const accumulationAnnualReturn = getAccumulationAnnualReturn(investorProfile);
   const retirementAnnualReturn = portfolioReturn / 100;
+
+  const calculateCorrectPossibleRetirementAge = () => {
+    if (retirementIncome <= 0) return retirementAge;
+    
+    const requiredWealth = (retirementIncome * 12) / (portfolioReturn / 100);
+    const monthlyReturn = Math.pow(1 + accumulationAnnualReturn, 1/12) - 1;
+    
+    let balance = initialAmount;
+    let years = 0;
+    const maxYears = 50;
+    
+    while (balance < requiredWealth && years < maxYears) {
+      for (let month = 0; month < 12; month++) {
+        balance += monthlyAmount;
+        balance *= (1 + monthlyReturn);
+      }
+      years++;
+    }
+    
+    return currentAge + years;
+  };
+
+  const correctPossibleRetirementAge = calculateCorrectPossibleRetirementAge();
 
   const accumulatedWealth = calculateAccumulatedWealth(
     initialAmount,
@@ -75,7 +98,7 @@ export const useInsightsData = ({
     },
     {
       title: "Idade possível aposentadoria",
-      value: possibleRetirementAge,
+      value: correctPossibleRetirementAge,
       description: "Com a renda desejada",
       isCurrency: false,
       suffix: " anos"
