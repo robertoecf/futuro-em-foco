@@ -6,9 +6,8 @@ export const HeroSection = ({
   onReceivePlan
 }: HeroSectionProps) => {
   const handleClick = () => {
-    if (onReceivePlan) {
-      onReceivePlan();
-    }
+    // Scroll para a seção da calculadora
+    document.getElementById('calculator-section')?.scrollIntoView({ behavior: 'smooth' });
   };
   return <div className="aurora-banner text-white p-8 sm:p-12 md:p-12 lg:p-12 xl:p-14 rounded-3xl relative overflow-hidden" style={{
     width: '100%',
@@ -38,7 +37,7 @@ export const HeroSection = ({
           Vamos entender o seu objetivo e checar a necessidade de ajustes no seu planejamento.
         </p>
         <Button className="tech-button-specialist-cta" onClick={handleClick}>
-          Consultar um especialista para garantir o meu futuro
+          Calcular projeção patrimonial
         </Button>
       </div>
     </div>;

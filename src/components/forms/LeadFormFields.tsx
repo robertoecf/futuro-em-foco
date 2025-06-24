@@ -1,13 +1,14 @@
-
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 interface FormData {
   name: string;
   email: string;
   phone: string;
   wantsExpertEvaluation: boolean;
+  patrimonioRange: string;
 }
 
 interface LeadFormFieldsProps {
@@ -69,6 +70,27 @@ export const LeadFormFields = ({ formData, formErrors, onFormDataChange }: LeadF
         )}
       </div>
 
+      <div>
+        <Label htmlFor="patrimonio-range" className="text-white">Faixa de patrimônio</Label>
+        <Select 
+          value={formData.patrimonioRange} 
+          onValueChange={(value) => onFormDataChange({ patrimonioRange: value })}
+        >
+          <SelectTrigger className="bg-transparent border border-white/8 text-white">
+            <SelectValue placeholder="Selecione sua faixa de patrimônio" />
+          </SelectTrigger>
+          <SelectContent className="bg-gray-900 border border-white/8">
+            <SelectItem value="ate-100k" className="text-white hover:bg-white/10">Até 100 mil</SelectItem>
+            <SelectItem value="100k-300k" className="text-white hover:bg-white/10">Entre 100 mil e 300 mil</SelectItem>
+            <SelectItem value="300k-1m" className="text-white hover:bg-white/10">Entre 300 mil e 1 milhão</SelectItem>
+            <SelectItem value="acima-1m" className="text-white hover:bg-white/10">Acima de 1 milhão</SelectItem>
+          </SelectContent>
+        </Select>
+        {formErrors.patrimonioRange && (
+          <p className="text-sm text-red-400 mt-1">{formErrors.patrimonioRange}</p>
+        )}
+      </div>
+
       <div className="flex items-center space-x-2">
         <Checkbox
           id="expert"
@@ -79,7 +101,7 @@ export const LeadFormFields = ({ formData, formErrors, onFormDataChange }: LeadF
           className="border-white/8 data-[state=checked]:bg-orange-500 data-[state=checked]:border-orange-500"
         />
         <Label htmlFor="expert" className="text-sm text-white">
-          Quero avaliação de um especialista
+          Quero ajuda de um especialista
         </Label>
       </div>
     </>
