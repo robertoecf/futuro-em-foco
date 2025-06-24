@@ -156,8 +156,6 @@ const Index = () => {
         </div>
       </div>
 
-
-
       {/* Dynamic Header - Visible at top and bottom */}
       {showHeader && (
         <header className="fixed top-0 left-0 right-0 z-50 bg-black/90 backdrop-blur-sm border-b border-white/10 transition-all duration-300">
@@ -170,12 +168,23 @@ const Index = () => {
                 >
                   futuro em foco
                 </div>
-                <button
-                  onClick={() => setIsLeadFormOpen(true)}
-                  className="tech-button-header"
-                >
-                  Converse conosco
-                </button>
+                <div className="flex items-center space-x-8">
+                  <a href="/ferramenta-completa" className="text-white/80 hover:text-white transition-colors text-sm">
+                    Ferramenta Completa
+                  </a>
+                  <a href="/mapa-patrimonial" className="text-white/80 hover:text-white transition-colors text-sm">
+                    Mapa Patrimonial
+                  </a>
+                  <a href="/projecao-patrimonial" className="text-white/80 hover:text-white transition-colors text-sm">
+                    Projeção Patrimonial
+                  </a>
+                  <button
+                    onClick={() => setIsLeadFormOpen(true)}
+                    className="tech-button-header"
+                  >
+                    Converse conosco
+                  </button>
+                </div>
               </div>
             </div>
           </div>
