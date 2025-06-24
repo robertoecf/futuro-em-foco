@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:8084": "vite --port 8084",
     "build": "vite build",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
