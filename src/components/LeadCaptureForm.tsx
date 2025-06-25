@@ -109,7 +109,7 @@ export const LeadCaptureForm = ({
         
         // Também salva no sistema antigo para compatibilidade
         const planId = savePlanningData(formData, planningInputs, calculationResult);
-        const planUrl = getPlanningUrl(planId);
+        const _planUrl = getPlanningUrl(planId);
         
         // Envia o email com a URL direta (mais simples e confiável)
         await sendPlanByEmail(formData, directUrl);

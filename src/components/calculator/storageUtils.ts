@@ -1,4 +1,5 @@
 import { optimizedStorage } from '@/lib/optimizedStorage';
+import { SharedPlanData, InvestorProfile } from "./types";
 
 // Function to load data from optimized storage
 export const loadFromStorage = <T>(key: string, defaultValue: T): T => {
@@ -14,87 +15,71 @@ export const saveToStorage = <T>(key: string, value: T): void => {
 // Function to load data from a shared plan - SISTEMA DINÂMICO
 import type { PlanningData } from '@/hooks/usePlanningData';
 
-export const loadFromSharedPlan = (): PlanningData['planningInputs'] | null => {
-  const urlParams = new URLSearchParams(window.location.search);
-  const planId = urlParams.get('plan');
-  
+const keyMapping: Record<string, keyof SharedPlanData> = {
+  ia: 'initialAmount',
+  ma: 'monthlyAmount',
+  ca: 'currentAge',
+  ra: 'retirementAge',
+  le: 'lifeExpectancy',
+  ri: 'retirementIncome',
+  pr: 'portfolioReturn',
+  ip: 'investorProfile'
+};
 
-  
-  // Primeiro, tenta carregar pelo plan ID (sistema antigo)
-  if (planId) {
-    try {
-      const planData = optimizedStorage.get<PlanningData>(`planning_${planId}`);
-      if (planData) {
-        return planData.planningInputs;
-      }
-    } catch (error) {
-      console.error('Error loading shared plan:', error);
-    }
+const shortKeyMapping = Object.fromEntries(
+  Object.entries(keyMapping).map(([short, long]) => [long, short])
+);
+
+const getShortKey = (longKey: keyof SharedPlanData) => shortKeyMapping[longKey];
+
+// Função para comprimir dados em Base64
+export const compressData = (data: SharedPlanData): string => {
+  try {
+    const json = JSON.stringify(data);
+    return btoa(json);
+  } catch (error) {
+    console.error('Error compressing data:', error);
+    return '';
+  }
+};
+
+// Função para descomprimir dados de Base64
+export const decompressData = (compressed: string): SharedPlanData | null => {
+  try {
+    const json = atob(compressed);
+    return JSON.parse(json) as SharedPlanData;
+  } catch (error) {
+    console.error('Error decompressing data:', error);
+    return null;
+  }
+};
+
+// Carrega dados de um plano compartilhado (se existir)
+export const loadFromSharedPlan = (): SharedPlanData | null => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const planData = urlParams.get('plan');
+
+  if (planData) {
+    return decompressData(planData);
   }
   
-  // Sistema novo: mapeamento dinâmico de parâmetros de URL
-  const keyMapping: Record<string, keyof PlanningData['planningInputs']> = {
-    'ia': 'initialAmount',
-    'ma': 'monthlyAmount',
-    'ca': 'currentAge',
-    'ra': 'retirementAge',
-    'le': 'lifeExpectancy',
-    'ri': 'retirementIncome',
-    'pr': 'portfolioReturn',
-    'ip': 'investorProfile'
-  };
+  // Lógica para carregar de parâmetros individuais (novo sistema)
+  const sharedData: Partial<SharedPlanData> = {};
   
-  // Valores padrão para cada propriedade (fallback caso não esteja na URL)
-  const defaultValues: PlanningData['planningInputs'] = {
-    initialAmount: 0,
-    monthlyAmount: 0,
-    currentAge: 30,
-    retirementAge: 65,
-    lifeExpectancy: 85,
-    retirementIncome: 0,
-    portfolioReturn: 4,
-    investorProfile: 'moderado'
-  };
-  
-  // Detecta quais parâmetros existem na URL
-  const foundParams: string[] = [];
-  const planningInputs = { ...defaultValues };
-  
-  // Processa cada parâmetro mapeado
-  Object.entries(keyMapping).forEach(([urlKey, propertyKey]) => {
-    const urlValue = urlParams.get(urlKey);
-    if (urlValue !== null) {
-      foundParams.push(urlKey);
-      
-      // Conversão automática baseada no tipo da propriedade
-      if (propertyKey === 'investorProfile') {
-        planningInputs[propertyKey] = urlValue as 'conservador' | 'moderado' | 'arrojado';
-      } else if (['currentAge', 'retirementAge', 'lifeExpectancy'].includes(propertyKey)) {
-        planningInputs[propertyKey] = parseInt(urlValue) as any;
+  let hasIndividualParams = false;
+  Object.entries(keyMapping).forEach(([shortKey, longKey]) => {
+    const param = urlParams.get(shortKey);
+    if (param) {
+      hasIndividualParams = true;
+      if (longKey === 'investorProfile') {
+        sharedData[longKey] = param as InvestorProfile;
       } else {
-        planningInputs[propertyKey] = parseFloat(urlValue) as any;
+        sharedData[longKey] = Number(param);
       }
     }
   });
-  
-     // Também processa parâmetros não mapeados (para futuras propriedades)
-   Array.from(urlParams.keys()).forEach(urlKey => {
-     if (!keyMapping[urlKey] && urlKey !== 'plan') {
-       foundParams.push(urlKey);
-       // Para futuras propriedades, tentará definir diretamente se a propriedade existir
-       if (urlKey in planningInputs) {
-         const value = urlParams.get(urlKey)!;
-         (planningInputs as any)[urlKey] = isNaN(Number(value)) ? value : Number(value);
-       }
-     }
-   });
-  
-     // Se encontrou parâmetros, usa o sistema novo
-   if (foundParams.length > 0) {
-     return planningInputs;
-   }
-  
-  return null;
+
+  return hasIndividualParams ? (sharedData as SharedPlanData) : null;
 };
 
 // Async cleanup of expired data
