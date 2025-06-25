@@ -79,11 +79,11 @@ export const LeadFormFields = ({ formData, formErrors, onFormDataChange }: LeadF
           <SelectTrigger className="bg-transparent border border-white/8 text-white">
             <SelectValue placeholder="Selecione sua faixa de patrimônio" />
           </SelectTrigger>
-          <SelectContent className="bg-gray-900 border border-white/8">
-            <SelectItem value="ate-100k" className="text-white hover:bg-white/10">Até 100 mil</SelectItem>
-            <SelectItem value="100k-300k" className="text-white hover:bg-white/10">Entre 100 mil e 300 mil</SelectItem>
-            <SelectItem value="300k-1m" className="text-white hover:bg-white/10">Entre 300 mil e 1 milhão</SelectItem>
-            <SelectItem value="acima-1m" className="text-white hover:bg-white/10">Acima de 1 milhão</SelectItem>
+          <SelectContent className="bg-black/40 border border-white/8">
+            <SelectItem value="ate-100k" className="text-white hover:bg-black/80">Até 100 mil</SelectItem>
+            <SelectItem value="100k-300k" className="text-white hover:bg-black/80">Entre 100 mil e 300 mil</SelectItem>
+            <SelectItem value="300k-1m" className="text-white hover:bg-black/80">Entre 300 mil e 1 milhão</SelectItem>
+            <SelectItem value="acima-1m" className="text-white hover:bg-black/80">Acima de 1 milhão</SelectItem>
           </SelectContent>
         </Select>
         {formErrors.patrimonioRange && (
