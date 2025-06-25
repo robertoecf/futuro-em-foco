@@ -10,14 +10,18 @@ export const useCalculatorState = () => {
   // Try to load from shared plan first
   const sharedPlanData = loadFromSharedPlan();
 
-  // Force use new default values - temporary override for migration
-  const shouldUseNewDefaults = true; // Set to true to force new defaults
-
   const getValueOrDefault = <T>(key: string, defaultValue: T): T => {
-    if (shouldUseNewDefaults) {
-      return defaultValue; // Always use new defaults for now
+    // Primeiro prioridade: dados compartilhados da URL
+    if (sharedPlanData) {
+      const sharedValue = (sharedPlanData as any)[key];
+      if (sharedValue !== undefined && sharedValue !== null) {
+        console.log(`📥 Carregando ${key} da URL:`, sharedValue);
+        return sharedValue;
+      }
     }
-    return sharedPlanData ? (sharedPlanData as any)[key] : loadFromStorage(key, defaultValue);
+    
+    // Segunda prioridade: storage local
+    return loadFromStorage(key, defaultValue);
   };
 
   // State variables - using new defaults temporarily
@@ -30,9 +34,11 @@ export const useCalculatorState = () => {
   const [currentAge, setCurrentAge] = useState(() => 
     getValueOrDefault('currentAge', DEFAULT_VALUES.CURRENT_AGE)
   );
-  const [retirementAge, setRetirementAge] = useState(() => 
-    getValueOrDefault('retirementAge', DEFAULT_VALUES.RETIREMENT_AGE)
-  );
+  const [retirementAge, setRetirementAge] = useState(() => {
+    const value = getValueOrDefault('retirementAge', DEFAULT_VALUES.RETIREMENT_AGE);
+    console.log('🏁 Estado inicial retirementAge:', value);
+    return value;
+  });
   const [lifeExpectancy, setLifeExpectancy] = useState(() => 
     getValueOrDefault('lifeExpectancy', DEFAULT_VALUES.LIFE_EXPECTANCY)
   );

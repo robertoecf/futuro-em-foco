@@ -34,10 +34,29 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({
   handleRetirementIncomeBlur,
   handlePortfolioReturnBlur
 }) => {
-  // Estados para controlar os valores formatados dos inputs
-  const [initialAmountInput, setInitialAmountInput] = useState('');
-  const [monthlyAmountInput, setMonthlyAmountInput] = useState('');
-  const [retirementIncomeInput, setRetirementIncomeInput] = useState('');
+  // Format numbers for display in inputs
+  const formatInputCurrency = (value: number) => {
+    if (value === 0) return '';  // Return empty string for zero values
+    return new Intl.NumberFormat('pt-BR', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    }).format(value);
+  };
+
+  // Format age/percentage inputs
+  const formatNumericInput = (value: number) => {
+    return value === 0 ? '' : value.toString();
+  };
+
+  // Estados para controlar os valores formatados dos inputs - inicializados com valores corretos
+  const [initialAmountInput, setInitialAmountInput] = useState(() => formatInputCurrency(initialAmount));
+  const [monthlyAmountInput, setMonthlyAmountInput] = useState(() => formatInputCurrency(monthlyAmount));
+  const [retirementIncomeInput, setRetirementIncomeInput] = useState(() => formatInputCurrency(retirementIncome));
+  
+  // Estados locais para campos de idade e retorno para permitir edição em tempo real
+  const [currentAgeInput, setCurrentAgeInput] = useState(() => formatNumericInput(currentAge));
+  const [retirementAgeInput, setRetirementAgeInput] = useState(() => formatNumericInput(retirementAge));
+  const [portfolioReturnInput, setPortfolioReturnInput] = useState(() => formatNumericInput(portfolioReturn));
 
   // Função para formatar valor monetário em tempo real
   const formatCurrencyInput = (value: string): string => {
@@ -60,14 +79,7 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({
     return numericValue ? parseInt(numericValue) / 100 : 0;
   };
 
-  // Format numbers for display in inputs (versão inicial)
-  const formatInputCurrency = (value: number) => {
-    if (value === 0) return '';
-    return new Intl.NumberFormat('pt-BR', {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
-    }).format(value);
-  };
+
 
   // Inicializar valores formatados quando os props mudarem
   useEffect(() => {
@@ -81,6 +93,19 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({
   useEffect(() => {
     setRetirementIncomeInput(formatInputCurrency(retirementIncome));
   }, [retirementIncome]);
+
+  // Inicializar campos de idade e retorno
+  useEffect(() => {
+    setCurrentAgeInput(formatNumericInput(currentAge));
+  }, [currentAge]);
+
+  useEffect(() => {
+    setRetirementAgeInput(formatNumericInput(retirementAge));
+  }, [retirementAge]);
+
+  useEffect(() => {
+    setPortfolioReturnInput(formatNumericInput(portfolioReturn));
+  }, [portfolioReturn]);
 
   // Handlers para mudanças em tempo real
   const handleInitialAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -126,7 +151,10 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({
             <Input
               id="current-age"
               type="number"
-              defaultValue={currentAge}
+              value={currentAgeInput}
+              onChange={(e) => {
+                setCurrentAgeInput(e.target.value);
+              }}
               onBlur={(e) => handleCurrentAgeBlur(e.target.value)}
               min={1}
               className="glass-input"
@@ -169,7 +197,10 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({
             <Input
               id="retirement-age"
               type="number"
-              defaultValue={retirementAge}
+              value={retirementAgeInput}
+              onChange={(e) => {
+                setRetirementAgeInput(e.target.value);
+              }}
               onBlur={(e) => handleRetirementAgeBlur(e.target.value)}
               min={currentAge + 1}
               className="glass-input"
@@ -200,7 +231,10 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({
               id="portfolio-return"
               type="number"
               step="0.1"
-              defaultValue={portfolioReturn}
+              value={portfolioReturnInput}
+              onChange={(e) => {
+                setPortfolioReturnInput(e.target.value);
+              }}
               onBlur={(e) => handlePortfolioReturnBlur(e.target.value)}
               placeholder="Ex: 4.0"
               className="glass-input"

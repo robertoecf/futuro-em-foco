@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "lib": ["esnext", "dom", "dom.iterable"],
+    "types": ["https://deno.land/x/service_worker@0.1.0/lib.d.ts", "jsr:@supabase/functions-js/edge-runtime.d.ts"],
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "composite": true
+  },
+  "include": [
+    "./**/*.ts"
+  ]
+} 

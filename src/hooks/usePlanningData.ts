@@ -1,4 +1,3 @@
-
 import { useEffect } from 'react';
 import { InvestorProfile, CalculationResult } from '@/components/calculator/useCalculator';
 import { secureStorage } from '@/lib/secureStorage';
@@ -100,6 +99,34 @@ export const usePlanningData = () => {
     return `${baseUrl}/?plan=${planId}`;
   };
 
+  // Nova função para gerar URL com parâmetros diretos - SISTEMA DINÂMICO
+  const generateDirectUrl = (planningInputs: PlanningData['planningInputs']): string => {
+    const baseUrl = window.location.origin;
+    const params = new URLSearchParams();
+    
+    // Sistema automático: converte todas as propriedades de planningInputs para parâmetros de URL
+    // Quando novas propriedades forem adicionadas ao tipo, elas serão automaticamente incluídas
+    Object.entries(planningInputs).forEach(([key, value]) => {
+      // Mapear nomes longos para abreviações para URLs mais limpos
+      const keyMapping: Record<string, string> = {
+        'initialAmount': 'ia',
+        'monthlyAmount': 'ma', 
+        'currentAge': 'ca',
+        'retirementAge': 'ra',
+        'lifeExpectancy': 'le',
+        'retirementIncome': 'ri',
+        'portfolioReturn': 'pr',
+        'investorProfile': 'ip'
+      };
+      
+      const urlKey = keyMapping[key] || key; // Se não tiver mapeamento, usa o nome original
+      params.set(urlKey, value.toString());
+    });
+    
+    const fullUrl = `${baseUrl}/?${params.toString()}`;
+    return fullUrl;
+  };
+
   const sendPlanByEmail = async (userData: PlanningData['userData'], _planUrl: string): Promise<void> => {
     validateUserData(userData);
     
@@ -118,12 +145,26 @@ export const usePlanningData = () => {
     secureStorage.clear();
   };
 
+  // Função para copiar link direto
+  const copyDirectLink = async (planningInputs: PlanningData['planningInputs']): Promise<boolean> => {
+    try {
+      const directUrl = generateDirectUrl(planningInputs);
+      await navigator.clipboard.writeText(directUrl);
+      return true;
+    } catch (error) {
+      console.error('Erro ao copiar link:', error);
+      return false;
+    }
+  };
+
 
 
   return {
     savePlanningData,
     loadPlanningData,
     getPlanningUrl,
+    generateDirectUrl,
+    copyDirectLink,
     sendPlanByEmail,
     clearUserData
   };

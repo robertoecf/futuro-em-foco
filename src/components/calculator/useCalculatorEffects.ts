@@ -177,8 +177,14 @@ export const useCalculatorEffects = ({
   useEffect(() => {
     if (sharedPlanData) {
       const url = new URL(window.location.href);
-      url.searchParams.delete('plan');
-      window.history.replaceState({}, '', url.toString());
+      
+      // Só remove o parâmetro 'plan' se ele existir (sistema antigo)
+      if (url.searchParams.has('plan')) {
+        url.searchParams.delete('plan');
+        window.history.replaceState({}, '', url.toString());
+      }
+      // Para parâmetros diretos, manter a URL para facilitar compartilhamento
+      // Não limpar os parâmetros ia, ma, ca, etc.
     }
   }, [sharedPlanData]);
 

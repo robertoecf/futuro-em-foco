@@ -1,5 +1,8 @@
-// Default values - Updated to match production parameters
-export const DEFAULT_VALUES = {
+// Environment-aware default values
+const isDevelopment = import.meta.env.DEV;
+
+// Development values for testing
+const DEV_VALUES = {
   INITIAL_AMOUNT: 1000000,  // R$ 1.000.000
   MONTHLY_AMOUNT: 10000,    // R$ 10.000
   CURRENT_AGE: 30,          // 30 anos
@@ -10,6 +13,22 @@ export const DEFAULT_VALUES = {
   INVESTOR_PROFILE: 'moderado' as const,
   MONTE_CARLO_ENABLED: false
 };
+
+// Production values - empty/minimal defaults
+const PROD_VALUES = {
+  INITIAL_AMOUNT: 0,
+  MONTHLY_AMOUNT: 0,
+  CURRENT_AGE: 0,
+  RETIREMENT_AGE: 0,
+  LIFE_EXPECTANCY: 100,     // Keep reasonable default
+  RETIREMENT_INCOME: 0,
+  PORTFOLIO_RETURN: 4,      // Keep reasonable default
+  INVESTOR_PROFILE: 'moderado' as const,
+  MONTE_CARLO_ENABLED: false
+};
+
+// Export environment-specific values
+export const DEFAULT_VALUES = isDevelopment ? DEV_VALUES : PROD_VALUES;
 
 // Magic Moment Animation Timers - Roteiro Corrigido Conforme Especificado
 export const MAGIC_MOMENT_TIMERS = {
