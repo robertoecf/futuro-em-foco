@@ -7,6 +7,7 @@ import { useLeadFormValidation } from '@/hooks/useLeadFormValidation';
 import { LeadFormFields } from '@/components/forms/LeadFormFields';
 import { generateSecureExcelFile, type ChartDataPoint } from '@/utils/csvExport';
 import { InvestorProfile, CalculationResult } from '@/components/calculator/useCalculator';
+import { saveLeadToSupabase } from '@/integrations/supabase/client';
 
 interface LeadCaptureFormProps {
   isOpen: boolean;
@@ -77,6 +78,24 @@ export const LeadCaptureForm = ({
     setIsSubmitting(true);
 
     try {
+      // Salvar lead no Supabase
+      const { success, error } = await saveLeadToSupabase({
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        wants_expert_evaluation: formData.wantsExpertEvaluation,
+        patrimonio_range: formData.patrimonioRange,
+      });
+      if (!success) {
+        toast({
+          title: "Erro ao salvar lead",
+          description: error || 'Erro desconhecido ao salvar no Supabase.',
+          variant: "destructive",
+        });
+        setIsSubmitting(false);
+        return;
+      }
+
       if (exportData) {
         generateSecureExcelFile(exportData.chartData, formData);
         

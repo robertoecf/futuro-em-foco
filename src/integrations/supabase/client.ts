@@ -2,10 +2,128 @@
 import { createClient } from '@supabase/supabase-js';
 import type { Database } from './types';
 
-const SUPABASE_URL = process.env.SUPABASE_URL ?? '';
-const SUPABASE_PUBLISHABLE_KEY = process.env.SUPABASE_ANON_KEY ?? '';
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL ?? '';
+const SUPABASE_PUBLISHABLE_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY ?? '';
+
+console.log('SUPABASE_URL:', SUPABASE_URL)
+console.log('SUPABASE_PUBLISHABLE_KEY:', SUPABASE_PUBLISHABLE_KEY)
 
 // Import the supabase client like this:
 // import { supabase } from "@/integrations/supabase/client";
 
 export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+
+/**
+ * Insere um lead na tabela leads do Supabase.
+ * @param lead Objeto com os dados do lead.
+ * @returns { success: boolean, error?: string }
+ */
+export async function saveLeadToSupabase(lead: {
+  name: string;
+  email: string;
+  phone?: string | null;
+  wants_expert_evaluation?: boolean;
+  patrimonio_range?: string | null;
+}): Promise<{ success: boolean; error?: string }> {
+  try {
+    const { error } = await supabase
+      .from('leads')
+      .insert({
+        name: lead.name,
+        email: lead.email,
+        phone: lead.phone || null,
+        wants_expert_evaluation: lead.wants_expert_evaluation || false,
+        patrimonio_range: lead.patrimonio_range || null,
+      });
+      
+    if (error) {
+      console.error('Supabase error:', error);
+      return { success: false, error: error.message };
+    }
+    
+    console.log('Lead saved successfully');
+    return { success: true };
+  } catch (err) {
+    console.error('Unexpected error:', err);
+    return { success: false, error: err instanceof Error ? err.message : 'Erro desconhecido' };
+  }
+}
+
+// Função alternativa usando fetch direto
+export async function saveLeadToSupabaseDirectly(lead: {
+  name: string;
+  email: string;
+  phone?: string | null;
+  wants_expert_evaluation?: boolean;
+  patrimonio_range?: string | null;
+}): Promise<{ success: boolean; error?: string }> {
+  try {
+    const response = await fetch(`${SUPABASE_URL}/rest/v1/leads`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SUPABASE_PUBLISHABLE_KEY,
+        'Authorization': `Bearer ${SUPABASE_PUBLISHABLE_KEY}`,
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify({
+        name: lead.name,
+        email: lead.email,
+        phone: lead.phone || null,
+        wants_expert_evaluation: lead.wants_expert_evaluation || false,
+        patrimonio_range: lead.patrimonio_range || null,
+      })
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error('Direct API error:', errorData);
+      return { success: false, error: errorData.message || 'Erro ao salvar lead' };
+    }
+
+    console.log('Lead saved successfully via direct API');
+    return { success: true };
+  } catch (err) {
+    console.error('Unexpected error in direct API:', err);
+    return { success: false, error: err instanceof Error ? err.message : 'Erro desconhecido' };
+  }
+}
+
+// Função usando Edge Function para contornar o bug
+export async function saveLeadViaEdgeFunction(lead: {
+  name: string;
+  email: string;
+  phone?: string | null;
+  wants_expert_evaluation?: boolean;
+  patrimonio_range?: string | null;
+}): Promise<{ success: boolean; error?: string }> {
+  try {
+    const response = await fetch(`${SUPABASE_URL}/functions/v1/insert-lead`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${SUPABASE_PUBLISHABLE_KEY}`,
+      },
+      body: JSON.stringify({
+        name: lead.name,
+        email: lead.email,
+        phone: lead.phone || null,
+        wants_expert_evaluation: lead.wants_expert_evaluation || false,
+        patrimonio_range: lead.patrimonio_range || null,
+      })
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error('Edge Function error:', errorData);
+      return { success: false, error: errorData.error || 'Erro ao salvar lead' };
+    }
+
+    const result = await response.json();
+    console.log('Lead saved successfully via Edge Function:', result);
+    return { success: true };
+  } catch (err) {
+    console.error('Unexpected error calling Edge Function:', err);
+    return { success: false, error: err instanceof Error ? err.message : 'Erro desconhecido' };
+  }
+}
