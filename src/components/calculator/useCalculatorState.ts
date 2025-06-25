@@ -1,7 +1,5 @@
-
-
 import { useState } from 'react';
-import type { InvestorProfile, CalculationResult } from './types';
+import type { InvestorProfile, CalculationResult, SharedPlanData } from './types';
 import { DEFAULT_VALUES } from './constants';
 import { loadFromStorage, loadFromSharedPlan } from './storageUtils';
 import { MonteCarloResult } from '@/lib/utils';
@@ -10,13 +8,13 @@ export const useCalculatorState = () => {
   // Try to load from shared plan first
   const sharedPlanData = loadFromSharedPlan();
 
-  const getValueOrDefault = <T>(key: string, defaultValue: T): T => {
+  const getValueOrDefault = <T extends string | number | InvestorProfile>(key: keyof SharedPlanData, defaultValue: T): T => {
     // Primeiro prioridade: dados compartilhados da URL
     if (sharedPlanData) {
-      const sharedValue = (sharedPlanData as any)[key];
+      const sharedValue = sharedPlanData[key];
       if (sharedValue !== undefined && sharedValue !== null) {
         console.log(`📥 Carregando ${key} da URL:`, sharedValue);
-        return sharedValue;
+        return sharedValue as T;
       }
     }
     

@@ -1,4 +1,3 @@
-
 import { useCallback, useEffect } from 'react';
 import { calculateFullProjection, getVolatilityByProfile, type MonteCarloResult } from '@/lib/utils';
 // import { runOptimizedMonteCarloSimulation } from '@/lib/gbm/optimizedSimulation';
@@ -155,6 +154,7 @@ export const useCalculatorEffects = ({
     }
   }, [
     isMonteCarloEnabled,
+    isCalculating,
     setCalculationResult,
     setIsCalculating,
     setMonteCarloResult,
