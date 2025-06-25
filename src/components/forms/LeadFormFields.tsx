@@ -1,3 +1,4 @@
+import React from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -18,6 +19,25 @@ interface LeadFormFieldsProps {
 }
 
 export const LeadFormFields = ({ formData, formErrors, onFormDataChange }: LeadFormFieldsProps) => {
+  const formatPhoneNumber = (value: string) => {
+    // Remove tudo que não é número
+    const numbers = value.replace(/\D/g, '');
+    
+    // Aplica a máscara (11) 99999-9999
+    if (numbers.length <= 2) {
+      return numbers.length > 0 ? `(${numbers}` : '';
+    } else if (numbers.length <= 7) {
+      return `(${numbers.slice(0, 2)}) ${numbers.slice(2)}`;
+    } else {
+      return `(${numbers.slice(0, 2)}) ${numbers.slice(2, 7)}-${numbers.slice(7, 11)}`;
+    }
+  };
+
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const formatted = formatPhoneNumber(e.target.value);
+    onFormDataChange({ phone: formatted });
+  };
+
   return (
     <>
       <div>
@@ -60,7 +80,7 @@ export const LeadFormFields = ({ formData, formErrors, onFormDataChange }: LeadF
           id="phone"
           type="tel"
           value={formData.phone}
-          onChange={(e) => onFormDataChange({ phone: e.target.value })}
+          onChange={handlePhoneChange}
           placeholder="(11) 99999-9999"
           maxLength={15}
           className="bg-transparent border border-white/8 text-white placeholder:text-white/60"
@@ -79,7 +99,7 @@ export const LeadFormFields = ({ formData, formErrors, onFormDataChange }: LeadF
           <SelectTrigger className="bg-transparent border border-white/8 text-white">
             <SelectValue placeholder="Selecione sua faixa de patrimônio" />
           </SelectTrigger>
-          <SelectContent className="bg-black/40 border border-white/8">
+          <SelectContent className="bg-black/80 border border-white/8">
             <SelectItem value="ate-100k" className="text-white hover:bg-black/80">Até 100 mil</SelectItem>
             <SelectItem value="100k-300k" className="text-white hover:bg-black/80">Entre 100 mil e 300 mil</SelectItem>
             <SelectItem value="300k-1m" className="text-white hover:bg-black/80">Entre 300 mil e 1 milhão</SelectItem>

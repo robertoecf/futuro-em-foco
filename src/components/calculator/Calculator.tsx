@@ -4,6 +4,9 @@ import { OptimizedCalculatorForm } from './OptimizedCalculatorForm';
 import { ResultsCards } from './ResultsCards';
 import { InsightsCards } from './InsightsCards';
 import { InvestorProfiles } from '@/components/InvestorProfiles';
+import { Button } from '@/components/ui/button';
+import { usePlanningData } from '@/hooks/usePlanningData';
+import { useToast } from '@/hooks/use-toast';
 
 // Lazy load heavy components
 const ChartComponent = lazy(() => import('@/components/ChartComponent').then(module => ({ default: module.ChartComponent })));
@@ -19,6 +22,8 @@ const ComponentLoader = () => (
 export const Calculator: React.FC = () => {
   // Estado para controlar se o momento mágico está ativo
   const [isMagicMomentActive, setIsMagicMomentActive] = React.useState(false);
+  
+  const { toast } = useToast();
   
   // Ref para o container do gráfico
   const chartRef = React.useRef<HTMLDivElement>(null);
@@ -60,6 +65,7 @@ export const Calculator: React.FC = () => {
     initialAmount,
     monthlyAmount,
     currentAge,
+    retirementAge,
     possibleRetirementAge,
     lifeExpectancy,
     retirementIncome,
@@ -81,6 +87,8 @@ export const Calculator: React.FC = () => {
     setInvestorProfile,
     handleMonteCarloToggle
   } = useCalculator();
+
+
   
   return (
     <div className="w-full space-y-20 mb-32 px-10">
@@ -104,7 +112,7 @@ export const Calculator: React.FC = () => {
           initialAmount={initialAmount}
           monthlyAmount={monthlyAmount}
           currentAge={currentAge}
-          retirementAge={possibleRetirementAge}
+          retirementAge={retirementAge}
           retirementIncome={retirementIncome}
           portfolioReturn={portfolioReturn}
           investorProfile={investorProfile}
@@ -126,7 +134,7 @@ export const Calculator: React.FC = () => {
           initialAmount={initialAmount}
           monthlyAmount={monthlyAmount}
           currentAge={currentAge}
-          retirementAge={possibleRetirementAge}
+          retirementAge={retirementAge}
           lifeExpectancy={lifeExpectancy}
           retirementIncome={retirementIncome}
           portfolioReturn={portfolioReturn}
@@ -153,7 +161,7 @@ export const Calculator: React.FC = () => {
             onMonteCarloToggle={handleMonteCarloToggle}
             initialAmount={initialAmount}
             monthlyAmount={monthlyAmount}
-            retirementAge={possibleRetirementAge}
+            retirementAge={retirementAge}
             retirementIncome={retirementIncome}
             investorProfile={investorProfile}
             calculationResult={calculationResult}
@@ -169,7 +177,7 @@ export const Calculator: React.FC = () => {
       }`}>
         <ResultsCards
           calculationResult={calculationResult}
-          retirementAge={possibleRetirementAge}
+          retirementAge={retirementAge}
           lifeExpectancy={lifeExpectancy}
           initialAmount={initialAmount}
           monteCarloResult={monteCarloResult}
@@ -187,6 +195,8 @@ export const Calculator: React.FC = () => {
           <Recommendations investorProfile={investorProfile} />
         </Suspense>
       </div>
+
+
     </div>
   );
 };

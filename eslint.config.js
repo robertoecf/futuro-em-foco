@@ -6,9 +6,10 @@ import tsParser from "@typescript-eslint/parser";
 import tsPlugin from "@typescript-eslint/eslint-plugin";
 
 export default [
-  { ignores: ["dist", "node_modules", "build", "*.md", ".husky", "*.json", "supabase/functions/**"] },
+  { ignores: ["dist", "node_modules", "build", "*.md", ".husky", "*.json"] },
   {
     files: ["**/*.{ts,tsx}"],
+    ignores: ["supabase/functions/**/*.ts"],
     languageOptions: {
       ecmaVersion: 2020,
       globals: { ...globals.browser, ...globals.node },
@@ -33,6 +34,35 @@ export default [
         "warn",
         { allowConstantExport: true },
       ],
+      "@typescript-eslint/no-unused-vars": ["warn", { 
+        "argsIgnorePattern": "^_",
+        "varsIgnorePattern": "^_" 
+      }],
+      "@typescript-eslint/no-explicit-any": "warn",
+      "@typescript-eslint/no-require-imports": "off",
+    },
+  },
+  // Supabase Functions configuration
+  {
+    files: ["supabase/functions/**/*.ts"],
+    languageOptions: {
+      ecmaVersion: 2020,
+      globals: { 
+        ...globals.browser, 
+        ...globals.node,
+        Deno: "readonly"
+      },
+      parser: tsParser,
+      parserOptions: {
+        sourceType: "module",
+      },
+    },
+    plugins: {
+      "@typescript-eslint": tsPlugin,
+    },
+    rules: {
+      ...js.configs.recommended.rules,
+      ...tsPlugin.configs.recommended.rules,
       "@typescript-eslint/no-unused-vars": ["warn", { 
         "argsIgnorePattern": "^_",
         "varsIgnorePattern": "^_" 

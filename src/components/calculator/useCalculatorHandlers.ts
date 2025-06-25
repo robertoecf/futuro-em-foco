@@ -99,12 +99,27 @@ export const useCalculatorHandlers = ({
 
   const handleRetirementAgeBlur = useCallback((value: string) => {
     const numericValue = parseInt(value);
+    console.log('🎯 handleRetirementAgeBlur chamado:', { 
+      inputValue: value, 
+      numericValue, 
+      currentAge, 
+      isValid: !isNaN(numericValue) && numericValue > currentAge,
+      retirementAge 
+    });
     if (!isNaN(numericValue) && numericValue > currentAge) {
+      console.log('✅ Salvando idade aposentadoria:', numericValue);
       setRetirementAge(numericValue);
       saveToStorage(STORAGE_KEYS.RETIREMENT_AGE, numericValue);
       resetMonteCarloState(); // Reset Monte Carlo when variable changes
+    } else {
+      console.log('❌ Valor inválido para idade aposentadoria:', { 
+        numericValue, 
+        currentAge, 
+        isNaN: isNaN(numericValue),
+        isGreaterThanCurrent: numericValue > currentAge
+      });
     }
-  }, [setRetirementAge, currentAge, resetMonteCarloState]);
+  }, [setRetirementAge, currentAge, retirementAge, resetMonteCarloState]);
   
   const handleLifeExpectancyChange = useCallback((value: number) => {
     setLifeExpectancy(value);

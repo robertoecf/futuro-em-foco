@@ -45,7 +45,7 @@ export const LeadCaptureForm = ({
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
-  const { savePlanningData, getPlanningUrl, sendPlanByEmail } = usePlanningData();
+  const { savePlanningData, getPlanningUrl, generateDirectUrl, sendPlanByEmail } = usePlanningData();
   const { formErrors, validateForm, clearErrors } = useLeadFormValidation();
 
   const handleFormDataChange = (data: Partial<typeof formData>) => {
@@ -104,10 +104,15 @@ export const LeadCaptureForm = ({
           description: "O arquivo Excel com os dados foi baixado para seu computador.",
         });
       } else {
-        // Regular email flow
+        // Nova lógica: gera URL direta com parâmetros
+        const directUrl = generateDirectUrl(planningInputs);
+        
+        // Também salva no sistema antigo para compatibilidade
         const planId = savePlanningData(formData, planningInputs, calculationResult);
         const planUrl = getPlanningUrl(planId);
-        await sendPlanByEmail(formData, planUrl);
+        
+        // Envia o email com a URL direta (mais simples e confiável)
+        await sendPlanByEmail(formData, directUrl);
 
         toast({
           title: "Plano enviado com sucesso!",
