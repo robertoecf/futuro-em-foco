@@ -11,39 +11,81 @@ export type Database = {
     Tables: {
       leads: {
         Row: {
-          id: string;
-          name: string;
-          email: string;
-          phone: string | null;
-          wants_expert_evaluation: boolean;
-          patrimonio_range: string | null;
-          created_at: string | null;
-        };
+          created_at: string | null
+          email: string
+          id: string
+          name: string
+          patrimonio_range: string | null
+          phone: string | null
+          simulation_url: string | null
+          wants_expert_evaluation: boolean
+        }
         Insert: {
-          id?: string;
-          name: string;
-          email: string;
-          phone?: string | null;
-          wants_expert_evaluation?: boolean;
-          patrimonio_range?: string | null;
-          created_at?: string | null;
-        };
+          created_at?: string | null
+          email: string
+          id?: string
+          name: string
+          patrimonio_range?: string | null
+          phone?: string | null
+          simulation_url?: string | null
+          wants_expert_evaluation?: boolean
+        }
         Update: {
-          id?: string;
-          name?: string;
-          email?: string;
-          phone?: string | null;
-          wants_expert_evaluation?: boolean;
-          patrimonio_range?: string | null;
-          created_at?: string | null;
-        };
-      };
+          created_at?: string | null
+          email?: string
+          id?: string
+          name?: string
+          patrimonio_range?: string | null
+          phone?: string | null
+          simulation_url?: string | null
+          wants_expert_evaluation?: boolean
+        }
+        Relationships: []
+      }
     }
     Views: {
-      [_ in never]: never
+      leads_sp: {
+        Row: {
+          created_at: string | null
+          created_at_sp: string | null
+          email: string | null
+          id: string | null
+          name: string | null
+          patrimonio_range: string | null
+          phone: string | null
+          simulation_url: string | null
+          wants_expert_evaluation: boolean | null
+        }
+        Insert: {
+          created_at?: string | null
+          created_at_sp?: never
+          email?: string | null
+          id?: string | null
+          name?: string | null
+          patrimonio_range?: string | null
+          phone?: string | null
+          simulation_url?: string | null
+          wants_expert_evaluation?: boolean | null
+        }
+        Update: {
+          created_at?: string | null
+          created_at_sp?: never
+          email?: string | null
+          id?: string | null
+          name?: string | null
+          patrimonio_range?: string | null
+          phone?: string | null
+          simulation_url?: string | null
+          wants_expert_evaluation?: boolean | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
-      [_ in never]: never
+      invoke_my_function: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never
