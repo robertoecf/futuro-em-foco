@@ -13,7 +13,6 @@ export const useCalculatorState = () => {
     if (sharedPlanData) {
       const sharedValue = sharedPlanData[key];
       if (sharedValue !== undefined && sharedValue !== null) {
-        console.log(`📥 Carregando ${key} da URL:`, sharedValue);
         return sharedValue as T;
       }
     }
@@ -32,11 +31,9 @@ export const useCalculatorState = () => {
   const [currentAge, setCurrentAge] = useState(() => 
     getValueOrDefault('currentAge', DEFAULT_VALUES.CURRENT_AGE)
   );
-  const [retirementAge, setRetirementAge] = useState(() => {
-    const value = getValueOrDefault('retirementAge', DEFAULT_VALUES.RETIREMENT_AGE);
-    console.log('🏁 Estado inicial retirementAge:', value);
-    return value;
-  });
+  const [retirementAge, setRetirementAge] = useState(() => 
+    getValueOrDefault('retirementAge', DEFAULT_VALUES.RETIREMENT_AGE)
+  );
   const [lifeExpectancy, setLifeExpectancy] = useState(() => 
     getValueOrDefault('lifeExpectancy', DEFAULT_VALUES.LIFE_EXPECTANCY)
   );

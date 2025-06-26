@@ -1,63 +1,80 @@
-import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+// Declare Deno global to resolve TypeScript errors
+declare const Deno: {
+  env: {
+    get: (key: string) => string | undefined;
+  };
+};
+
+// @ts-expect-error: Deno imports
+import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
+// @ts-expect-error: Deno imports
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-}
+};
 
-serve(async (req) => {
-  // Handle CORS
+serve(async (req: Request) => {
   if (req.method === 'OPTIONS') {
-    return new Response('ok', { headers: corsHeaders })
+    return new Response('ok', { headers: corsHeaders });
   }
 
   try {
-    const supabaseUrl = Deno.env.get('SUPABASE_URL')!
-    const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
-    
-    const supabase = createClient(supabaseUrl, supabaseServiceKey)
-    
-    const { name, email, phone, wants_expert_evaluation, patrimonio_range } = await req.json()
-    
-    // Insert directly using service role key
-    const { data, error } = await supabase
-      .from('leads')
-      .insert({
-        name,
-        email,
-        phone: phone || null,
-        wants_expert_evaluation: wants_expert_evaluation || false,
-        patrimonio_range: patrimonio_range || null
-      })
-      .select()
-    
-    if (error) {
-      console.error('Insert error:', error)
-      return new Response(
-        JSON.stringify({ error: error.message }),
-        { 
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-          status: 400
-        }
-      )
+    console.log('Function started.');
+
+    const supabaseUrl = Deno.env.get('SUPABASE_URL');
+    const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
+
+    if (!supabaseUrl || !supabaseServiceKey) {
+      console.error('Missing Supabase environment variables.');
+      return new Response(JSON.stringify({ error: 'Internal server configuration error.' }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 500,
+      });
     }
-    
-    return new Response(
-      JSON.stringify({ success: true, data }),
-      { 
+    console.log('Supabase environment variables loaded.');
+
+    const supabase = createClient(supabaseUrl, supabaseServiceKey);
+    console.log('Supabase client created.');
+
+    const body = await req.json();
+    console.log('Request body parsed:', body);
+
+    const leadData = {
+      name: body.name,
+      email: body.email,
+      phone: body.phone || null,
+      wants_expert_evaluation: body.wants_expert_evaluation || false,
+      patrimonio_range: body.patrimonio_range || null,
+      simulation_url: body.simulation_url || null,
+    };
+    console.log('Attempting to insert data:', JSON.stringify(leadData, null, 2));
+
+    const { data, error } = await supabase.from('leads').insert(leadData).select();
+
+    if (error) {
+      console.error('Supabase insert error:', JSON.stringify(error, null, 2));
+      return new Response(JSON.stringify({ error: error.message }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 200
-      }
-    )
-  } catch (error) {
-    console.error('Function error:', error)
-    return new Response(
-      JSON.stringify({ error: 'Internal server error' }),
-      { 
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 500
-      }
-    )
+        status: 400,
+      });
+    }
+
+    console.log('Data saved successfully:', data);
+    return new Response(JSON.stringify({ success: true, data }), {
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      status: 200,
+    });
+  } catch (error: unknown) {
+    const errorDetails = {
+      message: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined,
+    };
+    console.error('Critical function error:', JSON.stringify(errorDetails, null, 2));
+    return new Response(JSON.stringify({ error: 'Internal server error', details: errorDetails }), {
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      status: 500,
+    });
   }
-}) 
+});

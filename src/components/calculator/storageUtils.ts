@@ -13,7 +13,7 @@ export const saveToStorage = <T>(key: string, value: T): void => {
 };
 
 // Function to load data from a shared plan - SISTEMA DINÂMICO
-import type { PlanningData } from '@/hooks/usePlanningData';
+import type { PlanningData as _PlanningData } from '@/hooks/usePlanningData';
 
 const keyMapping: Record<string, keyof SharedPlanData> = {
   ia: 'initialAmount',
@@ -26,11 +26,7 @@ const keyMapping: Record<string, keyof SharedPlanData> = {
   ip: 'investorProfile'
 };
 
-const shortKeyMapping = Object.fromEntries(
-  Object.entries(keyMapping).map(([short, long]) => [long, short])
-);
 
-const getShortKey = (longKey: keyof SharedPlanData) => shortKeyMapping[longKey];
 
 // Função para comprimir dados em Base64
 export const compressData = (data: SharedPlanData): string => {

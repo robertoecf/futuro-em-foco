@@ -50,7 +50,7 @@ export const LeadFormFields = ({ formData, formErrors, onFormDataChange }: LeadF
           placeholder="Seu nome completo"
           maxLength={100}
           required
-          className="bg-transparent border border-white/8 text-white placeholder:text-white/60"
+          className="bg-black/20 border border-white/30 text-white placeholder:text-white/60 focus:bg-black/20 focus:border-white/30 focus:text-white focus-visible:ring-0 focus-visible:ring-offset-0"
         />
         {formErrors.name && (
           <p className="text-sm text-red-400 mt-1">{formErrors.name}</p>
@@ -67,7 +67,7 @@ export const LeadFormFields = ({ formData, formErrors, onFormDataChange }: LeadF
           placeholder="seu@email.com"
           maxLength={100}
           required
-          className="bg-transparent border border-white/8 text-white placeholder:text-white/60"
+          className="bg-black/20 border border-white/30 text-white placeholder:text-white/60 focus:bg-black/20 focus:border-white/30 focus:text-white focus-visible:ring-0 focus-visible:ring-offset-0"
         />
         {formErrors.email && (
           <p className="text-sm text-red-400 mt-1">{formErrors.email}</p>
@@ -83,7 +83,7 @@ export const LeadFormFields = ({ formData, formErrors, onFormDataChange }: LeadF
           onChange={handlePhoneChange}
           placeholder="(11) 99999-9999"
           maxLength={15}
-          className="bg-transparent border border-white/8 text-white placeholder:text-white/60"
+          className="bg-black/20 border border-white/30 text-white placeholder:text-white/60 focus:bg-black/20 focus:border-white/30 focus:text-white focus-visible:ring-0 focus-visible:ring-offset-0"
         />
         {formErrors.phone && (
           <p className="text-sm text-red-400 mt-1">{formErrors.phone}</p>
@@ -96,7 +96,7 @@ export const LeadFormFields = ({ formData, formErrors, onFormDataChange }: LeadF
           value={formData.patrimonioRange} 
           onValueChange={(value) => onFormDataChange({ patrimonioRange: value })}
         >
-          <SelectTrigger className="bg-transparent border border-white/8 text-white">
+          <SelectTrigger className="bg-black/20 border border-white/30 text-white focus:bg-black/20 focus:border-white/30 focus:text-white focus-visible:ring-0 focus-visible:ring-offset-0 data-[state=open]:bg-black/20 data-[state=open]:border-white/30">
             <SelectValue placeholder="Selecione sua faixa de patrimônio" />
           </SelectTrigger>
           <SelectContent className="bg-black/80 border border-white/8">

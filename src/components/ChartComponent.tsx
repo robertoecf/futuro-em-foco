@@ -5,7 +5,7 @@ import { ChartInfo } from './chart/ChartInfo';
 import { useChartDataProcessor } from './chart/ChartDataProcessor';
 import { useChartAnimation } from './chart/ChartAnimationStates';
 import type { MonteCarloResult } from '@/lib/utils';
-import type { InvestorProfile, CalculationResult } from './calculator/types';
+
 import type { ChartVisibilityState } from './chart/ChartInfo';
 
 interface ChartComponentProps {
@@ -24,9 +24,7 @@ interface ChartComponentProps {
   initialAmount?: number;
   monthlyAmount?: number;
   retirementAge?: number;
-  retirementIncome?: number;
-  investorProfile?: InvestorProfile;
-  calculationResult?: CalculationResult | null;
+
   onAnimationComplete?: () => void;
   onMagicMomentStateChange?: (isActive: boolean) => void;
   lineDrawingDuration?: number;
@@ -48,9 +46,6 @@ export const ChartComponent = React.memo(({
   initialAmount = 0,
   monthlyAmount = 0,
   retirementAge,
-  retirementIncome,
-  investorProfile,
-  calculationResult,
   onAnimationComplete,
   onMagicMomentStateChange,
   lineDrawingDuration = 2000
