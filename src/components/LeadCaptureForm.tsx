@@ -121,8 +121,13 @@ export const LeadCaptureForm = ({
         // await sendPlanByEmail(formData, directUrl);
 
         toast({
-          title: "Plano enviado com sucesso!",
-          description: `Enviamos seu planejamento para ${formData.email}. Verifique sua caixa de entrada.`,
+          title: "Simulação enviada com sucesso!",
+          description: (
+            <>
+              Enviamos seu planejamento para {formData.email}. Verifique sua caixa de entrada e também a{" "}
+              <strong className="text-orange-500">caixa de SPAM</strong>.
+            </>
+          ),
         });
       }
 

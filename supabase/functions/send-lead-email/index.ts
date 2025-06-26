@@ -318,12 +318,12 @@ Deno.serve(async (req: Request) => {
     </header>
 
     <div class="content">
-      <div class="greeting"><h2>Olá, ${name}</h2></div>
+      <div class="greeting"><h2>Olá, \${name}</h2></div>
       <div class="panel message">
         <p>Sua simulação de <strong>independência financeira</strong> foi processada com sucesso. Nossa inteligência analisou seus dados e preparou projeções personalizadas para seu perfil.</p>
         <p>Os resultados incluem múltiplos cenários econômicos e estratégias otimizadas para maximizar suas chances de sucesso.</p>
       </div>
-      <div class="cta"><a href="${simulation_url}">ACESSAR SIMULAÇÃO</a></div>
+      <div class="cta"><a href="\${simulation_url}">ACESSAR SIMULAÇÃO</a></div>
       <div class="panel features">
         <h3>[RECURSOS_DISPONÍVEIS]</h3>
         <div><span>[✓]</span>Projeção patrimonial em tempo real</div>
@@ -336,7 +336,7 @@ Deno.serve(async (req: Request) => {
 
     <footer>
       <p>Dúvidas?</p>
-      <p><a href="mailto:${SENDGRID_FROM}">[CONTATAR_FUNDADOR]</a></p>
+      <p><a href="mailto:\${SENDGRID_FROM}">[CONTATAR_FUNDADOR]</a></p>
       <p>futuro em foco © 2024 | v2.0.0 | build 20240115</p>
     </footer>
   </div>
