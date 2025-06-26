@@ -1,17 +1,21 @@
 {
   "compilerOptions": {
-    "target": "esnext",
-    "module": "esnext",
-    "moduleResolution": "node",
-    "lib": ["esnext", "dom", "dom.iterable"],
-    "types": ["https://deno.land/x/service_worker@0.1.0/lib.d.ts", "jsr:@supabase/functions-js/edge-runtime.d.ts"],
-    "strict": true,
-    "esModuleInterop": true,
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM"],
+    "allowJs": true,
     "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
     "forceConsistentCasingInFileNames": true,
-    "composite": true
+    "moduleResolution": "bundler",
+    "noEmit": true,
+    "jsx": "react-jsx"
   },
   "include": [
     "./**/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
   ]
 } 

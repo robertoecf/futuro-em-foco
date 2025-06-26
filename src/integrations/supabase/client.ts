@@ -5,8 +5,7 @@ import type { Database } from './types';
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL ?? '';
 const SUPABASE_PUBLISHABLE_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY ?? '';
 
-console.log('SUPABASE_URL:', SUPABASE_URL)
-console.log('SUPABASE_PUBLISHABLE_KEY:', SUPABASE_PUBLISHABLE_KEY)
+// Environment variables loaded
 
 // Import the supabase client like this:
 // import { supabase } from "@/integrations/supabase/client";
@@ -96,6 +95,7 @@ export async function saveLeadViaEdgeFunction(lead: {
   phone?: string | null;
   wants_expert_evaluation?: boolean;
   patrimonio_range?: string | null;
+  simulation_url?: string;
 }): Promise<{ success: boolean; error?: string }> {
   try {
     const response = await fetch(`${SUPABASE_URL}/functions/v1/insert-lead`, {
@@ -110,6 +110,7 @@ export async function saveLeadViaEdgeFunction(lead: {
         phone: lead.phone || null,
         wants_expert_evaluation: lead.wants_expert_evaluation || false,
         patrimonio_range: lead.patrimonio_range || null,
+        simulation_url: lead.simulation_url || null,
       })
     });
 

@@ -1,13 +1,13 @@
 import { useState, type FormEvent } from 'react';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
 import { usePlanningData } from '@/hooks/usePlanningData';
 import { useLeadFormValidation } from '@/hooks/useLeadFormValidation';
 import { LeadFormFields } from '@/components/forms/LeadFormFields';
 import { generateSecureExcelFile, type ChartDataPoint } from '@/utils/csvExport';
 import { InvestorProfile, CalculationResult } from '@/components/calculator/useCalculator';
-import { saveLeadToSupabase } from '@/integrations/supabase/client';
+import { saveLeadViaEdgeFunction } from '@/integrations/supabase/client';
 
 interface LeadCaptureFormProps {
   isOpen: boolean;
@@ -45,7 +45,7 @@ export const LeadCaptureForm = ({
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
-  const { savePlanningData, getPlanningUrl, generateDirectUrl, sendPlanByEmail } = usePlanningData();
+  const { savePlanningData, getPlanningUrl, generateDirectUrl } = usePlanningData();
   const { formErrors, validateForm, clearErrors } = useLeadFormValidation();
 
   const handleFormDataChange = (data: Partial<typeof formData>) => {
@@ -78,14 +78,19 @@ export const LeadCaptureForm = ({
     setIsSubmitting(true);
 
     try {
-      // Salvar lead no Supabase
-      const { success, error } = await saveLeadToSupabase({
+      // Nova lógica: gera URL direta com parâmetros
+      const simulation_url = generateDirectUrl(planningInputs);
+      
+      // Salvar lead no Supabase via Edge Function
+      const { success, error } = await saveLeadViaEdgeFunction({
         name: formData.name,
         email: formData.email,
         phone: formData.phone,
         wants_expert_evaluation: formData.wantsExpertEvaluation,
         patrimonio_range: formData.patrimonioRange,
+        simulation_url: simulation_url
       });
+
       if (!success) {
         toast({
           title: "Erro ao salvar lead",
@@ -104,15 +109,16 @@ export const LeadCaptureForm = ({
           description: "O arquivo Excel com os dados foi baixado para seu computador.",
         });
       } else {
-        // Nova lógica: gera URL direta com parâmetros
-        const directUrl = generateDirectUrl(planningInputs);
+        // A URL já foi gerada e enviada para a edge function, que vai enviar o email.
+        // O código abaixo para enviar email daqui pode ser removido ou mantido como fallback.
+        // Por enquanto, vou manter o toast para o usuário.
         
         // Também salva no sistema antigo para compatibilidade
         const planId = savePlanningData(formData, planningInputs, calculationResult);
-        const _planUrl = getPlanningUrl(planId);
+        getPlanningUrl(planId); // URL gerada mas não utilizada aqui
         
-        // Envia o email com a URL direta (mais simples e confiável)
-        await sendPlanByEmail(formData, directUrl);
+        // O email agora é enviado pelo backend.
+        // await sendPlanByEmail(formData, directUrl);
 
         toast({
           title: "Plano enviado com sucesso!",
@@ -143,6 +149,11 @@ export const LeadCaptureForm = ({
           <DialogTitle className="text-white">
             {isExportMode ? 'Download dos dados' : 'Dados para contato'}
           </DialogTitle>
+          <DialogDescription className="text-white/70">
+            {isExportMode 
+              ? 'Preencha seus dados para receber o relatório detalhado da simulação' 
+              : 'Seus dados serão utilizados para contato e envio de material personalizado'}
+          </DialogDescription>
         </DialogHeader>
         
         <form onSubmit={handleSubmit} className="space-y-4">

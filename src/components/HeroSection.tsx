@@ -3,7 +3,7 @@ interface HeroSectionProps {
   onReceivePlan?: () => void;
 }
 export const HeroSection = ({
-  onReceivePlan
+  onReceivePlan: _onReceivePlan
 }: HeroSectionProps) => {
   const handleClick = () => {
     // Scroll para a seção da calculadora

@@ -73,14 +73,8 @@ export const useChartDataProcessor = ({
   // Generate MonteCarloAllLines (1001) when data is available
   const generateMonteCarloLines = useCallback(() => {
     if (!isMonteCarloEnabled || !monteCarloData) {
-      console.log('🚫 MonteCarloAllLines generation skipped:', { isMonteCarloEnabled, hasMonteCarloData: !!monteCarloData });
       return [];
     }
-    
-    console.log('🎲 Generating MonteCarloAllLines:', { 
-      totalLines: MONTE_CARLO_ALL_LINES,
-      medianDataLength: monteCarloData.scenarios.median.length 
-    });
     
     const lines: number[][] = [];
     const baseData = monteCarloData.scenarios.median;
@@ -93,10 +87,7 @@ export const useChartDataProcessor = ({
         const optimistic = monteCarloData.scenarios.optimistic[dataIndex] || value;
         
         // Generate normal distribution around median
-        // Using Box-Muller transform for proper gaussian distribution
-        const u1 = Math.random();
-        const u2 = Math.random();
-        // Note: standardNormal is generated but not used directly in final calculation
+        // Note: Box-Muller transform variables not needed for percentile-based approach
         
         // Map line index to percentile (0 to 1)
         const percentile = lineIndex / (MONTE_CARLO_ALL_LINES - 1);
@@ -119,27 +110,18 @@ export const useChartDataProcessor = ({
       lines.push(lineData);
     }
     
-    console.log('✅ MonteCarloAllLines generated:', {
-      totalLinesGenerated: lines.length,
-      firstLineLength: lines[0]?.length || 0,
-      lastLineLength: lines[lines.length - 1]?.length || 0
-    });
+    // Monte Carlo lines generated successfully
     
     return lines;
   }, [isMonteCarloEnabled, monteCarloData]);
 
   useEffect(() => {
-    console.log('🔄 useEffect triggered - generating lines:', { 
-      isMonteCarloEnabled, 
-      hasMonteCarloData: !!monteCarloData 
-    });
     monteCarloLinesRef.current = generateMonteCarloLines();
   }, [monteCarloData, isMonteCarloEnabled, generateMonteCarloLines]);
 
   const chartData = useMemo(() => {
     // Generate lines immediately if not already generated
     if (isMonteCarloEnabled && monteCarloData && monteCarloLinesRef.current.length === 0) {
-      console.log('🚨 Generating lines immediately in chartData useMemo');
       monteCarloLinesRef.current = generateMonteCarloLines();
     }
     
@@ -170,16 +152,7 @@ export const useChartDataProcessor = ({
         }
       });
 
-      // Debug first data point
-      if (index === 0) {
-        console.log('🔍 MonteCarloAllLines Data Debug:', {
-          totalLinesGenerated: monteCarloLinesRef.current.length,
-          firstLineLength: monteCarloLinesRef.current[0]?.length || 0,
-          hasLine0: !!linesData.line0,
-          line0Value: linesData.line0,
-          totalDataKeys: Object.keys(linesData).length
-        });
-      }
+      // Monte Carlo lines data processing
 
       const finalData = { ...baseData, ...monteCarloData_final, ...linesData };
       

@@ -83,16 +83,7 @@ export const ChartRenderer = React.memo(({
     // Remove duplicatas e ordena
     const finalTicks = [...new Set(mandatoryTicks)].sort((a, b) => a - b);
     
-    // 🐛 DEBUG: Verificação explicit
-    console.log('🎯 TICKS DIRETOS - DEVE INCLUIR 53 E 60:', {
-      minAge,
-      maxAge,
-      idadeAposentadoria: userRetirementAge,
-      idadeCalculada: possibleRetirementAge,
-      finalTicks,
-      includes53: finalTicks.includes(53),
-      includes60: finalTicks.includes(60)
-    });
+    // Custom tick generation for chart axes
     
     return finalTicks;
   })();
@@ -108,25 +99,9 @@ export const ChartRenderer = React.memo(({
     return colors[index % colors.length];
   };
 
-  // Simple debug for chart rendering
+  // Validation for chart rendering
   if (!chartData?.length) {
-    console.log('⚠️ Chart: No data available');
     return null;
-  }
-
-  // Debug para identificar mudanças de escala
-  if (isDrawingFinalLines) {
-    console.log(`🎯 Scale Debug [${animationPhase}]:`, {
-      possibleRetirementAge,
-      perpetuityWealth,
-      hasMonteCarloData: !!monteCarloData,
-      chartDataLength: chartData?.length
-    });
-  }
-
-  // Simple debug for Scene 2
-  if (isShowingLines) {
-    console.log('Rendering Monte Carlo lines:', MONTE_CARLO_EXHIBITION_LINES);
   }
 
   return (
