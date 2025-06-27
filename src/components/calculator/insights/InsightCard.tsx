@@ -17,7 +17,7 @@ export const InsightCard: React.FC<InsightCardProps> = ({
   description,
   isCurrency = false,
   suffix = '',
-  showValueAsDescription = false,
+  showValueAsDescription = false
 }) => {
   return (
     <Card className="p-6 insight-card">
@@ -25,12 +25,13 @@ export const InsightCard: React.FC<InsightCardProps> = ({
         <h3 className="text-lg font-semibold mb-2 text-white">{title}</h3>
         {!showValueAsDescription && (
           <p className="text-2xl font-bold text-orange-600 mb-2 tech-number">
-            {isCurrency ? formatCurrency(value) : Math.round(value) + suffix}
+            {isCurrency 
+              ? formatCurrency(value) 
+              : Math.round(value) + suffix
+            }
           </p>
         )}
-        <p
-          className={`text-sm text-white ${showValueAsDescription ? 'text-lg font-semibold text-orange-600 tech-number' : ''}`}
-        >
+        <p className={`text-sm text-white ${showValueAsDescription ? 'text-lg font-semibold text-orange-600 tech-number' : ''}`}>
           {description}
         </p>
       </div>

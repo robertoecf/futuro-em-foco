@@ -31,20 +31,21 @@ export const ChartInfo = ({
   perpetuityWealth,
   possibleRetirementAge,
   userRetirementAge,
-  onVisibilityChange,
+  onVisibilityChange
 }: ChartInfoProps) => {
+  
   const [visibility, setVisibility] = useState<ChartVisibilityState>({
     scenarios: {
       optimistic: true,
       neutral: true,
       pessimistic: true,
       totalSaved: true,
-      patrimony: true,
+      patrimony: true
     },
     references: {
       financialIndependence: false,
-      perpetuityWealth: false,
-    },
+      perpetuityWealth: false
+    }
   });
 
   const toggleScenarioVisibility = (scenario: keyof ChartVisibilityState['scenarios']) => {
@@ -52,8 +53,8 @@ export const ChartInfo = ({
       ...visibility,
       scenarios: {
         ...visibility.scenarios,
-        [scenario]: !visibility.scenarios[scenario],
-      },
+        [scenario]: !visibility.scenarios[scenario]
+      }
     };
     setVisibility(newVisibility);
     onVisibilityChange?.(newVisibility);
@@ -64,58 +65,57 @@ export const ChartInfo = ({
       ...visibility,
       references: {
         ...visibility.references,
-        [reference]: !visibility.references[reference],
-      },
+        [reference]: !visibility.references[reference]
+      }
     };
     setVisibility(newVisibility);
     onVisibilityChange?.(newVisibility);
   };
 
-  const ScenarioItem = ({
-    color,
-    label,
-    scenario,
-    isDashed = false,
-  }: {
-    color: string;
-    label: string;
+  const ScenarioItem = ({ 
+    color, 
+    label, 
+    scenario, 
+    isDashed = false 
+  }: { 
+    color: string; 
+    label: string; 
     scenario: keyof ChartVisibilityState['scenarios'];
     isDashed?: boolean;
   }) => {
     const isVisible = visibility.scenarios[scenario];
-
+    
     return (
-      <div
-        className={`flex items-center gap-2 cursor-pointer hover:bg-white/10 p-1 rounded transition-colors ${
+      <div 
+        className={`flex items-center gap-2 cursor-pointer hover:bg-foreground/10 p-1 rounded transition-colors ${
           !isVisible ? 'opacity-50' : ''
         }`}
         onClick={() => toggleScenarioVisibility(scenario)}
       >
         <div className={`w-6 h-0.5 ${color} ${isDashed ? 'border-t-2 border-dashed' : ''}`}></div>
         <span className="text-xs text-white flex-1">{label}</span>
-        {isVisible ? (
-          <Eye className="w-3 h-3 text-white/70" />
-        ) : (
+        {isVisible ? 
+          <Eye className="w-3 h-3 text-white/70" /> : 
           <EyeOff className="w-3 h-3 text-white/50" />
-        )}
+        }
       </div>
     );
   };
 
-  const ReferenceItem = ({
-    label,
-    value,
-    reference,
-  }: {
-    label: string;
-    value: string | number;
+  const ReferenceItem = ({ 
+    label, 
+    value, 
+    reference 
+  }: { 
+    label: string; 
+    value: string | number; 
     reference: keyof ChartVisibilityState['references'];
   }) => {
     const isVisible = visibility.references[reference];
-
+    
     return (
-      <div
-        className={`cursor-pointer hover:bg-white/10 p-1 rounded transition-colors ${
+      <div 
+        className={`cursor-pointer hover:bg-foreground/10 p-1 rounded transition-colors ${
           !isVisible ? 'opacity-50' : ''
         }`}
         onClick={() => toggleReferenceVisibility(reference)}
@@ -123,17 +123,14 @@ export const ChartInfo = ({
         <div className="flex items-center gap-2 mb-1">
           <div className="w-4 h-0.5 border-t-2 border-dashed border-gray-500"></div>
           <span className="text-xs text-white flex-1">{label}</span>
-          {isVisible ? (
-            <Eye className="w-3 h-3 text-white/70" />
-          ) : (
+          {isVisible ? 
+            <Eye className="w-3 h-3 text-white/70" /> : 
             <EyeOff className="w-3 h-3 text-white/50" />
-          )}
+          }
         </div>
-        <p
-          className={`text-sm font-semibold text-white ml-6 ${
-            typeof value === 'string' && value.includes('R$') ? 'text-xs' : ''
-          }`}
-        >
+        <p className={`text-sm font-semibold text-white ml-6 ${
+          typeof value === 'string' && value.includes('R$') ? 'text-xs' : ''
+        }`}>
           {value}
         </p>
       </div>
@@ -148,7 +145,7 @@ export const ChartInfo = ({
           <BarChart3 className="h-4 w-4 text-white" />
           <h4 className="text-sm font-semibold text-white">Cenários</h4>
         </div>
-
+        
         {monteCarloData ? (
           <div className="space-y-2">
             <ScenarioItem
@@ -157,7 +154,11 @@ export const ChartInfo = ({
               scenario="optimistic"
               isDashed={true}
             />
-            <ScenarioItem color="bg-blue-500" label="Neutro (50º percentil)" scenario="neutral" />
+            <ScenarioItem
+              color="bg-blue-500"
+              label="Neutro (50º percentil)"
+              scenario="neutral"
+            />
             <ScenarioItem
               color="bg-red-600"
               label="Pessimista (5º percentil)"
@@ -173,7 +174,11 @@ export const ChartInfo = ({
           </div>
         ) : (
           <div className="space-y-2">
-            <ScenarioItem color="bg-orange-500" label="Patrimônio Projetado" scenario="patrimony" />
+            <ScenarioItem
+              color="bg-orange-500"
+              label="Patrimônio Projetado"
+              scenario="patrimony"
+            />
             <ScenarioItem
               color="bg-gray-500"
               label="Total Poupado"
@@ -190,48 +195,42 @@ export const ChartInfo = ({
           <TrendingUp className="h-4 w-4 text-green-600" />
           <h4 className="text-sm font-semibold text-white">Métricas Chave</h4>
         </div>
-
+        
         <div className="space-y-3">
           {monteCarloData?.statistics.successProbability && (
             <div>
-              <p className="text-xs text-white mb-1">Probabilidade de Sucesso</p>
-              <p className="text-lg font-bold text-green-600">
+              <p className="text-xs text-white/80">Probabilidade de sucesso</p>
+              <p className="text-sm font-semibold text-white">
                 {(monteCarloData.statistics.successProbability * 100).toFixed(1)}%
               </p>
             </div>
           )}
+          
+          <div>
+            <p className="text-xs text-white/80">Patrimônio perpétuo</p>
+            <p className="text-sm font-semibold text-white">{formatCurrency(perpetuityWealth)}</p>
+          </div>
         </div>
       </Card>
 
-      {/* Linhas de Referência */}
+      {/* Referências */}
       <Card className="p-4 chart-info-card">
         <div className="flex items-center gap-2 mb-3">
-          <Target className="h-4 w-4 text-white" />
+          <Target className="h-4 w-4 text-blue-500" />
           <h4 className="text-sm font-semibold text-white">Referências</h4>
         </div>
-
+        
         <div className="space-y-3">
           <ReferenceItem
-            label="Independência financeira"
-            value={`${(() => {
-              // 🎯 PRIORIDADE ABSOLUTA: Idade de aposentadoria do usuário
-              if (userRetirementAge) {
-                return userRetirementAge;
-              }
-
-              // 🔄 FALLBACK: Idade calculada apenas se usuário não definiu
-              return possibleRetirementAge;
-            })()} anos`}
+            label="Idade da independência"
+            value={`${userRetirementAge || possibleRetirementAge} anos`}
             reference="financialIndependence"
           />
-
-          {perpetuityWealth > 0 && (
-            <ReferenceItem
-              label="Patrimônio Perpetuidade"
-              value={formatCurrency(perpetuityWealth)}
-              reference="perpetuityWealth"
-            />
-          )}
+          <ReferenceItem
+            label="Patrimônio perpétuo"
+            value={formatCurrency(perpetuityWealth)}
+            reference="perpetuityWealth"
+          />
         </div>
       </Card>
     </div>
