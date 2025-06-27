@@ -20,7 +20,7 @@ export const ChartControls = ({
   onLifeExpectancyChange,
   onMonteCarloToggle,
   showGrid = true,
-  onGridToggle,
+  onGridToggle
 }: ChartControlsProps) => {
   return (
     <div className="glass-panel p-4 rounded-lg mb-6">
@@ -28,13 +28,12 @@ export const ChartControls = ({
         {/* Monte Carlo Toggle */}
         <div className="flex items-center space-x-3">
           <div>
-            <h3 className="text-sm font-medium text-white">
-              Simulação Probabilística | Método de Monte Carlo
-            </h3>
-            <p className="text-xs text-gray-300">
-              {isMonteCarloEnabled
-                ? 'Mil cenários aleatórios sendo exibidos'
-                : 'Mil cenários aleatórios baseados em risco e volatilidade'}
+                  <h3 className="text-sm font-medium text-white">Simulação Probabilística | Método de Monte Carlo</h3>
+      <p className="text-xs text-white">
+              {isMonteCarloEnabled 
+                ? "Mil cenários aleatórios sendo exibidos" 
+                : "Mil cenários aleatórios baseados em risco e volatilidade"
+              }
             </p>
           </div>
           <Button
@@ -43,7 +42,7 @@ export const ChartControls = ({
             onClick={() => onMonteCarloToggle(!isMonteCarloEnabled)}
             className="tech-button-monte-carlo text-white font-medium"
           >
-            {isMonteCarloEnabled ? 'Voltar' : 'Calcular'}
+            {isMonteCarloEnabled ? "Voltar" : "Calcular"}
           </Button>
         </div>
 
@@ -58,13 +57,13 @@ export const ChartControls = ({
               <Settings className="w-4 h-4" />
             </Button>
           </PopoverTrigger>
-          <PopoverContent className="w-80 glass-card !bg-transparent border-white/20">
+          <PopoverContent className="w-80 glass-card !bg-transparent border-foreground/20">
             <div className="space-y-4">
-              <h4 className="text-sm font-semibold text-white">Configurações</h4>
-
+              <h4 className="text-sm font-semibold text-foreground">Configurações</h4>
+              
               {/* Life Expectancy Control */}
               <div className="space-y-2">
-                <label htmlFor="life-expectancy-setting" className="text-sm font-medium text-white">
+                <label htmlFor="life-expectancy-setting" className="text-sm font-medium text-foreground">
                   Expectativa de vida
                 </label>
                 <div className="flex items-center space-x-3">
@@ -81,17 +80,17 @@ export const ChartControls = ({
                     className="flex-1 px-3 py-2 text-sm font-medium glass-input"
                     min={possibleRetirementAge + 1}
                   />
-                  <span className="text-sm text-gray-500 tech-label">anos</span>
+                  <span className="text-sm text-muted-foreground tech-label">anos</span>
                 </div>
               </div>
 
               {/* Grid Toggle */}
               <div className="flex items-center justify-between">
                 <div className="space-y-1">
-                  <label htmlFor="grid-setting" className="text-sm font-medium text-white">
+                  <label htmlFor="grid-setting" className="text-sm font-medium text-foreground">
                     Grade pontilhada
                   </label>
-                  <p className="text-xs text-gray-300">
+                  <p className="text-xs text-muted-foreground">
                     Mostrar linhas de grade no fundo do gráfico
                   </p>
                 </div>
