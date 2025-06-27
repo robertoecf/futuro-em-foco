@@ -11,17 +11,17 @@ export const ProjectingMessage = ({
   lifeExpectancy,
   possibleRetirementAge,
   onLifeExpectancyChange,
-  showLifeExpectancyControl
+  showLifeExpectancyControl,
 }: ProjectingMessageProps) => {
   const messages = {
     projecting: {
-      title: "Calculando possíveis resultados...",
-      subtitle: "Analisando mil cenários diferentes baseados em risco e volatilidade"
+      title: 'Calculando possíveis resultados...',
+      subtitle: 'Analisando mil cenários diferentes baseados em risco e volatilidade',
     },
     optimizing: {
-      title: "Otimizando exibição...",
-      subtitle: "Preparando visualização dos caminhos mais prováveis"
-    }
+      title: 'Otimizando exibição...',
+      subtitle: 'Preparando visualização dos caminhos mais prováveis',
+    },
   };
 
   const currentMessage = messages[phase];
@@ -32,20 +32,24 @@ export const ProjectingMessage = ({
         <div className="text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-orange-500 mx-auto mb-6"></div>
           <h3 className="text-2xl font-bold text-white mb-2">{currentMessage.title}</h3>
-                      <p className="text-white">{currentMessage.subtitle}</p>
+          <p className="text-white">{currentMessage.subtitle}</p>
         </div>
       </div>
-      
+
       {/* Controls Section */}
       {showLifeExpectancyControl && (
-                    <div className="bg-gray-50/50 p-4 rounded-lg mb-6">
+        <div className="bg-gray-50/50 p-4 rounded-lg mb-6">
           <div className="flex items-center justify-between flex-wrap gap-4">
             {/* Monte Carlo Toggle */}
             <div className="flex items-center space-x-3">
               <div>
-                <h3 className="text-sm font-medium text-white">Simulação Probabilística | Método de Monte Carlo</h3>
-                                  <p className="text-xs text-white">
-                  {phase === 'projecting' ? 'Calculando mil cenários aleatórios...' : 'Otimizando visualização...'}
+                <h3 className="text-sm font-medium text-white">
+                  Simulação Probabilística | Método de Monte Carlo
+                </h3>
+                <p className="text-xs text-white">
+                  {phase === 'projecting'
+                    ? 'Calculando mil cenários aleatórios...'
+                    : 'Otimizando visualização...'}
                 </p>
               </div>
               <button

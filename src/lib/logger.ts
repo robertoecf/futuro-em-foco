@@ -8,7 +8,7 @@ export const logger = {
     if (import.meta.env.MODE !== 'production') {
       console.error(...args);
     }
-  }
+  },
 };
 
 export default logger;

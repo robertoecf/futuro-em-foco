@@ -10,15 +10,15 @@ export const useOverscroll = () => {
 
     const triggerMatrix = () => {
       if (hasTriggered) return; // Só permite uma vez por sessão
-      
+
       setIsOverscrolling(true);
       setHasTriggered(true);
-      
+
       // Desativar o efeito após 8 segundos (mais tempo para apreciar)
       overscrollTimer = setTimeout(() => {
         setIsOverscrolling(false);
       }, 8000);
-      
+
       // Reset para permitir novamente após 30 segundos
       resetTimer = setTimeout(() => {
         setHasTriggered(false);
@@ -30,10 +30,10 @@ export const useOverscroll = () => {
       const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
       const scrollHeight = document.documentElement.scrollHeight;
       const clientHeight = document.documentElement.clientHeight;
-      
+
       const isAtTop = scrollTop <= 0 && e.deltaY < -50; // Scroll forte para cima no topo
       const isAtBottom = scrollTop + clientHeight >= scrollHeight && e.deltaY > 50; // Scroll forte para baixo no final
-      
+
       if (isAtTop || isAtBottom) {
         triggerMatrix();
       }
@@ -44,10 +44,10 @@ export const useOverscroll = () => {
       const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
       const scrollHeight = document.documentElement.scrollHeight;
       const clientHeight = document.documentElement.clientHeight;
-      
+
       const isAtTop = scrollTop <= 5;
       const isAtBottom = scrollTop + clientHeight >= scrollHeight - 5;
-      
+
       if (isAtTop || isAtBottom) {
         triggerMatrix();
       }
@@ -71,4 +71,4 @@ export const useOverscroll = () => {
   }, [hasTriggered]);
 
   return isOverscrolling;
-}; 
+};

@@ -56,7 +56,7 @@ export const usePlanningData = () => {
       name: nameValidation,
       email: emailValidation.sanitized,
       phone: phoneValidation.sanitized,
-      wantsExpertEvaluation: Boolean(userData.wantsExpertEvaluation)
+      wantsExpertEvaluation: Boolean(userData.wantsExpertEvaluation),
     };
   };
 
@@ -68,13 +68,13 @@ export const usePlanningData = () => {
     try {
       const validatedUserData = validateUserData(userData);
       const planId = generatePlanId();
-      
+
       const planningData: PlanningData = {
         id: planId,
         timestamp: new Date().toISOString(),
         userData: validatedUserData,
         planningInputs,
-        calculationResult
+        calculationResult,
       };
 
       secureStorage.set(`planning_${planId}`, planningData, 7 * 24 * 60 * 60 * 1000); // 7 days expiry
@@ -103,35 +103,38 @@ export const usePlanningData = () => {
   const generateDirectUrl = (planningInputs: PlanningData['planningInputs']): string => {
     const baseUrl = window.location.origin;
     const params = new URLSearchParams();
-    
+
     // Sistema automático: converte todas as propriedades de planningInputs para parâmetros de URL
     // Quando novas propriedades forem adicionadas ao tipo, elas serão automaticamente incluídas
     Object.entries(planningInputs).forEach(([key, value]) => {
       // Mapear nomes longos para abreviações para URLs mais limpos
       const keyMapping: Record<string, string> = {
-        'initialAmount': 'ia',
-        'monthlyAmount': 'ma', 
-        'currentAge': 'ca',
-        'retirementAge': 'ra',
-        'lifeExpectancy': 'le',
-        'retirementIncome': 'ri',
-        'portfolioReturn': 'pr',
-        'investorProfile': 'ip'
+        initialAmount: 'ia',
+        monthlyAmount: 'ma',
+        currentAge: 'ca',
+        retirementAge: 'ra',
+        lifeExpectancy: 'le',
+        retirementIncome: 'ri',
+        portfolioReturn: 'pr',
+        investorProfile: 'ip',
       };
-      
+
       const urlKey = keyMapping[key] || key; // Se não tiver mapeamento, usa o nome original
       params.set(urlKey, value.toString());
     });
-    
+
     const fullUrl = `${baseUrl}/?${params.toString()}`;
     return fullUrl;
   };
 
-  const sendPlanByEmail = async (userData: PlanningData['userData'], _planUrl: string): Promise<void> => {
+  const sendPlanByEmail = async (
+    userData: PlanningData['userData'],
+    _planUrl: string
+  ): Promise<void> => {
     validateUserData(userData);
-    
+
     // Simulação do envio de email
-    
+
     // Aqui seria integrado com um serviço real de email
     return new Promise((resolve) => {
       setTimeout(() => {
@@ -146,7 +149,9 @@ export const usePlanningData = () => {
   };
 
   // Função para copiar link direto
-  const copyDirectLink = async (planningInputs: PlanningData['planningInputs']): Promise<boolean> => {
+  const copyDirectLink = async (
+    planningInputs: PlanningData['planningInputs']
+  ): Promise<boolean> => {
     try {
       const directUrl = generateDirectUrl(planningInputs);
       await navigator.clipboard.writeText(directUrl);
@@ -157,8 +162,6 @@ export const usePlanningData = () => {
     }
   };
 
-
-
   return {
     savePlanningData,
     loadPlanningData,
@@ -166,7 +169,6 @@ export const usePlanningData = () => {
     generateDirectUrl,
     copyDirectLink,
     sendPlanByEmail,
-    clearUserData
+    clearUserData,
   };
 };
-

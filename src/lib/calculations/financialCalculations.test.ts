@@ -14,7 +14,7 @@ import {
   calculateSustainableIncome,
   calculateDepletingIncome,
   calculateSuggestedMonthlyContribution,
-  calculateMinimumAccumulationReturn
+  calculateMinimumAccumulationReturn,
 } from './financialCalculations';
 // Constantes removidas - valores agora hardcoded nos testes para simplicidade
 import type { InvestorProfile } from '@/components/calculator/types';
@@ -44,9 +44,9 @@ describe('Perfil de Investidor', () => {
 
   describe('getVolatilityByProfile', () => {
     it('deve retornar volatilidade correta para cada perfil', () => {
-      expect(getVolatilityByProfile('conservador')).toBe(0.10); // 10%
+      expect(getVolatilityByProfile('conservador')).toBe(0.1); // 10%
       expect(getVolatilityByProfile('moderado')).toBe(0.15); // 15%
-      expect(getVolatilityByProfile('arrojado')).toBe(0.20); // 20%
+      expect(getVolatilityByProfile('arrojado')).toBe(0.2); // 20%
       expect(getVolatilityByProfile('invalid' as InvestorProfile)).toBe(0.15); // Moderado default
     });
   });
@@ -56,14 +56,14 @@ describe('Cálculos de Acumulação', () => {
   describe('calculateAccumulatedWealth', () => {
     it('deve calcular patrimônio acumulado com valores simples', () => {
       const result = calculateAccumulatedWealth(
-        10000,    // Valor inicial
-        1000,     // Aporte mensal
-        10,       // Anos
-        0.06      // 6% a.a.
+        10000, // Valor inicial
+        1000, // Aporte mensal
+        10, // Anos
+        0.06 // 6% a.a.
       );
-      
+
       // Resultado esperado deve ser > que o valor total aportado
-      const totalAportado = 10000 + (1000 * 12 * 10); // 130k
+      const totalAportado = 10000 + 1000 * 12 * 10; // 130k
       expect(result).toBeGreaterThan(totalAportado);
       expect(result).toBeCloseTo(181173, -2); // Aproximadamente 181k (valor correto calculado)
     });
@@ -82,7 +82,7 @@ describe('Cálculos de Acumulação', () => {
 
     it('deve retornar valor inicial quando taxa de retorno é zero', () => {
       const result = calculateAccumulatedWealth(10000, 1000, 10, 0);
-      const expected = 10000 + (1000 * 12 * 10);
+      const expected = 10000 + 1000 * 12 * 10;
       expect(result).toBeCloseTo(expected, 2);
     });
   });
@@ -126,15 +126,15 @@ describe('Cálculos de Idade de Aposentadoria', () => {
   describe('calculatePossibleRetirementAge', () => {
     it('deve calcular idade possível de aposentadoria', () => {
       const result = calculatePossibleRetirementAge(
-        30,    // Idade atual
-        5000,  // Renda desejada
-        20,    // Anos de aposentadoria
-        0.04,  // Taxa aposentadoria
+        30, // Idade atual
+        5000, // Renda desejada
+        20, // Anos de aposentadoria
+        0.04, // Taxa aposentadoria
         10000, // Valor inicial
-        1000,  // Aporte mensal
-        0.06   // Taxa acumulação
+        1000, // Aporte mensal
+        0.06 // Taxa acumulação
       );
-      
+
       expect(result).toBeGreaterThan(30);
       expect(result).toBeLessThan(80); // Idade máxima razoável
     });
@@ -146,15 +146,15 @@ describe('Cálculos de Idade de Aposentadoria', () => {
 
     it('deve limitar simulação ao máximo de anos', () => {
       const result = calculatePossibleRetirementAge(
-        30,     // Idade atual
-        50000,  // Renda muito alta
-        20,     // Anos aposentadoria
-        0.04,   // Taxa aposentadoria
-        100,    // Valor inicial baixo
-        100,    // Aporte baixo
-        0.02    // Taxa acumulação baixa
+        30, // Idade atual
+        50000, // Renda muito alta
+        20, // Anos aposentadoria
+        0.04, // Taxa aposentadoria
+        100, // Valor inicial baixo
+        100, // Aporte baixo
+        0.02 // Taxa acumulação baixa
       );
-      
+
       expect(result).toBeLessThanOrEqual(80); // 30 + 50 anos máximo
     });
   });
@@ -164,7 +164,7 @@ describe('Cálculos de Renda', () => {
   describe('calculateSustainableIncome', () => {
     it('deve calcular renda sustentável mensal', () => {
       const result = calculateSustainableIncome(1000000, 6); // 1M, 6% a.a.
-      const expected = 1000000 * (6 / 100) / 12; // 5k por mês
+      const expected = (1000000 * (6 / 100)) / 12; // 5k por mês
       expect(result).toBe(expected);
       expect(result).toBe(5000);
     });
@@ -199,14 +199,14 @@ describe('Cálculos de Contribuição', () => {
   describe('calculateSuggestedMonthlyContribution', () => {
     it('deve calcular contribuição mensal sugerida', () => {
       const result = calculateSuggestedMonthlyContribution(
-        5000,  // Renda desejada
-        20,    // Anos aposentadoria
-        0.04,  // Taxa aposentadoria
+        5000, // Renda desejada
+        20, // Anos aposentadoria
+        0.04, // Taxa aposentadoria
         10000, // Valor inicial
-        30,    // Anos acumulação
-        0.06   // Taxa acumulação
+        30, // Anos acumulação
+        0.06 // Taxa acumulação
       );
-      
+
       expect(result).toBeGreaterThan(0);
       expect(result).toBeLessThan(10000); // Valor razoável
     });
@@ -218,14 +218,14 @@ describe('Cálculos de Contribuição', () => {
 
     it('deve retornar zero quando valor inicial é suficiente', () => {
       const result = calculateSuggestedMonthlyContribution(
-        1000,    // Renda baixa
-        20,      // Anos aposentadoria
-        0.04,    // Taxa aposentadoria
+        1000, // Renda baixa
+        20, // Anos aposentadoria
+        0.04, // Taxa aposentadoria
         10000000, // Valor inicial muito alto
-        30,      // Anos acumulação
-        0.06     // Taxa acumulação
+        30, // Anos acumulação
+        0.06 // Taxa acumulação
       );
-      
+
       expect(result).toBe(0);
     });
 
@@ -240,14 +240,14 @@ describe('Cálculos de Retorno Mínimo', () => {
   describe('calculateMinimumAccumulationReturn', () => {
     it('deve calcular retorno mínimo necessário', () => {
       const result = calculateMinimumAccumulationReturn(
-        5000,  // Renda desejada
-        20,    // Anos aposentadoria
-        0.04,  // Taxa aposentadoria
-        1000,  // Aporte mensal
+        5000, // Renda desejada
+        20, // Anos aposentadoria
+        0.04, // Taxa aposentadoria
+        1000, // Aporte mensal
         10000, // Valor inicial
-        30     // Anos acumulação
+        30 // Anos acumulação
       );
-      
+
       expect(result).toBeGreaterThan(0);
       expect(result).toBeLessThan(50); // < 50% a.a. (valor razoável)
     });
@@ -283,4 +283,4 @@ describe('Edge Cases e Validações', () => {
     const result = calculatePossibleRetirementAge(25, 10000, 30, 0.04, 1000, 500, 0.05);
     expect(result).toBeLessThanOrEqual(75); // 25 + 50 anos máximo
   });
-}); 
+});

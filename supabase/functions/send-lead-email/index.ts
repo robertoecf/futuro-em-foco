@@ -3,7 +3,7 @@
 // This enables autocomplete, go to definition, etc.
 
 // Setup type definitions for built-in Supabase Runtime APIs
-import "jsr:@supabase/functions-js/edge-runtime.d.ts"
+import 'jsr:@supabase/functions-js/edge-runtime.d.ts';
 
 // Declare Deno global to resolve TypeScript errors
 declare const Deno: {
@@ -14,30 +14,31 @@ declare const Deno: {
 };
 
 // Force re-deploy
-console.log("Hello from Functions!")
+console.log('Hello from Functions!');
 
 Deno.serve(async (req: Request) => {
   // This is needed if you're planning to invoke your function from a browser.
   if (req.method === 'OPTIONS') {
-    return new Response('ok')
+    return new Response('ok');
   }
 
   try {
-  // Recebe o payload do trigger (dados do lead)
-  const { record } = await req.json()
+    // Recebe o payload do trigger (dados do lead)
+    const { record } = await req.json();
 
-  // Dados do lead
-    const { name, email, phone, wants_expert_evaluation, patrimonio_range, simulation_url } = record
+    // Dados do lead
+    const { name, email, phone, wants_expert_evaluation, patrimonio_range, simulation_url } =
+      record;
 
-  // Envio via SendGrid
-  const SENDGRID_API_KEY = Deno.env.get('SENDGRID_API_KEY')
-  const SENDGRID_FROM = Deno.env.get('SENDGRID_FROM') // ex: seu@email.com
-  const SENDGRID_TO = Deno.env.get('SENDGRID_TO')     // ex: robertoecf@gmail.com
+    // Envio via SendGrid
+    const SENDGRID_API_KEY = Deno.env.get('SENDGRID_API_KEY');
+    const SENDGRID_FROM = Deno.env.get('SENDGRID_FROM'); // ex: seu@email.com
+    const SENDGRID_TO = Deno.env.get('SENDGRID_TO'); // ex: robertoecf@gmail.com
 
-  if (!SENDGRID_API_KEY || !SENDGRID_FROM || !SENDGRID_TO) {
-      console.error('Environment variables not set')
-    return new Response('Variáveis de ambiente não configuradas', { status: 500 })
-  }
+    if (!SENDGRID_API_KEY || !SENDGRID_FROM || !SENDGRID_TO) {
+      console.error('Environment variables not set');
+      return new Response('Variáveis de ambiente não configuradas', { status: 500 });
+    }
 
     // Monta o corpo do email HTML para o admin - Design System Tecno-Etéreo
     const adminMessageHTML = `
@@ -122,7 +123,7 @@ Deno.serve(async (req: Request) => {
     </div>
 </body>
 </html>
-    `
+    `;
 
     const adminEmail = {
       personalizations: [{ to: [{ email: SENDGRID_TO }] }],
@@ -130,22 +131,22 @@ Deno.serve(async (req: Request) => {
       subject: `[LEAD] ${name} - ${wants_expert_evaluation ? 'QUER ESPECIALISTA' : 'AUTOATENDIMENTO'}`,
       content: [
         { type: 'text/plain', value: `Novo lead: ${name} - ${email}` }, // Plain text first
-        { type: 'text/html', value: adminMessageHTML }
-      ]
+        { type: 'text/html', value: adminMessageHTML },
+      ],
     };
 
     const sendAdminEmail = await fetch('https://api.sendgrid.com/v3/mail/send', {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${SENDGRID_API_KEY}`,
-      'Content-Type': 'application/json'
-    },
-      body: JSON.stringify(adminEmail)
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${SENDGRID_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(adminEmail),
     });
 
     if (!sendAdminEmail.ok) {
-        console.error("Falha ao enviar email para o admin:", await sendAdminEmail.text());
-        // Decide whether to stop if admin email fails. For now, we'll continue.
+      console.error('Falha ao enviar email para o admin:', await sendAdminEmail.text());
+      // Decide whether to stop if admin email fails. For now, we'll continue.
     }
 
     // Enviar email para o usuário com o link da simulação
@@ -342,39 +343,42 @@ Deno.serve(async (req: Request) => {
   </div>
 </body>
 </html>
-      `
-      
+      `;
+
       const userEmail = {
         personalizations: [{ to: [{ email: email }] }],
         from: { email: SENDGRID_FROM, name: 'Futuro em Foco' },
-        subject: '[FUTURO EM FOCO] Simulação Processada - Acesso Liberado',
+        subject: 'Seu futuro em foco:',
         content: [
-          { type: 'text/plain', value: `Olá ${name}, sua simulação está pronta! Acesse: ${simulation_url}` }, // Plain text first
-          { type: 'text/html', value: userMessageHTML }
-        ]
+          {
+            type: 'text/plain',
+            value: `Olá ${name}, sua simulação está pronta! Acesse: ${simulation_url}`,
+          }, // Plain text first
+          { type: 'text/html', value: userMessageHTML },
+        ],
       };
-      
+
       const sendUserEmail = await fetch('https://api.sendgrid.com/v3/mail/send', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${SENDGRID_API_KEY}`,
-          'Content-Type': 'application/json'
+          Authorization: `Bearer ${SENDGRID_API_KEY}`,
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify(userEmail)
+        body: JSON.stringify(userEmail),
       });
 
       if (!sendUserEmail.ok) {
-        console.error("Falha ao enviar email para o usuário:", await sendUserEmail.text());
-        return new Response('Erro ao enviar email para o usuário', { status: 500 })
+        console.error('Falha ao enviar email para o usuário:', await sendUserEmail.text());
+        return new Response('Erro ao enviar email para o usuário', { status: 500 });
       }
     }
 
-    return new Response('Processamento de email concluído', { status: 200 })
-  } catch(err) {
-    console.error('Function error:', err)
-    return new Response('Internal Server Error', { status: 500 })
+    return new Response('Processamento de email concluído', { status: 200 });
+  } catch (err) {
+    console.error('Function error:', err);
+    return new Response('Internal Server Error', { status: 500 });
   }
-})
+});
 
 /* To invoke locally:
 
@@ -382,7 +386,7 @@ Deno.serve(async (req: Request) => {
   2. Make an HTTP request:
 
   curl -i --location --request POST 'http://127.0.0.1:54321/functions/v1/send-lead-email' \
-    --header 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0' \
+    --header 'Authorization: Bearer <SUPABASE_ANON_KEY>' \
     --header 'Content-Type: application/json' \
     --data '{"name":"Functions"}'
 

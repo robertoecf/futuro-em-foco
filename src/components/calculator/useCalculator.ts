@@ -19,7 +19,7 @@ export const useCalculator = () => {
     handleLifeExpectancyChange,
     handleRetirementIncomeBlur,
     handlePortfolioReturnBlur,
-    handleInvestorProfileChange
+    handleInvestorProfileChange,
   } = useCalculatorHandlers({
     currentAge: state.currentAge,
     retirementAge: state.retirementAge,
@@ -33,7 +33,7 @@ export const useCalculator = () => {
     setInvestorProfile: state.setInvestorProfile,
     setIsMonteCarloEnabled: state.setIsMonteCarloEnabled,
     setIsCalculating: state.setIsCalculating,
-    setMonteCarloResult: state.setMonteCarloResult
+    setMonteCarloResult: state.setMonteCarloResult,
   });
 
   const { calculatePossibleRetirementAge, calculateProjection } = useCalculatorEffects({
@@ -51,7 +51,7 @@ export const useCalculator = () => {
     sharedPlanData: state.sharedPlanData,
     setCalculationResult: state.setCalculationResult,
     setIsCalculating: state.setIsCalculating,
-    setMonteCarloResult: state.setMonteCarloResult
+    setMonteCarloResult: state.setMonteCarloResult,
   });
 
   const possibleRetirementAge = calculatePossibleRetirementAge();
@@ -75,6 +75,6 @@ export const useCalculator = () => {
     setInvestorProfile: handleInvestorProfileChange,
     handleMonteCarloToggle,
     calculateProjection,
-    accumulationYears
+    accumulationYears,
   };
 };

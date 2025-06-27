@@ -8,7 +8,10 @@ export const useCalculatorState = () => {
   // Try to load from shared plan first
   const sharedPlanData = loadFromSharedPlan();
 
-  const getValueOrDefault = <T extends string | number | InvestorProfile>(key: keyof SharedPlanData, defaultValue: T): T => {
+  const getValueOrDefault = <T extends string | number | InvestorProfile>(
+    key: keyof SharedPlanData,
+    defaultValue: T
+  ): T => {
     // Primeiro prioridade: dados compartilhados da URL
     if (sharedPlanData) {
       const sharedValue = sharedPlanData[key];
@@ -16,43 +19,42 @@ export const useCalculatorState = () => {
         return sharedValue as T;
       }
     }
-    
+
     // Segunda prioridade: storage local
     return loadFromStorage(key, defaultValue);
   };
 
   // State variables - using new defaults temporarily
-  const [initialAmount, setInitialAmount] = useState(() => 
+  const [initialAmount, setInitialAmount] = useState(() =>
     getValueOrDefault('initialAmount', DEFAULT_VALUES.INITIAL_AMOUNT)
   );
-  const [monthlyAmount, setMonthlyAmount] = useState(() => 
+  const [monthlyAmount, setMonthlyAmount] = useState(() =>
     getValueOrDefault('monthlyAmount', DEFAULT_VALUES.MONTHLY_AMOUNT)
   );
-  const [currentAge, setCurrentAge] = useState(() => 
+  const [currentAge, setCurrentAge] = useState(() =>
     getValueOrDefault('currentAge', DEFAULT_VALUES.CURRENT_AGE)
   );
-  const [retirementAge, setRetirementAge] = useState(() => 
+  const [retirementAge, setRetirementAge] = useState(() =>
     getValueOrDefault('retirementAge', DEFAULT_VALUES.RETIREMENT_AGE)
   );
-  const [lifeExpectancy, setLifeExpectancy] = useState(() => 
+  const [lifeExpectancy, setLifeExpectancy] = useState(() =>
     getValueOrDefault('lifeExpectancy', DEFAULT_VALUES.LIFE_EXPECTANCY)
   );
-  const [retirementIncome, setRetirementIncome] = useState(() => 
+  const [retirementIncome, setRetirementIncome] = useState(() =>
     getValueOrDefault('retirementIncome', DEFAULT_VALUES.RETIREMENT_INCOME)
   );
-  const [portfolioReturn, setPortfolioReturn] = useState(() => 
+  const [portfolioReturn, setPortfolioReturn] = useState(() =>
     getValueOrDefault('portfolioReturn', DEFAULT_VALUES.PORTFOLIO_RETURN)
   );
-  const [investorProfile, setInvestorProfile] = useState<InvestorProfile>(() => 
+  const [investorProfile, setInvestorProfile] = useState<InvestorProfile>(() =>
     getValueOrDefault('investorProfile', DEFAULT_VALUES.INVESTOR_PROFILE)
   );
   const [calculationResult, setCalculationResult] = useState<CalculationResult | null>(null);
-  
+
   // Monte Carlo states - always start disabled unless explicitly loaded from shared plan
   const [isMonteCarloEnabled, setIsMonteCarloEnabled] = useState(false);
   const [monteCarloResult, setMonteCarloResult] = useState<MonteCarloResult | null>(null);
   const [isCalculating, setIsCalculating] = useState(false);
-
 
   return {
     // State values
@@ -81,7 +83,6 @@ export const useCalculatorState = () => {
     setCalculationResult,
     setIsMonteCarloEnabled,
     setMonteCarloResult,
-    setIsCalculating
+    setIsCalculating,
   };
 };
-

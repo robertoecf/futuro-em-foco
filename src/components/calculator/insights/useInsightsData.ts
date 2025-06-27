@@ -8,7 +8,7 @@ import {
   calculateSustainableIncome,
   calculateDepletingIncome,
   calculateSuggestedMonthlyContribution,
-  calculateMinimumAccumulationReturn
+  calculateMinimumAccumulationReturn,
 } from './insightsCalculations';
 
 interface UseInsightsDataProps {
@@ -32,7 +32,7 @@ export const useInsightsData = ({
   retirementIncome,
   portfolioReturn,
   investorProfile,
-  possibleRetirementAge: _possibleRetirementAge
+  possibleRetirementAge: _possibleRetirementAge,
 }: UseInsightsDataProps) => {
   const accumulationYears = retirementAge - currentAge;
   const retirementYears = lifeExpectancy - retirementAge;
@@ -41,22 +41,22 @@ export const useInsightsData = ({
 
   const calculateCorrectPossibleRetirementAge = () => {
     if (retirementIncome <= 0) return retirementAge;
-    
+
     const requiredWealth = (retirementIncome * 12) / (portfolioReturn / 100);
-    const monthlyReturn = Math.pow(1 + accumulationAnnualReturn, 1/12) - 1;
-    
+    const monthlyReturn = Math.pow(1 + accumulationAnnualReturn, 1 / 12) - 1;
+
     let balance = initialAmount;
     let years = 0;
     const maxYears = 50;
-    
+
     while (balance < requiredWealth && years < maxYears) {
       for (let month = 0; month < 12; month++) {
         balance += monthlyAmount;
-        balance *= (1 + monthlyReturn);
+        balance *= 1 + monthlyReturn;
       }
       years++;
     }
-    
+
     return currentAge + years;
   };
 
@@ -71,18 +71,22 @@ export const useInsightsData = ({
 
   const getPatrimonioNecessarioInfo = () => {
     const sustentavel = calculateRequiredWealthSustainable(retirementIncome, portfolioReturn);
-    const minimo = calculateRequiredWealthDepleting(retirementIncome, retirementYears, retirementAnnualReturn);
-    
+    const minimo = calculateRequiredWealthDepleting(
+      retirementIncome,
+      retirementYears,
+      retirementAnnualReturn
+    );
+
     if (retirementIncome <= 0) {
       return {
         value: sustentavel,
-        description: "Defina a renda desejada"
+        description: 'Defina a renda desejada',
       };
     }
-    
+
     return {
       value: sustentavel,
-      description: `${formatCurrency(sustentavel)} (perpetuidade) | ${formatCurrency(minimo)} (até ${lifeExpectancy} anos)`
+      description: `${formatCurrency(sustentavel)} (perpetuidade) | ${formatCurrency(minimo)} (até ${lifeExpectancy} anos)`,
     };
   };
 
@@ -90,33 +94,33 @@ export const useInsightsData = ({
 
   const insights = [
     {
-      title: "Patrimônio necessário",
+      title: 'Patrimônio necessário',
       value: patrimonioInfo.value,
       description: patrimonioInfo.description,
       isCurrency: false,
-      showValueAsDescription: true
+      showValueAsDescription: true,
     },
     {
-      title: "Idade possível aposentadoria",
+      title: 'Idade possível aposentadoria',
       value: correctPossibleRetirementAge,
-      description: "Com a renda desejada",
+      description: 'Com a renda desejada',
       isCurrency: false,
-      suffix: " anos"
+      suffix: ' anos',
     },
     {
-      title: "Renda sustentável",
+      title: 'Renda sustentável',
       value: calculateSustainableIncome(accumulatedWealth, portfolioReturn),
-      description: "Preserva o patrimônio",
-      isCurrency: true
+      description: 'Preserva o patrimônio',
+      isCurrency: true,
     },
     {
-      title: "Renda máxima",
+      title: 'Renda máxima',
       value: calculateDepletingIncome(accumulatedWealth, retirementYears, retirementAnnualReturn),
       description: `Esgota aos ${lifeExpectancy} anos`,
-      isCurrency: true
+      isCurrency: true,
     },
     {
-      title: "Sugestão aporte mensal",
+      title: 'Sugestão aporte mensal',
       value: calculateSuggestedMonthlyContribution(
         retirementIncome,
         retirementYears,
@@ -125,11 +129,11 @@ export const useInsightsData = ({
         accumulationYears,
         accumulationAnnualReturn
       ),
-      description: "Para atingir renda desejada",
-      isCurrency: true
+      description: 'Para atingir renda desejada',
+      isCurrency: true,
     },
     {
-      title: "Rentabilidade mínima",
+      title: 'Rentabilidade mínima',
       value: calculateMinimumAccumulationReturn(
         retirementIncome,
         retirementYears,
@@ -138,10 +142,10 @@ export const useInsightsData = ({
         initialAmount,
         accumulationYears
       ),
-      description: "Durante acumulação",
+      description: 'Durante acumulação',
       isCurrency: false,
-      suffix: "% a.a."
-    }
+      suffix: '% a.a.',
+    },
   ];
 
   return insights;

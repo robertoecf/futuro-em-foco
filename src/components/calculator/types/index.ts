@@ -6,4 +6,4 @@ export interface CalculationResult {
   finalAmount: number;
   yearlyValues: number[];
   monthlyIncome: number;
-} 
+}

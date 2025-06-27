@@ -1,4 +1,3 @@
-
 import { portfolioGBMSimulation } from './portfolioSimulation';
 import { calculateStatistics } from './statistics';
 import { logger } from '../logger';
@@ -19,23 +18,23 @@ export async function runOptimizedMonteCarloSimulation(
   simulationCount: number = 50 // Reduced from 100 to 50
 ): Promise<BrownianMonteCarloResult> {
   const startTime = performance.now();
-  
+
   logger.log('🚀 Starting Optimized Monte Carlo simulation:', {
     simulationCount,
     expectedReturn,
     volatility,
     totalYears,
-    accumulationYears
+    accumulationYears,
   });
 
   // Use smaller batch sizes for better performance
   const batchSize = 10;
   const batches = Math.ceil(simulationCount / batchSize);
   const allSimulations: number[][] = [];
-  
+
   for (let batch = 0; batch < batches; batch++) {
     const currentBatchSize = Math.min(batchSize, simulationCount - batch * batchSize);
-    
+
     // Generate accumulation phase simulations using portfolio GBM
     const accumulationPaths = portfolioGBMSimulation(
       initialAmount,
@@ -45,11 +44,11 @@ export async function runOptimizedMonteCarloSimulation(
       accumulationYears,
       currentBatchSize
     );
-    
+
     // Process each simulation in this batch using shared utility
     for (let sim = 0; sim < currentBatchSize; sim++) {
       const accumulationPath = accumulationPaths[sim];
-      
+
       const yearlyValues = processSingleSimulation(
         accumulationPath,
         accumulationYears,
@@ -59,31 +58,31 @@ export async function runOptimizedMonteCarloSimulation(
         monthlyIncomeRate,
         retirementAnnualReturn
       );
-      
+
       allSimulations.push(yearlyValues);
     }
-    
+
     // Yield control to prevent blocking UI
     if (batch < batches - 1) {
-      await new Promise(resolve => setTimeout(resolve, 0));
+      await new Promise((resolve) => setTimeout(resolve, 0));
     }
   }
-  
+
   const statistics = calculateStatistics(allSimulations, totalYears, simulationCount);
-  
+
   const endTime = performance.now();
   logger.log(`✅ Optimized Monte Carlo completed in ${endTime - startTime}ms:`, {
     successProbability: statistics.successProbability,
     averageReturn: statistics.averageReturn,
-    volatilityRealized: statistics.volatilityRealized
+    volatilityRealized: statistics.volatilityRealized,
   });
-  
+
   return {
     scenarios: {
       pessimistic: statistics.percentile25,
       median: statistics.percentile50,
-      optimistic: statistics.percentile75
+      optimistic: statistics.percentile75,
     },
-    statistics
+    statistics,
   };
 }

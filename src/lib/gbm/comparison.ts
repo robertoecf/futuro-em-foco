@@ -1,4 +1,3 @@
-
 import { runBrownianMonteCarloSimulation } from './mainSimulation';
 import { logger } from '../logger';
 
@@ -16,19 +15,26 @@ export function compareMonteCarloMethods(
   simulationCount: number = 100
 ) {
   logger.log('🔬 Comparing Monte Carlo methods...');
-  
+
   const gbmResults = runBrownianMonteCarloSimulation(
-    initialAmount, monthlyContribution, accumulationYears, totalYears,
-    expectedReturn, volatility, monthlyIncomeRate, retirementMonthlyIncome,
-    retirementAnnualReturn, simulationCount
+    initialAmount,
+    monthlyContribution,
+    accumulationYears,
+    totalYears,
+    expectedReturn,
+    volatility,
+    monthlyIncomeRate,
+    retirementMonthlyIncome,
+    retirementAnnualReturn,
+    simulationCount
   );
-  
+
   return {
     gbm: gbmResults,
     comparison: {
       gbmSuccessRate: gbmResults.statistics.successProbability,
       gbmAverageReturn: gbmResults.statistics.averageReturn,
-      gbmVolatilityRealized: gbmResults.statistics.volatilityRealized
-    }
+      gbmVolatilityRealized: gbmResults.statistics.volatilityRealized,
+    },
   };
 }

@@ -6,8 +6,12 @@ import { InsightsCards } from './InsightsCards';
 import { InvestorProfiles } from '@/components/InvestorProfiles';
 
 // Lazy load heavy components
-const ChartComponent = lazy(() => import('@/components/ChartComponent').then(module => ({ default: module.ChartComponent })));
-const Recommendations = lazy(() => import('@/components/Recommendations').then(module => ({ default: module.Recommendations })));
+const ChartComponent = lazy(() =>
+  import('@/components/ChartComponent').then((module) => ({ default: module.ChartComponent }))
+);
+const Recommendations = lazy(() =>
+  import('@/components/Recommendations').then((module) => ({ default: module.Recommendations }))
+);
 
 // Loading component for suspense
 const ComponentLoader = () => (
@@ -67,49 +71,105 @@ export function Calculator() {
     handleRetirementIncomeBlur,
     handlePortfolioReturnBlur,
     setInvestorProfile,
-    handleMonteCarloToggle
+    handleMonteCarloToggle,
   } = useCalculator();
 
   return (
     <div className="w-full space-y-20 mb-32 px-10">
-      <div className={`transition-all duration-300 ${isMagicMomentActive ? 'invisible pointer-events-none' : 'visible'} mt-7`}>
+      <div
+        className={`transition-all duration-300 ${isMagicMomentActive ? 'invisible pointer-events-none' : 'visible'} mt-7`}
+      >
         <InvestorProfiles onProfileSelect={setInvestorProfile} selectedProfile={investorProfile} />
       </div>
-      <div className={`mb-12 transition-all duration-300 ${isMagicMomentActive ? 'invisible pointer-events-none' : 'visible'}`}>
+      <div
+        className={`mb-12 transition-all duration-300 ${isMagicMomentActive ? 'invisible pointer-events-none' : 'visible'}`}
+      >
         <div className="mb-6">
           <h3 className="text-xl font-bold text-white">Parâmetros</h3>
         </div>
-        <OptimizedCalculatorForm {...{
-          initialAmount, monthlyAmount, currentAge, retirementAge, retirementIncome, portfolioReturn, investorProfile,
-          handleInitialAmountBlur, handleMonthlyAmountBlur, handleCurrentAgeBlur, handleRetirementAgeBlur,
-          handleRetirementIncomeBlur, handlePortfolioReturnBlur, setInvestorProfile
-        }} />
+        <OptimizedCalculatorForm
+          {...{
+            initialAmount,
+            monthlyAmount,
+            currentAge,
+            retirementAge,
+            retirementIncome,
+            portfolioReturn,
+            investorProfile,
+            handleInitialAmountBlur,
+            handleMonthlyAmountBlur,
+            handleCurrentAgeBlur,
+            handleRetirementAgeBlur,
+            handleRetirementIncomeBlur,
+            handlePortfolioReturnBlur,
+            setInvestorProfile,
+          }}
+        />
       </div>
-      <div className={`transition-all duration-300 ${isMagicMomentActive ? 'invisible pointer-events-none' : 'visible'}`}>
-        <InsightsCards {...{
-          initialAmount, monthlyAmount, currentAge, retirementAge, lifeExpectancy, retirementIncome,
-          portfolioReturn, investorProfile, possibleRetirementAge
-        }} />
+      <div
+        className={`transition-all duration-300 ${isMagicMomentActive ? 'invisible pointer-events-none' : 'visible'}`}
+      >
+        <InsightsCards
+          {...{
+            initialAmount,
+            monthlyAmount,
+            currentAge,
+            retirementAge,
+            lifeExpectancy,
+            retirementIncome,
+            portfolioReturn,
+            investorProfile,
+            possibleRetirementAge,
+          }}
+        />
       </div>
       <div className="mb-8" ref={chartRef}>
         <Suspense fallback={<ComponentLoader />}>
-          <ChartComponent {...{
-            data: calculationResult?.yearlyValues || [], accumulationYears, lifeExpectancy, currentAge,
-            monthlyIncomeTarget: retirementIncome, portfolioReturn, onLifeExpectancyChange: handleLifeExpectancyChange,
-            showLifeExpectancyControl: true, monteCarloData: monteCarloResult, isCalculating, isMonteCarloEnabled,
-            onMonteCarloToggle: handleMonteCarloToggle, initialAmount, monthlyAmount, retirementAge,
-            retirementIncome, investorProfile, calculationResult, onAnimationComplete: finishCalculation,
-            onMagicMomentStateChange: setIsMagicMomentActive
-          }} />
+          <ChartComponent
+            {...{
+              data: calculationResult?.yearlyValues || [],
+              accumulationYears,
+              lifeExpectancy,
+              currentAge,
+              monthlyIncomeTarget: retirementIncome,
+              portfolioReturn,
+              onLifeExpectancyChange: handleLifeExpectancyChange,
+              showLifeExpectancyControl: true,
+              monteCarloData: monteCarloResult,
+              isCalculating,
+              isMonteCarloEnabled,
+              onMonteCarloToggle: handleMonteCarloToggle,
+              initialAmount,
+              monthlyAmount,
+              retirementAge,
+              retirementIncome,
+              investorProfile,
+              calculationResult,
+              onAnimationComplete: finishCalculation,
+              onMagicMomentStateChange: setIsMagicMomentActive,
+            }}
+          />
         </Suspense>
       </div>
-      <div className={`transition-all duration-300 ${isMagicMomentActive ? 'invisible pointer-events-none' : 'visible'}`}>
-        <ResultsCards {...{
-          calculationResult, retirementAge, lifeExpectancy, initialAmount, monteCarloResult,
-          isMonteCarloEnabled, currentAge, portfolioReturn
-        }} />
+      <div
+        className={`transition-all duration-300 ${isMagicMomentActive ? 'invisible pointer-events-none' : 'visible'}`}
+      >
+        <ResultsCards
+          {...{
+            calculationResult,
+            retirementAge,
+            lifeExpectancy,
+            initialAmount,
+            monteCarloResult,
+            isMonteCarloEnabled,
+            currentAge,
+            portfolioReturn,
+          }}
+        />
       </div>
-      <div className={`transition-all duration-300 ${isMagicMomentActive ? 'invisible pointer-events-none' : 'visible'}`}>
+      <div
+        className={`transition-all duration-300 ${isMagicMomentActive ? 'invisible pointer-events-none' : 'visible'}`}
+      >
         <Suspense fallback={<ComponentLoader />}>
           <Recommendations investorProfile={investorProfile} />
         </Suspense>

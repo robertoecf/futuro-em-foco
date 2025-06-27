@@ -2,17 +2,19 @@ import { Button } from '@/components/ui/button';
 interface HeroSectionProps {
   onReceivePlan?: () => void;
 }
-export const HeroSection = ({
-  onReceivePlan: _onReceivePlan
-}: HeroSectionProps) => {
+export const HeroSection = ({ onReceivePlan: _onReceivePlan }: HeroSectionProps) => {
   const handleClick = () => {
     // Scroll para a seção da calculadora
     document.getElementById('calculator-section')?.scrollIntoView({ behavior: 'smooth' });
   };
-  return <div className="aurora-banner text-white p-8 sm:p-12 md:p-12 lg:p-12 xl:p-14 rounded-3xl relative overflow-hidden" style={{
-    width: '100%',
-    display: 'block'
-  }}>
+  return (
+    <div
+      className="aurora-banner text-white p-8 sm:p-12 md:p-12 lg:p-12 xl:p-14 rounded-3xl relative overflow-hidden"
+      style={{
+        width: '100%',
+        display: 'block',
+      }}
+    >
       {/* Aurora Background */}
       <div id="aurora-banner-background">
         <div id="banner-blob1" className="aurora-banner-blob"></div>
@@ -32,13 +34,15 @@ export const HeroSection = ({
           Quer garantir sua aposentadoria tranquila?
         </h1>
         <p className="text-lg mb-8 opacity-90">
-          O patrimônio acumulado terá um impacto direto nos recursos disponíveis ao se aposentar. 
-          A boa notícia é que definindo metas claras e investindo regularmente, você pode assegurar sua tranquilidade financeira por muitos anos. 
-          Vamos entender o seu objetivo e checar a necessidade de ajustes no seu planejamento.
+          O patrimônio acumulado terá um impacto direto nos recursos disponíveis ao se aposentar. A
+          boa notícia é que definindo metas claras e investindo regularmente, você pode assegurar
+          sua tranquilidade financeira por muitos anos. Vamos entender o seu objetivo e checar a
+          necessidade de ajustes no seu planejamento.
         </p>
         <Button className="tech-button-specialist-cta" onClick={handleClick}>
           Calcular projeção patrimonial
         </Button>
       </div>
-    </div>;
+    </div>
+  );
 };

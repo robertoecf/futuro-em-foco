@@ -2,7 +2,13 @@ import React from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 interface FormData {
   name: string;
@@ -22,7 +28,7 @@ export const LeadFormFields = ({ formData, formErrors, onFormDataChange }: LeadF
   const formatPhoneNumber = (value: string) => {
     // Remove tudo que não é número
     const numbers = value.replace(/\D/g, '');
-    
+
     // Aplica a máscara (11) 99999-9999
     if (numbers.length <= 2) {
       return numbers.length > 0 ? `(${numbers}` : '';
@@ -41,7 +47,9 @@ export const LeadFormFields = ({ formData, formErrors, onFormDataChange }: LeadF
   return (
     <>
       <div>
-        <Label htmlFor="name" className="text-white">Nome *</Label>
+        <Label htmlFor="name" className="text-white">
+          Nome *
+        </Label>
         <Input
           id="name"
           type="text"
@@ -52,13 +60,13 @@ export const LeadFormFields = ({ formData, formErrors, onFormDataChange }: LeadF
           required
           className="bg-black/20 border border-white/30 text-white placeholder:text-white/60 focus:bg-black/20 focus:border-white/30 focus:text-white focus-visible:ring-0 focus-visible:ring-offset-0"
         />
-        {formErrors.name && (
-          <p className="text-sm text-red-400 mt-1">{formErrors.name}</p>
-        )}
+        {formErrors.name && <p className="text-sm text-red-400 mt-1">{formErrors.name}</p>}
       </div>
 
       <div>
-        <Label htmlFor="email" className="text-white">Email *</Label>
+        <Label htmlFor="email" className="text-white">
+          Email *
+        </Label>
         <Input
           id="email"
           type="email"
@@ -69,13 +77,13 @@ export const LeadFormFields = ({ formData, formErrors, onFormDataChange }: LeadF
           required
           className="bg-black/20 border border-white/30 text-white placeholder:text-white/60 focus:bg-black/20 focus:border-white/30 focus:text-white focus-visible:ring-0 focus-visible:ring-offset-0"
         />
-        {formErrors.email && (
-          <p className="text-sm text-red-400 mt-1">{formErrors.email}</p>
-        )}
+        {formErrors.email && <p className="text-sm text-red-400 mt-1">{formErrors.email}</p>}
       </div>
 
       <div>
-        <Label htmlFor="phone" className="text-white">Telefone</Label>
+        <Label htmlFor="phone" className="text-white">
+          Telefone
+        </Label>
         <Input
           id="phone"
           type="tel"
@@ -85,25 +93,33 @@ export const LeadFormFields = ({ formData, formErrors, onFormDataChange }: LeadF
           maxLength={15}
           className="bg-black/20 border border-white/30 text-white placeholder:text-white/60 focus:bg-black/20 focus:border-white/30 focus:text-white focus-visible:ring-0 focus-visible:ring-offset-0"
         />
-        {formErrors.phone && (
-          <p className="text-sm text-red-400 mt-1">{formErrors.phone}</p>
-        )}
+        {formErrors.phone && <p className="text-sm text-red-400 mt-1">{formErrors.phone}</p>}
       </div>
 
       <div>
-        <Label htmlFor="patrimonio-range" className="text-white">Faixa de patrimônio</Label>
-        <Select 
-          value={formData.patrimonioRange} 
+        <Label htmlFor="patrimonio-range" className="text-white">
+          Faixa de patrimônio
+        </Label>
+        <Select
+          value={formData.patrimonioRange}
           onValueChange={(value) => onFormDataChange({ patrimonioRange: value })}
         >
           <SelectTrigger className="bg-black/20 border border-white/30 text-white focus:bg-black/20 focus:border-white/30 focus:text-white focus-visible:ring-0 focus-visible:ring-offset-0 data-[state=open]:bg-black/20 data-[state=open]:border-white/30">
             <SelectValue placeholder="Selecione sua faixa de patrimônio" />
           </SelectTrigger>
           <SelectContent className="bg-black/80 border border-white/8">
-            <SelectItem value="ate-100k" className="text-white hover:bg-black/80">Até 100 mil</SelectItem>
-            <SelectItem value="100k-300k" className="text-white hover:bg-black/80">Entre 100 mil e 300 mil</SelectItem>
-            <SelectItem value="300k-1m" className="text-white hover:bg-black/80">Entre 300 mil e 1 milhão</SelectItem>
-            <SelectItem value="acima-1m" className="text-white hover:bg-black/80">Acima de 1 milhão</SelectItem>
+            <SelectItem value="ate-100k" className="text-white hover:bg-black/80">
+              Até 100 mil
+            </SelectItem>
+            <SelectItem value="100k-300k" className="text-white hover:bg-black/80">
+              Entre 100 mil e 300 mil
+            </SelectItem>
+            <SelectItem value="300k-1m" className="text-white hover:bg-black/80">
+              Entre 300 mil e 1 milhão
+            </SelectItem>
+            <SelectItem value="acima-1m" className="text-white hover:bg-black/80">
+              Acima de 1 milhão
+            </SelectItem>
           </SelectContent>
         </Select>
         {formErrors.patrimonioRange && (
@@ -115,7 +131,7 @@ export const LeadFormFields = ({ formData, formErrors, onFormDataChange }: LeadF
         <Checkbox
           id="expert"
           checked={formData.wantsExpertEvaluation}
-          onCheckedChange={(checked) => 
+          onCheckedChange={(checked) =>
             onFormDataChange({ wantsExpertEvaluation: checked as boolean })
           }
           className="border-white/8 data-[state=checked]:bg-orange-500 data-[state=checked]:border-orange-500"

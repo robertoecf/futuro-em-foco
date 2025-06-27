@@ -1,74 +1,79 @@
-import js from "@eslint/js";
-import globals from "globals";
-import reactHooks from "eslint-plugin-react-hooks";
-import reactRefresh from "eslint-plugin-react-refresh";
-import tsParser from "@typescript-eslint/parser";
-import tsPlugin from "@typescript-eslint/eslint-plugin";
+import js from '@eslint/js'
+import globals from 'globals'
+import reactHooks from 'eslint-plugin-react-hooks'
+import reactRefresh from 'eslint-plugin-react-refresh'
+import tsParser from '@typescript-eslint/parser'
+import tsPlugin from '@typescript-eslint/eslint-plugin'
+import prettierConfig from 'eslint-config-prettier'
 
 export default [
-  { ignores: ["dist", "node_modules", "build", "*.md", ".husky", "*.json"] },
+  { ignores: ['dist', 'node_modules', 'build', '*.md', '.husky', '*.json'] },
   {
-    files: ["**/*.{ts,tsx}"],
-    ignores: ["supabase/functions/**/*.ts"],
+    files: ['**/*.{ts,tsx}'],
+    ignores: ['supabase/functions/**/*.ts'],
     languageOptions: {
       ecmaVersion: 2020,
       globals: { ...globals.browser, ...globals.node },
       parser: tsParser,
       parserOptions: {
         ecmaFeatures: {
-          jsx: true,
+          jsx: true
         },
-        sourceType: "module",
-      },
+        sourceType: 'module'
+      }
     },
     plugins: {
-      "@typescript-eslint": tsPlugin,
-      "react-hooks": reactHooks,
-      "react-refresh": reactRefresh,
+      '@typescript-eslint': tsPlugin,
+      'react-hooks': reactHooks,
+      'react-refresh': reactRefresh
     },
     rules: {
       ...js.configs.recommended.rules,
       ...tsPlugin.configs.recommended.rules,
       ...reactHooks.configs.recommended.rules,
-      "react-refresh/only-export-components": [
-        "warn",
-        { allowConstantExport: true },
+      'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
+      '@typescript-eslint/no-unused-vars': [
+        'warn',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_'
+        }
       ],
-      "@typescript-eslint/no-unused-vars": ["warn", { 
-        "argsIgnorePattern": "^_",
-        "varsIgnorePattern": "^_" 
-      }],
-      "@typescript-eslint/no-explicit-any": "warn",
-      "@typescript-eslint/no-require-imports": "off",
-    },
+      '@typescript-eslint/no-explicit-any': 'warn',
+      '@typescript-eslint/no-require-imports': 'off'
+    }
   },
   // Supabase Functions configuration
   {
-    files: ["supabase/functions/**/*.ts"],
+    files: ['supabase/functions/**/*.ts'],
     languageOptions: {
       ecmaVersion: 2020,
-      globals: { 
-        ...globals.browser, 
+      globals: {
+        ...globals.browser,
         ...globals.node,
-        Deno: "readonly"
+        Deno: 'readonly'
       },
       parser: tsParser,
       parserOptions: {
-        sourceType: "module",
-      },
+        sourceType: 'module'
+      }
     },
     plugins: {
-      "@typescript-eslint": tsPlugin,
+      '@typescript-eslint': tsPlugin
     },
     rules: {
       ...js.configs.recommended.rules,
       ...tsPlugin.configs.recommended.rules,
-      "@typescript-eslint/no-unused-vars": ["warn", { 
-        "argsIgnorePattern": "^_",
-        "varsIgnorePattern": "^_" 
-      }],
-      "@typescript-eslint/no-explicit-any": "warn",
-      "@typescript-eslint/no-require-imports": "off",
-    },
-  }
-];
+      '@typescript-eslint/no-unused-vars': [
+        'warn',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_'
+        }
+      ],
+      '@typescript-eslint/no-explicit-any': 'warn',
+      '@typescript-eslint/no-require-imports': 'off'
+    }
+  },
+  prettierConfig
+]

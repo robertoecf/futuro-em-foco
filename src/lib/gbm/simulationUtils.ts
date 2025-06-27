@@ -5,7 +5,7 @@ import { generateNormalRandom } from './randomGenerators';
  * Converts monthly accumulation path to yearly values
  */
 export function convertToYearlyValues(
-  accumulationPath: number[], 
+  accumulationPath: number[],
   accumulationYears: number
 ): number[] {
   const yearlyValues: number[] = [];
@@ -35,12 +35,13 @@ export function simulateRetirementPhase(
   if (retirementYears <= 0) return;
 
   const retirementVolatility = volatility * 0.7;
-  const monthlyIncome = retirementMonthlyIncome > 0 
-    ? retirementMonthlyIncome 
-    : retirementStartValue * monthlyIncomeRate;
+  const monthlyIncome =
+    retirementMonthlyIncome > 0
+      ? retirementMonthlyIncome
+      : retirementStartValue * monthlyIncomeRate;
 
   let balance = retirementStartValue;
-  const dt = 1/12;
+  const dt = 1 / 12;
   const drift = (retirementAnnualReturn - 0.5 * retirementVolatility * retirementVolatility) * dt;
   const diff = retirementVolatility * Math.sqrt(dt);
 
@@ -72,10 +73,10 @@ export function processSingleSimulation(
   retirementAnnualReturn: number
 ): number[] {
   const retirementStartValue = accumulationPath[accumulationPath.length - 1];
-  
+
   // Convert to yearly values
   const yearlyValues = convertToYearlyValues(accumulationPath, accumulationYears);
-  
+
   // Add retirement phase
   simulateRetirementPhase(
     retirementStartValue,
@@ -87,6 +88,6 @@ export function processSingleSimulation(
     retirementAnnualReturn,
     yearlyValues
   );
-  
+
   return yearlyValues;
-} 
+}

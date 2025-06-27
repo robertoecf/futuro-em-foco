@@ -3,8 +3,11 @@ import { createClient } from '@supabase/supabase-js';
 import type { Database } from './types';
 
 // 🎯 CORREÇÃO: Usar as variáveis com nomes corretos e valores de fallback
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || 'https://hcmjavggiphoulwgcoej.supabase.co';
-const SUPABASE_PUBLISHABLE_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhjbWphdmdnaXBob3Vsd2djb2VqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAzNDUzMzMsImV4cCI6MjA2NTkyMTMzM30.rUBOj4-iEYQ77UaqaSfNFMSi84_Xsf6iTBmE7mWtjv4';
+const SUPABASE_URL =
+  import.meta.env.VITE_SUPABASE_URL || 'https://hcmjavggiphoulwgcoej.supabase.co';
+const SUPABASE_PUBLISHABLE_KEY =
+  import.meta.env.VITE_SUPABASE_ANON_KEY ||
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhjbWphdmdnaXBob3Vsd2djb2VqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAzNDUzMzMsImV4cCI6MjA2NTkyMTMzM30.rUBOj4-iEYQ77UaqaSfNFMSi84_Xsf6iTBmE7mWtjv4';
 
 // Environment variables loaded
 
@@ -26,21 +29,19 @@ export async function saveLeadToSupabase(lead: {
   patrimonio_range?: string | null;
 }): Promise<{ success: boolean; error?: string }> {
   try {
-    const { error } = await supabase
-      .from('leads')
-      .insert({
-        name: lead.name,
-        email: lead.email,
-        phone: lead.phone || null,
-        wants_expert_evaluation: lead.wants_expert_evaluation || false,
-        patrimonio_range: lead.patrimonio_range || null,
-      });
-      
+    const { error } = await supabase.from('leads').insert({
+      name: lead.name,
+      email: lead.email,
+      phone: lead.phone || null,
+      wants_expert_evaluation: lead.wants_expert_evaluation || false,
+      patrimonio_range: lead.patrimonio_range || null,
+    });
+
     if (error) {
       console.error('Supabase error:', error);
       return { success: false, error: error.message };
     }
-    
+
     console.log('Lead saved successfully');
     return { success: true };
   } catch (err) {
@@ -62,9 +63,9 @@ export async function saveLeadToSupabaseDirectly(lead: {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'apikey': SUPABASE_PUBLISHABLE_KEY,
-        'Authorization': `Bearer ${SUPABASE_PUBLISHABLE_KEY}`,
-        'Prefer': 'return=minimal'
+        apikey: SUPABASE_PUBLISHABLE_KEY,
+        Authorization: `Bearer ${SUPABASE_PUBLISHABLE_KEY}`,
+        Prefer: 'return=minimal',
       },
       body: JSON.stringify({
         name: lead.name,
@@ -72,7 +73,7 @@ export async function saveLeadToSupabaseDirectly(lead: {
         phone: lead.phone || null,
         wants_expert_evaluation: lead.wants_expert_evaluation || false,
         patrimonio_range: lead.patrimonio_range || null,
-      })
+      }),
     });
 
     if (!response.ok) {
@@ -103,7 +104,7 @@ export async function saveLeadViaEdgeFunction(lead: {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${SUPABASE_PUBLISHABLE_KEY}`,
+        Authorization: `Bearer ${SUPABASE_PUBLISHABLE_KEY}`,
       },
       body: JSON.stringify({
         name: lead.name,
@@ -112,7 +113,7 @@ export async function saveLeadViaEdgeFunction(lead: {
         wants_expert_evaluation: lead.wants_expert_evaluation || false,
         patrimonio_range: lead.patrimonio_range || null,
         simulation_url: lead.simulation_url || null,
-      })
+      }),
     });
 
     if (!response.ok) {
