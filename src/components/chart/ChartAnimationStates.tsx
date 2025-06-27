@@ -23,31 +23,37 @@ interface MagicMomentCheckpoint {
 
 class MagicMomentDebugger {
   private checkpoints: MagicMomentCheckpoint[] = [];
-  
-  addCheckpoint(step: string, phase: AnimationPhase, dataReady: boolean, linesVisible: boolean, details: Record<string, unknown> = {}) {
+
+  addCheckpoint(
+    step: string,
+    phase: AnimationPhase,
+    dataReady: boolean,
+    linesVisible: boolean,
+    details: Record<string, unknown> = {}
+  ) {
     const checkpoint: MagicMomentCheckpoint = {
       step,
       timestamp: Date.now(),
       phase,
       dataReady,
       linesVisible,
-      details
+      details,
     };
-    
+
     this.checkpoints.push(checkpoint);
     console.log(`🔍 MAGIC MOMENT CHECKPOINT [${step}]:`, {
       phase,
       dataReady,
       linesVisible,
-      ...details
+      ...details,
     });
   }
-  
+
   getFlowReport() {
     console.log('📋 MAGIC MOMENT FLOW REPORT:', this.checkpoints);
     return this.checkpoints;
   }
-  
+
   clear() {
     this.checkpoints = [];
   }
@@ -55,11 +61,11 @@ class MagicMomentDebugger {
 
 const magicMomentDebugger = new MagicMomentDebugger();
 
-export const useChartAnimation = ({ 
-  isCalculating, 
-  isMonteCarloEnabled, 
+export const useChartAnimation = ({
+  isCalculating,
+  isMonteCarloEnabled,
   monteCarloData,
-  onAnimationComplete
+  onAnimationComplete,
 }: UseChartAnimationProps) => {
   // 🎯 CORREÇÃO CRÍTICA: Inicializar com 'projecting' se já estiver calculando
   const [animationPhase, setAnimationPhase] = useState<AnimationPhase>(
@@ -69,14 +75,14 @@ export const useChartAnimation = ({
   const [hasStartedAnimation, setHasStartedAnimation] = useState(false);
   const [hasMinimumTimePassed, setHasMinimumTimePassed] = useState(false);
   const timersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
-  
+
   // 🎯 CORREÇÃO DO BUG: Estados para controlar exibição das linhas
   const [shouldShow50Lines, setShouldShow50Lines] = useState(false);
   const [shouldShowAllLines, setShouldShowAllLines] = useState(false);
 
   // Cleanup function for timers
   const clearAllTimers = () => {
-    timersRef.current.forEach(timer => clearTimeout(timer));
+    timersRef.current.forEach((timer) => clearTimeout(timer));
     timersRef.current = [];
   };
 
@@ -90,13 +96,19 @@ export const useChartAnimation = ({
   // Check if both conditions are met for transition
   const checkTransitionConditions = useCallback(() => {
     const dataReady = monteCarloData && !isCalculating;
-    
-    magicMomentDebugger.addCheckpoint('Checking Transition', animationPhase, !!dataReady, shouldShow50Lines, {
-      hasMinimumTimePassed,
-      monteCarloDataLength: monteCarloData?.scenarios.median.length || 0,
-      isCalculating,
-      message: hasMinimumTimePassed ? 'Minimum time passed' : 'Waiting minimum time'
-    });
+
+    magicMomentDebugger.addCheckpoint(
+      'Checking Transition',
+      animationPhase,
+      !!dataReady,
+      shouldShow50Lines,
+      {
+        hasMinimumTimePassed,
+        monteCarloDataLength: monteCarloData?.scenarios.median.length || 0,
+        isCalculating,
+        message: hasMinimumTimePassed ? 'Minimum time passed' : 'Waiting minimum time',
+      }
+    );
 
     // 🎯 ROTEIRO CRÍTICO: Só transiciona para 'paths' se AMBOS: dados prontos E 1999ms passados E estamos em projecting
     // CENA 1 → CENA 2: Tempo mínimo de 1999ms SEMPRE respeitado
@@ -104,7 +116,7 @@ export const useChartAnimation = ({
       setAnimationPhase('paths');
       setShouldShowAllLines(true);
       magicMomentDebugger.addCheckpoint('Transition to Paths (CENA 2)', 'paths', true, true, {
-        message: 'CENA 1→2: Transição após 1999ms mínimos + dados prontos'
+        message: 'CENA 1→2: Transição após 1999ms mínimos + dados prontos',
       });
     }
   }, [hasMinimumTimePassed, monteCarloData, isCalculating, animationPhase, shouldShow50Lines]);
@@ -135,7 +147,7 @@ export const useChartAnimation = ({
       setShouldShow50Lines(false);
       setShouldShowAllLines(false);
       magicMomentDebugger.addCheckpoint('Safe Reset', 'final', false, false, {
-        message: 'Reset seguro após animação completa'
+        message: 'Reset seguro após animação completa',
       });
     }
   }, [isMonteCarloEnabled, isCalculating, animationPhase]);
@@ -151,25 +163,31 @@ export const useChartAnimation = ({
   useEffect(() => {
     if (isCalculating && isMonteCarloEnabled && !hasStartedAnimation) {
       const startTime = Date.now();
-      
+
       setProjectingStartTime(startTime);
       setAnimationPhase('projecting');
       setHasStartedAnimation(true);
       setHasMinimumTimePassed(false);
       setShouldShow50Lines(false);
       setShouldShowAllLines(false);
-      
+
       magicMomentDebugger.addCheckpoint('Animation Started', 'projecting', false, false, {
         startTime,
-        message: 'Animation started'
+        message: 'Animation started',
       });
 
       // CENA 1: Minimum time de 1999ms SEMPRE respeitado, mesmo que dados carreguem antes
       addTimer(() => {
         setHasMinimumTimePassed(true);
-        magicMomentDebugger.addCheckpoint('Minimum Time Passed (1999ms)', 'projecting', false, false, {
-          message: 'Tempo mínimo de 1999ms respeitado - pode transicionar'
-        });
+        magicMomentDebugger.addCheckpoint(
+          'Minimum Time Passed (1999ms)',
+          'projecting',
+          false,
+          false,
+          {
+            message: 'Tempo mínimo de 1999ms respeitado - pode transicionar',
+          }
+        );
       }, MAGIC_MOMENT_TIMERS.PROJECTING_DURATION);
     }
   }, [isCalculating, isMonteCarloEnabled, hasStartedAnimation]);
@@ -183,52 +201,63 @@ export const useChartAnimation = ({
 
   // Also check when data becomes ready
   useEffect(() => {
-    if (monteCarloData && !isCalculating && animationPhase === 'projecting' && hasMinimumTimePassed) {
+    if (
+      monteCarloData &&
+      !isCalculating &&
+      animationPhase === 'projecting' &&
+      hasMinimumTimePassed
+    ) {
       checkTransitionConditions();
     }
-  }, [monteCarloData, isCalculating, animationPhase, hasMinimumTimePassed, checkTransitionConditions]);
+  }, [
+    monteCarloData,
+    isCalculating,
+    animationPhase,
+    hasMinimumTimePassed,
+    checkTransitionConditions,
+  ]);
 
   // Handle subsequent animation phases
   useEffect(() => {
     if (animationPhase === 'paths') {
       magicMomentDebugger.addCheckpoint('CENA 2 Started', 'paths', true, true, {
         duration: MAGIC_MOMENT_TIMERS.PATHS_DURATION,
-        message: 'CENA 2: Mostrando 1001 linhas com tooltips desabilitados'
+        message: 'CENA 2: Mostrando 1001 linhas com tooltips desabilitados',
       });
-      
-              // CENA 2 → CENA 3: Show 1001 lines for 3999ms, then show optimizing message
-        addTimer(() => {
-          setAnimationPhase('optimizing');
-          setShouldShowAllLines(false);
-          setShouldShow50Lines(false); // CENA 3: Apenas mensagem "Otimizando..."
-        
+
+      // CENA 2 → CENA 3: Show 1001 lines for 3999ms, then show optimizing message
+      addTimer(() => {
+        setAnimationPhase('optimizing');
+        setShouldShowAllLines(false);
+        setShouldShow50Lines(false); // CENA 3: Apenas mensagem "Otimizando..."
+
         magicMomentDebugger.addCheckpoint('CENA 3 Started', 'optimizing', true, false, {
           duration: MAGIC_MOMENT_TIMERS.OPTIMIZING_DURATION,
-          message: 'CENA 3: Mesmo formato da CENA 1 com texto "Otimizando exibição..."'
+          message: 'CENA 3: Mesmo formato da CENA 1 com texto "Otimizando exibição..."',
         });
-        
+
         // CENA 3: Show optimizing message for 1999ms, then final
         addTimer(() => {
           setAnimationPhase('drawing-final');
           setShouldShow50Lines(false);
           setShouldShowAllLines(false); // 🎯 CORREÇÃO: Garantir que todas as linhas sejam ocultadas na CENA 4
-          
+
           magicMomentDebugger.addCheckpoint('CENA 4 Started', 'drawing-final', true, false, {
             duration: MAGIC_MOMENT_TIMERS.DRAWING_FINAL_DURATION,
-            message: 'CENA 4: Desenhando 3 linhas finais'
+            message: 'CENA 4: Desenhando 3 linhas finais',
           });
-          
+
           // CENA 4: Show final result after 3000ms
           addTimer(() => {
             setAnimationPhase('final');
             magicMomentDebugger.addCheckpoint('Animation Complete', 'final', true, false, {
-              message: 'Momento mágico completo'
+              message: 'Momento mágico completo',
             });
-            
+
             if (onAnimationComplete) {
               onAnimationComplete();
             }
-                      }, MAGIC_MOMENT_TIMERS.DRAWING_FINAL_DURATION);
+          }, MAGIC_MOMENT_TIMERS.DRAWING_FINAL_DURATION);
         }, MAGIC_MOMENT_TIMERS.OPTIMIZING_DURATION);
       }, MAGIC_MOMENT_TIMERS.PATHS_DURATION);
     }
@@ -249,11 +278,10 @@ export const useChartAnimation = ({
 
   return {
     animationPhase,
-    isShowingLines,        // 500 linhas durante fase 'paths'
-    isShowing50Lines,      // 50 linhas durante fase 'optimizing' 
+    isShowingLines, // 500 linhas durante fase 'paths'
+    isShowing50Lines, // 50 linhas durante fase 'optimizing'
     isDrawingFinalLines: animationPhase === 'drawing-final',
     // Função para debug
-    getDebugReport: () => magicMomentDebugger.getFlowReport()
+    getDebugReport: () => magicMomentDebugger.getFlowReport(),
   };
 };
-

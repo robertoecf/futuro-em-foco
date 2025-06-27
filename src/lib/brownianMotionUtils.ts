@@ -1,4 +1,3 @@
-
 // Re-export all GBM functionality from the modular structure
 export type { BrownianMonteCarloResult } from './gbm';
 export {
@@ -7,5 +6,5 @@ export {
   portfolioGBMSimulation,
   calculateStatistics,
   runBrownianMonteCarloSimulation,
-  compareMonteCarloMethods
+  compareMonteCarloMethods,
 } from './gbm';

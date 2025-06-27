@@ -17,7 +17,7 @@ const ANIMATION_TIMINGS = {
   STAGGER_DELAY: 0, // Começar todas ao mesmo tempo mas com delays diferentes
   TOTAL_DURATION: 3000, // 3 segundos total
   PESSIMISTIC_START: 0,
-  MEDIAN_START: 500,    // Começa 0.5s depois
+  MEDIAN_START: 500, // Começa 0.5s depois
   OPTIMISTIC_START: 1000, // Começa 1s depois
 };
 
@@ -68,14 +68,14 @@ export const useFinalLinesAnimation = ({ isDrawingFinalLines }: FinalLineAnimati
           strokeDashoffset: '0',
           opacity: 1,
           drawingStyle: {},
-          isVisible: true
+          isVisible: true,
         };
       }
 
       // Determinar o timing para cada linha
       let startTime: number;
       let baseDashArray: string;
-      
+
       switch (lineType) {
         case 'pessimistic':
           startTime = ANIMATION_TIMINGS.PESSIMISTIC_START;
@@ -97,7 +97,7 @@ export const useFinalLinesAnimation = ({ isDrawingFinalLines }: FinalLineAnimati
       // Calcular progresso para esta linha específica
       const lineElapsed = Math.max(0, animationTime - startTime);
       const lineProgress = Math.min(lineElapsed / ANIMATION_TIMINGS.DURATION_PER_LINE, 1);
-      
+
       // Se ainda não começou a desenhar esta linha
       if (animationTime < startTime) {
         return {
@@ -105,13 +105,13 @@ export const useFinalLinesAnimation = ({ isDrawingFinalLines }: FinalLineAnimati
           strokeDashoffset: '1000',
           opacity: 0,
           drawingStyle: {},
-          isVisible: false
+          isVisible: false,
         };
       }
 
       // Animação de desenho usando dashoffset
       const dashOffset = 1000 * (1 - lineProgress);
-      const opacity = 0.3 + (0.7 * lineProgress); // De 0.3 a 1.0
+      const opacity = 0.3 + 0.7 * lineProgress; // De 0.3 a 1.0
 
       const animationState: AnimationState = {
         strokeDasharray: lineProgress === 1 ? baseDashArray : '1000 1000',
@@ -120,17 +120,20 @@ export const useFinalLinesAnimation = ({ isDrawingFinalLines }: FinalLineAnimati
         drawingStyle: {
           transition: lineProgress === 1 ? 'stroke-dasharray 0.3s ease-out' : 'none',
         },
-        isVisible: true
+        isVisible: true,
       };
-      
-      console.log(`🎬 Animation state for ${lineType} (time: ${animationTime.toFixed(0)}ms, progress: ${(lineProgress * 100).toFixed(1)}%):`, {
-        startTime,
-        lineElapsed,
-        progress: lineProgress,
-        dashOffset,
-        opacity
-      });
-      
+
+      console.log(
+        `🎬 Animation state for ${lineType} (time: ${animationTime.toFixed(0)}ms, progress: ${(lineProgress * 100).toFixed(1)}%):`,
+        {
+          startTime,
+          lineElapsed,
+          progress: lineProgress,
+          dashOffset,
+          opacity,
+        }
+      );
+
       return animationState;
     };
   }, [isDrawingFinalLines, animationTime]);
@@ -141,6 +144,6 @@ export const useFinalLinesAnimation = ({ isDrawingFinalLines }: FinalLineAnimati
 
   return {
     getFinalLineAnimationState,
-    isAnimationComplete
+    isAnimationComplete,
   };
 };

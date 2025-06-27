@@ -30,7 +30,7 @@ interface WorkerResponse {
 // Worker message handler
 self.onmessage = (event: MessageEvent<WorkerMessage>) => {
   const { type, params } = event.data;
-  
+
   if (type === 'START_SIMULATION') {
     const {
       initialAmount,
@@ -43,11 +43,11 @@ self.onmessage = (event: MessageEvent<WorkerMessage>) => {
       retirementMonthlyIncome,
       retirementAnnualReturn,
       batchSize,
-      batchIndex
+      batchIndex,
     } = params;
-    
+
     const batchSimulations: number[][] = [];
-    
+
     // Generate accumulation phase simulations
     const accumulationPaths = portfolioGBMSimulation(
       initialAmount,
@@ -57,11 +57,11 @@ self.onmessage = (event: MessageEvent<WorkerMessage>) => {
       accumulationYears,
       batchSize
     );
-    
+
     // Process each simulation using shared utility
     for (let sim = 0; sim < batchSize; sim++) {
       const accumulationPath = accumulationPaths[sim];
-      
+
       const yearlyValues = processSingleSimulation(
         accumulationPath,
         accumulationYears,
@@ -71,19 +71,19 @@ self.onmessage = (event: MessageEvent<WorkerMessage>) => {
         monthlyIncomeRate,
         retirementAnnualReturn
       );
-      
+
       batchSimulations.push(yearlyValues);
     }
-    
+
     // Send results back
     const response: WorkerResponse = {
       type: 'BATCH_COMPLETE',
       batchIndex,
-      simulations: batchSimulations
+      simulations: batchSimulations,
     };
-    
+
     self.postMessage(response);
   }
 };
 
-export {}; 
+export {};

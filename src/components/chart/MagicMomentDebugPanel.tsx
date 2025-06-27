@@ -27,7 +27,7 @@ export const MagicMomentDebugPanel: React.FC<MagicMomentDebugPanelProps> = ({
   isShowing50Lines,
   isDrawingFinalLines,
   monteCarloData,
-  getDebugReport
+  getDebugReport,
 }) => {
   const [debugLog, setDebugLog] = useState<DebugCheckpoint[]>([]);
   const [isVisible, setIsVisible] = useState(false);
@@ -63,23 +63,35 @@ export const MagicMomentDebugPanel: React.FC<MagicMomentDebugPanelProps> = ({
 
   const getPhaseEmoji = (phase: string) => {
     switch (phase) {
-      case 'projecting': return '⏳';
-      case 'paths': return '📊';
-      case 'optimizing': return '⚡';
-      case 'drawing-final': return '✨';
-      case 'final': return '✅';
-      default: return '❓';
+      case 'projecting':
+        return '⏳';
+      case 'paths':
+        return '📊';
+      case 'optimizing':
+        return '⚡';
+      case 'drawing-final':
+        return '✨';
+      case 'final':
+        return '✅';
+      default:
+        return '❓';
     }
   };
 
   const getPhaseDescription = (phase: string) => {
     switch (phase) {
-      case 'projecting': return 'Calculando cenários...';
-      case 'paths': return 'Exibindo 500 linhas';
-      case 'optimizing': return 'Mostrando 50 linhas';
-      case 'drawing-final': return 'Desenhando 3 linhas finais';
-      case 'final': return 'Completo';
-      default: return 'Desconhecido';
+      case 'projecting':
+        return 'Calculando cenários...';
+      case 'paths':
+        return 'Exibindo 500 linhas';
+      case 'optimizing':
+        return 'Mostrando 50 linhas';
+      case 'drawing-final':
+        return 'Desenhando 3 linhas finais';
+      case 'final':
+        return 'Completo';
+      default:
+        return 'Desconhecido';
     }
   };
 
@@ -88,10 +100,7 @@ export const MagicMomentDebugPanel: React.FC<MagicMomentDebugPanelProps> = ({
       <Card className="p-4 bg-black/90 text-white border-orange-500">
         <div className="flex items-center justify-between mb-3">
           <h3 className="text-lg font-bold text-orange-400">🔍 Magic Moment Debug</h3>
-          <button
-            onClick={() => setIsVisible(false)}
-            className="text-gray-400 hover:text-white"
-          >
+          <button onClick={() => setIsVisible(false)} className="text-gray-400 hover:text-white">
             ✕
           </button>
         </div>
@@ -104,39 +113,45 @@ export const MagicMomentDebugPanel: React.FC<MagicMomentDebugPanelProps> = ({
               <div className="font-semibold text-orange-300">
                 Fase: {animationPhase.toUpperCase()}
               </div>
-              <div className="text-sm text-gray-300">
-                {getPhaseDescription(animationPhase)}
-              </div>
+              <div className="text-sm text-gray-300">{getPhaseDescription(animationPhase)}</div>
             </div>
           </div>
         </div>
 
         {/* Indicadores Visuais */}
         <div className="grid grid-cols-2 gap-2 mb-4">
-          <div className={`p-2 rounded text-center text-xs ${
-            isShowingLines ? 'bg-green-600' : 'bg-gray-700'
-          }`}>
+          <div
+            className={`p-2 rounded text-center text-xs ${
+              isShowingLines ? 'bg-green-600' : 'bg-gray-700'
+            }`}
+          >
             500 Linhas
             <div className="font-bold">{isShowingLines ? 'ON' : 'OFF'}</div>
           </div>
-          
-          <div className={`p-2 rounded text-center text-xs ${
-            isShowing50Lines ? 'bg-blue-600' : 'bg-gray-700'
-          }`}>
+
+          <div
+            className={`p-2 rounded text-center text-xs ${
+              isShowing50Lines ? 'bg-blue-600' : 'bg-gray-700'
+            }`}
+          >
             50 Linhas
             <div className="font-bold">{isShowing50Lines ? 'ON' : 'OFF'}</div>
           </div>
-          
-          <div className={`p-2 rounded text-center text-xs ${
-            isDrawingFinalLines ? 'bg-purple-600' : 'bg-gray-700'
-          }`}>
+
+          <div
+            className={`p-2 rounded text-center text-xs ${
+              isDrawingFinalLines ? 'bg-purple-600' : 'bg-gray-700'
+            }`}
+          >
             3 Linhas Finais
             <div className="font-bold">{isDrawingFinalLines ? 'ON' : 'OFF'}</div>
           </div>
-          
-          <div className={`p-2 rounded text-center text-xs ${
-            monteCarloData ? 'bg-orange-600' : 'bg-gray-700'
-          }`}>
+
+          <div
+            className={`p-2 rounded text-center text-xs ${
+              monteCarloData ? 'bg-orange-600' : 'bg-gray-700'
+            }`}
+          >
             Dados MC
             <div className="font-bold">{monteCarloData ? 'READY' : 'WAITING'}</div>
           </div>
@@ -145,29 +160,36 @@ export const MagicMomentDebugPanel: React.FC<MagicMomentDebugPanelProps> = ({
         {/* Verificações de Integridade */}
         <div className="space-y-1 mb-4">
           <div className="text-sm font-semibold text-yellow-400">✅ Verificações:</div>
-          
-          <div className={`text-xs flex items-center ${
-            (animationPhase === 'paths' && isShowingLines) ? 'text-green-400' : 'text-red-400'
-          }`}>
-            • Fase 'paths' → 500 linhas: {
-              (animationPhase === 'paths' && isShowingLines) ? '✅' : '❌'
-            }
+
+          <div
+            className={`text-xs flex items-center ${
+              animationPhase === 'paths' && isShowingLines ? 'text-green-400' : 'text-red-400'
+            }`}
+          >
+            • Fase 'paths' → 500 linhas:{' '}
+            {animationPhase === 'paths' && isShowingLines ? '✅' : '❌'}
           </div>
-          
-          <div className={`text-xs flex items-center ${
-            (animationPhase === 'optimizing' && isShowing50Lines) ? 'text-green-400' : 'text-red-400'
-          }`}>
-            • Fase 'optimizing' → 50 linhas: {
-              (animationPhase === 'optimizing' && isShowing50Lines) ? '✅' : '❌'
-            }
+
+          <div
+            className={`text-xs flex items-center ${
+              animationPhase === 'optimizing' && isShowing50Lines
+                ? 'text-green-400'
+                : 'text-red-400'
+            }`}
+          >
+            • Fase 'optimizing' → 50 linhas:{' '}
+            {animationPhase === 'optimizing' && isShowing50Lines ? '✅' : '❌'}
           </div>
-          
-          <div className={`text-xs flex items-center ${
-            (animationPhase === 'drawing-final' && isDrawingFinalLines) ? 'text-green-400' : 'text-red-400'
-          }`}>
-            • Fase 'drawing-final' → 3 linhas: {
-              (animationPhase === 'drawing-final' && isDrawingFinalLines) ? '✅' : '❌'
-            }
+
+          <div
+            className={`text-xs flex items-center ${
+              animationPhase === 'drawing-final' && isDrawingFinalLines
+                ? 'text-green-400'
+                : 'text-red-400'
+            }`}
+          >
+            • Fase 'drawing-final' → 3 linhas:{' '}
+            {animationPhase === 'drawing-final' && isDrawingFinalLines ? '✅' : '❌'}
           </div>
         </div>
 
@@ -179,8 +201,8 @@ export const MagicMomentDebugPanel: React.FC<MagicMomentDebugPanelProps> = ({
               <div key={index} className="text-xs bg-gray-800 p-2 rounded mb-1">
                 <div className="font-semibold text-green-400">{checkpoint.step}</div>
                 <div className="text-gray-300">
-                  Fase: {checkpoint.phase} | Dados: {checkpoint.dataReady ? '✅' : '❌'} | 
-                  Linhas: {checkpoint.linesVisible ? '✅' : '❌'}
+                  Fase: {checkpoint.phase} | Dados: {checkpoint.dataReady ? '✅' : '❌'} | Linhas:{' '}
+                  {checkpoint.linesVisible ? '✅' : '❌'}
                 </div>
                 {checkpoint.details.message && (
                   <div className="text-orange-300 italic">{checkpoint.details.message}</div>
@@ -204,4 +226,4 @@ export const MagicMomentDebugPanel: React.FC<MagicMomentDebugPanelProps> = ({
       </Card>
     </div>
   );
-}; 
+};

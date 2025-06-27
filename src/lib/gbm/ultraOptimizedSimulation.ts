@@ -1,4 +1,3 @@
-
 import { calculateStatistics } from './statistics';
 import { logger } from '../logger';
 import type { BrownianMonteCarloResult } from './types';
@@ -124,7 +123,7 @@ const createWorker = () => {
       });
     };
   `;
-  
+
   const blob = new Blob([workerCode], { type: 'application/javascript' });
   const workerUrl = URL.createObjectURL(blob);
   return new Worker(workerUrl);
@@ -144,36 +143,35 @@ export async function runUltraOptimizedMonteCarloSimulation(
   simulationCount: number = 1001
 ): Promise<BrownianMonteCarloResult> {
   const startTime = performance.now();
-  
+
   logger.log('🚀 Starting Ultra-Optimized Monte Carlo simulation:', {
     simulationCount,
     expectedReturn,
     volatility,
     totalYears,
-    accumulationYears
+    accumulationYears,
   });
 
   // Determine number of workers based on CPU cores
   const numWorkers = Math.min(navigator.hardwareConcurrency || 4, 8);
   const batchSize = Math.ceil(simulationCount / numWorkers);
-  
+
   // Create workers
   const workers = Array.from({ length: numWorkers }, () => createWorker());
   const results: number[][][] = new Array(numWorkers);
-  
+
   // Create promises for each worker
   const workerPromises = workers.map((worker, index) => {
     return new Promise<void>((resolve) => {
-      const actualBatchSize = index === numWorkers - 1 
-        ? simulationCount - (index * batchSize)
-        : batchSize;
-      
+      const actualBatchSize =
+        index === numWorkers - 1 ? simulationCount - index * batchSize : batchSize;
+
       worker.onmessage = (e) => {
         results[e.data.batchIndex] = e.data.simulations;
         worker.terminate();
         resolve();
       };
-      
+
       worker.postMessage({
         params: {
           initialAmount,
@@ -185,36 +183,36 @@ export async function runUltraOptimizedMonteCarloSimulation(
           monthlyIncomeRate,
           retirementMonthlyIncome,
           retirementAnnualReturn,
-          batchSize: actualBatchSize
+          batchSize: actualBatchSize,
         },
-        batchIndex: index
+        batchIndex: index,
       });
     });
   });
-  
+
   // Wait for all workers to complete
   await Promise.all(workerPromises);
-  
+
   // Combine results
   const allSimulations = results.flat();
-  
+
   // Calculate statistics
   const statistics = calculateStatistics(allSimulations, totalYears, simulationCount);
-  
+
   const endTime = performance.now();
   logger.log(`✅ Ultra-Optimized Monte Carlo completed in ${endTime - startTime}ms:`, {
     successProbability: statistics.successProbability,
     averageReturn: statistics.averageReturn,
     volatilityRealized: statistics.volatilityRealized,
-    workersUsed: numWorkers
+    workersUsed: numWorkers,
   });
-  
+
   return {
     scenarios: {
-      pessimistic: statistics.percentile5,   // P5: pior 5% dos cenários
-      median: statistics.percentile50,       // P50: mediana (cenário central)
-      optimistic: statistics.percentile95    // P95: melhor 5% dos cenários
+      pessimistic: statistics.percentile5, // P5: pior 5% dos cenários
+      median: statistics.percentile50, // P50: mediana (cenário central)
+      optimistic: statistics.percentile95, // P95: melhor 5% dos cenários
     },
-    statistics
+    statistics,
   };
-} 
+}

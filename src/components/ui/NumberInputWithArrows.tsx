@@ -22,7 +22,7 @@ export const NumberInputWithArrows: React.FC<NumberInputWithArrowsProps> = ({
   max,
   step = 1,
   placeholder,
-  className = "glass-input"
+  className = 'glass-input',
 }) => {
   const [displayValue, setDisplayValue] = useState('');
   const [hasBeenInteracted, setHasBeenInteracted] = useState(false);
@@ -50,10 +50,10 @@ export const NumberInputWithArrows: React.FC<NumberInputWithArrowsProps> = ({
     } else {
       baseValue = parseFloat(displayValue) || 0;
     }
-    
+
     const newValue = baseValue + step;
     const finalValue = max !== undefined ? Math.min(newValue, max) : newValue;
-    
+
     setHasBeenInteracted(true);
     setDisplayValue(finalValue.toString());
     onChange?.(finalValue);
@@ -70,10 +70,10 @@ export const NumberInputWithArrows: React.FC<NumberInputWithArrowsProps> = ({
     } else {
       baseValue = parseFloat(displayValue) || 0;
     }
-    
+
     const newValue = baseValue - step;
     const finalValue = min !== undefined ? Math.max(newValue, min) : newValue;
-    
+
     setHasBeenInteracted(true);
     setDisplayValue(finalValue.toString());
     onChange?.(finalValue);
@@ -83,7 +83,7 @@ export const NumberInputWithArrows: React.FC<NumberInputWithArrowsProps> = ({
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setHasBeenInteracted(true);
     const value = e.target.value;
-    
+
     // Permitir apenas números, pontos e valores vazios
     if (value === '' || /^\d*\.?\d*$/.test(value)) {
       setDisplayValue(value);
@@ -137,4 +137,4 @@ export const NumberInputWithArrows: React.FC<NumberInputWithArrowsProps> = ({
       </div>
     </div>
   );
-}; 
+};

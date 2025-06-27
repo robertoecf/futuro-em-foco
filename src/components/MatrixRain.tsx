@@ -8,11 +8,12 @@ export const MatrixRain: React.FC<MatrixRainProps> = ({ isActive }) => {
   const [columns, setColumns] = useState<string[]>([]);
 
   // Caracteres Matrix - principalmente katakana japoneses + alguns números
-  const matrixChars = 'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲンガギグゲゴザジズゼゾダヂヅデドバビブベボパピプペポ0123456789';
+  const matrixChars =
+    'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲンガギグゲゴザジズゼゾダヂヅデドバビブベボパピプペポ0123456789';
 
   const generateColumns = useCallback(() => {
     if (!isActive) return;
-    
+
     const columnCount = Math.floor(window.innerWidth / 12); // Mais colunas (a cada 12px ao invés de 18px)
     const newColumns: string[] = [];
 
@@ -20,14 +21,14 @@ export const MatrixRain: React.FC<MatrixRainProps> = ({ isActive }) => {
       // Colunas mais longas e densas
       const columnHeight = Math.floor(Math.random() * 40) + 30; // 30-70 caracteres por coluna (mais que dobrou)
       let columnText = '';
-      
+
       for (let j = 0; j < columnHeight; j++) {
         columnText += matrixChars[Math.floor(Math.random() * matrixChars.length)] + '\n';
       }
-      
+
       newColumns.push(columnText);
     }
-    
+
     setColumns(newColumns);
   }, [isActive, matrixChars]);
 
@@ -69,7 +70,7 @@ export const MatrixRain: React.FC<MatrixRainProps> = ({ isActive }) => {
           style={{
             left: `${index * 12}px`, // Ajustado para as colunas mais próximas
             animationDelay: `${Math.random() * 2}s`, // Delays menores
-            animationDuration: `${2 + Math.random() * 2}s` // Animações mais rápidas
+            animationDuration: `${2 + Math.random() * 2}s`, // Animações mais rápidas
           }}
         >
           {column}
@@ -77,4 +78,4 @@ export const MatrixRain: React.FC<MatrixRainProps> = ({ isActive }) => {
       ))}
     </div>
   );
-}; 
+};

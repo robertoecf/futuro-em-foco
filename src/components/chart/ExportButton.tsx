@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Download } from 'lucide-react';
@@ -21,7 +20,11 @@ interface ExportButtonProps {
   calculationResult: CalculationResult | null;
 }
 
-export const ExportButton = ({ chartData, planningInputs, calculationResult }: ExportButtonProps) => {
+export const ExportButton = ({
+  chartData,
+  planningInputs,
+  calculationResult,
+}: ExportButtonProps) => {
   const [isLeadFormOpen, setIsLeadFormOpen] = useState(false);
 
   const handleExportClick = () => {
@@ -46,7 +49,7 @@ export const ExportButton = ({ chartData, planningInputs, calculationResult }: E
         calculationResult={calculationResult}
         exportData={{
           chartData,
-          type: 'excel'
+          type: 'excel',
         }}
       />
     </>

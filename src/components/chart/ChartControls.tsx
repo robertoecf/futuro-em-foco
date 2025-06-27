@@ -1,4 +1,3 @@
-
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Switch } from '@/components/ui/switch';
@@ -21,7 +20,7 @@ export const ChartControls = ({
   onLifeExpectancyChange,
   onMonteCarloToggle,
   showGrid = true,
-  onGridToggle
+  onGridToggle,
 }: ChartControlsProps) => {
   return (
     <div className="glass-panel p-4 rounded-lg mb-6">
@@ -29,12 +28,13 @@ export const ChartControls = ({
         {/* Monte Carlo Toggle */}
         <div className="flex items-center space-x-3">
           <div>
-                  <h3 className="text-sm font-medium text-white">Simulação Probabilística | Método de Monte Carlo</h3>
-      <p className="text-xs text-gray-300">
-              {isMonteCarloEnabled 
-                ? "Mil cenários aleatórios sendo exibidos" 
-                : "Mil cenários aleatórios baseados em risco e volatilidade"
-              }
+            <h3 className="text-sm font-medium text-white">
+              Simulação Probabilística | Método de Monte Carlo
+            </h3>
+            <p className="text-xs text-gray-300">
+              {isMonteCarloEnabled
+                ? 'Mil cenários aleatórios sendo exibidos'
+                : 'Mil cenários aleatórios baseados em risco e volatilidade'}
             </p>
           </div>
           <Button
@@ -43,7 +43,7 @@ export const ChartControls = ({
             onClick={() => onMonteCarloToggle(!isMonteCarloEnabled)}
             className="tech-button-monte-carlo text-white font-medium"
           >
-            {isMonteCarloEnabled ? "Voltar" : "Calcular"}
+            {isMonteCarloEnabled ? 'Voltar' : 'Calcular'}
           </Button>
         </div>
 
@@ -61,7 +61,7 @@ export const ChartControls = ({
           <PopoverContent className="w-80 glass-card !bg-transparent border-white/20">
             <div className="space-y-4">
               <h4 className="text-sm font-semibold text-white">Configurações</h4>
-              
+
               {/* Life Expectancy Control */}
               <div className="space-y-2">
                 <label htmlFor="life-expectancy-setting" className="text-sm font-medium text-white">

@@ -11,13 +11,13 @@ const Index = () => {
   const [isLeadFormOpen, setIsLeadFormOpen] = useState(false);
   const [showBottomIndicator, setShowBottomIndicator] = useState(false);
   const [showHeader, setShowHeader] = useState(true); // Header visível no início
-  
+
   // Easter egg Matrix rain effect
   const isOverscrolling = useOverscroll();
-  
+
   // Calculator data
   const calculatorData = useCalculator();
-  
+
   // Planning inputs for lead form
   const planningInputs = {
     initialAmount: calculatorData.initialAmount,
@@ -27,30 +27,30 @@ const Index = () => {
     lifeExpectancy: calculatorData.lifeExpectancy,
     retirementIncome: calculatorData.retirementIncome,
     portfolioReturn: calculatorData.portfolioReturn,
-    investorProfile: calculatorData.investorProfile
+    investorProfile: calculatorData.investorProfile,
   };
 
   // Check scroll position to show/hide header
   useEffect(() => {
     let lastScrollTop = 0;
-    
+
     const handleScroll = () => {
       const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
       const scrollHeight = document.documentElement.scrollHeight;
       const clientHeight = document.documentElement.clientHeight;
-      
+
       // Detectar se está no topo (primeiros 50px)
       const isAtTop = scrollTop <= 50;
-      
+
       // Detectar se está no final (últimos 50px)
       const isNearBottom = scrollTop + clientHeight >= scrollHeight - 50;
-      
+
       // Lógica do header:
       // 1. Sempre visível no topo
       // 2. Aparece quando chega ao final
       // 3. Some quando sobe qualquer pixel do final
       // 4. Só aparece novamente quando volta ao topo
-      
+
       if (isAtTop) {
         setShowHeader(true);
       } else if (isNearBottom) {
@@ -62,16 +62,16 @@ const Index = () => {
         // Se está descendo e não está no final, esconder
         setShowHeader(false);
       }
-      
+
       // Indicador de bottom (seta para descer)
       setShowBottomIndicator(!isNearBottom && !isAtTop);
-      
+
       lastScrollTop = scrollTop;
     };
 
     window.addEventListener('scroll', handleScroll);
     handleScroll(); // Check initial state
-    
+
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -79,7 +79,7 @@ const Index = () => {
     <div className="min-h-screen bg-black text-white relative">
       {/* Matrix Rain Easter Egg */}
       <MatrixRain isActive={isOverscrolling} />
-      
+
       {/* Hero Section - Centralized */}
       <section className="min-h-screen flex items-center justify-center relative">
         <div className="flex justify-center">
@@ -87,12 +87,14 @@ const Index = () => {
             <HeroSection onReceivePlan={() => setIsLeadFormOpen(true)} />
           </div>
         </div>
-        
+
         {/* Navigation Arrow */}
         <div className="absolute bottom-16 left-1/2 transform -translate-x-1/2">
-          <div 
+          <div
             className="section-arrow cursor-pointer"
-            onClick={() => document.getElementById('calculator-section')?.scrollIntoView({ behavior: 'smooth' })}
+            onClick={() =>
+              document.getElementById('calculator-section')?.scrollIntoView({ behavior: 'smooth' })
+            }
           >
             ∨
           </div>
@@ -100,18 +102,23 @@ const Index = () => {
       </section>
 
       {/* Analysis Section - Centralized */}
-      <section id="calculator-section" className="min-h-screen flex items-center justify-center relative">
+      <section
+        id="calculator-section"
+        className="min-h-screen flex items-center justify-center relative"
+      >
         <div className="flex justify-center">
           <div className="w-full max-w-7xl px-4 sm:px-6 lg:px-4">
             <Calculator />
           </div>
         </div>
-        
+
         {/* Navigation Arrow */}
         <div className="absolute bottom-12 left-1/2 transform -translate-x-1/2">
-          <div 
+          <div
             className="section-arrow cursor-pointer animate-bounce"
-            onClick={() => document.getElementById('cta-section')?.scrollIntoView({ behavior: 'smooth' })}
+            onClick={() =>
+              document.getElementById('cta-section')?.scrollIntoView({ behavior: 'smooth' })
+            }
           >
             ∨
           </div>
@@ -121,8 +128,14 @@ const Index = () => {
       {/* CTA Section - Centralized */}
       <div className="flex justify-center mt-48">
         <div className="w-full max-w-7xl px-4 sm:px-6 lg:px-4">
-          <section id="cta-section" className="min-h-screen flex items-center justify-center relative pb-24">
-            <div className="aurora-banner text-white p-12 md:p-16 lg:p-20 rounded-3xl relative overflow-hidden" style={{ width: '100%', display: 'block' }}>
+          <section
+            id="cta-section"
+            className="min-h-screen flex items-center justify-center relative pb-24"
+          >
+            <div
+              className="aurora-banner text-white p-12 md:p-16 lg:p-20 rounded-3xl relative overflow-hidden"
+              style={{ width: '100%', display: 'block' }}
+            >
               {/* Aurora Background */}
               <div id="aurora-cta-background">
                 <div id="cta-blob1" className="aurora-banner-blob"></div>
@@ -142,7 +155,8 @@ const Index = () => {
                   Pronto para impulsionar sua jornada?
                 </h1>
                 <p className="text-lg mb-8 opacity-90">
-                  Transforme seus objetivos em realidade com um plano de gestão patrimonial sob medida.
+                  Transforme seus objetivos em realidade com um plano de gestão patrimonial sob
+                  medida.
                 </p>
                 <Button
                   onClick={() => setIsLeadFormOpen(true)}
@@ -162,17 +176,14 @@ const Index = () => {
           <div className="flex justify-center">
             <div className="w-full max-w-7xl px-4 sm:px-6 lg:px-4">
               <div className="flex items-center justify-between h-16">
-                <div 
+                <div
                   className="tech-logo-header text-white text-xl cursor-pointer"
                   onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
                 >
                   futuro em foco
                 </div>
                 <div className="flex items-center space-x-8">
-                  <button
-                    onClick={() => setIsLeadFormOpen(true)}
-                    className="tech-button-header"
-                  >
+                  <button onClick={() => setIsLeadFormOpen(true)} className="tech-button-header">
                     Converse conosco
                   </button>
                 </div>
@@ -185,9 +196,11 @@ const Index = () => {
       {/* Bottom indicator to show dynamic header */}
       {showBottomIndicator && (
         <div className="fixed bottom-12 right-8 z-40 animate-pulse">
-          <div 
+          <div
             className="section-arrow bg-black/80 backdrop-blur-sm border border-white/20 rounded-full w-12 h-12 flex items-center justify-center cursor-pointer hover:bg-black/90 transition-all duration-300"
-            onClick={() => window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'smooth' })}
+            onClick={() =>
+              window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'smooth' })
+            }
             title="Ver header no final da página"
           >
             ∨
@@ -200,19 +213,21 @@ const Index = () => {
         <div className="flex justify-center">
           <div className="w-full max-w-7xl px-4 sm:px-6 lg:px-4">
             <p className="text-center text-xs text-gray-700 opacity-30 leading-tight">
-              As informações contidas neste material são de caráter exclusivamente informativo e não devem ser entendidas como oferta, recomendação ou análise de investimento.
-              O Futuro em Foco Planner não garante que os rendimentos futuros serão iguais aos apresentados neste simulador.
+              As informações contidas neste material são de caráter exclusivamente informativo e não
+              devem ser entendidas como oferta, recomendação ou análise de investimento. O Futuro em
+              Foco Planner não garante que os rendimentos futuros serão iguais aos apresentados
+              neste simulador.
             </p>
           </div>
         </div>
       </footer>
 
       {/* Lead Capture Form Modal */}
-      <LeadCaptureForm 
-        isOpen={isLeadFormOpen} 
-        onClose={() => setIsLeadFormOpen(false)} 
-        planningInputs={planningInputs} 
-        calculationResult={calculatorData.calculationResult} 
+      <LeadCaptureForm
+        isOpen={isLeadFormOpen}
+        onClose={() => setIsLeadFormOpen(false)}
+        planningInputs={planningInputs}
+        calculationResult={calculatorData.calculationResult}
       />
     </div>
   );

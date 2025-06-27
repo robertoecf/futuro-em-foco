@@ -1,4 +1,3 @@
-
 // Main exports from the GBM module
 export type { BrownianMonteCarloResult } from './types';
 export { generateNormalRandom } from './randomGenerators';

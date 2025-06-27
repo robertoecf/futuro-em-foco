@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { validateAndSanitize } from '@/lib/validation';
 
@@ -44,6 +43,6 @@ export const useLeadFormValidation = () => {
   return {
     formErrors,
     validateForm,
-    clearErrors
+    clearErrors,
   };
 };

@@ -32,14 +32,14 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({
   handleCurrentAgeBlur,
   handleRetirementAgeBlur,
   handleRetirementIncomeBlur,
-  handlePortfolioReturnBlur
+  handlePortfolioReturnBlur,
 }) => {
   // Format numbers for display in inputs
   const formatInputCurrency = (value: number) => {
-    if (value === 0) return '';  // Return empty string for zero values
+    if (value === 0) return ''; // Return empty string for zero values
     return new Intl.NumberFormat('pt-BR', {
       minimumFractionDigits: 2,
-      maximumFractionDigits: 2
+      maximumFractionDigits: 2,
     }).format(value);
   };
 
@@ -49,27 +49,37 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({
   };
 
   // Estados para controlar os valores formatados dos inputs - inicializados com valores corretos
-  const [initialAmountInput, setInitialAmountInput] = useState(() => formatInputCurrency(initialAmount));
-  const [monthlyAmountInput, setMonthlyAmountInput] = useState(() => formatInputCurrency(monthlyAmount));
-  const [retirementIncomeInput, setRetirementIncomeInput] = useState(() => formatInputCurrency(retirementIncome));
-  
+  const [initialAmountInput, setInitialAmountInput] = useState(() =>
+    formatInputCurrency(initialAmount)
+  );
+  const [monthlyAmountInput, setMonthlyAmountInput] = useState(() =>
+    formatInputCurrency(monthlyAmount)
+  );
+  const [retirementIncomeInput, setRetirementIncomeInput] = useState(() =>
+    formatInputCurrency(retirementIncome)
+  );
+
   // Estados locais para campos de idade e retorno para permitir edição em tempo real
   const [currentAgeInput, setCurrentAgeInput] = useState(() => formatNumericInput(currentAge));
-  const [retirementAgeInput, setRetirementAgeInput] = useState(() => formatNumericInput(retirementAge));
-  const [portfolioReturnInput, setPortfolioReturnInput] = useState(() => formatNumericInput(portfolioReturn));
+  const [retirementAgeInput, setRetirementAgeInput] = useState(() =>
+    formatNumericInput(retirementAge)
+  );
+  const [portfolioReturnInput, setPortfolioReturnInput] = useState(() =>
+    formatNumericInput(portfolioReturn)
+  );
 
   // Função para formatar valor monetário em tempo real
   const formatCurrencyInput = (value: string): string => {
     // Remove tudo exceto números
     const numericValue = value.replace(/\D/g, '');
-    
+
     if (!numericValue) return '';
-    
+
     // Converte para número e formata
     const number = parseInt(numericValue);
     return new Intl.NumberFormat('pt-BR', {
       minimumFractionDigits: 2,
-      maximumFractionDigits: 2
+      maximumFractionDigits: 2,
     }).format(number / 100);
   };
 
@@ -78,8 +88,6 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({
     const numericValue = formattedValue.replace(/\D/g, '');
     return numericValue ? parseInt(numericValue) / 100 : 0;
   };
-
-
 
   // Inicializar valores formatados quando os props mudarem
   useEffect(() => {
@@ -144,7 +152,7 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({
       {/* Left Panel - Dados Atuais */}
       <div className="glass-card p-6 rounded-lg">
         <h3 className="text-xl font-semibold mb-6 text-white">Dados Atuais</h3>
-        
+
         <div className="space-y-6">
           <div className="space-y-2">
             <Label htmlFor="current-age">Idade Atual</Label>
@@ -160,7 +168,7 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({
               className="glass-input"
             />
           </div>
-          
+
           <div className="space-y-2">
             <Label htmlFor="initial-amount">Investimento Inicial (R$)</Label>
             <Input
@@ -172,7 +180,7 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({
               className="glass-input"
             />
           </div>
-          
+
           <div className="space-y-2">
             <Label htmlFor="monthly-amount">Aporte Mensal (R$)</Label>
             <Input
@@ -190,7 +198,7 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({
       {/* Right Panel - Configurações de Aposentadoria */}
       <div className="glass-card p-6 rounded-lg">
         <h3 className="text-xl font-semibold mb-6 text-white">Configurações de Aposentadoria</h3>
-        
+
         <div className="space-y-6">
           <div className="space-y-2">
             <Label htmlFor="retirement-age">Idade de Aposentadoria</Label>

@@ -1,4 +1,3 @@
-
 import { encryption } from './encryption';
 import { logger } from './logger';
 
@@ -36,8 +35,7 @@ class OptimizedStorage {
       if (!storedData) return defaultValue;
 
       // Check expiration
-      if (storedData.expiresIn && 
-          Date.now() - storedData.timestamp > storedData.expiresIn) {
+      if (storedData.expiresIn && Date.now() - storedData.timestamp > storedData.expiresIn) {
         this.remove(key);
         return defaultValue;
       }
@@ -78,9 +76,9 @@ class OptimizedStorage {
         const storedData: StoredData = {
           data: value,
           timestamp: Date.now(),
-          expiresIn: expiresIn || this.DEFAULT_EXPIRY
+          expiresIn: expiresIn || this.DEFAULT_EXPIRY,
         };
-        
+
         const encrypted = encryption.encrypt(storedData);
         localStorage.setItem(`secure_${key}`, encrypted);
       });
@@ -100,7 +98,7 @@ class OptimizedStorage {
   clear(): void {
     this.cache.clear();
     const keys = Object.keys(localStorage);
-    keys.forEach(key => {
+    keys.forEach((key) => {
       if (key.startsWith('secure_')) {
         localStorage.removeItem(key);
       }
@@ -112,7 +110,7 @@ class OptimizedStorage {
     return new Promise((resolve) => {
       setTimeout(() => {
         const keys = Object.keys(localStorage);
-        keys.forEach(key => {
+        keys.forEach((key) => {
           if (key.startsWith('secure_')) {
             this.get(key.replace('secure_', ''));
             // get() automatically removes expired items

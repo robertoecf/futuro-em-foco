@@ -3,15 +3,15 @@ const isDevelopment = import.meta.env.DEV;
 
 // Development values for testing
 const DEV_VALUES = {
-  INITIAL_AMOUNT: 1000000,  // R$ 1.000.000
-  MONTHLY_AMOUNT: 10000,    // R$ 10.000
-  CURRENT_AGE: 30,          // 30 anos
-  RETIREMENT_AGE: 50,       // 50 anos
-  LIFE_EXPECTANCY: 100,     // 100 anos
+  INITIAL_AMOUNT: 1000000, // R$ 1.000.000
+  MONTHLY_AMOUNT: 10000, // R$ 10.000
+  CURRENT_AGE: 30, // 30 anos
+  RETIREMENT_AGE: 50, // 50 anos
+  LIFE_EXPECTANCY: 100, // 100 anos
   RETIREMENT_INCOME: 20000, // R$ 20.000
-  PORTFOLIO_RETURN: 4,      // 4% default
+  PORTFOLIO_RETURN: 4, // 4% default
   INVESTOR_PROFILE: 'moderado' as const,
-  MONTE_CARLO_ENABLED: false
+  MONTE_CARLO_ENABLED: false,
 };
 
 // Production values - empty/minimal defaults
@@ -20,11 +20,11 @@ const PROD_VALUES = {
   MONTHLY_AMOUNT: 0,
   CURRENT_AGE: 0,
   RETIREMENT_AGE: 0,
-  LIFE_EXPECTANCY: 100,     // Keep reasonable default
+  LIFE_EXPECTANCY: 100, // Keep reasonable default
   RETIREMENT_INCOME: 0,
-  PORTFOLIO_RETURN: 4,      // Keep reasonable default
+  PORTFOLIO_RETURN: 4, // Keep reasonable default
   INVESTOR_PROFILE: 'moderado' as const,
-  MONTE_CARLO_ENABLED: false
+  MONTE_CARLO_ENABLED: false,
 };
 
 // Export environment-specific values
@@ -34,9 +34,9 @@ export const DEFAULT_VALUES = isDevelopment ? DEV_VALUES : PROD_VALUES;
 export const MAGIC_MOMENT_TIMERS = {
   PROJECTING_DURATION: 1999, // CENA 1: 1999ms - "Calculando possíveis resultados..."
   PATHS_DURATION: 3999, // CENA 2: 3999ms - Carregando todas as trajetórias
-  OPTIMIZING_DURATION: 1999, // CENA 3: 1999ms - "Otimizando visualização..." 
+  OPTIMIZING_DURATION: 1999, // CENA 3: 1999ms - "Otimizando visualização..."
   DRAWING_FINAL_DURATION: 3000, // CENA 4: 3000ms - Desenhar cada linha em 1000ms (3 linhas)
-  TOTAL_ANIMATION_DURATION: 10997 // Total: 1999 + 3999 + 1999 + 3000
+  TOTAL_ANIMATION_DURATION: 10997, // Total: 1999 + 3999 + 1999 + 3000
 };
 
 // Line Drawing Animation Configuration
@@ -51,7 +51,7 @@ export const LINE_ANIMATION = {
   STROKE_ANIMATION_DURATION: 1500, // Duration for each individual line to draw
   OPACITY_FADE_DURATION: 300, // Quick fade-in after line is drawn
   USE_CANVAS_RENDERING: true, // Flag para usar Canvas em vez de SVG
-  ENABLE_VIRTUALIZATION: true // Renderizar apenas linhas visíveis
+  ENABLE_VIRTUALIZATION: true, // Renderizar apenas linhas visíveis
 };
 
 // Final Lines Drawing Animation Configuration
@@ -61,7 +61,7 @@ export const FINAL_LINES_ANIMATION = {
   STROKE_ANIMATION_DURATION: 1000, // 1000ms to draw each individual line
   ANIMATION_CURVE: 'ease-out' as const,
   OPACITY_FADE_DURATION: 200, // Quick fade-in
-  LINES: ['pessimistic', 'median', 'optimistic'] as const
+  LINES: ['pessimistic', 'median', 'optimistic'] as const,
 };
 
 // Storage keys for localStorage
@@ -74,5 +74,5 @@ export const STORAGE_KEYS = {
   RETIREMENT_INCOME: 'calculator_retirement_income',
   PORTFOLIO_RETURN: 'calculator_portfolio_return',
   INVESTOR_PROFILE: 'calculator_investor_profile',
-  MONTE_CARLO_ENABLED: 'calculator_monte_carlo_enabled'
+  MONTE_CARLO_ENABLED: 'calculator_monte_carlo_enabled',
 } as const;

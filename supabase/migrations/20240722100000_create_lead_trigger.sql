@@ -1,5 +1,6 @@
 -- Final trigger function with hardcoded key as per user's request.
--- WARNING: User has acknowledged and accepted the security risk of hardcoding the service key.
+-- WARNING: User has acknowledged and accepted the security risk of
+-- hardcoding the service key.
 CREATE OR REPLACE FUNCTION public.handle_new_lead()
 RETURNS trigger
 LANGUAGE plpgsql
@@ -27,4 +28,4 @@ DROP TRIGGER IF EXISTS on_new_lead ON public.leads;
 CREATE TRIGGER on_new_lead
 AFTER INSERT ON public.leads
 FOR EACH ROW
-EXECUTE FUNCTION public.handle_new_lead(); 
+EXECUTE FUNCTION public.handle_new_lead();

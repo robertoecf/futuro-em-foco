@@ -1,6 +1,12 @@
 import { useState, type FormEvent } from 'react';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
 import { usePlanningData } from '@/hooks/usePlanningData';
 import { useLeadFormValidation } from '@/hooks/useLeadFormValidation';
@@ -34,14 +40,14 @@ export const LeadCaptureForm = ({
   onClose,
   planningInputs,
   calculationResult,
-  exportData
+  exportData,
 }: LeadCaptureFormProps) => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     phone: '',
     wantsExpertEvaluation: true,
-    patrimonioRange: ''
+    patrimonioRange: '',
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
@@ -49,7 +55,7 @@ export const LeadCaptureForm = ({
   const { formErrors, validateForm, clearErrors } = useLeadFormValidation();
 
   const handleFormDataChange = (data: Partial<typeof formData>) => {
-    setFormData(prev => ({ ...prev, ...data }));
+    setFormData((prev) => ({ ...prev, ...data }));
   };
 
   const resetForm = () => {
@@ -58,19 +64,19 @@ export const LeadCaptureForm = ({
       email: '',
       phone: '',
       wantsExpertEvaluation: true,
-      patrimonioRange: ''
+      patrimonioRange: '',
     });
     clearErrors();
   };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateForm(formData)) {
       toast({
-        title: "Erro de validação",
-        description: "Por favor, corrija os erros no formulário.",
-        variant: "destructive",
+        title: 'Erro de validação',
+        description: 'Por favor, corrija os erros no formulário.',
+        variant: 'destructive',
       });
       return;
     }
@@ -80,7 +86,7 @@ export const LeadCaptureForm = ({
     try {
       // Nova lógica: gera URL direta com parâmetros
       const simulation_url = generateDirectUrl(planningInputs);
-      
+
       // Salvar lead no Supabase via Edge Function
       const { success, error } = await saveLeadViaEdgeFunction({
         name: formData.name,
@@ -88,14 +94,14 @@ export const LeadCaptureForm = ({
         phone: formData.phone,
         wants_expert_evaluation: formData.wantsExpertEvaluation,
         patrimonio_range: formData.patrimonioRange,
-        simulation_url: simulation_url
+        simulation_url: simulation_url,
       });
 
       if (!success) {
         toast({
-          title: "Erro ao salvar lead",
+          title: 'Erro ao salvar lead',
           description: error || 'Erro desconhecido ao salvar no Supabase.',
-          variant: "destructive",
+          variant: 'destructive',
         });
         setIsSubmitting(false);
         return;
@@ -103,29 +109,29 @@ export const LeadCaptureForm = ({
 
       if (exportData) {
         generateSecureExcelFile(exportData.chartData, formData);
-        
+
         toast({
-          title: "Arquivo baixado com sucesso!",
-          description: "O arquivo Excel com os dados foi baixado para seu computador.",
+          title: 'Arquivo baixado com sucesso!',
+          description: 'O arquivo Excel com os dados foi baixado para seu computador.',
         });
       } else {
         // A URL já foi gerada e enviada para a edge function, que vai enviar o email.
         // O código abaixo para enviar email daqui pode ser removido ou mantido como fallback.
         // Por enquanto, vou manter o toast para o usuário.
-        
+
         // Também salva no sistema antigo para compatibilidade
         const planId = savePlanningData(formData, planningInputs, calculationResult);
         getPlanningUrl(planId); // URL gerada mas não utilizada aqui
-        
+
         // O email agora é enviado pelo backend.
         // await sendPlanByEmail(formData, directUrl);
 
         toast({
-          title: "Simulação enviada com sucesso!",
+          title: 'Simulação enviada com sucesso!',
           description: (
             <>
-              Enviamos seu planejamento para {formData.email}. Verifique sua caixa de entrada e também a{" "}
-              <strong className="text-orange-500">caixa de SPAM</strong>.
+              Enviamos seu planejamento para {formData.email}. Verifique sua caixa de entrada e
+              também a <strong className="text-orange-500">caixa de SPAM</strong>.
             </>
           ),
         });
@@ -136,9 +142,14 @@ export const LeadCaptureForm = ({
     } catch (error) {
       console.error('Error submitting form:', error);
       toast({
-        title: "Erro ao processar",
-        description: error instanceof Error ? error.message : (exportData ? "Houve um erro ao gerar o arquivo." : "Houve um erro ao enviar seu plano. Tente novamente."),
-        variant: "destructive",
+        title: 'Erro ao processar',
+        description:
+          error instanceof Error
+            ? error.message
+            : exportData
+              ? 'Houve um erro ao gerar o arquivo.'
+              : 'Houve um erro ao enviar seu plano. Tente novamente.',
+        variant: 'destructive',
       });
     } finally {
       setIsSubmitting(false);
@@ -155,12 +166,12 @@ export const LeadCaptureForm = ({
             {isExportMode ? 'Download dos dados' : 'Dados para contato'}
           </DialogTitle>
           <DialogDescription className="text-white/70">
-            {isExportMode 
-              ? 'Preencha seus dados para receber o relatório detalhado da simulação' 
+            {isExportMode
+              ? 'Preencha seus dados para receber o relatório detalhado da simulação'
               : 'Seus dados serão utilizados para contato e envio de material personalizado'}
           </DialogDescription>
         </DialogHeader>
-        
+
         <form onSubmit={handleSubmit} className="space-y-4">
           <LeadFormFields
             formData={formData}
@@ -169,20 +180,20 @@ export const LeadCaptureForm = ({
           />
 
           <div className="flex gap-2 pt-4">
-            <Button 
-              type="button" 
-              variant="outline" 
-              onClick={onClose} 
+            <Button
+              type="button"
+              variant="outline"
+              onClick={onClose}
               className="flex-1 bg-transparent border border-white/8 text-white hover:bg-white/5 hover:scale-105 transition-all"
             >
               Desistir
             </Button>
-            <Button 
-              type="submit" 
-              disabled={isSubmitting} 
+            <Button
+              type="submit"
+              disabled={isSubmitting}
               className="flex-1 bg-orange-500 hover:bg-orange-600 text-white hover:scale-105 transition-all disabled:opacity-50"
             >
-              {isSubmitting ? 'Processando...' : (isExportMode ? 'Baixar Excel' : 'Confirmar')}
+              {isSubmitting ? 'Processando...' : isExportMode ? 'Baixar Excel' : 'Confirmar'}
             </Button>
           </div>
         </form>

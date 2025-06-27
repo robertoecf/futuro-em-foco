@@ -1,9 +1,8 @@
-
 export interface BrownianMonteCarloResult {
   scenarios: {
     pessimistic: number[]; // 25th percentile
-    median: number[];      // 50th percentile
-    optimistic: number[];  // 75th percentile
+    median: number[]; // 50th percentile
+    optimistic: number[]; // 75th percentile
   };
   statistics: {
     percentile5: number[];

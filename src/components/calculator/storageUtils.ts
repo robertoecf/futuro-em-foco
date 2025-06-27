@@ -1,5 +1,5 @@
 import { optimizedStorage } from '@/lib/optimizedStorage';
-import { SharedPlanData, InvestorProfile } from "./types";
+import { SharedPlanData, InvestorProfile } from './types';
 
 // Function to load data from optimized storage
 export const loadFromStorage = <T>(key: string, defaultValue: T): T => {
@@ -23,10 +23,8 @@ const keyMapping: Record<string, keyof SharedPlanData> = {
   le: 'lifeExpectancy',
   ri: 'retirementIncome',
   pr: 'portfolioReturn',
-  ip: 'investorProfile'
+  ip: 'investorProfile',
 };
-
-
 
 // Função para comprimir dados em Base64
 export const compressData = (data: SharedPlanData): string => {
@@ -58,10 +56,10 @@ export const loadFromSharedPlan = (): SharedPlanData | null => {
   if (planData) {
     return decompressData(planData);
   }
-  
+
   // Lógica para carregar de parâmetros individuais (novo sistema)
   const sharedData: Partial<SharedPlanData> = {};
-  
+
   let hasIndividualParams = false;
   Object.entries(keyMapping).forEach(([shortKey, longKey]) => {
     const param = urlParams.get(shortKey);

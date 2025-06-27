@@ -1,5 +1,9 @@
 import { useCallback, useEffect } from 'react';
-import { calculateFullProjection, getVolatilityByProfile, type MonteCarloResult } from '@/lib/utils';
+import {
+  calculateFullProjection,
+  getVolatilityByProfile,
+  type MonteCarloResult,
+} from '@/lib/utils';
 // import { runOptimizedMonteCarloSimulation } from '@/lib/gbm/optimizedSimulation';
 import { runUltraOptimizedMonteCarloSimulation } from '@/lib/gbm/ultraOptimizedSimulation';
 import { useDebounce } from '@/hooks/useDebounce';
@@ -40,9 +44,8 @@ export const useCalculatorEffects = ({
   sharedPlanData,
   setCalculationResult,
   setIsCalculating,
-  setMonteCarloResult
+  setMonteCarloResult,
 }: UseCalculatorEffectsProps) => {
-
   // Debounce input values to prevent excessive recalculations
   const debouncedInitialAmount = useDebounce(initialAmount, 300);
   const debouncedMonthlyAmount = useDebounce(monthlyAmount, 300);
@@ -52,32 +55,39 @@ export const useCalculatorEffects = ({
   // Calculate possible retirement age based on desired income
   const calculatePossibleRetirementAge = useCallback(() => {
     if (debouncedRetirementIncome <= 0) return retirementAge;
-    
+
     const requiredWealth = (debouncedRetirementIncome * 12) / (debouncedPortfolioReturn / 100);
     const accumulationAnnualReturn = getAccumulationAnnualReturn(investorProfile);
-    const monthlyReturn = Math.pow(1 + accumulationAnnualReturn, 1/12) - 1;
-    
+    const monthlyReturn = Math.pow(1 + accumulationAnnualReturn, 1 / 12) - 1;
+
     let balance = debouncedInitialAmount;
     let years = 0;
     const maxYears = 50;
-    
+
     while (balance < requiredWealth && years < maxYears) {
       for (let month = 0; month < 12; month++) {
         balance += debouncedMonthlyAmount;
-        balance *= (1 + monthlyReturn);
+        balance *= 1 + monthlyReturn;
       }
       years++;
     }
-    
+
     return currentAge + years;
-  }, [debouncedRetirementIncome, debouncedPortfolioReturn, investorProfile, debouncedInitialAmount, debouncedMonthlyAmount, currentAge, retirementAge]);
+  }, [
+    debouncedRetirementIncome,
+    debouncedPortfolioReturn,
+    investorProfile,
+    debouncedInitialAmount,
+    debouncedMonthlyAmount,
+    currentAge,
+    retirementAge,
+  ]);
 
   const calculateProjection = useCallback(async () => {
-    
     const accumulationAnnualReturn = getAccumulationAnnualReturn(investorProfile);
     const retirementAnnualReturn = debouncedPortfolioReturn / 100;
     const monthlyIncomeRate = 0.004;
-    
+
     // Always calculate deterministic projection first
     const result = calculateFullProjection(
       debouncedInitialAmount,
@@ -89,17 +99,17 @@ export const useCalculatorEffects = ({
       debouncedRetirementIncome,
       retirementAnnualReturn
     );
-    
+
     setCalculationResult({
       finalAmount: result.retirementAmount,
       yearlyValues: result.yearlyValues,
-      monthlyIncome: result.monthlyIncome
+      monthlyIncome: result.monthlyIncome,
     });
 
     // Only run Monte Carlo if explicitly calculating (triggered by user click)
     if (isMonteCarloEnabled && isCalculating) {
-              // Executing Monte Carlo calculation
-      
+      // Executing Monte Carlo calculation
+
       // Use requestIdleCallback if available, otherwise setTimeout
       const scheduleWork = (callback: () => void) => {
         if ('requestIdleCallback' in window) {
@@ -108,11 +118,11 @@ export const useCalculatorEffects = ({
           setTimeout(callback, 0);
         }
       };
-      
+
       scheduleWork(async () => {
         try {
           const volatility = getVolatilityByProfile(investorProfile);
-          
+
           // Use ultra-optimized version for 1001 simulations
           const gbmResults = await runUltraOptimizedMonteCarloSimulation(
             debouncedInitialAmount,
@@ -126,23 +136,21 @@ export const useCalculatorEffects = ({
             retirementAnnualReturn,
             1001 // Increased from 500 to 1001 simulations
           );
-          
+
           const convertedResults = {
             scenarios: gbmResults.scenarios,
-            statistics: gbmResults.statistics
+            statistics: gbmResults.statistics,
           };
-          
+
           console.log('✅ MONTE CARLO FINALIZADO - dados prontos para animação');
           setMonteCarloResult(convertedResults);
           setIsCalculating(false);
-          
         } catch (error) {
           console.error('❌ Optimized Monte Carlo calculation failed:', error);
           setIsCalculating(false);
           setMonteCarloResult(null);
         }
       });
-      
     } else {
       // Monte Carlo not active
       if (!isMonteCarloEnabled) {
@@ -165,7 +173,7 @@ export const useCalculatorEffects = ({
     debouncedRetirementIncome,
     debouncedPortfolioReturn,
     investorProfile,
-    lifeExpectancy
+    lifeExpectancy,
   ]);
 
   // Calculate on input changes - now using debounced values
@@ -177,7 +185,7 @@ export const useCalculatorEffects = ({
   useEffect(() => {
     if (sharedPlanData) {
       const url = new URL(window.location.href);
-      
+
       // Só remove o parâmetro 'plan' se ele existir (sistema antigo)
       if (url.searchParams.has('plan')) {
         url.searchParams.delete('plan');
@@ -190,7 +198,6 @@ export const useCalculatorEffects = ({
 
   return {
     calculatePossibleRetirementAge,
-    calculateProjection
+    calculateProjection,
   };
 };
-

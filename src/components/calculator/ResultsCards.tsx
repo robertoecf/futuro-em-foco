@@ -24,7 +24,7 @@ export const ResultsCards: React.FC<ResultsCardsProps> = ({
   monteCarloResult,
   isMonteCarloEnabled = false,
   currentAge,
-  portfolioReturn
+  portfolioReturn,
 }) => {
   if (!calculationResult) {
     return (
@@ -42,54 +42,60 @@ export const ResultsCards: React.FC<ResultsCardsProps> = ({
   // Se Monte Carlo estiver habilitado e tiver resultados, use os dados probabilísticos
   if (isMonteCarloEnabled && monteCarloResult) {
     const retirementIndex = retirementAge - currentAge;
-    
+
     // Garantir que o índice está dentro do range dos dados
     const safeIndex = Math.min(retirementIndex, monteCarloResult.scenarios.pessimistic.length - 1);
-    
+
     const pessimisticWealth = monteCarloResult.scenarios.pessimistic[safeIndex] || 0;
     const medianWealth = monteCarloResult.scenarios.median[safeIndex] || 0;
     const optimisticWealth = monteCarloResult.scenarios.optimistic[safeIndex] || 0;
 
     // Calcular rendas mensais baseadas no patrimônio de cada cenário usando o retorno definido pelo usuário
-    const monthlyReturnRate = (portfolioReturn / 100) / 12;
+    const monthlyReturnRate = portfolioReturn / 100 / 12;
     const pessimisticIncome = pessimisticWealth * monthlyReturnRate;
     const medianIncome = medianWealth * monthlyReturnRate;
     const optimisticIncome = optimisticWealth * monthlyReturnRate;
 
     const scenarios = [
       {
-        title: "Cenário Pessimista",
-        subtitle: "5% chance de resultado pior",
+        title: 'Cenário Pessimista',
+        subtitle: '5% chance de resultado pior',
         wealth: pessimisticWealth,
         income: pessimisticIncome,
         icon: TrendingDown,
-        iconColor: "text-red-500"
+        iconColor: 'text-red-500',
       },
       {
-        title: "Cenário Mediano",
-        subtitle: "50% dos cenários",
+        title: 'Cenário Mediano',
+        subtitle: '50% dos cenários',
         wealth: medianWealth,
         income: medianIncome,
         icon: Minus,
-        iconColor: "text-blue-500"
+        iconColor: 'text-blue-500',
       },
       {
-        title: "Cenário Otimista",
-        subtitle: "5% chance de resultado melhor",
+        title: 'Cenário Otimista',
+        subtitle: '5% chance de resultado melhor',
         wealth: optimisticWealth,
         income: optimisticIncome,
         icon: TrendingUp,
-        iconColor: "text-green-500"
-      }
+        iconColor: 'text-green-500',
+      },
     ];
 
     return (
       <div className="space-y-6 mb-8">
         {/* Título das Projeções Monte Carlo */}
         <div className="text-center">
-          <h3 className="text-xl font-bold text-white mb-2">Projeções Patrimoniais (Monte Carlo)</h3>
-          <p className="text-sm text-white">Baseado em 1001 simulações considerando volatilidade do mercado</p>
-          <p className="text-xs text-gray-300 mt-1">Percentis P5, P50 e P95 da distribuição de resultados</p>
+          <h3 className="text-xl font-bold text-white mb-2">
+            Projeções Patrimoniais (Monte Carlo)
+          </h3>
+          <p className="text-sm text-white">
+            Baseado em 1001 simulações considerando volatilidade do mercado
+          </p>
+          <p className="text-xs text-gray-300 mt-1">
+            Percentis P5, P50 e P95 da distribuição de resultados
+          </p>
         </div>
 
         {/* Cards das Três Projeções */}
@@ -104,16 +110,16 @@ export const ResultsCards: React.FC<ResultsCardsProps> = ({
                     <IconComponent className={`w-5 h-5 ${scenario.iconColor}`} />
                     <h4 className="text-lg font-bold text-white">{scenario.title}</h4>
                   </div>
-                  
+
                   <p className="text-sm font-medium text-white">{scenario.subtitle}</p>
-                  
+
                   {/* Explicação científica */}
                   <p className="text-xs text-gray-300 leading-relaxed">
-                    {index === 0 && "Apenas 5% dos cenários simulados apresentam resultado pior"}
-                    {index === 1 && "Resultado típico esperado - mediana das simulações"}
-                    {index === 2 && "Apenas 5% dos cenários simulados apresentam resultado melhor"}
+                    {index === 0 && 'Apenas 5% dos cenários simulados apresentam resultado pior'}
+                    {index === 1 && 'Resultado típico esperado - mediana das simulações'}
+                    {index === 2 && 'Apenas 5% dos cenários simulados apresentam resultado melhor'}
                   </p>
-                  
+
                   {/* Patrimônio */}
                   <div className="space-y-1">
                     <p className="text-xs text-white uppercase tracking-wide">
@@ -123,7 +129,7 @@ export const ResultsCards: React.FC<ResultsCardsProps> = ({
                       {formatCurrency(scenario.wealth)}
                     </p>
                   </div>
-                  
+
                   {/* Renda Mensal */}
                   <div className="space-y-1 pt-2 border-t border-white/20">
                     <p className="text-xs text-white uppercase tracking-wide">
@@ -147,7 +153,7 @@ export const ResultsCards: React.FC<ResultsCardsProps> = ({
               <p className="text-xl font-bold text-white">{formatCurrency(initialAmount)}</p>
             </div>
           </Card>
-          
+
           <Card className="p-4 glass-card">
             <div className="text-center">
               <p className="text-sm text-white font-medium">Probabilidade de sucesso</p>
@@ -156,7 +162,7 @@ export const ResultsCards: React.FC<ResultsCardsProps> = ({
               </p>
             </div>
           </Card>
-          
+
           <Card className="p-4 glass-card">
             <div className="text-center">
               <p className="text-sm text-white font-medium">Duração da renda</p>
@@ -175,17 +181,21 @@ export const ResultsCards: React.FC<ResultsCardsProps> = ({
         <p className="text-sm text-white">Investimento inicial</p>
         <p className="text-2xl font-bold text-white">{formatCurrency(initialAmount)}</p>
       </Card>
-      
+
       <Card className="p-4 glass-card">
         <p className="text-sm text-white">Patrimônio aos {retirementAge} anos</p>
-        <p className="text-2xl font-bold text-white">{formatCurrency(calculationResult.finalAmount)}</p>
+        <p className="text-2xl font-bold text-white">
+          {formatCurrency(calculationResult.finalAmount)}
+        </p>
       </Card>
-      
+
       <Card className="p-4 glass-card">
         <p className="text-sm text-white">Renda mensal na aposentadoria</p>
-        <p className="text-2xl font-bold text-white">{formatCurrency(calculationResult.monthlyIncome)}</p>
+        <p className="text-2xl font-bold text-white">
+          {formatCurrency(calculationResult.monthlyIncome)}
+        </p>
       </Card>
-      
+
       <Card className="p-4 glass-card">
         <p className="text-sm text-white">Duração da renda</p>
         <p className="text-2xl font-bold text-white">{lifeExpectancy - retirementAge} anos</p>
