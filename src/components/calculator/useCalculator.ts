@@ -1,80 +1,39 @@
 import { useCalculatorState } from './useCalculatorState';
 import { useCalculatorHandlers } from './useCalculatorHandlers';
 import { useCalculatorEffects } from './useCalculatorEffects';
+import { useState } from 'react';
 
 export { type InvestorProfile, type CalculationResult } from './types';
 
 export const useCalculator = () => {
   const state = useCalculatorState();
-
-  // Calculate accumulation years based on current and retirement age
+  const handlers = useCalculatorHandlers(state);
+  
+  // New crisis parameter states
+  const [crisisFrequency, setCrisisFrequency] = useState(0.1); // Default: 1 crisis every 10 years
+  const [crisisMeanImpact, setCrisisMeanImpact] = useState(-0.15); // Default: -15% impact
+  
   const accumulationYears = state.retirementAge - state.currentAge;
+  
+  const validRetirementAge = state.retirementAge || (state.currentAge + accumulationYears);
 
-  const {
-    handleMonteCarloToggle,
-    handleInitialAmountBlur,
-    handleMonthlyAmountBlur,
-    handleCurrentAgeBlur,
-    handleRetirementAgeBlur,
-    handleLifeExpectancyChange,
-    handleRetirementIncomeBlur,
-    handlePortfolioReturnBlur,
-    handleInvestorProfileChange,
-  } = useCalculatorHandlers({
-    currentAge: state.currentAge,
-    retirementAge: state.retirementAge,
-    setInitialAmount: state.setInitialAmount,
-    setMonthlyAmount: state.setMonthlyAmount,
-    setCurrentAge: state.setCurrentAge,
-    setRetirementAge: state.setRetirementAge,
-    setLifeExpectancy: state.setLifeExpectancy,
-    setRetirementIncome: state.setRetirementIncome,
-    setPortfolioReturn: state.setPortfolioReturn,
-    setInvestorProfile: state.setInvestorProfile,
-    setIsMonteCarloEnabled: state.setIsMonteCarloEnabled,
-    setIsCalculating: state.setIsCalculating,
-    setMonteCarloResult: state.setMonteCarloResult,
-  });
-
-  const { calculatePossibleRetirementAge, calculateProjection } = useCalculatorEffects({
-    initialAmount: state.initialAmount,
-    monthlyAmount: state.monthlyAmount,
-    currentAge: state.currentAge,
-    retirementAge: state.retirementAge,
-    lifeExpectancy: state.lifeExpectancy,
-    retirementIncome: state.retirementIncome,
-    portfolioReturn: state.portfolioReturn,
-    investorProfile: state.investorProfile,
+  // Use effects with crisis parameters
+  useCalculatorEffects({
+    ...state,
+    ...handlers,
     accumulationYears,
-    isMonteCarloEnabled: state.isMonteCarloEnabled,
-    isCalculating: state.isCalculating,
-    sharedPlanData: state.sharedPlanData,
-    setCalculationResult: state.setCalculationResult,
-    setIsCalculating: state.setIsCalculating,
-    setMonteCarloResult: state.setMonteCarloResult,
+    crisisFrequency,
+    crisisMeanImpact,
   });
-
-  const possibleRetirementAge = calculatePossibleRetirementAge();
-
-  // Function to finish calculation (called when animation completes)
-  const finishCalculation = () => {
-    state.setIsCalculating(false);
-  };
 
   return {
     ...state,
-    possibleRetirementAge,
-    finishCalculation,
-    handleInitialAmountBlur,
-    handleMonthlyAmountBlur,
-    handleCurrentAgeBlur,
-    handleRetirementAgeBlur,
-    handleLifeExpectancyChange,
-    handleRetirementIncomeBlur,
-    handlePortfolioReturnBlur,
-    setInvestorProfile: handleInvestorProfileChange,
-    handleMonteCarloToggle,
-    calculateProjection,
+    ...handlers,
     accumulationYears,
+    possibleRetirementAge: validRetirementAge,
+    crisisFrequency,
+    setCrisisFrequency,
+    crisisMeanImpact,
+    setCrisisMeanImpact,
   };
 };

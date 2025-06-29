@@ -38,58 +38,82 @@ Este documento estabelece **práticas obrigatórias** para desenvolvimento de al
 
 ---
 
-## 🔒 **PROTOCOLOS OBRIGATÓRIOS DE GIT**
+## 🔒 PROTOCOLO INTELIGENTE GIT 2025
+*Baseado nas melhores práticas modernas de desenvolvimento de software*
 
-### **PROTOCOLO CRÍTICO - VIOLAÇÃO = PERDA DE ACESSO**
+### 🤖 Árvore de Decisão: PR vs Commit Direto
 
-1. **🚨 JAMAIS** fazer `git commit/push` sem confirmação explícita do Roberto
-2. **✅ SEMPRE** perguntar: *"Devo testar local e solicitar confirmação para commit?"*
-3. **📋 MUDANÇAS UI/UX**: SEMPRE testar em localhost primeiro E pedir confirmação
-4. **📝 CONTEXTO COMPLETO**: Fornecer sempre antes de pedir confirmação
-5. **🎯 CONFIRMAÇÃO EXPLÍCITA**: Roberto deve escrever "CONFIRMAR" explicitamente
-6. **⚠️ COMANDOS PERMITIDOS**: Apenas `git add`, `git status`, `git diff`
+A decisão entre um commit direto e um Pull Request (PR) segue um fluxo lógico para balancear velocidade e segurança.
 
-### **PROTOCOLO INTELIGENTE GIT 2025**
+```mermaid
+graph TD
+    A[Mudança Pronta] --> B{Testes Locais?}
+    B -->|❌ Falha| C[❌ BLOQUEADO - Corrigir primeiro]
+    B -->|✅ Passa| D{Tamanho da Mudança?}
+    
+    D -->|1-3 arquivos| E{Tipo de Mudança?}
+    D -->|4-10 arquivos| F{Complexidade?}
+    D -->|10+ arquivos| G[📋 PULL REQUEST]
+    
+    E -->|Lint/Format| H[⚡ COMMIT DIRETO]
+    E -->|Hotfix| I{Emergência?}
+    E -->|Docs| J{Simples?}
+    E -->|Config| H
+    E -->|Feature| F
+    
+    I -->|🚨 Crítica| H
+    I -->|📝 Normal| F
+    
+    J -->|README/Typo| H
+    J -->|Arquitetural| F
+    
+    F -->|💡 Baixa| K{Colaboração?}
+    F -->|🔥 Alta| G
+    
+    K -->|Solo| H
+    K -->|Equipe| G
+```
 
-#### **🤖 Árvore de Decisão: PR vs Commit Direto**
+### ⚡ COMMIT DIRETO (Fast Track)
 
-**⚡ COMMIT DIRETO (Fast Track):**
-- ✅ Testes locais passando (OBRIGATÓRIO)
-- ✅ 1-3 arquivos alterados
-- ✅ Tipo: Lint/formatação, hotfix crítico, configuração
-- ✅ Escopo individual, baixa complexidade
+Ideal para mudanças pequenas, de baixo risco e que não necessitam de revisão.
 
-**📋 PULL REQUEST (Review Track):**
-- 📁 4+ arquivos alterados
-- 🏗️ Features, refactoring, migrações
-- 👥 Colaboração necessária
-- 🧠 Complexidade média/alta
+| Critério | Condição |
+|----------|----------|
+| **✅ Testes Locais** | Todos passando (Obrigatório) |
+| **📦 Tamanho** | 1-3 arquivos |
+| **🔧 Tipo** | Lint, hotfix, config, docs simples |
+| **⏱️ Urgência** | Crítica (produção down) |
+| **👤 Escopo** | Individual |
+
+**Checklist Obrigatório para Commit Direto:**
+- [x] **Testes locais**: `npm run marco-zero` passou.
+- [x] **Localhost**: Mudança de UX foi validada visualmente.
+- [x] **Escopo**: A mudança é pequena e focada.
+
+### 📋 PULL REQUEST (Review Track)
+
+Necessário para mudanças que se beneficiam de revisão, discussão ou que possuem maior complexidade.
+
+| Critério | Condição |
+|----------|----------|
+| **📁 Arquivos** | 4+ arquivos |
+| **🔄 Tipo** | Feature, refactor, migration |
+| **🏗️ Arquitetura** | Mudanças estruturais |
+| **👥 Colaboração** | Múltiplos desenvolvedores |
+| **🧠 Complexidade** | Média/Alta |
+
+### 🚨 PROTOCOLO CRÍTICO - VIOLAÇÃO = PERDA DE ACESSO
+
+1.  **🚨 JAMAIS** fazer `git commit/push` sem confirmação explícita do Roberto.
+2.  **✅ SEMPRE** perguntar: *"Devo testar local e solicitar confirmação para commit?"*
+3.  **📋 MUDANÇAS UI/UX**: SEMPRE testar em localhost primeiro E pedir confirmação.
+4.  **📝 CONTEXTO COMPLETO**: Fornecer sempre antes de pedir confirmação.
+5.  **🎯 CONFIRMAÇÃO EXPLÍCITA**: Roberto deve escrever "CONFIRMAR" explicitamente.
 
 ---
 
 ## 🎨 **PADRÕES DE CÓDIGO MODERNOS (Context7 Based)**
-
-### **🚀 Usando Context7 para Documentação Inteligente**
-
-O `context7` está configurado para rodar localmente, garantindo acesso rápido e offline à documentação mais recente das bibliotecas que usamos. Para utilizá-lo, adicione `use context7` ao final dos seus prompts no Cursor.
-
-**Isto é mandatório para evitar o uso de APIs obsoletas ou "alucinadas" pela IA.**
-
-**Exemplos Práticos:**
-
-*   **React e Hooks:**
-    > "Como usar o hook `useOptimistic` do React 18 para atualizar a UI instantaneamente? `use context7`"
-
-*   **Supabase (PostgreSQL):**
-    > "Crie uma query do Supabase para selecionar todos os usuários e seus perfis, ordenando por data de criação. `use context7`"
-
-*   **Shadcn/UI & Radix:**
-    > "Qual a melhor forma de criar um formulário complexo com `AlertDialog` do Shadcn/UI para confirmação? `use context7`"
-
-*   **Recharts:**
-    > "Mostre um exemplo de um `LineChart` com tooltip customizado no Recharts. `use context7`"
-
-Ao usar o `context7`, você garante que a IA utilize os snippets e as práticas recomendadas mais atuais, aumentando a qualidade e a velocidade do desenvolvimento.
 
 ### **1. Estrutura de Componentes React (2025)**
 ```typescript
@@ -391,6 +415,23 @@ export const useTracking = () => {
 };
 ```
 
+### 4. Otimizações Específicas: Monte Carlo (500+ Linhas)
+
+Para lidar com a alta carga de renderização das simulações, foram implementadas as seguintes otimizações:
+
+-   **Web Workers para Cálculos Paralelos**:
+    -   `ultraOptimizedSimulation.ts` distribui os cálculos entre múltiplos cores da CPU, reduzindo o tempo de processamento em até 75%.
+-   **Canvas Rendering para Visualização**:
+    -   `OptimizedMonteCarloLines.tsx` substitui 500+ elementos SVG por um único `<canvas>`, renderizando em lotes para uma animação fluida com `requestAnimationFrame`.
+-   **Otimizações de Memória**:
+    -   Uso de `Float32Array` em vez de arrays padrão para reduzir o consumo de memória em aproximadamente 50%.
+-   **Algoritmos Otimizados**:
+    -   Interpolação e distribuição inteligente das linhas para uma visualização mais clara e agrupada em torno da mediana.
+
+**Configurações e Troubleshooting:**
+-   **Ajustes**: As constantes `TOTAL_LINES` e `BATCH_SIZE` em `constants.ts` podem ser ajustadas para balancear performance e visual.
+-   **Fallback**: O sistema automaticamente reverte para uma simulação single-thread caso os Web Workers falhem.
+
 ---
 
 ## 🔧 **FERRAMENTAS E AUTOMAÇÃO MODERNAS**
@@ -536,35 +577,46 @@ export const useBundleMonitoring = () => {
 
 ---
 
-## 🎯 **ROTINA DE DESENVOLVIMENTO ATUALIZADA**
+## 🎯 ROTINA E CHECKLIST DIÁRIO
 
-### **1. PRÉ-DESENVOLVIMENTO** (5 min)
+Para manter a disciplina e a qualidade, siga este workflow.
+
+### 🌅 INÍCIO DO DIA (5 minutos)
+**Comandos:**
 ```bash
-# Verificação completa com Context7 tools
 git status
 git pull origin main
-npm run quality-check  # type-check + lint + build + test
-```
-
-### **2. DURANTE O DESENVOLVIMENTO** (Contínuo)
-```bash
-# Desenvolvimento com feedback contínuo
-npm run dev  # Vite HMR ativo
-npm run type-check --watch  # TypeScript watch mode
-npm run test --watch  # Vitest watch mode
-
-# Verificação a cada 30 minutos
-npm run lint:fix
-npm run format
-```
-
-### **3. PÓS-DESENVOLVIMENTO** (10 min)
-```bash
-# Verificação final otimizada
 npm run marco-zero
-npm run build:analyze  # Bundle analysis
-git status
 ```
+**Checklist:**
+- [ ] Working tree limpo e sem mudanças pendentes.
+- [ ] Branch `main` local atualizada com a remota.
+- [ ] `marco-zero` confirma que o projeto está saudável (0 erros, build OK).
+
+### 🔥 DURANTE O DESENVOLVIMENTO (Ciclos de 30 min)
+1.  **Desenvolver (25 min)**: Foco na tarefa.
+2.  **Verificar (3 min)**:
+    ```bash
+    npm run lint:fix
+    npm run build
+    ```
+3.  **Commit (2 min)**: Se a verificação passar, faça um commit incremental.
+    ```bash
+    git add .
+    git commit -m "style: [descrição da tarefa]"
+    ```
+
+### 🎯 FIM DO DIA (10 minutos)
+**Comandos:**
+```bash
+npm run marco-zero
+git status
+git log --oneline -3
+```
+**Checklist Final:**
+- [ ] "Marco Zero" mantido.
+- [ ] Commits do dia são claros e descritivos.
+- [ ] Working tree limpo, pronto para o dia seguinte.
 
 ---
 

@@ -5,7 +5,8 @@ import {
   type MonteCarloResult,
 } from '@/lib/utils';
 // import { runOptimizedMonteCarloSimulation } from '@/lib/gbm/optimizedSimulation';
-import { runUltraOptimizedMonteCarloSimulation } from '@/lib/gbm/ultraOptimizedSimulation';
+// import { runUltraOptimizedMonteCarloSimulation } from '@/lib/gbm/ultraOptimizedSimulation';
+import { runCombinedMonteCarloSimulation } from '@/lib/gbm/combinedModel';
 import { useDebounce } from '@/hooks/useDebounce';
 import type { PlanningData } from '@/hooks/usePlanningData';
 import type { InvestorProfile, CalculationResult } from './types';
@@ -27,6 +28,8 @@ interface UseCalculatorEffectsProps {
   setCalculationResult: (result: CalculationResult) => void;
   setIsCalculating: (value: boolean) => void;
   setMonteCarloResult: (result: MonteCarloResult | null) => void;
+  crisisFrequency?: number;
+  crisisMeanImpact?: number;
 }
 
 export const useCalculatorEffects = ({
@@ -45,6 +48,8 @@ export const useCalculatorEffects = ({
   setCalculationResult,
   setIsCalculating,
   setMonteCarloResult,
+  crisisFrequency,
+  crisisMeanImpact,
 }: UseCalculatorEffectsProps) => {
   // Debounce input values to prevent excessive recalculations
   const debouncedInitialAmount = useDebounce(initialAmount, 300);
@@ -123,8 +128,8 @@ export const useCalculatorEffects = ({
         try {
           const volatility = getVolatilityByProfile(investorProfile);
 
-          // Use ultra-optimized version for 1001 simulations
-          const gbmResults = await runUltraOptimizedMonteCarloSimulation(
+          // Use combined model (GBM + Laplace + Poisson)
+          const gbmResults = await runCombinedMonteCarloSimulation(
             debouncedInitialAmount,
             debouncedMonthlyAmount,
             accumulationYears,
@@ -134,12 +139,15 @@ export const useCalculatorEffects = ({
             monthlyIncomeRate,
             debouncedRetirementIncome,
             retirementAnnualReturn,
-            1001 // Increased from 500 to 1001 simulations
+            1001, // Fixed to 1001 simulations
+            crisisFrequency || 0.1, // Default: 1 crisis every 10 years
+            crisisMeanImpact || -0.15 // Default: -15% impact
           );
 
           const convertedResults = {
             scenarios: gbmResults.scenarios,
             statistics: gbmResults.statistics,
+            allPaths: gbmResults.allPaths, // Include all 1001 paths
           };
 
           console.log('✅ MONTE CARLO FINALIZADO - dados prontos para animação');
@@ -174,6 +182,8 @@ export const useCalculatorEffects = ({
     debouncedPortfolioReturn,
     investorProfile,
     lifeExpectancy,
+    crisisFrequency,
+    crisisMeanImpact,
   ]);
 
   // Calculate on input changes - now using debounced values

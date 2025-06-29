@@ -342,86 +342,104 @@ html {
 
 .aurora-dot {
   position: absolute !important;
-  width: 10px !important;
-  height: 10px !important;
+  width: 14px !important;
+  height: 14px !important;
   border-radius: 50% !important;
-  top: 50% !important;
-  left: 50% !important;
-  margin: -5px 0 0 -5px !important;
-  opacity: 0.1 !important;
-  animation: light-fade 2s ease-in-out infinite !important;
-  box-shadow: 0 0 0 rgba(255, 255, 255, 0) !important;
+  opacity: 0.3 !important;
+  animation: aurora-sync-pulse 1.8s ease-in-out infinite !important;
+  box-shadow: 0 0 8px currentColor !important;
   transition: all 0.3s ease !important;
+  transform-origin: center !important;
 }
 
-/* Cores e posições dos focos de luz - 10 pontos com 5 cores */
+/* Cores e posições dos focos de luz - 12 pontos sincronizados com 6 cores vibrantes */
 .aurora-dot:nth-child(1) { 
   background: #4A90E2 !important; /* Azul */
-  transform: rotate(0deg) translateY(-32px) !important; 
-  animation-delay: 0s !important; 
+  top: 18px !important; left: 50% !important; margin-left: -7px !important;
 }
 .aurora-dot:nth-child(2) { 
   background: #50C878 !important; /* Verde */
-  transform: rotate(36deg) translateY(-32px) !important; 
-  animation-delay: 0.2s !important; 
+  top: 22px !important; right: 22px !important;
 }
 .aurora-dot:nth-child(3) { 
   background: #FF8C00 !important; /* Laranja */
-  transform: rotate(72deg) translateY(-32px) !important; 
-  animation-delay: 0.4s !important; 
+  top: 35px !important; right: 12px !important;
 }
 .aurora-dot:nth-child(4) { 
   background: #FF4444 !important; /* Vermelho */
-  transform: rotate(108deg) translateY(-32px) !important; 
-  animation-delay: 0.6s !important; 
+  top: 50% !important; right: 18px !important; margin-top: -7px !important;
 }
 .aurora-dot:nth-child(5) { 
   background: #9B59B6 !important; /* Roxo */
-  transform: rotate(144deg) translateY(-32px) !important; 
-  animation-delay: 0.8s !important; 
+  bottom: 35px !important; right: 12px !important;
 }
 .aurora-dot:nth-child(6) { 
-  background: #4A90E2 !important; /* Azul */
-  transform: rotate(180deg) translateY(-32px) !important; 
-  animation-delay: 1.0s !important; 
+  background: #FFD700 !important; /* Dourado */
+  bottom: 22px !important; right: 22px !important;
 }
 .aurora-dot:nth-child(7) { 
-  background: #50C878 !important; /* Verde */
-  transform: rotate(216deg) translateY(-32px) !important; 
-  animation-delay: 1.2s !important; 
+  background: #4A90E2 !important; /* Azul */
+  bottom: 18px !important; left: 50% !important; margin-left: -7px !important;
 }
 .aurora-dot:nth-child(8) { 
-  background: #FF8C00 !important; /* Laranja */
-  transform: rotate(252deg) translateY(-32px) !important; 
-  animation-delay: 1.4s !important; 
+  background: #50C878 !important; /* Verde */
+  bottom: 22px !important; left: 22px !important;
 }
 .aurora-dot:nth-child(9) { 
-  background: #FF4444 !important; /* Vermelho */
-  transform: rotate(288deg) translateY(-32px) !important; 
-  animation-delay: 1.6s !important; 
+  background: #FF8C00 !important; /* Laranja */
+  bottom: 35px !important; left: 12px !important;
 }
 .aurora-dot:nth-child(10) { 
+  background: #FF4444 !important; /* Vermelho */
+  top: 50% !important; left: 18px !important; margin-top: -7px !important;
+}
+.aurora-dot:nth-child(11) { 
   background: #9B59B6 !important; /* Roxo */
-  transform: rotate(324deg) translateY(-32px) !important; 
-  animation-delay: 1.8s !important; 
+  top: 35px !important; left: 12px !important;
+}
+.aurora-dot:nth-child(12) { 
+  background: #FFD700 !important; /* Dourado */
+  top: 22px !important; left: 22px !important;
 }
 
-/* Animação de fade in/out suave com efeito de foco de luz */
-@keyframes light-fade {
-  0% {
-    opacity: 0.1 !important;
-    box-shadow: 0 0 0 rgba(255, 255, 255, 0) !important;
+/* Animação sincronizada - todas as bolinhas brilham juntas até 100% */
+@keyframes aurora-sync-pulse {
+  0% { 
+    opacity: 0.3 !important; 
+    transform: scale(1) !important;
+    box-shadow: 0 0 8px currentColor !important; 
+  }
+  
+  50% { /* Todas brilham até 100% juntas */
+    opacity: 1 !important; 
+    transform: scale(1.4) !important;
+    box-shadow: 0 0 30px currentColor, 0 0 60px currentColor, 0 0 90px currentColor !important; 
+  }
+  
+  100% { 
+    opacity: 0.3 !important; 
+    transform: scale(1) !important;
+    box-shadow: 0 0 8px currentColor !important; 
+  }
+}
+
+/* Animação do texto que pulsa sincronizado com as bolinhas */
+@keyframes text-sync-pulse {
+  0%, 100% {
+    opacity: 0.8 !important;
+    transform: scale(1) !important;
   }
   
   50% {
     opacity: 1 !important;
-    box-shadow: 0 0 15px currentColor, 0 0 30px currentColor !important;
+    transform: scale(1.03) !important;
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.5) !important;
   }
-  
-  100% {
-    opacity: 0.1 !important;
-    box-shadow: 0 0 0 rgba(255, 255, 255, 0) !important;
-  }
+}
+
+/* Classe para texto do momento mágico */
+.magic-moment-text {
+  animation: text-sync-pulse 1.5s ease-in-out infinite !important;
 }
 
 /* Results Card Effects - Boxes menores em segunda camada - Base styles (Light mode) */
@@ -760,32 +778,6 @@ html {
     0 4px 16px rgba(0, 0, 0, 0.02),
     0 2px 6px rgba(0, 0, 0, 0.04),
     inset 0 1px 0 rgba(0, 0, 0, 0.02);
-}
-
-/* Aurora loader dots - Modo Claro */
-:not(.dark) .aurora-dot {
-  box-shadow: 0 0 0 rgba(0, 0, 0, 0) !important;
-}
-
-@keyframes light-fade-dark {
-  0% {
-    opacity: 0.1 !important;
-    box-shadow: 0 0 0 rgba(0, 0, 0, 0) !important;
-  }
-  
-  50% {
-    opacity: 1 !important;
-    box-shadow: 0 0 15px currentColor, 0 0 30px currentColor !important;
-  }
-  
-  100% {
-    opacity: 0.1 !important;
-    box-shadow: 0 0 0 rgba(0, 0, 0, 0) !important;
-  }
-}
-
-:not(.dark) .aurora-dot {
-  animation-name: light-fade-dark !important;
 }
 
 /* ===== GESTÃO DE CORES DE TEXTO PARA MODO CLARO ===== */

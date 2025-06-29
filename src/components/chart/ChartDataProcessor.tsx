@@ -79,6 +79,14 @@ export const useChartDataProcessor = ({
       return [];
     }
 
+    // Check if we have real paths from the simulation
+    if (monteCarloData.allPaths && monteCarloData.allPaths.length > 0) {
+      console.log(`📊 Using ${monteCarloData.allPaths.length} REAL Monte Carlo paths`);
+      return monteCarloData.allPaths;
+    }
+
+    // Fallback: Generate synthetic lines if real paths not available (legacy support)
+    console.log('⚠️ Real paths not available, generating synthetic lines');
     const lines: number[][] = [];
     const baseData = monteCarloData.scenarios.median;
 
@@ -119,7 +127,18 @@ export const useChartDataProcessor = ({
   }, [isMonteCarloEnabled, monteCarloData]);
 
   useEffect(() => {
-    monteCarloLinesRef.current = generateMonteCarloLines();
+    const lines = generateMonteCarloLines();
+    monteCarloLinesRef.current = lines;
+    
+    // Debug: Check if we have all paths
+    if (lines.length > 0) {
+      console.log(`📊 Monte Carlo lines generated: ${lines.length} paths`);
+      if (monteCarloData?.allPaths) {
+        console.log('✅ Using REAL simulation paths');
+      } else {
+        console.log('⚠️ Using SYNTHETIC paths (interpolated)');
+      }
+    }
   }, [monteCarloData, isMonteCarloEnabled, generateMonteCarloLines]);
 
   const chartData = useMemo(() => {
