@@ -17,7 +17,7 @@ export const HeroSection = ({ onReceivePlan: _onReceivePlan }: HeroSectionProps)
       }}
     >
       {/* Aurora Background */}
-      <div id="aurora-banner-background">
+      <div id="aurora-banner-background" className="aurora-background-container">
         <div id="banner-blob1" className="aurora-banner-blob"></div>
         <div id="banner-blob2" className="aurora-banner-blob"></div>
         <div id="banner-blob3" className="aurora-banner-blob"></div>
