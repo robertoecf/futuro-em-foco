@@ -41,9 +41,7 @@
   pointer-events: none;
 }
 
-
-
-#aurora-banner-background {
+.aurora-background-container {
   position: absolute;
   top: 0;
   left: 0;
@@ -53,6 +51,10 @@
   overflow: hidden;
   filter: blur(100px) saturate(1.5);
   pointer-events: none;
+}
+
+#aurora-banner-background {
+  /* Estilos movidos para a classe .aurora-background-container */
 }
 
 .aurora-banner-blob {

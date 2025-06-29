@@ -9,7 +9,6 @@ import { Button } from '@/components/ui/button';
 
 const Index = () => {
   const [isLeadFormOpen, setIsLeadFormOpen] = useState(false);
-  const [showBottomIndicator, setShowBottomIndicator] = useState(false);
   const [showHeader, setShowHeader] = useState(true); // Header visível no início
 
   // Easter egg Matrix rain effect
@@ -63,9 +62,6 @@ const Index = () => {
         setShowHeader(false);
       }
 
-      // Indicador de bottom (seta para descer)
-      setShowBottomIndicator(!isNearBottom && !isAtTop);
-
       lastScrollTop = scrollTop;
     };
 
@@ -75,8 +71,19 @@ const Index = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  useEffect(() => {
+    const heroBannerBackground = document.getElementById('aurora-banner-background');
+    const ctaBanner = document.getElementById('cta-banner');
+
+    if (heroBannerBackground && ctaBanner) {
+      const clonedBackground = heroBannerBackground.cloneNode(true) as HTMLElement;
+      clonedBackground.id = 'aurora-cta-background-cloned';
+      ctaBanner.prepend(clonedBackground);
+    }
+  }, []);
+
   return (
-    <div className="min-h-screen dark:bg-black bg-[#E0E0E0] dark:text-white text-gray-900 relative">
+    <div className="min-h-screen bg-background dark:text-white text-gray-900 relative">
       {/* Matrix Rain Easter Egg */}
       <MatrixRain isActive={isOverscrolling} />
 
@@ -137,18 +144,7 @@ const Index = () => {
               className="aurora-banner text-white p-12 md:p-16 lg:p-20 rounded-3xl relative overflow-hidden"
               style={{ width: '100%', display: 'block' }}
             >
-              {/* Aurora Background */}
-              <div id="aurora-cta-background">
-                <div id="cta-blob1" className="aurora-banner-blob"></div>
-                <div id="cta-blob2" className="aurora-banner-blob"></div>
-                <div id="cta-blob3" className="aurora-banner-blob"></div>
-                <div id="cta-blob4" className="aurora-banner-blob"></div>
-                <div id="cta-blob5" className="aurora-banner-blob"></div>
-                <div id="cta-blob6" className="aurora-banner-blob"></div>
-                <div id="cta-blob7" className="aurora-banner-blob mix-blob"></div>
-                <div id="cta-blob8" className="aurora-banner-blob mix-blob"></div>
-                <div id="cta-blob9" className="aurora-banner-blob mix-blob"></div>
-              </div>
+              {/* Aurora Background will be prepended here by useEffect */}
 
               {/* Content */}
               <div className="relative z-10 text-center">
@@ -173,7 +169,7 @@ const Index = () => {
 
       {/* Dynamic Header - Visible at top and bottom */}
       {showHeader && (
-        <header className="fixed top-0 left-0 right-0 z-50 dark:bg-black/90 bg-[#E0E0E0]/90 backdrop-blur-sm border-b dark:border-white/10 border-gray-300/30 transition-all duration-300">
+        <header className="fixed top-0 left-0 right-0 z-50 bg-background/90 backdrop-blur-sm border-b dark:border-white/10 border-gray-300/30 transition-all duration-300">
           <div className="flex justify-center">
             <div className="w-full max-w-7xl px-4 sm:px-6 lg:px-4">
               <div className="flex items-center justify-between h-16">
@@ -194,23 +190,8 @@ const Index = () => {
         </header>
       )}
 
-      {/* Bottom indicator to show dynamic header */}
-      {showBottomIndicator && (
-        <div className="fixed bottom-12 right-8 z-40 animate-pulse">
-          <div
-            className="section-arrow dark:bg-black/80 bg-[#E0E0E0]/80 backdrop-blur-sm border dark:border-white/20 border-gray-300/30 rounded-full w-12 h-12 flex items-center justify-center cursor-pointer dark:hover:bg-black/90 hover:bg-[#E0E0E0]/90 transition-all duration-300"
-            onClick={() =>
-              window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'smooth' })
-            }
-            title="Ver header no final da página"
-          >
-            ∨
-          </div>
-        </div>
-      )}
-
       {/* Footer */}
-      <footer className="py-4 dark:bg-black bg-[#E0E0E0]">
+      <footer className="py-4 bg-background">
         <div className="flex justify-center">
           <div className="w-full max-w-7xl px-4 sm:px-6 lg:px-4">
             <p className="text-center text-xs dark:text-gray-700 text-gray-500 opacity-30 leading-tight">

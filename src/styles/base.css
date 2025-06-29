@@ -73,14 +73,14 @@
   }
 
   .dark {
-    /* MODO ESCURO - Exatamente como está atualmente (background preto) */
-    --background: 222.2 84% 4.9%;
+    /* MODO ESCURO - Cor de fundo de teste #141414 */
+    --background: 0 0% 8%; /* #141414 */
     --foreground: 210 40% 98%;
 
-    --card: 222.2 84% 4.9%;
+    --card: 0 0% 8%; /* #141414 */
     --card-foreground: 210 40% 98%;
 
-    --popover: 222.2 84% 4.9%;
+    --popover: 0 0% 8%; /* #141414 */
     --popover-foreground: 210 40% 98%;
 
     --primary: 210 40% 98%;
@@ -126,7 +126,7 @@
     
     /* Gradientes Técnicos - Modo Escuro */
     --tech-gradient-primary: linear-gradient(135deg, rgba(228, 130, 0, 0.2), rgba(47, 59, 41, 0.1));
-    --tech-gradient-surface: linear-gradient(135deg, rgba(0, 0, 0, 1), rgba(0, 0, 0, 1));
+    --tech-gradient-surface: linear-gradient(135deg, #141414, #141414);
     --tech-gradient-glass: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
   }
 }
@@ -143,7 +143,7 @@
   }
   
   .dark html {
-    background: #000000;
+    background: #141414;
   }
 
   body {
@@ -157,7 +157,7 @@
   
   /* Background específico para modo escuro */
   .dark body {
-    background: #000000;
+    background: #141414;
   }
 
   /* Matrix Easter Egg - Códigos caindo nas áreas de overscroll */
@@ -169,7 +169,7 @@
     width: 100%;
     height: 100%;
     z-index: -2;
-    background: #000000;
+    background: #141414;
     pointer-events: none;
   }
 
@@ -204,7 +204,7 @@
     height: 100%;
     z-index: -1;
     pointer-events: none;
-    background: #000000;
+    /* background: #141414; */ /* Removido para revelar o fundo real da página */
     overflow: hidden;
   }
 
