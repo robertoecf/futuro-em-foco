@@ -76,7 +76,7 @@ const Index = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-black text-white relative">
+    <div className="min-h-screen dark:bg-black bg-[#E0E0E0] dark:text-white text-gray-900 relative">
       {/* Matrix Rain Easter Egg */}
       <MatrixRain isActive={isOverscrolling} />
 
@@ -133,6 +133,7 @@ const Index = () => {
             className="min-h-screen flex items-center justify-center relative pb-24"
           >
             <div
+              id="cta-banner"
               className="aurora-banner text-white p-12 md:p-16 lg:p-20 rounded-3xl relative overflow-hidden"
               style={{ width: '100%', display: 'block' }}
             >
@@ -172,18 +173,18 @@ const Index = () => {
 
       {/* Dynamic Header - Visible at top and bottom */}
       {showHeader && (
-        <header className="fixed top-0 left-0 right-0 z-50 bg-black/90 backdrop-blur-sm border-b border-white/10 transition-all duration-300">
+        <header className="fixed top-0 left-0 right-0 z-50 dark:bg-black/90 bg-[#E0E0E0]/90 backdrop-blur-sm border-b dark:border-white/10 border-gray-300/30 transition-all duration-300">
           <div className="flex justify-center">
             <div className="w-full max-w-7xl px-4 sm:px-6 lg:px-4">
               <div className="flex items-center justify-between h-16">
                 <div
-                  className="tech-logo-header text-white text-xl cursor-pointer"
+                  className="tech-logo-header dark:text-white text-gray-900 text-xl cursor-pointer"
                   onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
                 >
                   futuro em foco
                 </div>
                 <div className="flex items-center space-x-8">
-                  <button onClick={() => setIsLeadFormOpen(true)} className="tech-button-header">
+                  <button onClick={() => setIsLeadFormOpen(true)} className="tech-button-header dark:text-white text-gray-900">
                     Converse conosco
                   </button>
                 </div>
@@ -197,7 +198,7 @@ const Index = () => {
       {showBottomIndicator && (
         <div className="fixed bottom-12 right-8 z-40 animate-pulse">
           <div
-            className="section-arrow bg-black/80 backdrop-blur-sm border border-white/20 rounded-full w-12 h-12 flex items-center justify-center cursor-pointer hover:bg-black/90 transition-all duration-300"
+            className="section-arrow dark:bg-black/80 bg-[#E0E0E0]/80 backdrop-blur-sm border dark:border-white/20 border-gray-300/30 rounded-full w-12 h-12 flex items-center justify-center cursor-pointer dark:hover:bg-black/90 hover:bg-[#E0E0E0]/90 transition-all duration-300"
             onClick={() =>
               window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'smooth' })
             }
@@ -209,10 +210,10 @@ const Index = () => {
       )}
 
       {/* Footer */}
-      <footer className="py-4 bg-black">
+      <footer className="py-4 dark:bg-black bg-[#E0E0E0]">
         <div className="flex justify-center">
           <div className="w-full max-w-7xl px-4 sm:px-6 lg:px-4">
-            <p className="text-center text-xs text-gray-700 opacity-30 leading-tight">
+            <p className="text-center text-xs dark:text-gray-700 text-gray-500 opacity-30 leading-tight">
               As informações contidas neste material são de caráter exclusivamente informativo e não
               devem ser entendidas como oferta, recomendação ou análise de investimento. O Futuro em
               Foco Planner não garante que os rendimentos futuros serão iguais aos apresentados

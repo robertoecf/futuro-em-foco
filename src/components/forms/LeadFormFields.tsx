@@ -47,7 +47,7 @@ export const LeadFormFields = ({ formData, formErrors, onFormDataChange }: LeadF
   return (
     <>
       <div>
-        <Label htmlFor="name" className="text-white">
+        <Label htmlFor="name" className="themed-label">
           Nome *
         </Label>
         <Input
@@ -58,13 +58,13 @@ export const LeadFormFields = ({ formData, formErrors, onFormDataChange }: LeadF
           placeholder="Seu nome completo"
           maxLength={100}
           required
-          className="bg-black/20 border border-white/30 text-white placeholder:text-white/60 focus:bg-black/20 focus:border-white/30 focus:text-white focus-visible:ring-0 focus-visible:ring-offset-0"
+          className="themed-input"
         />
         {formErrors.name && <p className="text-sm text-red-400 mt-1">{formErrors.name}</p>}
       </div>
 
       <div>
-        <Label htmlFor="email" className="text-white">
+        <Label htmlFor="email" className="themed-label">
           Email *
         </Label>
         <Input
@@ -75,13 +75,13 @@ export const LeadFormFields = ({ formData, formErrors, onFormDataChange }: LeadF
           placeholder="seu@email.com"
           maxLength={100}
           required
-          className="bg-black/20 border border-white/30 text-white placeholder:text-white/60 focus:bg-black/20 focus:border-white/30 focus:text-white focus-visible:ring-0 focus-visible:ring-offset-0"
+          className="themed-input"
         />
         {formErrors.email && <p className="text-sm text-red-400 mt-1">{formErrors.email}</p>}
       </div>
 
       <div>
-        <Label htmlFor="phone" className="text-white">
+        <Label htmlFor="phone" className="themed-label">
           Telefone
         </Label>
         <Input
@@ -91,33 +91,33 @@ export const LeadFormFields = ({ formData, formErrors, onFormDataChange }: LeadF
           onChange={handlePhoneChange}
           placeholder="(11) 99999-9999"
           maxLength={15}
-          className="bg-black/20 border border-white/30 text-white placeholder:text-white/60 focus:bg-black/20 focus:border-white/30 focus:text-white focus-visible:ring-0 focus-visible:ring-offset-0"
+          className="themed-input"
         />
         {formErrors.phone && <p className="text-sm text-red-400 mt-1">{formErrors.phone}</p>}
       </div>
 
       <div>
-        <Label htmlFor="patrimonio-range" className="text-white">
+        <Label htmlFor="patrimonio-range" className="themed-label">
           Faixa de patrimônio
         </Label>
         <Select
           value={formData.patrimonioRange}
           onValueChange={(value) => onFormDataChange({ patrimonioRange: value })}
         >
-          <SelectTrigger className="bg-black/20 border border-white/30 text-white focus:bg-black/20 focus:border-white/30 focus:text-white focus-visible:ring-0 focus-visible:ring-offset-0 data-[state=open]:bg-black/20 data-[state=open]:border-white/30">
+          <SelectTrigger className="themed-input">
             <SelectValue placeholder="Selecione sua faixa de patrimônio" />
           </SelectTrigger>
-          <SelectContent className="bg-black/80 border border-white/8">
-            <SelectItem value="ate-100k" className="text-white hover:bg-black/80">
+          <SelectContent className="themed-select-content">
+            <SelectItem value="ate-100k" className="themed-select-item">
               Até 100 mil
             </SelectItem>
-            <SelectItem value="100k-300k" className="text-white hover:bg-black/80">
+            <SelectItem value="100k-300k" className="themed-select-item">
               Entre 100 mil e 300 mil
             </SelectItem>
-            <SelectItem value="300k-1m" className="text-white hover:bg-black/80">
+            <SelectItem value="300k-1m" className="themed-select-item">
               Entre 300 mil e 1 milhão
             </SelectItem>
-            <SelectItem value="acima-1m" className="text-white hover:bg-black/80">
+            <SelectItem value="acima-1m" className="themed-select-item">
               Acima de 1 milhão
             </SelectItem>
           </SelectContent>
@@ -134,9 +134,9 @@ export const LeadFormFields = ({ formData, formErrors, onFormDataChange }: LeadF
           onCheckedChange={(checked) =>
             onFormDataChange({ wantsExpertEvaluation: checked as boolean })
           }
-          className="border-white/8 data-[state=checked]:bg-orange-500 data-[state=checked]:border-orange-500"
+          className="border-white/10 data-[state=checked]:bg-orange-500 data-[state=checked]:border-orange-500"
         />
-        <Label htmlFor="expert" className="text-sm text-white">
+        <Label htmlFor="expert" className="text-sm themed-label">
           Quero ajuda de um especialista
         </Label>
       </div>

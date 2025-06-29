@@ -137,3 +137,10 @@
   animation-duration: 26s;
   background: #455a3e;
 }
+
+/* === AJUSTES PARA MODO CLARO === */
+
+:not(.dark) .aurora-banner {
+  /* Adiciona sombra para profundidade no modo claro, mantendo o fundo aurora */
+  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.2), 0 10px 20px -15px rgba(0, 0, 0, 0.1);
+}

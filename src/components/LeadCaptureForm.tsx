@@ -160,12 +160,12 @@ export const LeadCaptureForm = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-md glass-card border border-white/8">
+      <DialogContent className="max-w-md glass-card border border-white/10">
         <DialogHeader>
-          <DialogTitle className="text-white">
+          <DialogTitle className="dark:text-white text-gray-900">
             {isExportMode ? 'Download dos dados' : 'Dados para contato'}
           </DialogTitle>
-          <DialogDescription className="text-white/70">
+          <DialogDescription className="dark:text-white/70 text-gray-500">
             {isExportMode
               ? 'Preencha seus dados para receber o relatório detalhado da simulação'
               : 'Seus dados serão utilizados para contato e envio de material personalizado'}
@@ -184,7 +184,7 @@ export const LeadCaptureForm = ({
               type="button"
               variant="outline"
               onClick={onClose}
-              className="flex-1 bg-transparent border border-white/8 text-white hover:bg-white/5 hover:scale-105 transition-all"
+                              className="flex-1 bg-transparent border border-white/10 text-white hover:bg-white/5 hover:scale-105 transition-all"
             >
               Desistir
             </Button>

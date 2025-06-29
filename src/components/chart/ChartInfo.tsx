@@ -93,10 +93,10 @@ export const ChartInfo = ({
         onClick={() => toggleScenarioVisibility(scenario)}
       >
         <div className={`w-6 h-0.5 ${color} ${isDashed ? 'border-t-2 border-dashed' : ''}`}></div>
-        <span className="text-xs text-white flex-1">{label}</span>
+        <span className="text-xs dark:text-white text-gray-900 flex-1">{label}</span>
         {isVisible ? 
-          <Eye className="w-3 h-3 text-white/70" /> : 
-          <EyeOff className="w-3 h-3 text-white/50" />
+          <Eye className="w-3 h-3 dark:text-white/70 text-gray-500" /> : 
+          <EyeOff className="w-3 h-3 dark:text-white/50 text-gray-400" />
         }
       </div>
     );
@@ -122,13 +122,13 @@ export const ChartInfo = ({
       >
         <div className="flex items-center gap-2 mb-1">
           <div className="w-4 h-0.5 border-t-2 border-dashed border-gray-500"></div>
-          <span className="text-xs text-white flex-1">{label}</span>
+          <span className="text-xs dark:text-white text-gray-900 flex-1">{label}</span>
           {isVisible ? 
-            <Eye className="w-3 h-3 text-white/70" /> : 
-            <EyeOff className="w-3 h-3 text-white/50" />
+            <Eye className="w-3 h-3 dark:text-white/70 text-gray-500" /> : 
+            <EyeOff className="w-3 h-3 dark:text-white/50 text-gray-400" />
           }
         </div>
-        <p className={`text-sm font-semibold text-white ml-6 ${
+        <p className={`text-sm font-semibold dark:text-white text-gray-900 ml-6 ${
           typeof value === 'string' && value.includes('R$') ? 'text-xs' : ''
         }`}>
           {value}
@@ -142,8 +142,8 @@ export const ChartInfo = ({
       {/* Legenda dos Cenários */}
       <Card className="p-4 chart-info-card">
         <div className="flex items-center gap-2 mb-3">
-          <BarChart3 className="h-4 w-4 text-white" />
-          <h4 className="text-sm font-semibold text-white">Cenários</h4>
+          <BarChart3 className="h-4 w-4 dark:text-white text-gray-900" />
+          <h4 className="text-sm font-semibold dark:text-white text-gray-900">Cenários</h4>
         </div>
         
         {monteCarloData ? (
@@ -193,22 +193,22 @@ export const ChartInfo = ({
       <Card className="p-4 chart-info-card">
         <div className="flex items-center gap-2 mb-3">
           <TrendingUp className="h-4 w-4 text-green-600" />
-          <h4 className="text-sm font-semibold text-white">Métricas Chave</h4>
+          <h4 className="text-sm font-semibold dark:text-white text-gray-900">Métricas Chave</h4>
         </div>
         
         <div className="space-y-3">
           {monteCarloData?.statistics.successProbability && (
             <div>
-              <p className="text-xs text-white/80">Probabilidade de sucesso</p>
-              <p className="text-sm font-semibold text-white">
+              <p className="text-xs dark:text-white/80 text-gray-600">Probabilidade de sucesso</p>
+              <p className="text-sm font-semibold dark:text-white text-gray-900">
                 {(monteCarloData.statistics.successProbability * 100).toFixed(1)}%
               </p>
             </div>
           )}
           
           <div>
-            <p className="text-xs text-white/80">Patrimônio perpétuo</p>
-            <p className="text-sm font-semibold text-white">{formatCurrency(perpetuityWealth)}</p>
+            <p className="text-xs dark:text-white/80 text-gray-600">Patrimônio perpétuo</p>
+            <p className="text-sm font-semibold dark:text-white text-gray-900">{formatCurrency(perpetuityWealth)}</p>
           </div>
         </div>
       </Card>
@@ -217,7 +217,7 @@ export const ChartInfo = ({
       <Card className="p-4 chart-info-card">
         <div className="flex items-center gap-2 mb-3">
           <Target className="h-4 w-4 text-blue-500" />
-          <h4 className="text-sm font-semibold text-white">Referências</h4>
+          <h4 className="text-sm font-semibold dark:text-white text-gray-900">Referências</h4>
         </div>
         
         <div className="space-y-3">

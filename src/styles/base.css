@@ -4,43 +4,44 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
+    /* MODO CLARO - Background #E0E0E0 nas seções */
+    --background: 0 0% 88%; /* #E0E0E0 */
     --foreground: 222.2 84% 4.9%;
 
-    --card: 0 0% 100%;
+    --card: 0 0% 88%; /* #E0E0E0 */
     --card-foreground: 222.2 84% 4.9%;
 
-    --popover: 0 0% 100%;
+    --popover: 0 0% 88%; /* #E0E0E0 */
     --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
 
-    --destructive: 0 84.2% 60.2%;
+    --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
 
     --radius: 0.5rem;
 
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
+    --sidebar-background: 0 0% 88%; /* #E0E0E0 */
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
 
     /* === SISTEMA TECNO-ETÉREO === */
@@ -53,25 +54,26 @@
     --palette-mix-white: #FEFFFB;
     
     /* Sistema de Theming Reativo - Modo Claro */
-          --theme-surface: rgba(0, 0, 0, 1);
-    --theme-surface-container-bg: rgba(0, 0, 0, 1);
-    --theme-surface-glass: rgba(0, 0, 0, 1);
+    --theme-surface: #E0E0E0; /* Mudando apenas o background das seções */
+    --theme-surface-container-bg: #E0E0E0;
+    --theme-surface-glass: rgba(224, 224, 224, 0.9);
     --theme-primary: #E48200;
     --theme-on-primary: #FEFFFB;
-    --theme-secondary: #0F2A3C;
+    --theme-secondary: #2F3B29;
     --theme-on-secondary: #FEFFFB;
-    --theme-accent: #2F3B29;
-    --theme-text-primary: #000000;
+    --theme-accent: #0F2A3C;
+    --theme-text-primary: #000000; /* Texto preto no modo claro */
     --theme-text-secondary: rgba(0, 0, 0, 0.7);
     --theme-text-tertiary: rgba(0, 0, 0, 0.5);
     
-    /* Gradientes Técnicos */
-    --tech-gradient-primary: linear-gradient(135deg, rgba(228, 130, 0, 0.1), rgba(15, 42, 60, 0.05));
-    --tech-gradient-surface: linear-gradient(135deg, rgba(0, 0, 0, 1), rgba(0, 0, 0, 1));
+    /* Gradientes Técnicos - Modo Claro */
+    --tech-gradient-primary: linear-gradient(135deg, rgba(228, 130, 0, 0.2), rgba(47, 59, 41, 0.1));
+    --tech-gradient-surface: linear-gradient(135deg, #E0E0E0, #E0E0E0);
     --tech-gradient-glass: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
   }
 
   .dark {
+    /* MODO ESCURO - Exatamente como está atualmente (background preto) */
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
 
@@ -99,6 +101,7 @@
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
     --ring: 212.7 26.8% 83.9%;
+
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
@@ -108,8 +111,8 @@
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
 
-    /* Sistema de Theming Reativo - Modo Escuro */
-          --theme-surface: rgba(0, 0, 0, 1);
+    /* Sistema de Theming Reativo - Modo Escuro (mantendo atual) */
+    --theme-surface: rgba(0, 0, 0, 1);
     --theme-surface-container-bg: rgba(0, 0, 0, 1);
     --theme-surface-glass: rgba(0, 0, 0, 1);
     --theme-primary: #E48200;
@@ -136,20 +139,29 @@
   html {
     /* Easter Egg Matrix - Overscroll preto com códigos verdes */
     overscroll-behavior: none;
+    background: #E0E0E0;
+  }
+  
+  .dark html {
     background: #000000;
   }
 
   body {
     @apply bg-background text-foreground;
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    background: #000000;
     position: relative;
     overflow-x: hidden;
     min-height: 100vh;
+    background: #E0E0E0;
+  }
+  
+  /* Background específico para modo escuro */
+  .dark body {
+    background: #000000;
   }
 
   /* Matrix Easter Egg - Códigos caindo nas áreas de overscroll */
-  body::before {
+  .dark body::before {
     content: '';
     position: fixed;
     top: 0;
@@ -184,7 +196,7 @@
   }
 
   /* Matrix Rain Effect - Easter Egg */
-  .matrix-rain {
+  .dark .matrix-rain {
     position: fixed;
     top: 0;
     left: 0;
