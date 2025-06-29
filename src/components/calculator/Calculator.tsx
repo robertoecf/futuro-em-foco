@@ -70,8 +70,12 @@ export function Calculator() {
     handleLifeExpectancyChange,
     handleRetirementIncomeBlur,
     handlePortfolioReturnBlur,
-    setInvestorProfile,
+    handleInvestorProfileChange,
     handleMonteCarloToggle,
+    crisisFrequency,
+    setCrisisFrequency,
+    crisisMeanImpact,
+    setCrisisMeanImpact,
   } = useCalculator();
 
   return (
@@ -79,7 +83,7 @@ export function Calculator() {
       <div
         className={`transition-all duration-300 ${isMagicMomentActive ? 'invisible pointer-events-none' : 'visible'} mt-7`}
       >
-        <InvestorProfiles onProfileSelect={setInvestorProfile} selectedProfile={investorProfile} />
+        <InvestorProfiles onProfileSelect={handleInvestorProfileChange} selectedProfile={investorProfile} />
       </div>
       <div
         className={`mb-12 transition-all duration-300 ${isMagicMomentActive ? 'invisible pointer-events-none' : 'visible'}`}
@@ -102,7 +106,7 @@ export function Calculator() {
             handleRetirementAgeBlur,
             handleRetirementIncomeBlur,
             handlePortfolioReturnBlur,
-            setInvestorProfile,
+            handleInvestorProfileChange,
           }}
         />
       </div>
@@ -147,6 +151,10 @@ export function Calculator() {
               calculationResult,
               onAnimationComplete: finishCalculation,
               onMagicMomentStateChange: setIsMagicMomentActive,
+              crisisFrequency,
+              onCrisisFrequencyChange: setCrisisFrequency,
+              crisisMeanImpact,
+              onCrisisMeanImpactChange: setCrisisMeanImpact,
             }}
           />
         </Suspense>

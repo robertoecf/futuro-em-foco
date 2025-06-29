@@ -17,7 +17,7 @@ export interface CalculatorFormProps {
   handleRetirementAgeBlur: (value: string) => void;
   handleRetirementIncomeBlur: (value: string) => void;
   handlePortfolioReturnBlur: (value: string) => void;
-  setInvestorProfile: (value: InvestorProfile) => void;
+  handleInvestorProfileChange: (value: InvestorProfile) => void;
 }
 
 export const CalculatorForm: React.FC<CalculatorFormProps> = ({

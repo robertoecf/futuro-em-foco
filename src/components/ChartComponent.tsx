@@ -7,6 +7,8 @@ import { useChartAnimation } from './chart/ChartAnimationStates';
 import type { MonteCarloResult } from '@/lib/utils';
 
 import type { ChartVisibilityState } from './chart/ChartInfo';
+import { ProjectingOverlay } from './chart/ProjectingOverlay';
+import AuroraLoader from '@/components/ui/AuroraLoader';
 
 interface ChartComponentProps {
   data: number[];
@@ -28,6 +30,10 @@ interface ChartComponentProps {
   onAnimationComplete?: () => void;
   onMagicMomentStateChange?: (isActive: boolean) => void;
   lineDrawingDuration?: number;
+  crisisFrequency?: number;
+  onCrisisFrequencyChange?: (value: number) => void;
+  crisisMeanImpact?: number;
+  onCrisisMeanImpactChange?: (value: number) => void;
 }
 
 export const ChartComponent = React.memo(({ 
@@ -48,7 +54,11 @@ export const ChartComponent = React.memo(({
   retirementAge,
   onAnimationComplete,
   onMagicMomentStateChange,
-  lineDrawingDuration = 2000
+  lineDrawingDuration = 2000,
+  crisisFrequency,
+  onCrisisFrequencyChange,
+  crisisMeanImpact,
+  onCrisisMeanImpactChange,
 }: ChartComponentProps) => {
   
   // State for chart settings
@@ -76,16 +86,17 @@ export const ChartComponent = React.memo(({
     onAnimationComplete
   });
 
+  // Define if magic moment is active
+  const isMagicMomentActive = isMonteCarloEnabled && 
+    (animationPhase === 'projecting' || animationPhase === 'paths' || 
+     animationPhase === 'optimizing' || animationPhase === 'drawing-final');
+
   // Comunicar estado do momento mágico ao componente pai
   useEffect(() => {
-    const isMagicMomentActive = isMonteCarloEnabled && 
-      (animationPhase === 'projecting' || animationPhase === 'paths' || 
-       animationPhase === 'optimizing' || animationPhase === 'drawing-final');
-    
     if (onMagicMomentStateChange) {
       onMagicMomentStateChange(isMagicMomentActive);
     }
-  }, [animationPhase, isMonteCarloEnabled, onMagicMomentStateChange]);
+  }, [animationPhase, isMonteCarloEnabled, onMagicMomentStateChange, isMagicMomentActive]);
 
   const { chartData } = useChartDataProcessor({
     data,
@@ -128,27 +139,16 @@ export const ChartComponent = React.memo(({
           {isMonteCarloEnabled && (animationPhase === 'projecting' || animationPhase === 'optimizing') ? (
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="text-center">
-                {/* Aurora circular loading animation - MESMO FORMATO PARA AMBAS AS CENAS */}
+                {/* Aurora circular loading animation - NOVO COMPONENTE */}
                 <div className="relative mb-8">
-                  <div className="aurora-loader">
-                    {Array.from({ length: 12 }, (_, i) => (
-                      <div
-                        key={i}
-                        className="aurora-dot"
-                        style={{
-                          '--rotation': `${i * 30}deg`,
-                          '--delay': `${i * 0.1}s`
-                        } as React.CSSProperties}
-                      />
-                    ))}
-                  </div>
+                  <AuroraLoader />
                 </div>
                 
-                <div className="animate-pulse">
-                  <p className="text-lg font-medium text-foreground">
+                <div>
+                  <p className="text-lg font-medium text-foreground magic-moment-text">
                     {animationPhase === 'projecting' ? 'Calculando possíveis resultados...' : 'Otimizando exibição...'}
                   </p>
-                  <p className="text-sm text-foreground mt-2">
+                  <p className="text-sm text-foreground mt-2 magic-moment-text">
                     {animationPhase === 'projecting' 
                       ? 'Analisando mil cenários diferentes baseados em risco e volatilidade'
                       : 'Preparando visualização dos caminhos mais prováveis'
@@ -176,8 +176,8 @@ export const ChartComponent = React.memo(({
           )}
         </div>
       </div>
-      
-      {/* Controls Section - Moved below the chart */}
+
+      {/* Controls Section - Now below the chart */}
       {(showLifeExpectancyControl || onMonteCarloToggle) && (
         <div className={`mt-6 ${
           (animationPhase === 'projecting' || animationPhase === 'paths' || 
@@ -192,26 +192,26 @@ export const ChartComponent = React.memo(({
             onMonteCarloToggle={onMonteCarloToggle || (() => {})}
             showGrid={showGrid}
             onGridToggle={setShowGrid}
+            crisisFrequency={crisisFrequency}
+            onCrisisFrequencyChange={onCrisisFrequencyChange}
+            crisisMeanImpact={crisisMeanImpact}
+            onCrisisMeanImpactChange={onCrisisMeanImpactChange}
           />
         </div>
       )}
 
-      {/* Information Section - Hidden during magic moment but maintains layout */}
-      <div className={`mt-6 ${
-        (animationPhase === 'projecting' || animationPhase === 'paths' || 
-         animationPhase === 'optimizing' || animationPhase === 'drawing-final') 
-         ? 'invisible pointer-events-none' : 'visible'
-      }`}>
-        <ChartInfo
-          monteCarloData={finalMonteCarloData}
-          perpetuityWealth={perpetuityWealth}
-          possibleRetirementAge={possibleRetirementAge}
-          userRetirementAge={retirementAge}
-          onVisibilityChange={setChartVisibility}
-        />
-      </div>
-
-      {/* Debug panel removed for cleaner UI */}
+      {/* Chart Info - Now below the controls */}
+      {!isMagicMomentActive && (
+        <div className="mt-6">
+          <ChartInfo
+            monteCarloData={finalMonteCarloData}
+            perpetuityWealth={perpetuityWealth}
+            possibleRetirementAge={possibleRetirementAge}
+            userRetirementAge={retirementAge}
+            onVisibilityChange={setChartVisibility}
+          />
+        </div>
+      )}
     </div>
   );
 });

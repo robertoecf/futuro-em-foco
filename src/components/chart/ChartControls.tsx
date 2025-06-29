@@ -1,6 +1,8 @@
+import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Switch } from '@/components/ui/switch';
+import { Slider } from '@/components/ui/slider';
 import { Settings } from 'lucide-react';
 
 interface ChartControlsProps {
@@ -11,6 +13,10 @@ interface ChartControlsProps {
   onMonteCarloToggle: (enabled: boolean) => void;
   showGrid?: boolean;
   onGridToggle?: (enabled: boolean) => void;
+  crisisFrequency?: number;
+  onCrisisFrequencyChange?: (value: number) => void;
+  crisisMeanImpact?: number;
+  onCrisisMeanImpactChange?: (value: number) => void;
 }
 
 export const ChartControls = ({
@@ -20,7 +26,11 @@ export const ChartControls = ({
   onLifeExpectancyChange,
   onMonteCarloToggle,
   showGrid = true,
-  onGridToggle
+  onGridToggle,
+  crisisFrequency = 0.1,
+  onCrisisFrequencyChange,
+  crisisMeanImpact = -0.15,
+  onCrisisMeanImpactChange,
 }: ChartControlsProps) => {
   return (
     <div className="glass-panel p-4 rounded-lg mb-6">
@@ -28,8 +38,10 @@ export const ChartControls = ({
         {/* Monte Carlo Toggle */}
         <div className="flex items-center space-x-3">
           <div>
-                  <h3 className="text-sm font-medium dark:text-white text-gray-900">Simulação Probabilística | Método de Monte Carlo</h3>
-      <p className="text-xs dark:text-white text-gray-900">
+            <h3 className="text-sm font-medium dark:text-white text-gray-900">
+              Simulação Probabilística | Método de Monte Carlo
+            </h3>
+            <p className="text-xs dark:text-white text-gray-900">
               {isMonteCarloEnabled 
                 ? "Mil cenários aleatórios sendo exibidos" 
                 : "Mil cenários aleatórios baseados em risco e volatilidade"
@@ -100,6 +112,46 @@ export const ChartControls = ({
                   onCheckedChange={onGridToggle || (() => {})}
                 />
               </div>
+
+              {/* Crisis Frequency Control */}
+              {isMonteCarloEnabled && (
+                <div className="space-y-2 pt-2 border-t border-foreground/10">
+                  <label htmlFor="crisis-frequency-setting" className="text-sm font-medium text-foreground">
+                    Frequência de Crises
+                  </label>
+                  <Slider
+                    id="crisis-frequency-setting"
+                    min={0.05}
+                    max={0.5}
+                    step={0.05}
+                    value={[crisisFrequency]}
+                    onValueChange={(value) => onCrisisFrequencyChange?.(value[0])}
+                  />
+                  <p className="text-xs text-muted-foreground text-right">
+                    {crisisFrequency > 0 ? `1 crise a cada ${Math.round(1 / crisisFrequency)} anos` : 'Nenhuma'}
+                  </p>
+                </div>
+              )}
+
+              {/* Crisis Impact Control */}
+              {isMonteCarloEnabled && (
+                <div className="space-y-2">
+                  <label htmlFor="crisis-impact-setting" className="text-sm font-medium text-foreground">
+                    Impacto Médio da Crise
+                  </label>
+                  <Slider
+                    id="crisis-impact-setting"
+                    min={-0.3}
+                    max={-0.05}
+                    step={0.05}
+                    value={[crisisMeanImpact]}
+                    onValueChange={(value) => onCrisisMeanImpactChange?.(value[0])}
+                  />
+                  <p className="text-xs text-muted-foreground text-right">
+                    Queda de {Math.round(Math.abs(crisisMeanImpact) * 100)}%
+                  </p>
+                </div>
+              )}
             </div>
           </PopoverContent>
         </Popover>

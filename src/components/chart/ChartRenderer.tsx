@@ -270,8 +270,8 @@ export const ChartRenderer = React.memo(
                 />
               )}
 
-              {/* MonteCarloExibitionLines - Scene 2 with simple animation - TOOLTIPS DESABILITADOS */}
-              {isShowingLines &&
+              {/* Monte Carlo Animation Lines - Scene 2: Show ALL 1001 lines */}
+              {monteCarloData && isShowingLines && 
                 Array.from({ length: MONTE_CARLO_EXHIBITION_LINES }, (_, lineIndex) => (
                   <Line
                     key={`monte-carlo-exhibition-line-${lineIndex}`}

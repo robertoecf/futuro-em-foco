@@ -7,3 +7,5 @@ export { calculateStatistics } from './statistics';
 export { runBrownianMonteCarloSimulation } from './mainSimulation';
 export { runOptimizedMonteCarloSimulation } from './optimizedSimulation';
 export { compareMonteCarloMethods } from './comparison';
+export { runUltraOptimizedMonteCarloSimulation } from './ultraOptimizedSimulation';
+export { runCombinedMonteCarloSimulation } from './combinedModel';

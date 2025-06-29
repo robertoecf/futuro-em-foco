@@ -39,6 +39,8 @@ export interface MonteCarloResult {
     successProbability: number; // Probability of reaching retirement goal
     standardDeviation: number[];
   };
+  // Optional: Store all individual simulation paths
+  allPaths?: number[][];
 }
 
 // Re-export GBM types for compatibility
