@@ -75,7 +75,7 @@ export const InvestorProfiles = ({ onProfileSelect, selectedProfile }: InvestorP
           {profiles.map((profile) => (
             <Card
               key={profile.id}
-              className={`p-6 cursor-pointer investor-card ${selectedProfile === profile.id ? 'active' : ''}`}
+              className={`p-6 cursor-pointer investor-card investor-card-${profile.id} ${selectedProfile === profile.id ? 'active' : ''}`}
               onClick={() => onProfileSelect(profile.id as InvestorProfile)}
             >
               <div className="flex justify-between items-start mb-4">

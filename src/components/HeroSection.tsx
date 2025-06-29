@@ -9,7 +9,8 @@ export const HeroSection = ({ onReceivePlan: _onReceivePlan }: HeroSectionProps)
   };
   return (
     <div
-      className="aurora-banner text-white p-8 sm:p-12 md:p-12 lg:p-12 xl:p-14 rounded-3xl relative overflow-hidden"
+      id="hero-banner"
+      className="aurora-banner text-white p-8 sm:p-12 md:p-12 lg:p-12 xl:p-14 rounded-3xl relative overflow-hidden dark:shadow-none shadow-2xl"
       style={{
         width: '100%',
         display: 'block',

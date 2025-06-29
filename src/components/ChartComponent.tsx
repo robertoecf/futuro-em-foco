@@ -121,25 +121,6 @@ export const ChartComponent = React.memo(({
         </h3>
       </div>
 
-      {/* Controls Section - Hidden during magic moment but maintains layout */}
-      {(showLifeExpectancyControl || onMonteCarloToggle) && (
-        <div className={`mb-6 ${
-          (animationPhase === 'projecting' || animationPhase === 'paths' || 
-           animationPhase === 'optimizing' || animationPhase === 'drawing-final') 
-           ? 'invisible pointer-events-none' : 'visible'
-        }`}>
-          <ChartControls
-            lifeExpectancy={lifeExpectancy}
-            possibleRetirementAge={possibleRetirementAge}
-            isMonteCarloEnabled={isMonteCarloEnabled}
-            onLifeExpectancyChange={onLifeExpectancyChange || (() => {})}
-            onMonteCarloToggle={onMonteCarloToggle || (() => {})}
-            showGrid={showGrid}
-            onGridToggle={setShowGrid}
-          />
-        </div>
-      )}
-
       {/* Chart Section with Overlay */}
       <div className="relative">
         <div className="chart-container">
@@ -196,6 +177,25 @@ export const ChartComponent = React.memo(({
         </div>
       </div>
       
+      {/* Controls Section - Moved below the chart */}
+      {(showLifeExpectancyControl || onMonteCarloToggle) && (
+        <div className={`mt-6 ${
+          (animationPhase === 'projecting' || animationPhase === 'paths' || 
+           animationPhase === 'optimizing' || animationPhase === 'drawing-final') 
+           ? 'invisible pointer-events-none' : 'visible'
+        }`}>
+          <ChartControls
+            lifeExpectancy={lifeExpectancy}
+            possibleRetirementAge={possibleRetirementAge}
+            isMonteCarloEnabled={isMonteCarloEnabled}
+            onLifeExpectancyChange={onLifeExpectancyChange || (() => {})}
+            onMonteCarloToggle={onMonteCarloToggle || (() => {})}
+            showGrid={showGrid}
+            onGridToggle={setShowGrid}
+          />
+        </div>
+      )}
+
       {/* Information Section - Hidden during magic moment but maintains layout */}
       <div className={`mt-6 ${
         (animationPhase === 'projecting' || animationPhase === 'paths' || 

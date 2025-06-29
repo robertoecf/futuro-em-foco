@@ -37,7 +37,7 @@ export const ExportButton = ({
         onClick={handleExportClick}
         variant="outline"
         size="sm"
-        className="bg-white/50 hover:bg-white/70 border-gray-300 text-gray-800 p-2"
+        className="glass-card hover:opacity-80 border-foreground/20 text-foreground p-2"
       >
         <Download className="w-4 h-4" />
       </Button>

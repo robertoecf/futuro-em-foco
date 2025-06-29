@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {
   ComposedChart,
   Line,
@@ -50,6 +50,28 @@ export const ChartRenderer = React.memo(
     visibility,
     userRetirementAge,
   }: ChartRendererProps) => {
+    const [labelColor, setLabelColor] = useState('#111827');
+
+    useEffect(() => {
+      const observer = new MutationObserver(() => {
+        setLabelColor(
+          document.documentElement.classList.contains('dark') ? '#FEFFFB' : '#111827'
+        );
+      });
+
+      observer.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['class'],
+      });
+
+      // Set initial color
+      setLabelColor(
+        document.documentElement.classList.contains('dark') ? '#FEFFFB' : '#111827'
+      );
+
+      return () => observer.disconnect();
+    }, []);
+
     const { getFinalLineAnimationState, isAnimationComplete: _isAnimationComplete } =
       useFinalLinesAnimation({
         isDrawingFinalLines,
@@ -153,11 +175,11 @@ export const ChartRenderer = React.memo(
                 label={
                   typeof window !== 'undefined' && window.innerWidth < 640
                     ? undefined
-                    : { value: 'Idade', position: 'insideBottom', offset: -10, fill: '#ffffff' }
+                    : { value: 'Idade', position: 'insideBottom', offset: -10, fill: labelColor }
                 }
                 tickFormatter={(value) => `${value}`}
                 tick={{
-                  fill: '#ffffff',
+                  fill: labelColor,
                   fontSize: typeof window !== 'undefined' && window.innerWidth < 640 ? 10 : 12,
                 }}
                 axisLine={{ stroke: '#ffffff40' }}
@@ -169,7 +191,7 @@ export const ChartRenderer = React.memo(
                 tickFormatter={formatYAxis}
                 width={typeof window !== 'undefined' && window.innerWidth < 640 ? 50 : 60}
                 tick={{
-                  fill: '#ffffff',
+                  fill: labelColor,
                   fontSize: typeof window !== 'undefined' && window.innerWidth < 640 ? 10 : 12,
                 }}
                 axisLine={{ stroke: '#ffffff40' }}
@@ -190,7 +212,7 @@ export const ChartRenderer = React.memo(
                       value: 'Independência financeira',
                       position: 'bottom',
                       offset: 15,
-                      fill: '#ffffff',
+                      fill: labelColor,
                       fontSize: typeof window !== 'undefined' && window.innerWidth < 640 ? 10 : 11,
                     }}
                   />
@@ -207,7 +229,7 @@ export const ChartRenderer = React.memo(
                     label={{
                       value: 'Patrimônio Perpetuidade',
                       position: 'insideTopRight',
-                      fill: '#ffffff',
+                      fill: labelColor,
                       fontSize: typeof window !== 'undefined' && window.innerWidth < 640 ? 10 : 11,
                     }}
                   />

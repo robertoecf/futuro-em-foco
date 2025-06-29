@@ -28,8 +28,8 @@ export const ChartControls = ({
         {/* Monte Carlo Toggle */}
         <div className="flex items-center space-x-3">
           <div>
-                  <h3 className="text-sm font-medium text-white">Simulação Probabilística | Método de Monte Carlo</h3>
-      <p className="text-xs text-white">
+                  <h3 className="text-sm font-medium dark:text-white text-gray-900">Simulação Probabilística | Método de Monte Carlo</h3>
+      <p className="text-xs dark:text-white text-gray-900">
               {isMonteCarloEnabled 
                 ? "Mil cenários aleatórios sendo exibidos" 
                 : "Mil cenários aleatórios baseados em risco e volatilidade"
@@ -54,7 +54,7 @@ export const ChartControls = ({
               size="sm"
               className="tech-button-secondary font-medium w-10 h-10 p-0"
             >
-              <Settings className="w-4 h-4" />
+              <Settings className="w-4 h-4 dark:text-white text-gray-900" />
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-80 glass-card !bg-transparent border-foreground/20">

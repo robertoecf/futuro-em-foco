@@ -1,22 +1,16 @@
 /* CTA Aurora Mix - Sistema de fundo transparente para CTAs */
 
-/* Aurora CTA Background Container - Desabilitado para remover fundo colorido */
-.cta-aurora-background {
+/* Aurora CTA Background Container */
+#aurora-cta-background {
   position: absolute;
   top: 0;
   left: 0;
-  right: 0;
-  bottom: 0;
-  overflow: hidden;
-  pointer-events: none;
+  width: 100%;
+  height: 100%;
   z-index: 1;
-  /* Fundo colorido removido - mantendo apenas estrutura */
-}
-
-/* Aurora CTA Blobs - Desabilitadas para remover fundo colorido */
-.cta-aurora-blob {
-  /* Blobs completamente desabilitadas */
-  display: none;
+  overflow: hidden;
+  filter: blur(100px) saturate(1.5);
+  pointer-events: none;
 }
 
 /* Container CTA sem aurora - Padrão transparente */
@@ -40,6 +34,70 @@
 /* Responsividade mantida mas sem cores */
 @media (max-width: 768px) {
   .cta-aurora-blob {
-    display: none;
+    /* display: none; */ /* Reativando as bolhas em telas menores se necessário */
   }
+}
+
+/* Posicionamento das Bolhas Aurora - CTA Banner */
+#cta-blob1 {
+  --x-start: 15vw; --y-start: 25vh; --x-end: 20vw; --y-end: 35vh;
+  width: 38vw; height: 38vw;
+  animation-duration: 28s;
+  background: var(--palette-mix-orange);
+}
+
+#cta-blob2 {
+  --x-start: 55vw; --y-start: 15vh; --x-end: 50vw; --y-end: -15vh;
+  width: 32vw; height: 32vw;
+  animation-duration: 22s;
+  background: #00b4d8;
+}
+
+#cta-blob3 {
+  --x-start: 5vw; --y-start: 65vh; --x-end: 10vw; --y-end: 15vh;
+  width: 30vw; height: 30vw;
+  animation-duration: 32s;
+  background: #a7c957;
+}
+
+#cta-blob4 {
+  --x-start: 65vw; --y-start: 45vh; --x-end: 80vw; --y-end: 85vh;
+  width: 40vw; height: 40vw;
+  animation-duration: 24s;
+  background: var(--palette-mix-orange);
+}
+
+#cta-blob5 {
+  --x-start: 35vw; --y-start: 55vh; --x-end: 85vw; --y-end: -5vh;
+  width: 35vw; height: 35vw;
+  animation-duration: 29s;
+  background: #0077b6;
+}
+
+#cta-blob6 {
+  --x-start: 75vw; --y-start: 30vh; --x-end: -5vw; --y-end: 65vh;
+  width: 28vw; height: 28vw;
+  animation-duration: 34s;
+  background: var(--palette-green-dark);
+}
+
+#cta-blob7 {
+  --x-start: 45vw; --y-start: 40vh; --x-end: 95vw; --y-end: 5vh;
+  width: 33vw; height: 33vw;
+  animation-duration: 26s;
+  background: linear-gradient(135deg, var(--palette-mix-orange), #b30000);
+}
+
+#cta-blob8 {
+  --x-start: 20vw; --y-start: 50vh; --x-end: 15vw; --y-end: 55vh;
+  width: 28vw; height: 28vw;
+  animation-duration: 30s;
+  background: linear-gradient(135deg, var(--palette-mix-orange), #b30000);
+}
+
+#cta-blob9 {
+  --x-start: 60vw; --y-start: 60vh; --x-end: 35vw; --y-end: 75vh;
+  width: 31vw; height: 31vw;
+  animation-duration: 27s;
+  background: #455a3e;
 } 
