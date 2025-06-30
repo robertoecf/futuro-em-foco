@@ -6,12 +6,15 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
+proxy_debug.log
+lint-output.json
 
 node_modules
 dist
 dist-ssr
 *.local
 .env
+coverage/
 
 # Editor directories and files
 .vscode/*
