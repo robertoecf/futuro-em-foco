@@ -21,6 +21,7 @@
 
 import type { InvestorProfile } from '@/components/calculator/types';
 import { ANNUAL_RETURNS, CALCULATION_CONSTANTS } from './constants';
+import { profiles } from '@/lib/data/profileData';
 
 // Cache para memoização de cálculos
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -146,13 +147,10 @@ export const calculateSustainableMonthlylncome = memoize(
  * Performance: Memoizada para lookups rápidos
  */
 const _getAccumulationAnnualReturn = (profile: InvestorProfile): number => {
-  const returns = {
-    conservador: 0.06, // 6% a.a.
-    moderado: 0.08, // 8% a.a.
-    arrojado: 0.12, // 12% a.a.
-  };
-
-  return returns[profile] || returns.moderado;
+  const selectedProfile = profiles.find((p) => p.id === profile);
+  return selectedProfile
+    ? selectedProfile.annualReturn
+    : profiles.find((p) => p.id === 'moderado')?.annualReturn || 0.055;
 };
 
 export const getAccumulationAnnualReturn = memoize(
@@ -165,13 +163,11 @@ export const getAccumulationAnnualReturn = memoize(
  * Performance: Memoizada para simulações repetitivas
  */
 const _getVolatilityByProfile = (profile: InvestorProfile): number => {
-  const volatilities = {
-    conservador: 0.1, // 10% de volatilidade
-    moderado: 0.15, // 15% de volatilidade
-    arrojado: 0.2, // 20% de volatilidade
-  };
-
-  return volatilities[profile] || volatilities.moderado;
+  const selectedProfile = profiles.find((p) => p.id === profile);
+  // Retorna a volatilidade em decimal (ex: 5.5% -> 0.055)
+  return selectedProfile
+    ? selectedProfile.volatility / 100
+    : (profiles.find((p) => p.id === 'moderado')?.volatility || 5.5) / 100;
 };
 
 export const getVolatilityByProfile = memoize(_getVolatilityByProfile, 'getVolatilityByProfile');

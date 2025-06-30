@@ -1,6 +1,7 @@
-import sys
 import json
 import os
+import sys
+
 from action_runner import execute_selenium_automation
 
 # Adiciona o diretório 'src' ao path para que o action_runner possa ser importado
