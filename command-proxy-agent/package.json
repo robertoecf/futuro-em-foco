@@ -1,0 +1,19 @@
+{
+  "name": "command-proxy-agent",
+  "version": "1.0.0",
+  "description": "Um agente proxy MCP para o Cursor que gera comandos de terminal.",
+  "main": "index.js",
+  "bin": {
+    "command-proxy-agent": "./index.js"
+  },
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": [
+    "mcp",
+    "cursor",
+    "agent"
+  ],
+  "author": "",
+  "license": "ISC"
+} 

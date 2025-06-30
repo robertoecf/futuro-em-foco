@@ -34,13 +34,22 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({
   handleRetirementIncomeBlur,
   handlePortfolioReturnBlur,
 }) => {
-  // Format numbers for display in inputs
-  const formatInputCurrency = (value: number) => {
-    if (value === 0) return ''; // Return empty string for zero values
+  // Helper to format a number to a BRL currency string.
+  const formatCurrency = (value: number) => {
+    if (isNaN(value) || value === 0) return '';
     return new Intl.NumberFormat('pt-BR', {
+      style: 'decimal',
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     }).format(value);
+  };
+
+  // Helper to parse a BRL currency string back to a number.
+  const parseCurrency = (value: string): number => {
+    if (!value) return 0;
+    const onlyNumbers = value.replace(/[^0-9]/g, '');
+    if (!onlyNumbers) return 0;
+    return parseFloat(onlyNumbers) / 100;
   };
 
   // Format age/percentage inputs
@@ -48,18 +57,18 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({
     return value === 0 ? '' : value.toString();
   };
 
-  // Estados para controlar os valores formatados dos inputs - inicializados com valores corretos
+  // Local state for formatted input values
   const [initialAmountInput, setInitialAmountInput] = useState(() =>
-    formatInputCurrency(initialAmount)
+    formatCurrency(initialAmount)
   );
   const [monthlyAmountInput, setMonthlyAmountInput] = useState(() =>
-    formatInputCurrency(monthlyAmount)
+    formatCurrency(monthlyAmount)
   );
   const [retirementIncomeInput, setRetirementIncomeInput] = useState(() =>
-    formatInputCurrency(retirementIncome)
+    formatCurrency(retirementIncome)
   );
 
-  // Estados locais para campos de idade e retorno para permitir edição em tempo real
+  // Local state for non-currency fields to allow real-time editing
   const [currentAgeInput, setCurrentAgeInput] = useState(() => formatNumericInput(currentAge));
   const [retirementAgeInput, setRetirementAgeInput] = useState(() =>
     formatNumericInput(retirementAge)
@@ -68,41 +77,19 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({
     formatNumericInput(portfolioReturn)
   );
 
-  // Função para formatar valor monetário em tempo real
-  const formatCurrencyInput = (value: string): string => {
-    // Remove tudo exceto números
-    const numericValue = value.replace(/\D/g, '');
-
-    if (!numericValue) return '';
-
-    // Converte para número e formata
-    const number = parseInt(numericValue);
-    return new Intl.NumberFormat('pt-BR', {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    }).format(number / 100);
-  };
-
-  // Função para extrair valor numérico de string formatada
-  const extractNumericValue = (formattedValue: string): number => {
-    const numericValue = formattedValue.replace(/\D/g, '');
-    return numericValue ? parseInt(numericValue) / 100 : 0;
-  };
-
-  // Inicializar valores formatados quando os props mudarem
+  // Sync props with local state
   useEffect(() => {
-    setInitialAmountInput(formatInputCurrency(initialAmount));
+    setInitialAmountInput(formatCurrency(initialAmount));
   }, [initialAmount]);
 
   useEffect(() => {
-    setMonthlyAmountInput(formatInputCurrency(monthlyAmount));
+    setMonthlyAmountInput(formatCurrency(monthlyAmount));
   }, [monthlyAmount]);
 
   useEffect(() => {
-    setRetirementIncomeInput(formatInputCurrency(retirementIncome));
+    setRetirementIncomeInput(formatCurrency(retirementIncome));
   }, [retirementIncome]);
 
-  // Inicializar campos de idade e retorno
   useEffect(() => {
     setCurrentAgeInput(formatNumericInput(currentAge));
   }, [currentAge]);
@@ -115,35 +102,55 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({
     setPortfolioReturnInput(formatNumericInput(portfolioReturn));
   }, [portfolioReturn]);
 
-  // Handlers para mudanças em tempo real
-  const handleInitialAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const formatted = formatCurrencyInput(e.target.value);
-    setInitialAmountInput(formatted);
+  // Handles real-time currency input formatting.
+  const handleCurrencyChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    setter: React.Dispatch<React.SetStateAction<string>>
+  ) => {
+    let value = e.target.value;
+    // Keep only digits
+    value = value.replace(/\D/g, '');
+
+    if (value === '') {
+      setter('');
+      return;
+    }
+
+    // Remove leading zeros
+    value = value.replace(/^0+/, '');
+
+    // Pad with zeros to ensure there are at least 3 digits for cents
+    if (value.length <= 2) {
+      value = value.padStart(3, '0');
+    }
+
+    // Insert decimal separator
+    let formattedValue = value.slice(0, -2) + ',' + value.slice(-2);
+
+    // Insert thousand separators
+    const integerPart = formattedValue.split(',')[0];
+    const decimalPart = formattedValue.split(',')[1];
+    const withThousandSeparators = integerPart.replace(
+      /(\d)(?=(\d{3})+(?!\d))/g,
+      '$1.'
+    );
+
+    setter(withThousandSeparators + ',' + decimalPart);
   };
 
-  const handleMonthlyAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const formatted = formatCurrencyInput(e.target.value);
-    setMonthlyAmountInput(formatted);
-  };
-
-  const handleRetirementIncomeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const formatted = formatCurrencyInput(e.target.value);
-    setRetirementIncomeInput(formatted);
-  };
-
-  // Handlers para blur que enviam o valor numérico
+  // Blur handlers that propagate the numeric value.
   const handleInitialAmountBlurWithFormat = () => {
-    const numericValue = extractNumericValue(initialAmountInput);
+    const numericValue = parseCurrency(initialAmountInput);
     handleInitialAmountBlur(numericValue.toString());
   };
 
   const handleMonthlyAmountBlurWithFormat = () => {
-    const numericValue = extractNumericValue(monthlyAmountInput);
+    const numericValue = parseCurrency(monthlyAmountInput);
     handleMonthlyAmountBlur(numericValue.toString());
   };
 
   const handleRetirementIncomeBlurWithFormat = () => {
-    const numericValue = extractNumericValue(retirementIncomeInput);
+    const numericValue = parseCurrency(retirementIncomeInput);
     handleRetirementIncomeBlur(numericValue.toString());
   };
 
@@ -175,9 +182,10 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({
               id="initial-amount"
               type="text"
               value={initialAmountInput}
-              onChange={handleInitialAmountChange}
+              onChange={(e) => handleCurrencyChange(e, setInitialAmountInput)}
               onBlur={handleInitialAmountBlurWithFormat}
               className="glass-input"
+              placeholder="0,00"
             />
           </div>
 
@@ -187,9 +195,10 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({
               id="monthly-amount"
               type="text"
               value={monthlyAmountInput}
-              onChange={handleMonthlyAmountChange}
+              onChange={(e) => handleCurrencyChange(e, setMonthlyAmountInput)}
               onBlur={handleMonthlyAmountBlurWithFormat}
               className="glass-input"
+              placeholder="0,00"
             />
           </div>
         </div>
@@ -221,7 +230,7 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({
               id="retirement-income"
               type="text"
               value={retirementIncomeInput}
-              onChange={handleRetirementIncomeChange}
+              onChange={(e) => handleCurrencyChange(e, setRetirementIncomeInput)}
               onBlur={handleRetirementIncomeBlurWithFormat}
               placeholder="Deixe 0 para cálculo automático"
               className="glass-input"
