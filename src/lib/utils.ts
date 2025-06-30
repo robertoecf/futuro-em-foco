@@ -1,5 +1,6 @@
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { profiles } from '@/lib/data/profileData';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -49,16 +50,16 @@ export { runBrownianMonteCarloSimulation, compareMonteCarloMethods } from './bro
 
 // Volatilidade por perfil de investidor
 export function getVolatilityByProfile(profile: string): number {
-  switch (profile) {
-    case 'conservador':
-      return 0.08; // 8%
-    case 'moderado':
-      return 0.12; // 12%
-    case 'arrojado':
-      return 0.18; // 18%
-    default:
-      return 0.12;
+  const selectedProfile = profiles.find((p) => p.id === profile);
+
+  // Retorna a volatilidade do perfil encontrado, convertida para decimal.
+  // Se não encontrar, usa a do moderado como padrão.
+  if (selectedProfile) {
+    return selectedProfile.volatility / 100;
   }
+
+  const moderateProfile = profiles.find((p) => p.id === 'moderado');
+  return moderateProfile ? moderateProfile.volatility / 100 : 0.055;
 }
 
 // Simulação Monte Carlo

@@ -1,12 +1,14 @@
-import sys
-import time
 import json
 import os
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.service import Service as ChromeService
-from webdriver_manager.chrome import ChromeDriverManager
+import time
 from pathlib import Path
+from typing import Dict, List, Any, Union, TypedDict
+
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service as ChromeService
+from selenium.webdriver.common.by import By
+from webdriver_manager.chrome import ChromeDriverManager
+
 
 def find_dotenv():
     """
@@ -81,9 +83,10 @@ def execute_selenium_automation(url: str, actions: list):
                     text_to_type = action_item["text"]
                 elif "secret" in action_item:
                     secret_key = action_item["secret"]
-                    text_to_type = os.getenv(secret_key)
-                    if not text_to_type:
+                    value_from_env = os.getenv(secret_key)
+                    if value_from_env is None:
                         raise ValueError(f"Secret key '{secret_key}' not found in .env file.")
+                    text_to_type = value_from_env
                 
                 element.send_keys(text_to_type)
 
@@ -109,8 +112,21 @@ def execute_selenium_automation(url: str, actions: list):
             driver.quit()
 
 if __name__ == '__main__':
+    from typing import TypedDict, List, Dict
+
+    class ActionDict(TypedDict, total=False):
+        action: str
+        selector: Dict[str, str]
+        text: str
+        secret: str
+        url: str
+
+    class PayloadDict(TypedDict):
+        url: str
+        actions: List[ActionDict]
+
     # Example for direct testing of this script
-    test_payload = {
+    test_payload: PayloadDict = {
         "url": "https://github.com/login",
         "actions": [
             {

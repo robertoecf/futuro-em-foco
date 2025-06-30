@@ -76,3 +76,48 @@ export const STORAGE_KEYS = {
   INVESTOR_PROFILE: 'calculator_investor_profile',
   MONTE_CARLO_ENABLED: 'calculator_monte_carlo_enabled',
 } as const;
+
+import type { InvestorProfile as InvestorProfileId } from './types';
+
+interface ProfileData {
+  id: InvestorProfileId;
+  title: string;
+  description: string;
+  annualReturn: number;
+  volatility: number;
+  maxLoss: number;
+}
+
+export const profiles: ProfileData[] = [
+  {
+    id: 'conservador',
+    title: 'Conservador',
+    description: 'Investidor com pouca tolerância ao risco, busca segurança e menor volatilidade.',
+    annualReturn: 0.04, // 4% a.a.
+    volatility: 1, // 1%
+    maxLoss: -5, // -5%
+  },
+  {
+    id: 'moderado',
+    title: 'Moderado',
+    description:
+      'Investidor que equilibra segurança e risco, está disposto a enfrentar alguma volatilidade.',
+    annualReturn: 0.055, // 5.5% a.a.
+    volatility: 5.5, // 5.5%
+    maxLoss: -15, // -15%
+  },
+  {
+    id: 'arrojado',
+    title: 'Arrojado',
+    description:
+      'Investidor mais tolerante ao risco, disposto a assumir mais volatilidade em busca de maiores retornos.',
+    annualReturn: 0.065, // 6.5% a.a.
+    volatility: 9, // 9%
+    maxLoss: -25, // -25%
+  },
+];
+
+export const LOCAL_STORAGE_KEYS = {
+  PLANNING_INPUTS: 'ff_planning_inputs_v2',
+  MONTE_CARLO_ENABLED: 'calculator_monte_carlo_enabled',
+} as const;

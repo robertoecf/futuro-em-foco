@@ -4,6 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { InfoIcon } from 'lucide-react';
 import type { InvestorProfile } from '@/components/calculator/types';
+import { profiles } from '@/lib/data/profileData';
 
 interface InvestorProfileProps {
   onProfileSelect: (profile: InvestorProfile) => void;
@@ -12,36 +13,6 @@ interface InvestorProfileProps {
 
 export const InvestorProfiles = ({ onProfileSelect, selectedProfile }: InvestorProfileProps) => {
   const [openTooltips, setOpenTooltips] = useState<{ [key: string]: boolean }>({});
-
-  const profiles = [
-    {
-      id: 'conservador',
-      title: 'Conservador',
-      description:
-        'Investidor com pouca tolerância ao risco, busca segurança e menor volatilidade.',
-      annualReturn: 0.04, // 4% a.a.
-      volatility: 1, // 1%
-      maxLoss: -5, // -5%
-    },
-    {
-      id: 'moderado',
-      title: 'Moderado',
-      description:
-        'Investidor que equilibra segurança e risco, está disposto a enfrentar alguma volatilidade.',
-      annualReturn: 0.055, // 5.5% a.a.
-      volatility: 5.5, // 5.5%
-      maxLoss: -15, // -15%
-    },
-    {
-      id: 'arrojado',
-      title: 'Arrojado',
-      description:
-        'Investidor mais tolerante ao risco, disposto a assumir mais volatilidade em busca de maiores retornos.',
-      annualReturn: 0.065, // 6.5% a.a.
-      volatility: 9, // 9%
-      maxLoss: -25, // -25%
-    },
-  ];
 
   const handleTooltipClick = (tooltipId: string) => {
     setOpenTooltips((prev) => ({
