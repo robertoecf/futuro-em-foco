@@ -179,3 +179,22 @@ Com essa configuração otimizada:
 - ✅ **False positives** minimizados  
 - ✅ **Qualidade de código** mantida
 - ✅ **Developer Experience** melhorada 
+
+---
+
+## 📚 **HISTÓRICO E CONTEXTO (O PORQUÊ DAS DECISÕES)**
+
+- **Incompatibilidade ESLint v9**: O Super Linter encontrou problemas ao tentar usar sua versão interna do ESLint em nosso código configurado para a v9 (moderna). A solução foi desativar a validação de `TypeScript/TSX` no Super Linter, confiando em nossa pipeline local, que é mais precisa.
+- **Duplicação de Código (JSCPD)**: O linter inicialmente detectou duplicação em algoritmos de simulação. Isso foi resolvido através da refatoração do código para um módulo `simulationUtils.ts` compartilhado, eliminando a redundância e melhorando a manutenibilidade.
+- **Pre-commit Hooks**: A automação com `husky` e `lint-staged` foi implementada para remover o fardo de rodar linters manualmente e garantir que todo código enviado ao repositório já esteja formatado e sem erros básicos.
+
+---
+
+## 🛠️ **COMANDOS ESSENCIAIS (WORKFLOW LOCAL)**
+
+Os seguintes scripts no `package.json` são a base do nosso workflow de qualidade diário:
+
+- **`npm run lint`**: Executa o ESLint em todo o projeto para verificar erros.
+- **`npm run lint:fix`**: Tenta corrigir automaticamente os problemas encontrados pelo ESLint.
+- **`npm run format`**: Formata todo o código do projeto usando as regras do Prettier.
+- **`npm run marco-zero`**: Comando completo que verifica tipos (`tsc`), executa o lint e faz o build, garantindo que o projeto está 100% saudável. 
