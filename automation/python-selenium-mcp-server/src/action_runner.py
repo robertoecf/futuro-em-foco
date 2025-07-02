@@ -61,7 +61,13 @@ def get_element(driver, selector):
 
 def execute_selenium_automation(url: str, actions: list):
     """
-    Executes a sequence of web automation actions from a JSON-like structure.
+    Automates a sequence of web interactions using Selenium based on a list of action dictionaries.
+    
+    Parameters:
+        url (str): The initial URL to open in the browser.
+        actions (list): A list of dictionaries specifying actions such as typing text, clicking elements, or navigating to URLs. Each action dictionary should define the action type and relevant parameters.
+    
+    The function loads environment variables from a `.env` file if present, executes each action in order, and prints a JSON-formatted status message upon completion or error. The browser is closed after execution.
     """
     dotenv_path = find_dotenv()
     if dotenv_path:
