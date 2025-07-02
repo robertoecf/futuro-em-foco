@@ -112,7 +112,6 @@ def execute_selenium_automation(url: str, actions: list):
             driver.quit()
 
 if __name__ == '__main__':
-    from typing import Dict, List, TypedDict
 
     class ActionDict(TypedDict, total=False):
         action: str
