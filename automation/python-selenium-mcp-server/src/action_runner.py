@@ -2,7 +2,7 @@ import json
 import os
 import time
 from pathlib import Path
-from typing import Dict, List, Any, Union, TypedDict
+from typing import Dict, List, TypedDict
 
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service as ChromeService
@@ -112,7 +112,6 @@ def execute_selenium_automation(url: str, actions: list):
             driver.quit()
 
 if __name__ == '__main__':
-    from typing import TypedDict, List, Dict
 
     class ActionDict(TypedDict, total=False):
         action: str
