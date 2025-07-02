@@ -31,8 +31,16 @@ export const InsightCard: React.FC<InsightCardProps> = ({
             }
           </p>
         )}
-        <p className={`text-sm text-white ${showValueAsDescription ? 'text-lg font-semibold text-orange-600 tech-number' : ''}`}>
-          {description}
+        <p
+          className={`text-sm text-white ${showValueAsDescription ? 'text-lg font-semibold text-orange-600 tech-number' : ''}`}
+        >
+          {showValueAsDescription
+            ? description.split('\n').map((line, idx) => (
+                <span key={idx} className="block" style={{ color: '#E48200' }}>
+                  {line}
+                </span>
+              ))
+            : description}
         </p>
       </div>
     </Card>
