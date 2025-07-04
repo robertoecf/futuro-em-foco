@@ -20,7 +20,7 @@ export const CustomTooltip = ({ active, payload, label, monteCarloData }: Custom
   const phase = data.fase;
   
   return (
-    <Card className="p-0 glass-card backdrop-blur-sm">
+    <Card className="p-0 bg-black/50 backdrop-filter backdrop-blur-3xl border border-white/20 rounded-lg shadow-lg">
       <CardContent className="p-3">
         <p className="text-sm font-bold text-foreground">{`Idade: ${label} anos`}</p>
         
@@ -42,12 +42,12 @@ export const CustomTooltip = ({ active, payload, label, monteCarloData }: Custom
           </p>
         )}
         
-        <p className="text-xs text-muted-foreground mt-1">
+        <p className="text-xs text-white mt-1">
           {phase === "Acumulação" ? "Fase de Acumulação" : "Fase de Aposentadoria"}
         </p>
         
         {/* Show savings line value as last item */}
-        <p className="text-sm text-muted-foreground mt-1">
+        <p className="text-sm text-white mt-1">
           {`Total Poupado: ${formatCurrency(data.poupanca || 0)}`}
         </p>
       </CardContent>
