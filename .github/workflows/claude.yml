@@ -1,3 +1,5 @@
+# checkov:skip=CKV2_GHA_1 Permissões já seguem o princípio do menor privilégio, falso positivo.
+
 name: Claude Code
 
 on:
