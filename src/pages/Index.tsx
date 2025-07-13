@@ -39,7 +39,7 @@ const Index = () => {
       const clientHeight = document.documentElement.clientHeight;
 
       // Detectar se está no topo (primeiros 50px)
-      const isAtTop = scrollTop <= 50;
+      const isAtTop = scrollTop <= 900;
 
       // Detectar se está no final (últimos 50px)
       const isNearBottom = scrollTop + clientHeight >= scrollHeight - 50;
@@ -96,15 +96,14 @@ const Index = () => {
         </div>
 
         {/* Navigation Arrow */}
-        <div className="absolute bottom-16 left-1/2 transform -translate-x-1/2">
-          <div
-            className="section-arrow cursor-pointer"
-            onClick={() =>
-              document.getElementById('calculator-section')?.scrollIntoView({ behavior: 'smooth' })
-            }
-          >
-            ∨
-          </div>
+        <div
+          className="section-arrow cursor-pointer"
+          style={{ position: 'absolute', left: '50%', transform: 'translate(-50%, calc(50% + 40px))', bottom: '10%' }}
+          onClick={() =>
+            document.getElementById('calculator-section')?.scrollIntoView({ behavior: 'smooth' })
+          }
+        >
+          ∨
         </div>
       </section>
 
@@ -142,12 +141,19 @@ const Index = () => {
             <div
               id="cta-banner"
               className="aurora-banner text-white p-12 md:p-16 lg:p-20 rounded-3xl relative overflow-hidden"
-              style={{ width: '100%', display: 'block' }}
+              style={{
+                width: '100%',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                margin: 'clamp(24px, 8vh, 80px) 0',
+                minHeight: '80vh',
+              }}
             >
               {/* Aurora Background will be prepended here by useEffect */}
 
               {/* Content */}
-              <div className="relative z-10 text-center">
+              <div className="relative z-10 text-center" style={{ marginTop: '60px' }}>
                 <h1 className="text-4xl md:text-5xl font-bold mb-4">
                   Pronto para impulsionar sua jornada?
                 </h1>
@@ -169,7 +175,14 @@ const Index = () => {
 
       {/* Dynamic Header - Visible at top and bottom */}
       {showHeader && (
-        <header className="fixed top-0 left-0 right-0 z-50 bg-background/90 backdrop-blur-sm border-b dark:border-white/10 border-gray-300/30 transition-all duration-300">
+        <header
+          className="fixed top-0 left-0 right-0 z-50 border-b dark:border-white/10 border-gray-300/30 transition-all duration-300 glass-header"
+          style={{
+            background: 'rgba(224,224,224,0.95)',
+            backdropFilter: 'blur(12px)',
+            WebkitBackdropFilter: 'blur(12px)',
+          }}
+        >
           <div className="flex justify-center">
             <div className="w-full max-w-7xl px-4 sm:px-6 lg:px-4">
               <div className="flex items-center justify-between h-16">
@@ -180,7 +193,10 @@ const Index = () => {
                   futuro em foco
                 </div>
                 <div className="flex items-center space-x-8">
-                  <button onClick={() => setIsLeadFormOpen(true)} className="tech-button-header dark:text-white text-gray-900">
+                  <button
+                    onClick={() => setIsLeadFormOpen(true)}
+                    className="tech-button-header dark:text-white text-gray-900"
+                  >
                     Converse conosco
                   </button>
                 </div>
