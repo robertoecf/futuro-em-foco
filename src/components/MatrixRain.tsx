@@ -1,4 +1,5 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
+import { performanceValidator } from '@/utils/performanceValidation';
 
 interface MatrixRainProps {
   isActive: boolean;
@@ -6,15 +7,31 @@ interface MatrixRainProps {
 
 export const MatrixRain: React.FC<MatrixRainProps> = ({ isActive }) => {
   const [columns, setColumns] = useState<string[]>([]);
+  
+  // Cache window dimensions to prevent reflows
+  const windowDimensionsRef = useRef({
+    width: typeof window !== 'undefined' ? window.innerWidth : 1200,
+  });
 
   // Caracteres Matrix - principalmente katakana japoneses + alguns números
-  const matrixChars =
-    'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲンガギグゲゴザジズゼゾダヂヅデドバビブベボパピプペポ0123456789';
+  const matrixChars = useRef(
+    'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲンガギグゲゴザジズゼゾダヂヅデドバビブベボパピプペポ0123456789'
+  );
+
+  // Update cached window dimensions
+  const updateWindowDimensions = useCallback(() => {
+    windowDimensionsRef.current = {
+      width: window.innerWidth,
+    };
+  }, []);
 
   const generateColumns = useCallback(() => {
     if (!isActive) return;
 
-    const columnCount = Math.floor(window.innerWidth / 12); // Mais colunas (a cada 12px ao invés de 18px)
+    performanceValidator.startMeasuring('MatrixRain-generateColumns');
+
+    // Use cached width to prevent reflows
+    const columnCount = Math.floor(windowDimensionsRef.current.width / 12); // Mais colunas (a cada 12px ao invés de 18px)
     const newColumns: string[] = [];
 
     for (let i = 0; i < columnCount; i++) {
@@ -23,14 +40,15 @@ export const MatrixRain: React.FC<MatrixRainProps> = ({ isActive }) => {
       let columnText = '';
 
       for (let j = 0; j < columnHeight; j++) {
-        columnText += matrixChars[Math.floor(Math.random() * matrixChars.length)] + '\n';
+        columnText += matrixChars.current[Math.floor(Math.random() * matrixChars.current.length)] + '\n';
       }
 
       newColumns.push(columnText);
     }
 
     setColumns(newColumns);
-  }, [isActive, matrixChars]);
+    performanceValidator.endMeasuring('MatrixRain-generateColumns');
+  }, [isActive]);
 
   useEffect(() => {
     if (!isActive) {
@@ -38,26 +56,38 @@ export const MatrixRain: React.FC<MatrixRainProps> = ({ isActive }) => {
       return;
     }
 
+    // Initialize window dimensions
+    updateWindowDimensions();
     generateColumns();
 
-    // Regenerar colunas mais frequentemente para efeito mais dinâmico
-    const interval = setInterval(generateColumns, 800);
+    // Reduced frequency for better performance (1.2s instead of 800ms)
+    const interval = setInterval(generateColumns, 1200);
 
     // Cleanup
     return () => clearInterval(interval);
-  }, [isActive, generateColumns]);
+  }, [isActive, generateColumns, updateWindowDimensions]);
 
-  // Adicionar listener para redimensionamento da janela
+  // Optimized resize listener with throttling
   useEffect(() => {
     if (!isActive) return;
 
+    let resizeTimeout: ReturnType<typeof setTimeout>;
+    
     const handleResize = () => {
-      generateColumns();
+      // Throttle resize events to prevent excessive recalculations
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        updateWindowDimensions();
+        generateColumns();
+      }, 150); // 150ms throttle
     };
 
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, [isActive, generateColumns]);
+    window.addEventListener('resize', handleResize, { passive: true });
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      clearTimeout(resizeTimeout);
+    };
+  }, [isActive, generateColumns, updateWindowDimensions]);
 
   if (!isActive) return null;
 

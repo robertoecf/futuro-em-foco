@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { Calculator } from '@/components/calculator/Calculator';
 import { HeroSection } from '@/components/HeroSection';
 import { LeadCaptureForm } from '@/components/LeadCaptureForm';
@@ -6,6 +6,7 @@ import { useCalculator } from '@/components/calculator/useCalculator';
 import { MatrixRain } from '@/components/MatrixRain';
 import { useOverscroll } from '@/hooks/useOverscroll';
 import { Button } from '@/components/ui/button';
+import { performanceValidator } from '@/utils/performanceValidation';
 
 const Index = () => {
   const [isLeadFormOpen, setIsLeadFormOpen] = useState(false);
@@ -29,57 +30,104 @@ const Index = () => {
     investorProfile: calculatorData.investorProfile,
   };
 
-  // Check scroll position to show/hide header
-  useEffect(() => {
-    let lastScrollTop = 0;
+  // Optimized scroll handler with throttling and cached dimensions
+  const lastScrollTopRef = useRef(0);
+  const ticking = useRef(false);
+  const scrollDimensionsRef = useRef({
+    scrollHeight: 0,
+    clientHeight: 0,
+  });
 
-    const handleScroll = () => {
-      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-      const scrollHeight = document.documentElement.scrollHeight;
-      const clientHeight = document.documentElement.clientHeight;
-
-      // Detectar se está no topo (primeiros 50px)
-      const isAtTop = scrollTop <= 900;
-
-      // Detectar se está no final (últimos 50px)
-      const isNearBottom = scrollTop + clientHeight >= scrollHeight - 50;
-
-      // Lógica do header:
-      // 1. Sempre visível no topo
-      // 2. Aparece quando chega ao final
-      // 3. Some quando sobe qualquer pixel do final
-      // 4. Só aparece novamente quando volta ao topo
-
-      if (isAtTop) {
-        setShowHeader(true);
-      } else if (isNearBottom) {
-        setShowHeader(true);
-      } else if (lastScrollTop > scrollTop && !isAtTop) {
-        // Se está subindo e não está no topo, esconder
-        setShowHeader(false);
-      } else if (lastScrollTop < scrollTop && !isNearBottom) {
-        // Se está descendo e não está no final, esconder
-        setShowHeader(false);
-      }
-
-      lastScrollTop = scrollTop;
+  // Update cached scroll dimensions
+  const updateScrollDimensions = useCallback(() => {
+    scrollDimensionsRef.current = {
+      scrollHeight: document.documentElement.scrollHeight,
+      clientHeight: document.documentElement.clientHeight,
     };
-
-    window.addEventListener('scroll', handleScroll);
-    handleScroll(); // Check initial state
-
-    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  useEffect(() => {
-    const heroBannerBackground = document.getElementById('aurora-banner-background');
-    const ctaBanner = document.getElementById('cta-banner');
+  const handleScroll = useCallback(() => {
+    if (!ticking.current) {
+      requestAnimationFrame(() => {
+        performanceValidator.startMeasuring('Index-scrollHandler');
+        
+        // Only get current scroll position, use cached dimensions
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const { scrollHeight, clientHeight } = scrollDimensionsRef.current;
 
-    if (heroBannerBackground && ctaBanner) {
-      const clonedBackground = heroBannerBackground.cloneNode(true) as HTMLElement;
-      clonedBackground.id = 'aurora-cta-background-cloned';
-      ctaBanner.prepend(clonedBackground);
+        // Detect if at top (first 900px)
+        const isAtTop = scrollTop <= 900;
+
+        // Detect if near bottom (last 50px)
+        const isNearBottom = scrollTop + clientHeight >= scrollHeight - 50;
+
+        // Header visibility logic:
+        // 1. Always visible at top
+        // 2. Appears when reaching bottom
+        // 3. Hides when scrolling up from bottom
+        // 4. Only appears again when returning to top
+
+        if (isAtTop) {
+          setShowHeader(true);
+        } else if (isNearBottom) {
+          setShowHeader(true);
+        } else if (lastScrollTopRef.current > scrollTop && !isAtTop) {
+          // Scrolling up and not at top, hide
+          setShowHeader(false);
+        } else if (lastScrollTopRef.current < scrollTop && !isNearBottom) {
+          // Scrolling down and not at bottom, hide
+          setShowHeader(false);
+        }
+
+        lastScrollTopRef.current = scrollTop;
+        ticking.current = false;
+        
+        performanceValidator.endMeasuring('Index-scrollHandler');
+      });
+      ticking.current = true;
     }
+  }, []);
+
+  // Set up scroll listener with cached dimensions and resize handling
+  useEffect(() => {
+    // Initialize cached dimensions
+    updateScrollDimensions();
+    
+    // Handle resize events to update cached dimensions
+    const handleResize = () => {
+      updateScrollDimensions();
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('resize', handleResize, { passive: true });
+    handleScroll(); // Check initial state
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [handleScroll, updateScrollDimensions]);
+
+  // Optimized DOM manipulation with proper timing
+  useEffect(() => {
+    // Use requestAnimationFrame to prevent layout thrashing
+    const setupAuroraBackground = () => {
+      const heroBannerBackground = document.getElementById('aurora-banner-background');
+      const ctaBanner = document.getElementById('cta-banner');
+
+      if (heroBannerBackground && ctaBanner) {
+        // Check if already cloned to prevent duplicates
+        const existingClone = document.getElementById('aurora-cta-background-cloned');
+        if (!existingClone) {
+          const clonedBackground = heroBannerBackground.cloneNode(true) as HTMLElement;
+          clonedBackground.id = 'aurora-cta-background-cloned';
+          ctaBanner.prepend(clonedBackground);
+        }
+      }
+    };
+
+    // Defer DOM manipulation to next frame
+    requestAnimationFrame(setupAuroraBackground);
   }, []);
 
   return (
@@ -182,11 +230,6 @@ const Index = () => {
       {showHeader && (
         <header
           className="fixed top-0 left-0 right-0 z-50 border-b dark:border-white/10 border-gray-300/30 transition-all duration-300 glass-header"
-          style={{
-            background: 'rgba(224,224,224,0.95)',
-            backdropFilter: 'blur(12px)',
-            WebkitBackdropFilter: 'blur(12px)',
-          }}
         >
           <div className="flex justify-center">
             <div className="w-full max-w-7xl px-4 sm:px-6 lg:px-4">
