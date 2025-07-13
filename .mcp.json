@@ -1,0 +1,80 @@
+{
+  "mcpServers": {
+    "github": {
+      "command": "bash",
+      "args": [
+        "-c",
+        "cd /Users/mac/Documents/futuro-em-foco-planner && source .env && docker run -i --rm -e GITHUB_PERSONAL_ACCESS_TOKEN=\"$GITHUB_PERSONAL_ACCESS_TOKEN\" ghcr.io/github/github-mcp-server"
+      ]
+    },
+    "supabase": {
+      "command": "bash",
+      "args": [
+        "-c",
+        "cd /Users/mac/Documents/futuro-em-foco-planner && source .env && SUPABASE_ACCESS_TOKEN=\"$SUPABASE_ACCESS_TOKEN\" npx -y @supabase/mcp-server-supabase@latest --read-only --project-ref=hcmjavggiphoulwgcoej"
+      ]
+    },
+    "context7": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@upstash/context7-mcp"
+      ]
+    },
+    "browser-tools": {
+      "command": "npx",
+      "args": [
+        "@agentdeskai/browser-tools-mcp@1.2.0"
+      ]
+    },
+    "selenium": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@angiejones/mcp-selenium"
+      ]
+    },
+    "playwright": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@executeautomation/playwright-mcp-server"
+      ]
+    },
+    "sequential-thinking": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-sequential-thinking"
+      ]
+    },
+    "firecrawl": {
+      "command": "bash",
+      "args": [
+        "-c",
+        "cd /Users/mac/Documents/futuro-em-foco-planner && source .env && FIRECRAWL_API_KEY=\"$FIRECRAWL_API_KEY\" npx -y firecrawl-mcp"
+      ]
+    },
+    "filesystem": {
+      "command": "/opt/homebrew/bin/node",
+      "args": [
+        "/opt/homebrew/lib/node_modules/@modelcontextprotocol/server-filesystem/dist/index.js",
+        "${workspaceFolder}"
+      ]
+    },
+    "postgres": {
+      "command": "bash",
+      "args": [
+        "-c",
+        "cd /Users/mac/Documents/futuro-em-foco-planner && source .env && docker run -i --rm -e DATABASE_URI=\"$POSTGRES_CONNECTION_STRING\" crystaldba/postgres-mcp --access-mode=unrestricted"
+      ]
+    },
+    "docker": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@thelord/mcp-server-docker-npx"
+      ]
+    }
+  }
+}
