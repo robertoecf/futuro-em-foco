@@ -6,6 +6,7 @@ import { useCalculator } from '@/components/calculator/useCalculator';
 import { MatrixRain } from '@/components/MatrixRain';
 import { useOverscroll } from '@/hooks/useOverscroll';
 import { Button } from '@/components/ui/button';
+import { performanceValidator } from '@/utils/performanceValidation';
 
 const Index = () => {
   const [isLeadFormOpen, setIsLeadFormOpen] = useState(false);
@@ -48,6 +49,8 @@ const Index = () => {
   const handleScroll = useCallback(() => {
     if (!ticking.current) {
       requestAnimationFrame(() => {
+        performanceValidator.startMeasuring('Index-scrollHandler');
+        
         // Only get current scroll position, use cached dimensions
         const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
         const { scrollHeight, clientHeight } = scrollDimensionsRef.current;
@@ -78,6 +81,8 @@ const Index = () => {
 
         lastScrollTopRef.current = scrollTop;
         ticking.current = false;
+        
+        performanceValidator.endMeasuring('Index-scrollHandler');
       });
       ticking.current = true;
     }
@@ -225,11 +230,6 @@ const Index = () => {
       {showHeader && (
         <header
           className="fixed top-0 left-0 right-0 z-50 border-b dark:border-white/10 border-gray-300/30 transition-all duration-300 glass-header"
-          style={{
-            background: 'rgba(224,224,224,0.95)',
-            backdropFilter: 'blur(12px)',
-            WebkitBackdropFilter: 'blur(12px)',
-          }}
         >
           <div className="flex justify-center">
             <div className="w-full max-w-7xl px-4 sm:px-6 lg:px-4">

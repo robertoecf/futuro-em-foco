@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react';
+import { performanceValidator } from '@/utils/performanceValidation';
 
 interface MatrixRainProps {
   isActive: boolean;
@@ -27,6 +28,8 @@ export const MatrixRain: React.FC<MatrixRainProps> = ({ isActive }) => {
   const generateColumns = useCallback(() => {
     if (!isActive) return;
 
+    performanceValidator.startMeasuring('MatrixRain-generateColumns');
+
     // Use cached width to prevent reflows
     const columnCount = Math.floor(windowDimensionsRef.current.width / 12); // Mais colunas (a cada 12px ao invés de 18px)
     const newColumns: string[] = [];
@@ -44,6 +47,7 @@ export const MatrixRain: React.FC<MatrixRainProps> = ({ isActive }) => {
     }
 
     setColumns(newColumns);
+    performanceValidator.endMeasuring('MatrixRain-generateColumns');
   }, [isActive]);
 
   useEffect(() => {

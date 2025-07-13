@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { performanceValidator } from '@/utils/performanceValidation';
 
 export const useOverscroll = () => {
   const [isOverscrolling, setIsOverscrolling] = useState(false);
@@ -11,7 +12,7 @@ export const useOverscroll = () => {
     isAtBottom: false,
   });
   
-  // Cache DOM dimensions to prevent repeated queries
+  // Cache DOM dimensions
   const scrollDimensionsRef = useRef({
     scrollHeight: 0,
     clientHeight: 0,
@@ -66,9 +67,12 @@ export const useOverscroll = () => {
 
     // Wheel handler - NO DOM QUERIES, only uses cached position
     const handleWheel = (e: WheelEvent) => {
+      performanceValidator.startMeasuring('useOverscroll-wheelHandler');
+      
       // Throttle wheel events for performance
       const now = performance.now();
       if (now - lastWheelTimeRef.current < wheelThrottleDelay) {
+        performanceValidator.endMeasuring('useOverscroll-wheelHandler');
         return;
       }
       lastWheelTimeRef.current = now;
@@ -82,6 +86,8 @@ export const useOverscroll = () => {
       if (isOverscrollingUp || isOverscrollingDown) {
         triggerMatrix();
       }
+      
+      performanceValidator.endMeasuring('useOverscroll-wheelHandler');
     };
 
     // Touch handler - also uses cached position
