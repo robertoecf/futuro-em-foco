@@ -9,6 +9,7 @@ interface PerformanceMetrics {
   averageRenderTime: number;
   memoryUsage: number;
   rerenderFrequency: number;
+  componentStartTime?: number;
 }
 
 interface PerformanceMemory {
@@ -35,6 +36,7 @@ class PerformanceValidator {
         averageRenderTime: 0,
         memoryUsage: 0,
         rerenderFrequency: 0,
+        componentStartTime: performance.now(),
       });
     }
   }
@@ -47,13 +49,24 @@ class PerformanceValidator {
     const metric = this.metrics.get(componentName);
 
     if (metric) {
+      // Store component start time if not exists
+      if (!metric.componentStartTime) {
+        metric.componentStartTime = performance.now();
+      }
+
       metric.renderCount++;
       metric.lastRenderTime = renderTime;
-      metric.averageRenderTime = (metric.averageRenderTime + renderTime) / 2;
+      
+      // Weighted average for more accurate results
+      metric.averageRenderTime =
+        (metric.averageRenderTime * (metric.renderCount - 1) + renderTime) /
+        metric.renderCount;
+      
       metric.memoryUsage = this.getMemoryUsage();
 
       // Calculate rerender frequency (renders per second)
-      metric.rerenderFrequency = metric.renderCount / (performance.now() / 1000);
+      const elapsedSeconds = (performance.now() - metric.componentStartTime) / 1000;
+      metric.rerenderFrequency = metric.renderCount / elapsedSeconds;
 
       this.metrics.set(componentName, metric);
     }
@@ -187,7 +200,7 @@ class PerformanceValidator {
       const observer = new PerformanceObserver((list) => {
         for (const entry of list.getEntries()) {
           if (entry.entryType === 'longtask' && entry.duration > 50) {
-            // Long task detected but not logged
+            // Long task detected but not logged to avoid console noise
           }
         }
       });
