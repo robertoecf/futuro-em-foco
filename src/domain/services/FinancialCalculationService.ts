@@ -1,19 +1,18 @@
 /**
  * Financial Calculation Service
- * 
+ *
  * Domain service responsible for all financial calculations including
  * compound interest, retirement planning, and investment projections.
- * 
+ *
  * This service encapsulates business logic extracted from React components,
  * making calculations testable, reusable, and maintainable.
  */
 
 import type { InvestorProfile } from '@/types/core/calculator';
 import { Money } from '@/domain/value-objects/Money';
-import { 
+import {
   calculateCompoundInterest,
   calculateInflationAdjustedValue,
-  calculateSustainableMonthlylncome,
   getAccumulationAnnualReturn,
   getVolatilityByProfile,
   calculateTimeToGoal,
@@ -23,10 +22,7 @@ import {
   calculateAccumulatedWealth,
   calculateRequiredWealthDepleting,
   calculatePossibleRetirementAge,
-  calculateSustainableIncome,
   calculateDepletingIncome,
-  calculateSuggestedMonthlyContribution,
-  calculateMinimumAccumulationReturn
 } from '@/lib/calculations/financialCalculations';
 
 export interface IFinancialCalculationService {
@@ -128,13 +124,18 @@ export interface OptimalContributionResult {
  * Financial Calculation Service Implementation
  */
 export class FinancialCalculationService implements IFinancialCalculationService {
-  
   /**
    * Calculate compound growth with monthly contributions
    */
   calculateCompoundGrowth(params: CompoundGrowthParams): CompoundGrowthResult {
-    const { initialAmount, monthlyContribution, annualReturnRate, timeHorizonYears, inflationRate = 0.04 } = params;
-    
+    const {
+      initialAmount,
+      monthlyContribution,
+      annualReturnRate,
+      timeHorizonYears,
+      inflationRate: _inflationRate = 0.04,
+    } = params;
+
     // Calculate final amount using compound interest
     const finalAmountValue = calculateCompoundInterest(
       initialAmount.value,
@@ -142,11 +143,11 @@ export class FinancialCalculationService implements IFinancialCalculationService
       annualReturnRate,
       timeHorizonYears
     );
-    
+
     const finalAmount = Money.fromNumber(finalAmountValue, initialAmount.currencyCode);
     const totalContributions = monthlyContribution.multiply(12 * timeHorizonYears);
     const totalGrowth = finalAmount.subtract(initialAmount).subtract(totalContributions);
-    
+
     // Calculate yearly projection
     const yearlyValues = calculateYearlyProjection(
       initialAmount.value,
@@ -154,20 +155,20 @@ export class FinancialCalculationService implements IFinancialCalculationService
       annualReturnRate,
       timeHorizonYears
     );
-    
-    const yearlyProjection = yearlyValues.map(value => 
+
+    const yearlyProjection = yearlyValues.map((value) =>
       Money.fromNumber(value, initialAmount.currencyCode)
     );
-    
+
     return {
       finalAmount,
       totalContributions,
       totalGrowth,
       effectiveAnnualReturn: annualReturnRate,
-      yearlyProjection
+      yearlyProjection,
     };
   }
-  
+
   /**
    * Calculate comprehensive retirement planning metrics
    */
@@ -179,14 +180,14 @@ export class FinancialCalculationService implements IFinancialCalculationService
       desiredMonthlyIncome,
       initialAmount,
       monthlyContribution,
-      investorProfile
+      investorProfile,
     } = params;
-    
+
     const yearsToAccumulate = targetRetirementAge - currentAge;
     const yearsInRetirement = lifeExpectancy - targetRetirementAge;
     const accumulationReturn = getAccumulationAnnualReturn(investorProfile);
     const retirementReturn = 0.04; // Conservative 4% withdrawal rate
-    
+
     // Calculate projected wealth at retirement
     const projectedWealthValue = calculateAccumulatedWealth(
       initialAmount.value,
@@ -194,33 +195,44 @@ export class FinancialCalculationService implements IFinancialCalculationService
       yearsToAccumulate,
       accumulationReturn
     );
-    
-    const projectedWealthAtRetirement = Money.fromNumber(projectedWealthValue, initialAmount.currencyCode);
-    
+
+    const projectedWealthAtRetirement = Money.fromNumber(
+      projectedWealthValue,
+      initialAmount.currencyCode
+    );
+
     // Calculate required wealth for desired income
     const requiredWealthValue = calculateRequiredWealthDepleting(
       desiredMonthlyIncome.value,
       yearsInRetirement,
       retirementReturn
     );
-    
-    const requiredWealthAtRetirement = Money.fromNumber(requiredWealthValue, initialAmount.currencyCode);
-    
+
+    const requiredWealthAtRetirement = Money.fromNumber(
+      requiredWealthValue,
+      initialAmount.currencyCode
+    );
+
     // Calculate sustainable monthly income from projected wealth
     const sustainableIncomeValue = calculateDepletingIncome(
       projectedWealthValue,
       yearsInRetirement,
       retirementReturn
     );
-    
-    const sustainableMonthlyIncome = Money.fromNumber(sustainableIncomeValue, initialAmount.currencyCode);
-    
+
+    const sustainableMonthlyIncome = Money.fromNumber(
+      sustainableIncomeValue,
+      initialAmount.currencyCode
+    );
+
     // Determine if retirement is viable
-    const isRetirementViable = projectedWealthAtRetirement.greaterThanOrEqual(requiredWealthAtRetirement);
-    
+    const isRetirementViable = projectedWealthAtRetirement.greaterThanOrEqual(
+      requiredWealthAtRetirement
+    );
+
     // Calculate retirement gap (positive means surplus, negative means deficit)
     const retirementGap = projectedWealthAtRetirement.subtract(requiredWealthAtRetirement);
-    
+
     // Calculate recommended retirement age if current plan doesn't work
     const recommendedRetirementAge = calculatePossibleRetirementAge(
       currentAge,
@@ -231,7 +243,7 @@ export class FinancialCalculationService implements IFinancialCalculationService
       monthlyContribution.value,
       accumulationReturn
     );
-    
+
     return {
       requiredWealthAtRetirement,
       projectedWealthAtRetirement,
@@ -239,26 +251,26 @@ export class FinancialCalculationService implements IFinancialCalculationService
       isRetirementViable,
       retirementGap,
       recommendedRetirementAge,
-      yearsToAccumulate
+      yearsToAccumulate,
     };
   }
-  
+
   /**
    * Calculate investment projection with profile-based returns
    */
   calculateInvestmentProjection(params: InvestmentProjectionParams): InvestmentProjectionResult {
-    const { 
-      initialAmount, 
-      monthlyContribution, 
-      investorProfile, 
+    const {
+      initialAmount,
+      monthlyContribution,
+      investorProfile,
       timeHorizonYears,
       includeInflation = false,
-      inflationRate = 0.04
+      inflationRate = 0.04,
     } = params;
-    
+
     const annualReturnRate = getAccumulationAnnualReturn(investorProfile);
     const volatility = getVolatilityByProfile(investorProfile);
-    
+
     // Calculate final amount
     const finalAmountValue = calculateCompoundInterest(
       initialAmount.value,
@@ -266,11 +278,11 @@ export class FinancialCalculationService implements IFinancialCalculationService
       annualReturnRate,
       timeHorizonYears
     );
-    
+
     const finalAmount = Money.fromNumber(finalAmountValue, initialAmount.currencyCode);
     const totalContributions = monthlyContribution.multiply(12 * timeHorizonYears);
     const totalGrowth = finalAmount.subtract(initialAmount).subtract(totalContributions);
-    
+
     // Calculate yearly projection
     const yearlyValues = calculateYearlyProjection(
       initialAmount.value,
@@ -278,11 +290,11 @@ export class FinancialCalculationService implements IFinancialCalculationService
       annualReturnRate,
       timeHorizonYears
     );
-    
-    const yearlyProjection = yearlyValues.map(value => 
+
+    const yearlyProjection = yearlyValues.map((value) =>
       Money.fromNumber(value, initialAmount.currencyCode)
     );
-    
+
     // Calculate inflation-adjusted final amount if requested
     let inflationAdjustedFinalAmount: Money | undefined;
     if (includeInflation) {
@@ -293,7 +305,7 @@ export class FinancialCalculationService implements IFinancialCalculationService
       );
       inflationAdjustedFinalAmount = Money.fromNumber(adjustedValue, initialAmount.currencyCode);
     }
-    
+
     return {
       finalAmount,
       totalContributions,
@@ -301,53 +313,53 @@ export class FinancialCalculationService implements IFinancialCalculationService
       yearlyProjection,
       inflationAdjustedFinalAmount,
       annualReturnRate,
-      volatility
+      volatility,
     };
   }
-  
+
   /**
    * Validate financial calculation inputs
    */
   validateInputs(params: ValidationParams): ValidationResult {
     const { initialAmount, monthlyContribution, timeHorizonYears, annualReturnRate } = params;
-    
+
     const validation = validateFinancialInputs(
       initialAmount,
       monthlyContribution,
       timeHorizonYears,
       annualReturnRate
     );
-    
+
     const warnings: string[] = [];
-    
+
     // Add business-specific warnings
     if (annualReturnRate > 0.15) {
       warnings.push('Retorno anual muito otimista (>15%). Considere cenários mais conservadores.');
     }
-    
+
     if (timeHorizonYears > 40) {
       warnings.push('Período muito longo (>40 anos). Considere revisar periodicamente.');
     }
-    
+
     if (monthlyContribution > initialAmount * 2) {
       warnings.push('Aporte mensal muito alto em relação ao valor inicial.');
     }
-    
+
     return {
       isValid: validation.isValid,
       errors: validation.errors,
-      warnings
+      warnings,
     };
   }
-  
+
   /**
    * Calculate optimal monthly contribution for a target amount
    */
   calculateOptimalContribution(params: OptimalContributionParams): OptimalContributionResult {
     const { targetAmount, currentAmount, timeHorizonYears, investorProfile } = params;
-    
+
     const annualReturnRate = getAccumulationAnnualReturn(investorProfile);
-    
+
     // Calculate required monthly contribution
     const requiredContributionValue = calculateRequiredMonthlyContribution(
       currentAmount.value,
@@ -355,9 +367,12 @@ export class FinancialCalculationService implements IFinancialCalculationService
       timeHorizonYears,
       annualReturnRate
     );
-    
-    const requiredMonthlyContribution = Money.fromNumber(requiredContributionValue, currentAmount.currencyCode);
-    
+
+    const requiredMonthlyContribution = Money.fromNumber(
+      requiredContributionValue,
+      currentAmount.currencyCode
+    );
+
     // Calculate time to goal with current contribution
     const timeToGoal = calculateTimeToGoal(
       currentAmount.value,
@@ -365,10 +380,10 @@ export class FinancialCalculationService implements IFinancialCalculationService
       targetAmount.value,
       annualReturnRate
     );
-    
+
     // Check if target is achievable
     const isTargetAchievable = timeToGoal <= timeHorizonYears && requiredContributionValue > 0;
-    
+
     // Generate alternative scenarios
     const alternativeScenarios = [
       {
@@ -381,7 +396,7 @@ export class FinancialCalculationService implements IFinancialCalculationService
             annualReturnRate
           ),
           currentAmount.currencyCode
-        )
+        ),
       },
       {
         timeHorizon: timeHorizonYears + 10,
@@ -393,15 +408,15 @@ export class FinancialCalculationService implements IFinancialCalculationService
             annualReturnRate
           ),
           currentAmount.currencyCode
-        )
-      }
+        ),
+      },
     ];
-    
+
     return {
       requiredMonthlyContribution,
       timeToGoal,
       isTargetAchievable,
-      alternativeScenarios
+      alternativeScenarios,
     };
   }
 }

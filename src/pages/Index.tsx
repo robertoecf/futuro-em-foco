@@ -98,7 +98,12 @@ const Index = () => {
         {/* Navigation Arrow */}
         <div
           className="section-arrow cursor-pointer"
-          style={{ position: 'absolute', left: '50%', transform: 'translate(-50%, calc(50% + 40px))', bottom: '10%' }}
+          style={{
+            position: 'absolute',
+            left: '50%',
+            transform: 'translate(-50%, calc(50% + 40px))',
+            bottom: '10%',
+          }}
           onClick={() =>
             document.getElementById('calculator-section')?.scrollIntoView({ behavior: 'smooth' })
           }

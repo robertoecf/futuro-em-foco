@@ -1,4 +1,4 @@
-import { Button } from '@/components/ui/button';
+import { Button } from './ui/button';
 interface HeroSectionProps {
   onReceivePlan?: () => void;
 }
@@ -13,7 +13,11 @@ export const HeroSection = ({ onReceivePlan: _onReceivePlan }: HeroSectionProps)
       className="aurora-banner text-white p-8 sm:p-12 md:p-12 lg:p-12 xl:p-14 rounded-3xl relative overflow-hidden dark:shadow-none shadow-2xl"
       style={{
         width: '100%',
-        display: 'block',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        margin: 'clamp(24px, 8vh, 80px) 0',
+        minHeight: '80vh',
       }}
     >
       {/* Aurora Background */}
@@ -30,7 +34,7 @@ export const HeroSection = ({ onReceivePlan: _onReceivePlan }: HeroSectionProps)
       </div>
 
       {/* Content */}
-      <div className="relative z-10 text-center">
+      <div className="relative z-10 text-center" style={{ marginTop: '60px' }}>
         <h1 className="text-3xl sm:text-4xl md:text-4xl xl:text-5xl font-bold mb-4 leading-tight lg:text-5xl">
           Quer garantir sua aposentadoria tranquila?
         </h1>

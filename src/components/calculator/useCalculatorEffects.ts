@@ -153,8 +153,8 @@ export const useCalculatorEffects = ({
           console.log('✅ MONTE CARLO FINALIZADO - dados prontos para animação');
           setMonteCarloResult(convertedResults);
           setIsCalculating(false);
-        } catch (error) {
-          console.error('❌ Optimized Monte Carlo calculation failed:', error);
+        } catch (_error) {
+          console.error('❌ Optimized Monte Carlo calculation failed:', _error);
           setIsCalculating(false);
           setMonteCarloResult(null);
         }

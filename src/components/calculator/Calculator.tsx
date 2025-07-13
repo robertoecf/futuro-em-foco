@@ -83,7 +83,10 @@ export function Calculator() {
       <div
         className={`transition-all duration-300 ${isMagicMomentActive ? 'invisible pointer-events-none' : 'visible'} mt-7`}
       >
-        <InvestorProfiles onProfileSelect={handleInvestorProfileChange} selectedProfile={investorProfile} />
+        <InvestorProfiles
+          onProfileSelect={handleInvestorProfileChange}
+          selectedProfile={investorProfile}
+        />
       </div>
       <div
         className={`mb-12 transition-all duration-300 ${isMagicMomentActive ? 'invisible pointer-events-none' : 'visible'}`}

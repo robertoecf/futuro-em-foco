@@ -61,7 +61,7 @@
   border: 2px solid transparent;
   border-radius: 16px;
   background-clip: padding-box;
-  box-shadow: 
+  box-shadow:
     0 0 20px rgba(255, 255, 255, 0.06),
     0 0 40px rgba(255, 255, 255, 0.03),
     inset 0 1px 0 rgba(255, 255, 255, 0.15);
@@ -77,7 +77,9 @@
   padding: 2px;
   background: var(--tech-gradient-glass);
   border-radius: inherit;
-  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
   mask-composite: exclude;
   -webkit-mask-composite: xor;
 }
@@ -141,18 +143,13 @@
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 165, 0, 0.1),
-    transparent
-  );
+  background: linear-gradient(90deg, transparent, rgba(255, 165, 0, 0.1), transparent);
   transition: left 0.6s ease;
 }
 
 .investor-card:hover {
   transform: translateY(-8px) scale(1.02);
-  box-shadow: 
+  box-shadow:
     0 20px 40px rgba(0, 0, 0, 0.3),
     0 10px 20px rgba(255, 165, 0, 0.2),
     0 0 30px rgba(255, 165, 0, 0.1);
@@ -165,7 +162,7 @@
 
 .investor-card.active {
   border-width: 2px;
-  box-shadow: 
+  box-shadow:
     0 12px 24px rgba(0, 0, 0, 0.1),
     inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
@@ -228,7 +225,7 @@
 .glass-input:focus {
   outline: none;
   border-color: rgba(228, 130, 0, 0.5);
-  box-shadow: 
+  box-shadow:
     0 0 0 3px rgba(228, 130, 0, 0.1),
     0 4px 12px rgba(228, 130, 0, 0.2);
 }
@@ -323,12 +320,7 @@ html {
 /* Section Spacing */
 .section-divider {
   height: 1px;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.1),
-    transparent
-  );
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
   margin: 2rem 0;
 }
 
@@ -353,83 +345,104 @@ html {
 }
 
 /* Cores e posições dos focos de luz - 12 pontos sincronizados com 6 cores vibrantes */
-.aurora-dot:nth-child(1) { 
-  background: #4A90E2 !important; /* Azul */
-  top: 18px !important; left: 50% !important; margin-left: -7px !important;
+.aurora-dot:nth-child(1) {
+  background: #4a90e2 !important; /* Azul */
+  top: 18px !important;
+  left: 50% !important;
+  margin-left: -7px !important;
 }
-.aurora-dot:nth-child(2) { 
-  background: #50C878 !important; /* Verde */
-  top: 22px !important; right: 22px !important;
+.aurora-dot:nth-child(2) {
+  background: #50c878 !important; /* Verde */
+  top: 22px !important;
+  right: 22px !important;
 }
-.aurora-dot:nth-child(3) { 
-  background: #FF8C00 !important; /* Laranja */
-  top: 35px !important; right: 12px !important;
+.aurora-dot:nth-child(3) {
+  background: #ff8c00 !important; /* Laranja */
+  top: 35px !important;
+  right: 12px !important;
 }
-.aurora-dot:nth-child(4) { 
-  background: #FF4444 !important; /* Vermelho */
-  top: 50% !important; right: 18px !important; margin-top: -7px !important;
+.aurora-dot:nth-child(4) {
+  background: #ff4444 !important; /* Vermelho */
+  top: 50% !important;
+  right: 18px !important;
+  margin-top: -7px !important;
 }
-.aurora-dot:nth-child(5) { 
-  background: #9B59B6 !important; /* Roxo */
-  bottom: 35px !important; right: 12px !important;
+.aurora-dot:nth-child(5) {
+  background: #9b59b6 !important; /* Roxo */
+  bottom: 35px !important;
+  right: 12px !important;
 }
-.aurora-dot:nth-child(6) { 
-  background: #FFD700 !important; /* Dourado */
-  bottom: 22px !important; right: 22px !important;
+.aurora-dot:nth-child(6) {
+  background: #ffd700 !important; /* Dourado */
+  bottom: 22px !important;
+  right: 22px !important;
 }
-.aurora-dot:nth-child(7) { 
-  background: #4A90E2 !important; /* Azul */
-  bottom: 18px !important; left: 50% !important; margin-left: -7px !important;
+.aurora-dot:nth-child(7) {
+  background: #4a90e2 !important; /* Azul */
+  bottom: 18px !important;
+  left: 50% !important;
+  margin-left: -7px !important;
 }
-.aurora-dot:nth-child(8) { 
-  background: #50C878 !important; /* Verde */
-  bottom: 22px !important; left: 22px !important;
+.aurora-dot:nth-child(8) {
+  background: #50c878 !important; /* Verde */
+  bottom: 22px !important;
+  left: 22px !important;
 }
-.aurora-dot:nth-child(9) { 
-  background: #FF8C00 !important; /* Laranja */
-  bottom: 35px !important; left: 12px !important;
+.aurora-dot:nth-child(9) {
+  background: #ff8c00 !important; /* Laranja */
+  bottom: 35px !important;
+  left: 12px !important;
 }
-.aurora-dot:nth-child(10) { 
-  background: #FF4444 !important; /* Vermelho */
-  top: 50% !important; left: 18px !important; margin-top: -7px !important;
+.aurora-dot:nth-child(10) {
+  background: #ff4444 !important; /* Vermelho */
+  top: 50% !important;
+  left: 18px !important;
+  margin-top: -7px !important;
 }
-.aurora-dot:nth-child(11) { 
-  background: #9B59B6 !important; /* Roxo */
-  top: 35px !important; left: 12px !important;
+.aurora-dot:nth-child(11) {
+  background: #9b59b6 !important; /* Roxo */
+  top: 35px !important;
+  left: 12px !important;
 }
-.aurora-dot:nth-child(12) { 
-  background: #FFD700 !important; /* Dourado */
-  top: 22px !important; left: 22px !important;
+.aurora-dot:nth-child(12) {
+  background: #ffd700 !important; /* Dourado */
+  top: 22px !important;
+  left: 22px !important;
 }
 
 /* Animação sincronizada - todas as bolinhas brilham juntas até 100% */
 @keyframes aurora-sync-pulse {
-  0% { 
-    opacity: 0.3 !important; 
+  0% {
+    opacity: 0.3 !important;
     transform: scale(1) !important;
-    box-shadow: 0 0 8px currentColor !important; 
+    box-shadow: 0 0 8px currentColor !important;
   }
-  
-  50% { /* Todas brilham até 100% juntas */
-    opacity: 1 !important; 
+
+  50% {
+    /* Todas brilham até 100% juntas */
+    opacity: 1 !important;
     transform: scale(1.4) !important;
-    box-shadow: 0 0 30px currentColor, 0 0 60px currentColor, 0 0 90px currentColor !important; 
+    box-shadow:
+      0 0 30px currentColor,
+      0 0 60px currentColor,
+      0 0 90px currentColor !important;
   }
-  
-  100% { 
-    opacity: 0.3 !important; 
+
+  100% {
+    opacity: 0.3 !important;
     transform: scale(1) !important;
-    box-shadow: 0 0 8px currentColor !important; 
+    box-shadow: 0 0 8px currentColor !important;
   }
 }
 
 /* Animação do texto que pulsa sincronizado com as bolinhas */
 @keyframes text-sync-pulse {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 0.8 !important;
     transform: scale(1) !important;
   }
-  
+
   50% {
     opacity: 1 !important;
     transform: scale(1.03) !important;
@@ -489,7 +502,7 @@ html {
 .dark .glass-input:focus {
   outline: none !important;
   border-color: rgba(228, 130, 0, 0.5) !important;
-  box-shadow: 
+  box-shadow:
     0 0 0 3px rgba(228, 130, 0, 0.1),
     0 4px 12px rgba(228, 130, 0, 0.2) !important;
   ring: none !important;
@@ -506,7 +519,7 @@ html {
   margin: 0 !important;
 }
 
-.glass-input[type=number] {
+.glass-input[type='number'] {
   -moz-appearance: textfield !important;
 }
 
@@ -601,37 +614,37 @@ html {
 
 /* Botões - Modo Claro */
 :not(.dark) .tech-button-primary {
-  box-shadow: 
+  box-shadow:
     0 4px 16px rgba(0, 0, 0, 0.1),
     inset 0 1px 0 rgba(0, 0, 0, 0.1);
 }
 
 :not(.dark) .tech-button-primary:hover {
-  box-shadow: 
+  box-shadow:
     0 8px 32px rgba(0, 0, 0, 0.15),
     inset 0 1px 0 rgba(0, 0, 0, 0.15);
 }
 
 :not(.dark) .tech-button-monte-carlo {
-  box-shadow: 
+  box-shadow:
     0 3px 10px rgba(0, 0, 0, 0.1),
     inset 0 1px 0 rgba(0, 0, 0, 0.05);
 }
 
 :not(.dark) .tech-button-monte-carlo:hover {
-  box-shadow: 
+  box-shadow:
     0 6px 16px rgba(0, 0, 0, 0.125),
     inset 0 1px 0 rgba(0, 0, 0, 0.075);
 }
 
 :not(.dark) .tech-button-secondary {
-  box-shadow: 
+  box-shadow:
     0 2px 8px rgba(0, 0, 0, 0.1),
     inset 0 1px 0 rgba(0, 0, 0, 0.05);
 }
 
 :not(.dark) .tech-button-specialist {
-  box-shadow: 
+  box-shadow:
     0 0 20px rgba(0, 0, 0, 0.025),
     0 0 40px rgba(0, 0, 0, 0.01),
     0 4px 16px rgba(0, 0, 0, 0.2),
@@ -639,7 +652,7 @@ html {
 }
 
 :not(.dark) .tech-button-specialist:hover {
-  box-shadow: 
+  box-shadow:
     0 0 30px rgba(0, 0, 0, 0.04),
     0 0 60px rgba(0, 0, 0, 0.025),
     0 8px 32px rgba(0, 0, 0, 0.3),
@@ -647,46 +660,36 @@ html {
 }
 
 :not(.dark) .tech-button-header {
-  box-shadow: 
+  box-shadow:
     0 2px 8px rgba(0, 0, 0, 0.1),
     inset 0 1px 0 rgba(0, 0, 0, 0.1);
 }
 
 :not(.dark) .tech-logo-header:hover {
-  text-shadow: 
+  text-shadow:
     0 2px 8px rgba(0, 0, 0, 0.2),
     0 4px 16px rgba(0, 0, 0, 0.1);
 }
 
 /* Efeitos de shimmer - Modo Claro */
 :not(.dark) .tech-button-specialist::before {
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(0, 0, 0, 0.15),
-    transparent
-  );
+  background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.15), transparent);
 }
 
 :not(.dark) .tech-logo-header::before {
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(0, 0, 0, 0.3),
-    transparent
-  );
+  background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.3), transparent);
 }
 
 /* Cards e containers glass - Sombras para Modo Claro */
 .glass-card {
-  box-shadow: 
+  box-shadow:
     0 12px 42px rgba(0, 0, 0, 0.025),
     0 2px 8px rgba(0, 0, 0, 0.05),
     inset 0 1px 0 rgba(0, 0, 0, 0.05);
 }
 
 :not(.dark) .tech-card {
-  box-shadow: 
+  box-shadow:
     0 4px 20px rgba(0, 0, 0, 0.02),
     0 2px 8px rgba(0, 0, 0, 0.05),
     inset 0 1px 0 rgba(0, 0, 0, 0.02);
@@ -737,7 +740,7 @@ html {
 .glass-input:focus {
   outline: none !important;
   border-color: rgba(228, 130, 0, 0.5) !important;
-  box-shadow: 
+  box-shadow:
     0 0 0 3px rgba(228, 130, 0, 0.1),
     0 4px 12px rgba(228, 130, 0, 0.2) !important;
   ring: none !important;
@@ -749,32 +752,32 @@ html {
 
 /* Sombras para cards específicos - Light mode */
 .investor-card {
-  box-shadow: 
+  box-shadow:
     0 4px 16px rgba(0, 0, 0, 0.05),
     inset 0 1px 0 rgba(0, 0, 0, 0.02);
 }
 
 .investor-card:hover {
-  box-shadow: 
+  box-shadow:
     0 12px 24px rgba(0, 0, 0, 0.08),
     inset 0 1px 0 rgba(0, 0, 0, 0.05);
 }
 
 .investor-card.active {
-  box-shadow: 
+  box-shadow:
     0 12px 24px rgba(228, 130, 0, 0.15),
     inset 0 1px 0 rgba(0, 0, 0, 0.08);
 }
 
 .insight-card {
-  box-shadow: 
+  box-shadow:
     0 6px 20px rgba(0, 0, 0, 0.02),
     0 2px 8px rgba(0, 0, 0, 0.04),
     inset 0 1px 0 rgba(0, 0, 0, 0.02);
 }
 
 .chart-info-card {
-  box-shadow: 
+  box-shadow:
     0 4px 16px rgba(0, 0, 0, 0.02),
     0 2px 6px rgba(0, 0, 0, 0.04),
     inset 0 1px 0 rgba(0, 0, 0, 0.02);
@@ -805,13 +808,15 @@ html {
 #hero-banner h1,
 #cta-banner h1,
 .aurora-banner .text-white,
-.aurora-banner h1, .aurora-banner h2, .aurora-banner h3,
+.aurora-banner h1,
+.aurora-banner h2,
+.aurora-banner h3,
 .tech-button-specialist-cta {
-  color: #FEFFFB !important;
+  color: #fefffb !important;
 }
 
 .aurora-banner p {
-  color: #FEFFFB !important;
+  color: #fefffb !important;
   opacity: 0.9;
 }
 
@@ -823,13 +828,17 @@ html {
 }
 
 .tech-button-specialist-cta {
-  color: #FEFFFB !important;
+  color: #fefffb !important;
 }
 
 .tech-button-monte-carlo {
-  color: #FEFFFB !important;
+  color: #fefffb !important;
 }
 
 :not(.dark) .investor-card.active {
   /* background: var(--card); */ /* Removido para dar lugar aos gradientes por perfil */
+}
+
+.dark .glass-header {
+  background: rgba(0,0,0,0.2) !important;
 }

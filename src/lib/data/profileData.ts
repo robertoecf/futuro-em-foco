@@ -41,4 +41,4 @@ export const profiles: readonly ProfileData[] = [
     volatility: 9, // 9%
     maxLoss: -25,
   },
-] as const; 
+] as const;

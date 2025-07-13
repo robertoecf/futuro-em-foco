@@ -88,8 +88,8 @@ export const usePlanningData = () => {
   const loadPlanningData = (planId: string): PlanningData | null => {
     try {
       return secureStorage.get(`planning_${planId}`);
-    } catch (error) {
-      console.error('Error loading planning data:', error);
+    } catch (_error) {
+      console.error('Error loading planning data:', _error);
       return null;
     }
   };
@@ -156,8 +156,8 @@ export const usePlanningData = () => {
       const directUrl = generateDirectUrl(planningInputs);
       await navigator.clipboard.writeText(directUrl);
       return true;
-    } catch (error) {
-      console.error('Erro ao copiar link:', error);
+    } catch (_error) {
+      console.error('Erro ao copiar link:', _error);
       return false;
     }
   };

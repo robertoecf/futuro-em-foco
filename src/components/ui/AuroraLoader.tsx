@@ -46,10 +46,7 @@ const getDotStyle = (index: number): React.CSSProperties => {
 
 const AuroraLoader = () => {
   return (
-    <div
-      className="relative w-20 h-20 mx-auto"
-      aria-label="Carregando animação"
-    >
+    <div className="relative w-20 h-20 mx-auto" aria-label="Carregando animação">
       {Array.from({ length: 12 }).map((_, i) => (
         <motion.div
           key={i}
@@ -63,4 +60,4 @@ const AuroraLoader = () => {
   );
 };
 
-export default AuroraLoader; 
+export default AuroraLoader;

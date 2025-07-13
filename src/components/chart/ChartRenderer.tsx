@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   ComposedChart,
   Line,
@@ -54,9 +54,7 @@ export const ChartRenderer = React.memo(
 
     useEffect(() => {
       const observer = new MutationObserver(() => {
-        setLabelColor(
-          document.documentElement.classList.contains('dark') ? '#FEFFFB' : '#111827'
-        );
+        setLabelColor(document.documentElement.classList.contains('dark') ? '#FEFFFB' : '#111827');
       });
 
       observer.observe(document.documentElement, {
@@ -65,9 +63,7 @@ export const ChartRenderer = React.memo(
       });
 
       // Set initial color
-      setLabelColor(
-        document.documentElement.classList.contains('dark') ? '#FEFFFB' : '#111827'
-      );
+      setLabelColor(document.documentElement.classList.contains('dark') ? '#FEFFFB' : '#111827');
 
       return () => observer.disconnect();
     }, []);
@@ -271,7 +267,8 @@ export const ChartRenderer = React.memo(
               )}
 
               {/* Monte Carlo Animation Lines - Scene 2: Show ALL 1001 lines */}
-              {monteCarloData && isShowingLines && 
+              {monteCarloData &&
+                isShowingLines &&
                 Array.from({ length: MONTE_CARLO_EXHIBITION_LINES }, (_, lineIndex) => (
                   <Line
                     key={`monte-carlo-exhibition-line-${lineIndex}`}

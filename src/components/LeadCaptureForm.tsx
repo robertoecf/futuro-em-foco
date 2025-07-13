@@ -184,7 +184,7 @@ export const LeadCaptureForm = ({
               type="button"
               variant="outline"
               onClick={onClose}
-                              className="flex-1 bg-transparent border border-white/10 text-white hover:bg-white/5 hover:scale-105 transition-all"
+              className="flex-1 bg-transparent border border-white/10 text-white hover:bg-white/5 hover:scale-105 transition-all"
             >
               Desistir
             </Button>

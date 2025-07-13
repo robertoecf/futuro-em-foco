@@ -2,10 +2,10 @@ import { useEffect, useRef, useCallback, useMemo } from 'react';
 import { MonteCarloResult } from '@/lib/utils';
 
 // Monte Carlo configuration
-const MONTE_CARLO_ALL_LINES = 1001; // Total scenarios to calculate
+const _MONTE_CARLO_ALL_LINES = 1001; // Total scenarios to calculate
 
 // Approximation of inverse normal CDF for percentile mapping
-function approximateInverseNormal(p: number): number {
+function _approximateInverseNormal(p: number): number {
   // Clamp percentile to valid range
   p = Math.max(0.0001, Math.min(0.9999, p));
 
@@ -91,7 +91,7 @@ export const useChartDataProcessor = ({
     const baseData = monteCarloData.scenarios.median;
 
     // Generate 1001 varied paths using realistic statistical distribution
-    for (let lineIndex = 0; lineIndex < MONTE_CARLO_ALL_LINES; lineIndex++) {
+    for (let lineIndex = 0; lineIndex < _MONTE_CARLO_ALL_LINES; lineIndex++) {
       const lineData = baseData.map((value, dataIndex) => {
         const pessimistic = monteCarloData.scenarios.pessimistic[dataIndex] || value;
         const median = monteCarloData.scenarios.median[dataIndex] || value;
@@ -101,10 +101,10 @@ export const useChartDataProcessor = ({
         // Note: Box-Muller transform variables not needed for percentile-based approach
 
         // Map line index to percentile (0 to 1)
-        const percentile = lineIndex / (MONTE_CARLO_ALL_LINES - 1);
+        const percentile = lineIndex / (_MONTE_CARLO_ALL_LINES - 1);
 
         // Use inverse normal CDF approximation to map percentile to standard normal
-        const normalValue = approximateInverseNormal(percentile);
+        const normalValue = _approximateInverseNormal(percentile);
 
         // Estimate standard deviation from percentiles
         // P25 ≈ median - 0.674σ, P75 ≈ median + 0.674σ
@@ -129,7 +129,7 @@ export const useChartDataProcessor = ({
   useEffect(() => {
     const lines = generateMonteCarloLines();
     monteCarloLinesRef.current = lines;
-    
+
     // Debug: Check if we have all paths
     if (lines.length > 0) {
       console.log(`📊 Monte Carlo lines generated: ${lines.length} paths`);

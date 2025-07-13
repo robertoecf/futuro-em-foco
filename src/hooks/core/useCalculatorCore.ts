@@ -1,26 +1,27 @@
 import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
 import { useDebounce } from '@/hooks';
-import {
-  calculateFullProjection,
-  getVolatilityByProfile,
-  type MonteCarloResult,
-} from '@/lib/utils';
-import { runCombinedMonteCarloSimulation } from '@/lib/gbm/combinedModel';
-import type { CalculationResult, SharedPlanData } from '@/features/portfolio-planning/components/types';
+import { type MonteCarloResult } from '@/lib/utils';
+import type {
+  CalculationResult,
+  SharedPlanData,
+} from '@/features/portfolio-planning/components/types';
 import type { InvestorProfile } from '@/types/core/calculator';
 import { DEFAULT_VALUES, STORAGE_KEYS } from '@/features/portfolio-planning/components/constants';
-import { loadFromStorage, loadFromSharedPlan, saveToStorage } from '@/features/portfolio-planning/components/storageUtils';
+import {
+  loadFromStorage,
+  loadFromSharedPlan,
+  saveToStorage,
+} from '@/features/portfolio-planning/components/storageUtils';
 import { getAccumulationAnnualReturn } from '@/features/portfolio-planning/components/insights/insightsCalculations';
-import type { PlanningData } from '@/hooks';
 // Importar função de projeção
 import { calculateYearlyProjection } from '@/lib/calculations/financialCalculations';
 
 // Import domain services
-import { 
-  financialCalculationService, 
+import {
+  financialCalculationService,
   monteCarloSimulationService,
   planningDataRepository,
-  Money 
+  Money,
 } from '@/domain/services';
 
 interface UseCalculatorCoreProps {
@@ -32,31 +33,34 @@ interface UseCalculatorCoreProps {
  * Consolidated calculator core hook that manages all calculator state, handlers, and effects
  * Optimized for performance with proper memoization and debouncing
  */
-export const useCalculatorCore = ({ 
-  crisisFrequency = 0.1, 
-  crisisMeanImpact = -0.15 
+export const useCalculatorCore = ({
+  crisisFrequency = 0.1,
+  crisisMeanImpact = -0.15,
 }: UseCalculatorCoreProps = {}) => {
   // Try to load from shared plan first
   const sharedPlanData = loadFromSharedPlan();
-  
+
   // Cleanup tracking
   const timeoutsRef = useRef<ReturnType<typeof setTimeout>[]>([]);
   const abortControllerRef = useRef<AbortController | null>(null);
 
-  const getValueOrDefault = useCallback(<T extends string | number | InvestorProfile>(
-    key: keyof SharedPlanData,
-    defaultValue: T
-  ): T => {
-    // First priority: shared data from URL
-    if (sharedPlanData) {
-      const sharedValue = sharedPlanData[key];
-      if (sharedValue !== undefined && sharedValue !== null) {
-        return sharedValue as T;
+  const getValueOrDefault = useCallback(
+    <T extends string | number | InvestorProfile>(
+      key: keyof SharedPlanData,
+      defaultValue: T
+    ): T => {
+      // First priority: shared data from URL
+      if (sharedPlanData) {
+        const sharedValue = sharedPlanData[key];
+        if (sharedValue !== undefined && sharedValue !== null) {
+          return sharedValue as T;
+        }
       }
-    }
-    // Second priority: local storage
-    return loadFromStorage(key, defaultValue);
-  }, [sharedPlanData]);
+      // Second priority: local storage
+      return loadFromStorage(key, defaultValue);
+    },
+    [sharedPlanData]
+  );
 
   // Core state - optimized initialization
   const [state, setState] = useState(() => ({
@@ -68,16 +72,19 @@ export const useCalculatorCore = ({
     lifeExpectancy: getValueOrDefault('lifeExpectancy', DEFAULT_VALUES.LIFE_EXPECTANCY),
     retirementIncome: getValueOrDefault('retirementIncome', DEFAULT_VALUES.RETIREMENT_INCOME),
     portfolioReturn: getValueOrDefault('portfolioReturn', DEFAULT_VALUES.PORTFOLIO_RETURN),
-    investorProfile: getValueOrDefault('investorProfile', DEFAULT_VALUES.INVESTOR_PROFILE) as InvestorProfile,
-    
+    investorProfile: getValueOrDefault(
+      'investorProfile',
+      DEFAULT_VALUES.INVESTOR_PROFILE
+    ) as InvestorProfile,
+
     // Calculation results
     calculationResult: null as CalculationResult | null,
-    
+
     // Monte Carlo states
     isMonteCarloEnabled: false,
     monteCarloResult: null as MonteCarloResult | null,
     isCalculating: false,
-    
+
     // Crisis parameters
     crisisFrequency,
     crisisMeanImpact,
@@ -87,19 +94,27 @@ export const useCalculatorCore = ({
   const debouncedInitialAmount = useDebounce(state.initialAmount, 300);
   const debouncedMonthlyAmount = useDebounce(state.monthlyAmount, 300);
   const debouncedRetirementIncome = useDebounce(state.retirementIncome, 300);
-  const debouncedPortfolioReturn = useDebounce(state.portfolioReturn, 300);
 
   // Derived values - properly memoized
-  const derivedValues = useMemo(() => ({
-    accumulationYears: state.retirementAge - state.currentAge,
-    retirementYears: state.lifeExpectancy - state.retirementAge,
-    accumulationAnnualReturn: getAccumulationAnnualReturn(state.investorProfile),
-    retirementAnnualReturn: state.portfolioReturn / 100,
-  }), [state.retirementAge, state.currentAge, state.lifeExpectancy, state.investorProfile, state.portfolioReturn]);
+  const derivedValues = useMemo(
+    () => ({
+      accumulationYears: state.retirementAge - state.currentAge,
+      retirementYears: state.lifeExpectancy - state.retirementAge,
+      accumulationAnnualReturn: getAccumulationAnnualReturn(state.investorProfile),
+      retirementAnnualReturn: state.portfolioReturn / 100,
+    }),
+    [
+      state.retirementAge,
+      state.currentAge,
+      state.lifeExpectancy,
+      state.investorProfile,
+      state.portfolioReturn,
+    ]
+  );
 
   // Cleanup utility
   const clearAllTimeouts = useCallback(() => {
-    timeoutsRef.current.forEach(timeout => clearTimeout(timeout));
+    timeoutsRef.current.forEach((timeout) => clearTimeout(timeout));
     timeoutsRef.current = [];
     if (abortControllerRef.current) {
       abortControllerRef.current.abort();
@@ -109,7 +124,7 @@ export const useCalculatorCore = ({
 
   // Optimized state update helper
   const updateState = useCallback((updates: Partial<typeof state>) => {
-    setState(prev => ({ ...prev, ...updates }));
+    setState((prev) => ({ ...prev, ...updates }));
   }, []);
 
   // Monte Carlo state reset helper
@@ -121,7 +136,7 @@ export const useCalculatorCore = ({
       monteCarloResult: null,
     });
     saveToStorage(STORAGE_KEYS.MONTE_CARLO_ENABLED, false);
-    
+
     // Abort any ongoing calculation
     if (abortControllerRef.current) {
       abortControllerRef.current.abort();
@@ -132,115 +147,146 @@ export const useCalculatorCore = ({
   // Optimized handlers with proper memoization
   const handlers = {
     // Monte Carlo toggle
-    handleMonteCarloToggle: useCallback((enabled: boolean) => {
-  
-      
-      updateState({ isMonteCarloEnabled: enabled });
-      saveToStorage(STORAGE_KEYS.MONTE_CARLO_ENABLED, enabled);
+    handleMonteCarloToggle: useCallback(
+      (enabled: boolean) => {
+        updateState({ isMonteCarloEnabled: enabled });
+        saveToStorage(STORAGE_KEYS.MONTE_CARLO_ENABLED, enabled);
 
-      if (!enabled) {
-        // CORREÇÃO: Garantir que todos os estados sejam limpos quando desabilitar
-        updateState({ 
-          isCalculating: false, 
-          monteCarloResult: null 
-        });
-        
-        // Abort any ongoing calculation
-        if (abortControllerRef.current) {
-          abortControllerRef.current.abort();
-          abortControllerRef.current = null;
+        if (!enabled) {
+          // CORREÇÃO: Garantir que todos os estados sejam limpos quando desabilitar
+          updateState({
+            isCalculating: false,
+            monteCarloResult: null,
+          });
+
+          // Abort any ongoing calculation
+          if (abortControllerRef.current) {
+            abortControllerRef.current.abort();
+            abortControllerRef.current = null;
+          }
+        } else {
+          // CORREÇÃO: Garantir que o estado seja configurado corretamente quando habilitar
+          updateState({ isCalculating: true });
         }
-      } else {
-        // CORREÇÃO: Garantir que o estado seja configurado corretamente quando habilitar
-        updateState({ isCalculating: true });
-      }
-    }, [state.isMonteCarloEnabled, updateState]),
+      },
+      [updateState]
+    ),
 
     // Input handlers with validation and storage
-    handleInitialAmountBlur: useCallback((value: string) => {
-      const numericValue = parseFloat(value.replace(/\D/g, ''));
-      const finalValue = isNaN(numericValue) ? 0 : numericValue;
-      updateState({ initialAmount: finalValue });
-      saveToStorage(STORAGE_KEYS.INITIAL_AMOUNT, finalValue);
-      resetMonteCarloState();
-    }, [updateState, resetMonteCarloState]),
+    handleInitialAmountBlur: useCallback(
+      (value: string) => {
+        const numericValue = parseFloat(value.replace(/\D/g, ''));
+        const finalValue = isNaN(numericValue) ? 0 : numericValue;
+        updateState({ initialAmount: finalValue });
+        saveToStorage(STORAGE_KEYS.INITIAL_AMOUNT, finalValue);
+        resetMonteCarloState();
+      },
+      [updateState, resetMonteCarloState]
+    ),
 
-    handleMonthlyAmountBlur: useCallback((value: string) => {
-      const numericValue = parseFloat(value.replace(/\D/g, ''));
-      const finalValue = isNaN(numericValue) ? 0 : numericValue;
-      updateState({ monthlyAmount: finalValue });
-      saveToStorage(STORAGE_KEYS.MONTHLY_AMOUNT, finalValue);
-      resetMonteCarloState();
-    }, [updateState, resetMonteCarloState]),
+    handleMonthlyAmountBlur: useCallback(
+      (value: string) => {
+        const numericValue = parseFloat(value.replace(/\D/g, ''));
+        const finalValue = isNaN(numericValue) ? 0 : numericValue;
+        updateState({ monthlyAmount: finalValue });
+        saveToStorage(STORAGE_KEYS.MONTHLY_AMOUNT, finalValue);
+        resetMonteCarloState();
+      },
+      [updateState, resetMonteCarloState]
+    ),
 
-    handleCurrentAgeBlur: useCallback((value: string) => {
-      const numericValue = parseInt(value);
-      if (!isNaN(numericValue) && numericValue > 0) {
-        const updates: Partial<typeof state> = { currentAge: numericValue };
-        
-        // Auto-adjust retirement age if needed
-        if (state.retirementAge <= numericValue) {
-          const newRetirementAge = numericValue + 1;
-          updates.retirementAge = newRetirementAge;
-          saveToStorage(STORAGE_KEYS.RETIREMENT_AGE, newRetirementAge);
+    handleCurrentAgeBlur: useCallback(
+      (value: string) => {
+        const numericValue = parseInt(value);
+        if (!isNaN(numericValue) && numericValue > 0) {
+          const updates: Partial<typeof state> = { currentAge: numericValue };
+
+          // Auto-adjust retirement age if needed
+          if (state.retirementAge <= numericValue) {
+            const newRetirementAge = numericValue + 1;
+            updates.retirementAge = newRetirementAge;
+            saveToStorage(STORAGE_KEYS.RETIREMENT_AGE, newRetirementAge);
+          }
+
+          updateState(updates);
+          saveToStorage(STORAGE_KEYS.CURRENT_AGE, numericValue);
+          resetMonteCarloState();
         }
-        
-        updateState(updates);
-        saveToStorage(STORAGE_KEYS.CURRENT_AGE, numericValue);
+      },
+      [state.retirementAge, updateState, resetMonteCarloState]
+    ),
+
+    handleRetirementAgeBlur: useCallback(
+      (value: string) => {
+        const numericValue = parseInt(value);
+        if (!isNaN(numericValue) && numericValue > state.currentAge) {
+          updateState({ retirementAge: numericValue });
+          saveToStorage(STORAGE_KEYS.RETIREMENT_AGE, numericValue);
+          resetMonteCarloState();
+        }
+      },
+      [state.currentAge, updateState, resetMonteCarloState]
+    ),
+
+    handleLifeExpectancyChange: useCallback(
+      (value: number) => {
+        updateState({ lifeExpectancy: value });
+        saveToStorage(STORAGE_KEYS.LIFE_EXPECTANCY, value);
         resetMonteCarloState();
-      }
-    }, [state.retirementAge, updateState, resetMonteCarloState]),
+      },
+      [updateState, resetMonteCarloState]
+    ),
 
-    handleRetirementAgeBlur: useCallback((value: string) => {
-      const numericValue = parseInt(value);
-      if (!isNaN(numericValue) && numericValue > state.currentAge) {
-        updateState({ retirementAge: numericValue });
-        saveToStorage(STORAGE_KEYS.RETIREMENT_AGE, numericValue);
+    handleRetirementIncomeBlur: useCallback(
+      (value: string) => {
+        const numericValue = parseFloat(value.replace(/\D/g, ''));
+        const finalValue = isNaN(numericValue) ? 0 : numericValue;
+        updateState({ retirementIncome: finalValue });
+        saveToStorage(STORAGE_KEYS.RETIREMENT_INCOME, finalValue);
         resetMonteCarloState();
-      }
-    }, [state.currentAge, updateState, resetMonteCarloState]),
+      },
+      [updateState, resetMonteCarloState]
+    ),
 
-    handleLifeExpectancyChange: useCallback((value: number) => {
-      updateState({ lifeExpectancy: value });
-      saveToStorage(STORAGE_KEYS.LIFE_EXPECTANCY, value);
-      resetMonteCarloState();
-    }, [updateState, resetMonteCarloState]),
+    handlePortfolioReturnBlur: useCallback(
+      (value: string) => {
+        const numericValue = parseFloat(value);
+        if (!isNaN(numericValue) && numericValue > 0) {
+          updateState({ portfolioReturn: numericValue });
+          saveToStorage(STORAGE_KEYS.PORTFOLIO_RETURN, numericValue);
+          resetMonteCarloState();
+        }
+      },
+      [updateState, resetMonteCarloState]
+    ),
 
-    handleRetirementIncomeBlur: useCallback((value: string) => {
-      const numericValue = parseFloat(value.replace(/\D/g, ''));
-      const finalValue = isNaN(numericValue) ? 0 : numericValue;
-      updateState({ retirementIncome: finalValue });
-      saveToStorage(STORAGE_KEYS.RETIREMENT_INCOME, finalValue);
-      resetMonteCarloState();
-    }, [updateState, resetMonteCarloState]),
-
-    handlePortfolioReturnBlur: useCallback((value: string) => {
-      const numericValue = parseFloat(value);
-      if (!isNaN(numericValue) && numericValue > 0) {
-        updateState({ portfolioReturn: numericValue });
-        saveToStorage(STORAGE_KEYS.PORTFOLIO_RETURN, numericValue);
+    handleInvestorProfileChange: useCallback(
+      (profile: InvestorProfile) => {
+        updateState({ investorProfile: profile });
+        saveToStorage(STORAGE_KEYS.INVESTOR_PROFILE, profile);
         resetMonteCarloState();
-      }
-    }, [updateState, resetMonteCarloState]),
-
-    handleInvestorProfileChange: useCallback((profile: InvestorProfile) => {
-      updateState({ investorProfile: profile });
-      saveToStorage(STORAGE_KEYS.INVESTOR_PROFILE, profile);
-      resetMonteCarloState();
-    }, [updateState, resetMonteCarloState]),
+      },
+      [updateState, resetMonteCarloState]
+    ),
 
     finishCalculation: useCallback(() => {
       updateState({ isCalculating: false });
     }, [updateState]),
 
     // Crisis parameter handlers
-    setCrisisFrequency: useCallback((frequency: number) => {
-      updateState({ crisisFrequency: frequency });
-    }, [updateState]),
+    setCrisisFrequency: useCallback(
+      (frequency: number) => {
+        updateState({ crisisFrequency: frequency });
+      },
+      [updateState]
+    ),
 
-    setCrisisMeanImpact: useCallback((impact: number) => {
-      updateState({ crisisMeanImpact: impact });
-    }, [updateState]),
+    setCrisisMeanImpact: useCallback(
+      (impact: number) => {
+        updateState({ crisisMeanImpact: impact });
+      },
+      [updateState]
+    ),
   };
 
   // Optimized calculation function with domain service integration
@@ -268,7 +314,7 @@ export const useCalculatorCore = ({
         monthlyContribution,
         annualReturnRate: derivedValues.accumulationAnnualReturn,
         timeHorizonYears: derivedValues.accumulationYears,
-        inflationRate: 0.04
+        inflationRate: 0.04,
       });
 
       // Calculate retirement planning metrics
@@ -279,7 +325,7 @@ export const useCalculatorCore = ({
         desiredMonthlyIncome: desiredRetirementIncome,
         initialAmount,
         monthlyContribution,
-        investorProfile: state.investorProfile
+        investorProfile: state.investorProfile,
       });
 
       // --- CORREÇÃO: gerar array completo até expectativa de vida ---
@@ -313,7 +359,6 @@ export const useCalculatorCore = ({
       // Array final: acumulação + aposentadoria
       const fullProjection = [...accumulationArray, ...retirementArray];
       // LOG DE DEBUG
-  
 
       // Update state with domain service results
       updateState({
@@ -321,7 +366,7 @@ export const useCalculatorCore = ({
           finalAmount: compoundGrowthResult.finalAmount.value,
           yearlyValues: fullProjection,
           monthlyIncome: retirementResult.sustainableMonthlyIncome.value,
-        }
+        },
       });
 
       // Auto-save current session data
@@ -330,25 +375,25 @@ export const useCalculatorCore = ({
           currentAge: state.currentAge,
           targetRetirementAge: state.retirementAge,
           lifeExpectancy: state.lifeExpectancy,
-          investorProfile: state.investorProfile
+          investorProfile: state.investorProfile,
         },
         financialInfo: {
           initialAmount,
           monthlyContribution,
-          targetRetirementIncome: desiredRetirementIncome
+          targetRetirementIncome: desiredRetirementIncome,
         },
         preferences: {
           riskTolerance: 'medium',
           prioritizeGrowth: true,
           considerInflation: true,
-          inflationRate: 0.04
+          inflationRate: 0.04,
         },
         calculationResults: {
           lastCalculatedAt: new Date(),
           projectedWealth: compoundGrowthResult.finalAmount,
           sustainableIncome: retirementResult.sustainableMonthlyIncome,
-          successProbability: retirementResult.isRetirementViable ? 0.8 : 0.4
-        }
+          successProbability: retirementResult.isRetirementViable ? 0.8 : 0.4,
+        },
       });
 
       // Only run Monte Carlo if explicitly enabled and calculating
@@ -369,48 +414,50 @@ export const useCalculatorCore = ({
             // Use Monte Carlo Simulation Service for risk analysis
             // Calculate total life horizon (from current age to life expectancy)
             const totalLifeHorizonYears = state.lifeExpectancy - state.currentAge;
-            
-            const portfolioSimulationResult = await monteCarloSimulationService.runPortfolioSimulation({
-              initialAmount,
-              monthlyContribution,
-              investorProfile: state.investorProfile,
-              timeHorizonYears: totalLifeHorizonYears,
-              numberOfSimulations: 1001,
-              targetAmount: Money.fromNumber(retirementResult.requiredWealthAtRetirement.value),
-              includeAllPaths: true,
-              retirementMonthlyIncome: desiredRetirementIncome,
-              retirementAnnualReturn: derivedValues.retirementAnnualReturn
-            });
+
+            const portfolioSimulationResult =
+              await monteCarloSimulationService.runPortfolioSimulation({
+                initialAmount,
+                monthlyContribution,
+                investorProfile: state.investorProfile,
+                timeHorizonYears: totalLifeHorizonYears,
+                numberOfSimulations: 1001,
+                targetAmount: Money.fromNumber(retirementResult.requiredWealthAtRetirement.value),
+                includeAllPaths: true,
+                retirementMonthlyIncome: desiredRetirementIncome,
+                retirementAnnualReturn: derivedValues.retirementAnnualReturn,
+              });
 
             if (abortControllerRef.current?.signal.aborted) return;
 
             // Convert domain service results to legacy format for compatibility
             const convertedResults = {
               scenarios: {
-                pessimistic: portfolioSimulationResult.scenarios.pessimistic.map(m => m.value),
-                median: portfolioSimulationResult.scenarios.median.map(m => m.value),
-                optimistic: portfolioSimulationResult.scenarios.optimistic.map(m => m.value)
+                pessimistic: portfolioSimulationResult.scenarios.pessimistic.map((m) => m.value),
+                median: portfolioSimulationResult.scenarios.median.map((m) => m.value),
+                optimistic: portfolioSimulationResult.scenarios.optimistic.map((m) => m.value),
               },
               statistics: {
-                percentile5: portfolioSimulationResult.statistics.percentile5.map(m => m.value),
-                percentile25: portfolioSimulationResult.statistics.percentile25.map(m => m.value),
-                percentile50: portfolioSimulationResult.statistics.percentile50.map(m => m.value),
-                percentile75: portfolioSimulationResult.statistics.percentile75.map(m => m.value),
-                percentile95: portfolioSimulationResult.statistics.percentile95.map(m => m.value),
+                percentile5: portfolioSimulationResult.statistics.percentile5.map((m) => m.value),
+                percentile25: portfolioSimulationResult.statistics.percentile25.map((m) => m.value),
+                percentile50: portfolioSimulationResult.statistics.percentile50.map((m) => m.value),
+                percentile75: portfolioSimulationResult.statistics.percentile75.map((m) => m.value),
+                percentile95: portfolioSimulationResult.statistics.percentile95.map((m) => m.value),
                 successProbability: portfolioSimulationResult.statistics.successProbability,
-                standardDeviation: portfolioSimulationResult.statistics.standardDeviation.map(m => m.value),
+                standardDeviation: portfolioSimulationResult.statistics.standardDeviation.map(
+                  (m) => m.value
+                ),
                 averageReturn: portfolioSimulationResult.statistics.averageReturn,
                 volatilityRealized: portfolioSimulationResult.statistics.volatilityRealized,
               },
-              allPaths: portfolioSimulationResult.allPaths?.map(path => path.map(m => m.value)),
+              allPaths: portfolioSimulationResult.allPaths?.map((path) => path.map((m) => m.value)),
             };
 
-    
             updateState({
               monteCarloResult: convertedResults,
               isCalculating: false,
             });
-          } catch (_error) {
+          } catch {
             // CORREÇÃO: Garantir que o estado seja limpo em caso de erro ou abort
             if (abortControllerRef.current?.signal.aborted) {
               updateState({
@@ -430,7 +477,7 @@ export const useCalculatorCore = ({
           updateState({ monteCarloResult: null });
         }
       }
-    } catch (_error) {
+    } catch {
       updateState({
         isCalculating: false,
         calculationResult: null,
@@ -443,14 +490,13 @@ export const useCalculatorCore = ({
     state.investorProfile,
     state.lifeExpectancy,
     state.currentAge,
-    state.crisisFrequency,
-    state.crisisMeanImpact,
     derivedValues.accumulationYears,
     derivedValues.accumulationAnnualReturn,
+    derivedValues.retirementAnnualReturn,
+    state.retirementAge,
     debouncedInitialAmount,
     debouncedMonthlyAmount,
     debouncedRetirementIncome,
-    debouncedPortfolioReturn,
     updateState,
   ]);
 
@@ -463,7 +509,7 @@ export const useCalculatorCore = ({
   useEffect(() => {
     if (sharedPlanData) {
       const url = new URL(window.location.href);
-      
+
       // Only remove 'plan' parameter if it exists (legacy system)
       if (url.searchParams.has('plan')) {
         url.searchParams.delete('plan');
@@ -484,16 +530,16 @@ export const useCalculatorCore = ({
     // State
     ...state,
     sharedPlanData,
-    
+
     // Derived values
     accumulationYears: derivedValues.accumulationYears,
     retirementYears: derivedValues.retirementYears,
     accumulationAnnualReturn: derivedValues.accumulationAnnualReturn,
     retirementAnnualReturn: derivedValues.retirementAnnualReturn,
-    
+
     // Handlers
     ...handlers,
-    
+
     // Utilities
     calculateProjection,
     clearAllTimeouts,

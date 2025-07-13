@@ -42,10 +42,9 @@ export const ChartControls = ({
               Simulação Probabilística | Método de Monte Carlo
             </h3>
             <p className="text-xs dark:text-white text-gray-900">
-              {isMonteCarloEnabled 
-                ? "Mil cenários aleatórios sendo exibidos" 
-                : "Mil cenários aleatórios baseados em risco e volatilidade"
-              }
+              {isMonteCarloEnabled
+                ? 'Mil cenários aleatórios sendo exibidos'
+                : 'Mil cenários aleatórios baseados em risco e volatilidade'}
             </p>
           </div>
           <Button
@@ -54,7 +53,7 @@ export const ChartControls = ({
             onClick={() => onMonteCarloToggle(!isMonteCarloEnabled)}
             className="tech-button-monte-carlo text-white font-medium"
           >
-            {isMonteCarloEnabled ? "Voltar" : "Calcular"}
+            {isMonteCarloEnabled ? 'Voltar' : 'Calcular'}
           </Button>
         </div>
 
@@ -72,10 +71,13 @@ export const ChartControls = ({
           <PopoverContent className="w-80 glass-card !bg-transparent border-foreground/20">
             <div className="space-y-4">
               <h4 className="text-sm font-semibold text-foreground">Configurações</h4>
-              
+
               {/* Life Expectancy Control */}
               <div className="space-y-2">
-                <label htmlFor="life-expectancy-setting" className="text-sm font-medium text-foreground">
+                <label
+                  htmlFor="life-expectancy-setting"
+                  className="text-sm font-medium text-foreground"
+                >
                   Expectativa de vida
                 </label>
                 <div className="flex items-center space-x-3">
@@ -116,7 +118,10 @@ export const ChartControls = ({
               {/* Crisis Frequency Control */}
               {isMonteCarloEnabled && (
                 <div className="space-y-2 pt-2 border-t border-foreground/10">
-                  <label htmlFor="crisis-frequency-setting" className="text-sm font-medium text-foreground">
+                  <label
+                    htmlFor="crisis-frequency-setting"
+                    className="text-sm font-medium text-foreground"
+                  >
                     Frequência de Crises
                   </label>
                   <Slider
@@ -128,7 +133,9 @@ export const ChartControls = ({
                     onValueChange={(value) => onCrisisFrequencyChange?.(value[0])}
                   />
                   <p className="text-xs text-muted-foreground text-right">
-                    {crisisFrequency > 0 ? `1 crise a cada ${Math.round(1 / crisisFrequency)} anos` : 'Nenhuma'}
+                    {crisisFrequency > 0
+                      ? `1 crise a cada ${Math.round(1 / crisisFrequency)} anos`
+                      : 'Nenhuma'}
                   </p>
                 </div>
               )}
@@ -136,7 +143,10 @@ export const ChartControls = ({
               {/* Crisis Impact Control */}
               {isMonteCarloEnabled && (
                 <div className="space-y-2">
-                  <label htmlFor="crisis-impact-setting" className="text-sm font-medium text-foreground">
+                  <label
+                    htmlFor="crisis-impact-setting"
+                    className="text-sm font-medium text-foreground"
+                  >
                     Impacto Médio da Crise
                   </label>
                   <Slider

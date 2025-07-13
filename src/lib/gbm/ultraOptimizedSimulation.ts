@@ -1,6 +1,6 @@
 import { calculateStatistics } from './statistics';
-import { logger } from '../logger';
 import type { BrownianMonteCarloResult } from './types';
+import { logger } from '../logger';
 
 // Create worker from inline code
 const createWorker = () => {

@@ -4,7 +4,7 @@
   background-color: var(--palette-black);
   position: relative;
   overflow: hidden;
-  box-shadow: 
+  box-shadow:
     0 0 18px rgba(255, 255, 255, 0.045),
     0 0 36px rgba(255, 255, 255, 0.03),
     0 0 60px rgba(255, 255, 255, 0.015),
@@ -78,64 +78,100 @@
 
 /* Posicionamento das Bolhas Aurora - TODOS CENTRALIZADOS NO VIEWPORT - MAIS RÁPIDAS */
 #banner-blob1 {
-  --x-start: 20vw; --y-start: 30vh; --x-end: 25vw; --y-end: 40vh;
-  width: 35vw; height: 35vw;
+  --x-start: 20vw;
+  --y-start: 30vh;
+  --x-end: 25vw;
+  --y-end: 40vh;
+  width: 35vw;
+  height: 35vw;
   animation-duration: 25s;
   background: var(--palette-mix-orange);
 }
 
 #banner-blob2 {
-  --x-start: 50vw; --y-start: 20vh; --x-end: 45vw; --y-end: -10vh;
-  width: 30vw; height: 30vw;
+  --x-start: 50vw;
+  --y-start: 20vh;
+  --x-end: 45vw;
+  --y-end: -10vh;
+  width: 30vw;
+  height: 30vw;
   animation-duration: 20s;
   background: #00b4d8;
 }
 
 #banner-blob3 {
-  --x-start: 10vw; --y-start: 60vh; --x-end: 15vw; --y-end: 10vh;
-  width: 28vw; height: 28vw;
+  --x-start: 10vw;
+  --y-start: 60vh;
+  --x-end: 15vw;
+  --y-end: 10vh;
+  width: 28vw;
+  height: 28vw;
   animation-duration: 30s;
   background: #a7c957;
 }
 
 #banner-blob4 {
-  --x-start: 60vw; --y-start: 40vh; --x-end: 75vw; --y-end: 80vh;
-  width: 38vw; height: 38vw;
+  --x-start: 60vw;
+  --y-start: 40vh;
+  --x-end: 75vw;
+  --y-end: 80vh;
+  width: 38vw;
+  height: 38vw;
   animation-duration: 22s;
   background: var(--palette-mix-orange);
 }
 
 #banner-blob5 {
-  --x-start: 30vw; --y-start: 50vh; --x-end: 80vw; --y-end: -10vh;
-  width: 32vw; height: 32vw;
+  --x-start: 30vw;
+  --y-start: 50vh;
+  --x-end: 80vw;
+  --y-end: -10vh;
+  width: 32vw;
+  height: 32vw;
   animation-duration: 27s;
   background: #0077b6;
 }
 
 #banner-blob6 {
-  --x-start: 70vw; --y-start: 25vh; --x-end: -10vw; --y-end: 60vh;
-  width: 25vw; height: 25vw;
+  --x-start: 70vw;
+  --y-start: 25vh;
+  --x-end: -10vw;
+  --y-end: 60vh;
+  width: 25vw;
+  height: 25vw;
   animation-duration: 32s;
   background: var(--palette-green-dark);
 }
 
 #banner-blob7 {
-  --x-start: 40vw; --y-start: 35vh; --x-end: 90vw; --y-end: 0vh;
-  width: 30vw; height: 30vw;
+  --x-start: 40vw;
+  --y-start: 35vh;
+  --x-end: 90vw;
+  --y-end: 0vh;
+  width: 30vw;
+  height: 30vw;
   animation-duration: 24s;
   background: linear-gradient(135deg, var(--palette-mix-orange), #b30000);
 }
 
 #banner-blob8 {
-  --x-start: 15vw; --y-start: 45vh; --x-end: 10vw; --y-end: 50vh;
-  width: 25vw; height: 25vw;
+  --x-start: 15vw;
+  --y-start: 45vh;
+  --x-end: 10vw;
+  --y-end: 50vh;
+  width: 25vw;
+  height: 25vw;
   animation-duration: 28s;
   background: linear-gradient(135deg, var(--palette-mix-orange), #b30000);
 }
 
 #banner-blob9 {
-  --x-start: 55vw; --y-start: 55vh; --x-end: 30vw; --y-end: 70vh;
-  width: 28vw; height: 28vw;
+  --x-start: 55vw;
+  --y-start: 55vh;
+  --x-end: 30vw;
+  --y-end: 70vh;
+  width: 28vw;
+  height: 28vw;
   animation-duration: 26s;
   background: #455a3e;
 }
@@ -144,5 +180,24 @@
 
 :not(.dark) .aurora-banner {
   /* Adiciona sombra para profundidade no modo claro, mantendo o fundo aurora */
-  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.2), 0 10px 20px -15px rgba(0, 0, 0, 0.1);
+  box-shadow:
+    0 20px 40px -10px rgba(0, 0, 0, 0.2),
+    0 10px 20px -15px rgba(0, 0, 0, 0.1);
+}
+
+.dark .aurora-banner {
+  box-shadow:
+    0 0 48px 8px rgba(255,255,255,0.07),
+    0 0 96px 16px rgba(255,255,255,0.056),
+    0 0 160px 32px rgba(255,255,255,0.042),
+    0 0 0 0 transparent,
+    inset 0 1px 0 rgba(255,255,255,0.042);
+}
+.dark .aurora-banner::before {
+  background: radial-gradient(ellipse at center, rgba(255,255,255,0.056) 0%, transparent 70%);
+  filter: blur(34px);
+}
+.dark .aurora-banner::after {
+  background: radial-gradient(ellipse at center, rgba(255,255,255,0.028) 0%, transparent 80%);
+  filter: blur(56px);
 }

@@ -4,17 +4,16 @@ import { Button } from '@/components/ui/button';
 
 export function ThemeToggle() {
   // Get theme from localStorage or default to 'system'
-  const [theme, setTheme] = useState(
-    () => localStorage.getItem('theme') || 'system'
-  );
+  const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'system');
 
   useEffect(() => {
     const root = window.document.documentElement;
     root.classList.remove('light', 'dark');
 
     if (theme === 'system') {
-      const systemTheme = window.matchMedia('(prefers-color-scheme: dark)')
-        .matches ? 'dark' : 'light';
+      const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches
+        ? 'dark'
+        : 'light';
       root.classList.add(systemTheme);
     } else {
       root.classList.add(theme);
@@ -47,4 +46,4 @@ export function ThemeToggle() {
       <span className="sr-only">Toggle theme</span>
     </Button>
   );
-} 
+}

@@ -58,12 +58,8 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({
   };
 
   // Local state for formatted input values
-  const [initialAmountInput, setInitialAmountInput] = useState(() =>
-    formatCurrency(initialAmount)
-  );
-  const [monthlyAmountInput, setMonthlyAmountInput] = useState(() =>
-    formatCurrency(monthlyAmount)
-  );
+  const [initialAmountInput, setInitialAmountInput] = useState(() => formatCurrency(initialAmount));
+  const [monthlyAmountInput, setMonthlyAmountInput] = useState(() => formatCurrency(monthlyAmount));
   const [retirementIncomeInput, setRetirementIncomeInput] = useState(() =>
     formatCurrency(retirementIncome)
   );
@@ -130,10 +126,7 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({
     // Insert thousand separators
     const integerPart = formattedValue.split(',')[0];
     const decimalPart = formattedValue.split(',')[1];
-    const withThousandSeparators = integerPart.replace(
-      /(\d)(?=(\d{3})+(?!\d))/g,
-      '$1.'
-    );
+    const withThousandSeparators = integerPart.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.');
 
     setter(withThousandSeparators + ',' + decimalPart);
   };
