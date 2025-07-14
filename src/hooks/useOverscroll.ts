@@ -3,7 +3,6 @@ import { performanceValidator } from '@/utils/performanceValidation';
 
 export const useOverscroll = () => {
   const [isOverscrolling, setIsOverscrolling] = useState(false);
-  const [hasTriggered, setHasTriggered] = useState(false);
   
   // Cache current scroll position - updated separately from wheel events
   const scrollPositionRef = useRef({
@@ -24,7 +23,6 @@ export const useOverscroll = () => {
 
   useEffect(() => {
     let overscrollTimer: ReturnType<typeof setTimeout>;
-    let resetTimer: ReturnType<typeof setTimeout>;
 
     // Update scroll position and boundaries - called separately from wheel events
     const updateScrollPosition = () => {
@@ -49,20 +47,11 @@ export const useOverscroll = () => {
     };
 
     const triggerMatrix = () => {
-      if (hasTriggered) return; // Só permite uma vez por sessão
-
       setIsOverscrolling(true);
-      setHasTriggered(true);
-
-      // Desativar o efeito após 8 segundos (mais tempo para apreciar)
+      // Desativar o efeito após 8 segundos
       overscrollTimer = setTimeout(() => {
         setIsOverscrolling(false);
       }, 8000);
-
-      // Reset para permitir novamente após 30 segundos
-      resetTimer = setTimeout(() => {
-        setHasTriggered(false);
-      }, 30000);
     };
 
     // Wheel handler - NO DOM QUERIES, only uses cached position
@@ -101,7 +90,14 @@ export const useOverscroll = () => {
 
     // Scroll handler - updates cached position via RAF
     const handleScroll = () => {
-      requestAnimationFrame(updateScrollPosition);
+      requestAnimationFrame(() => {
+        updateScrollPosition();
+        // NOVO: Disparar triggerMatrix ao chegar no topo, se ainda não disparou
+        const { isAtTop } = scrollPositionRef.current;
+        if (isAtTop) {
+          triggerMatrix();
+        }
+      });
     };
 
     // Initialize cached dimensions and position
@@ -127,11 +123,8 @@ export const useOverscroll = () => {
       if (overscrollTimer) {
         clearTimeout(overscrollTimer);
       }
-      if (resetTimer) {
-        clearTimeout(resetTimer);
-      }
     };
-  }, [hasTriggered]);
+  }, []);
 
   return isOverscrolling;
 };
