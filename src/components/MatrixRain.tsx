@@ -32,7 +32,9 @@ export const MatrixRain: React.FC<MatrixRainProps> = ({ isActive, mask = 'none' 
     performanceValidator.startMeasuring('MatrixRain-generateColumns');
 
     // Use cached width to prevent reflows
-    const columnCount = Math.floor(windowDimensionsRef.current.width / 12); // Mais colunas (a cada 12px ao invés de 18px)
+    const columnCount = mask === 'bottom'
+      ? Math.floor(windowDimensionsRef.current.width / 36) // Menos colunas no rodapé
+      : Math.floor(windowDimensionsRef.current.width / 12);
     const newColumns: string[] = [];
 
     for (let i = 0; i < columnCount; i++) {
@@ -49,7 +51,7 @@ export const MatrixRain: React.FC<MatrixRainProps> = ({ isActive, mask = 'none' 
 
     setColumns(newColumns);
     performanceValidator.endMeasuring('MatrixRain-generateColumns');
-  }, [isActive]);
+  }, [isActive, mask]);
 
   useEffect(() => {
     if (!isActive) {
@@ -96,12 +98,12 @@ export const MatrixRain: React.FC<MatrixRainProps> = ({ isActive, mask = 'none' 
     <div className={`matrix-rain${mask === 'top' ? ' matrix-rain-top' : ''}${mask === 'bottom' ? ' matrix-rain-bottom' : ''}`}>
       {columns.map((column, index) => (
         <div
-          key={`${index}-${column.length}`} // Key que muda para forçar re-render
-          className="matrix-column"
+          key={`${index}-${column.length}`}
+          className={`matrix-column${mask === 'top' ? ' matrix-fall-down' : ''}`}
           style={{
-            left: `${index * 12}px`, // Ajustado para as colunas mais próximas
-            animationDelay: `${Math.random() * 2}s`, // Delays menores
-            animationDuration: `${5 + Math.random() * 5}s`, // Animações mais lentas (5s a 10s)
+            left: `${(index / columns.length) * 100}%`,
+            animationDelay: `${Math.random() * 2}s`,
+            animationDuration: `${5 + Math.random() * 5}s`,
           }}
         >
           {column}

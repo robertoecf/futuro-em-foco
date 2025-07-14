@@ -306,8 +306,9 @@
 }
 
 .matrix-rain-top {
-  mask-image: linear-gradient(to bottom, transparent 0px, black 40px, transparent 100%);
-  -webkit-mask-image: linear-gradient(to bottom, transparent 0px, black 40px, transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0px, black 200px, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0px, black 200px, transparent 100%);
+  z-index: 10;
 }
 .matrix-rain-bottom {
   mask-image: linear-gradient(to top, transparent 0px, black 120px, transparent 100%);

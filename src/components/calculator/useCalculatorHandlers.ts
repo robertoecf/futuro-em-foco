@@ -94,15 +94,11 @@ export const useCalculatorHandlers = ({
       if (!isNaN(numericValue) && numericValue > 0) {
         setCurrentAge(numericValue);
         saveToStorage(STORAGE_KEYS.CURRENT_AGE, numericValue);
-        if (retirementAge <= numericValue) {
-          const newRetirementAge = numericValue + 1;
-          setRetirementAge(newRetirementAge);
-          saveToStorage(STORAGE_KEYS.RETIREMENT_AGE, newRetirementAge);
-        }
+        // Removido: ajuste automático de retirementAge
         resetMonteCarloState(); // Reset Monte Carlo when variable changes
       }
     },
-    [setCurrentAge, retirementAge, setRetirementAge, resetMonteCarloState]
+    [setCurrentAge, resetMonteCarloState]
   );
 
   const handleRetirementAgeBlur = useCallback(
