@@ -427,15 +427,11 @@ export const calculateRetirementScenarios = memoize(
 export const benchmarkCalculations = (iterations: number = 1000): void => {
   if (process.env.NODE_ENV !== 'development') return;
 
-  const start = performance.now();
-
   for (let i = 0; i < iterations; i++) {
     calculateCompoundInterest(10000, 1000, 0.08, 30);
     getAccumulationAnnualReturn('moderado');
     calculateFinancialMetrics(10000, 1000, 30, 'moderado');
   }
-
-  const end = performance.now();
 };
 
 // Limpar cache periodicamente em produção

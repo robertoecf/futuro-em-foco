@@ -115,7 +115,6 @@ export async function saveLeadViaEdgeFunction(lead: {
       return { success: false, error: errorData.error || 'Erro ao salvar lead' };
     }
 
-    const result = await response.json();
     return { success: true };
   } catch (err) {
     return { success: false, error: err instanceof Error ? err.message : 'Erro desconhecido' };

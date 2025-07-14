@@ -7,6 +7,9 @@ import tsPlugin from '@typescript-eslint/eslint-plugin'
 import prettierConfig from 'eslint-config-prettier'
 
 export default [
+  {
+    ignores: ["supabase/functions/**/*.js"],
+  },
   { ignores: ['dist', 'node_modules', 'build', '*.md', '.husky', '*.json'] },
   {
     files: ['**/*.{ts,tsx}'],

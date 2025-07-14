@@ -31,7 +31,7 @@ export const compressData = (data: SharedPlanData): string => {
   try {
     const json = JSON.stringify(data);
     return btoa(json);
-  } catch (error) {
+  } catch {
     return '';
   }
 };
@@ -41,7 +41,7 @@ export const decompressData = (compressed: string): SharedPlanData | null => {
   try {
     const json = atob(compressed);
     return JSON.parse(json) as SharedPlanData;
-  } catch (error) {
+  } catch {
     return null;
   }
 };

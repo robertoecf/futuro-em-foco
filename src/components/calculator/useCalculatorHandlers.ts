@@ -6,7 +6,6 @@ import { saveToStorage } from './storageUtils';
 
 interface UseCalculatorHandlersProps {
   currentAge: number;
-  retirementAge: number;
   setInitialAmount: (value: number) => void;
   setMonthlyAmount: (value: number) => void;
   setCurrentAge: (value: number) => void;
@@ -22,7 +21,6 @@ interface UseCalculatorHandlersProps {
 
 export const useCalculatorHandlers = ({
   currentAge,
-  retirementAge,
   setInitialAmount,
   setMonthlyAmount,
   setCurrentAge,
@@ -110,7 +108,7 @@ export const useCalculatorHandlers = ({
         resetMonteCarloState(); // Reset Monte Carlo when variable changes
       }
     },
-    [setRetirementAge, currentAge, retirementAge, resetMonteCarloState]
+    [setRetirementAge, currentAge, resetMonteCarloState]
   );
 
   const handleLifeExpectancyChange = useCallback(

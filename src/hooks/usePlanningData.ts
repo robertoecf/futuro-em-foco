@@ -87,7 +87,7 @@ export const usePlanningData = () => {
   const loadPlanningData = (planId: string): PlanningData | null => {
     try {
       return secureStorage.get(`planning_${planId}`);
-    } catch (_error) {
+    } catch {
       return null;
     }
   };
@@ -154,7 +154,7 @@ export const usePlanningData = () => {
       const directUrl = generateDirectUrl(planningInputs);
       await navigator.clipboard.writeText(directUrl);
       return true;
-    } catch (_error) {
+    } catch {
       return false;
     }
   };

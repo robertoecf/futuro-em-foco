@@ -152,7 +152,7 @@ export const useCalculatorEffects = ({
 
           setMonteCarloResult(convertedResults);
           setIsCalculating(false);
-        } catch (_error) {
+        } catch {
           setIsCalculating(false);
           setMonteCarloResult(null);
         }

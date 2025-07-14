@@ -8,7 +8,6 @@ interface ChartInfoProps {
   monteCarloData?: MonteCarloResult | null;
   perpetuityWealth: number;
   possibleRetirementAge: number;
-  userRetirementAge?: number;
   onVisibilityChange?: (visibility: ChartVisibilityState) => void;
 }
 
@@ -30,7 +29,6 @@ export const ChartInfo = ({
   monteCarloData,
   perpetuityWealth,
   possibleRetirementAge,
-  userRetirementAge,
   onVisibilityChange,
 }: ChartInfoProps) => {
   const [visibility, setVisibility] = useState<ChartVisibilityState>({

@@ -368,7 +368,7 @@ Deno.serve(async (req: Request) => {
     }
 
     return new Response('Processamento de email concluído', { status: 200 });
-  } catch (err) {
+  } catch {
     return new Response('Internal Server Error', { status: 500 });
   }
 });
