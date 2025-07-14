@@ -3,6 +3,7 @@
 ## 🎯 **NOSSO STACK TECNOLÓGICO (2025)**
 
 ### **Frontend Core:**
+
 - **React 18.3.1** + **TypeScript 5.8.3**
 - **Vite 5.4.19** (build tool moderno)
 - **Tailwind CSS 3.4.11** (utility-first CSS)
@@ -10,10 +11,12 @@
 - **Recharts** (data visualization)
 
 ### **Backend & Services:**
+
 - **Supabase** (backend-as-a-service)
 - **PostHog** (product analytics)
 
 ### **Development Tools:**
+
 - **ESLint 9.29.0** + **Prettier 3.5.3**
 - **Husky 9.1.7** (git hooks)
 - **lint-staged 16.1.2** (staged files linting)
@@ -21,6 +24,7 @@
 ## 🚀 **CONFIGURAÇÃO OTIMIZADA SUPER LINTER**
 
 ### **1. Approach: SELECTIVE EXCLUSION**
+
 ```yaml
 # ✅ RECOMENDADO: Usar apenas exclusões (VALIDATE_*=false)
 # ❌ EVITAR: Misturar inclusões e exclusões
@@ -43,6 +47,7 @@ env:
 ```
 
 ### **2. Configuração JSCPD Otimizada**
+
 ```json
 {
   "threshold": 5,
@@ -64,6 +69,7 @@ env:
 ```
 
 ### **3. Exclusões de Arquivos Inteligentes**
+
 ```yaml
 FILTER_REGEX_EXCLUDE: "tsconfig\\..*\\.json|package-lock\\.json|bun\\.lockb|\\.vscode/|\\.git/|node_modules/|dist/|build/|coverage/|.*\\.md$"
 ```
@@ -71,24 +77,28 @@ FILTER_REGEX_EXCLUDE: "tsconfig\\..*\\.json|package-lock\\.json|bun\\.lockb|\\.v
 ## 🎯 **MELHORES PRÁTICAS POR CATEGORIA**
 
 ### **A. TypeScript & React**
+
 - ✅ **Usar ESLint local** em vez do Super Linter para TS/TSX
 - ✅ **Configurar tsconfig.json** com strict mode
 - ✅ **Usar Prettier integrado** no ESLint
 - ❌ **Evitar** VALIDATE_TYPESCRIPT_* no Super Linter
 
 ### **B. Segurança**
+
 - ✅ **Manter GITLEAKS** habilitado (default)
 - ✅ **Manter CHECKOV** habilitado (default)
 - ✅ **Configurar .gitleaksignore** se necessário
 - ✅ **Revisar regularmente** dependências vulneráveis
 
 ### **C. Qualidade de Código**
+
 - ✅ **JSCPD configurado** com threshold realista (5%)
 - ✅ **Exclusões inteligentes** para código gerado/padrão
 - ✅ **Monitoramento contínuo** de duplicação
 - ✅ **Refatoração proativa** quando threshold excedido
 
 ### **D. Performance**
+
 - ✅ **VALIDATE_ALL_CODEBASE: false** para PRs
 - ✅ **Exclusões específicas** para arquivos grandes
 - ✅ **Cache de dependências** quando possível
@@ -141,6 +151,7 @@ jobs:
 ## 📊 **MÉTRICAS DE QUALIDADE**
 
 ### **Target Goals:**
+
 - 🎯 **JSCPD**: < 5% duplicação
 - 🎯 **GITLEAKS**: 0 secrets expostos
 - 🎯 **CHECKOV**: 0 vulnerabilidades críticas
@@ -148,6 +159,7 @@ jobs:
 - 🎯 **False Positives**: < 5%
 
 ### **Monitoramento:**
+
 - ✅ **Weekly Review** dos resultados
 - ✅ **Threshold Adjustment** baseado em métricas
 - ✅ **Exclusion Tuning** para reduzir ruído
@@ -156,29 +168,34 @@ jobs:
 ## 🚨 **TROUBLESHOOTING COMUM**
 
 ### **Erro: "Behavior not supported"**
+
 - **Causa**: Mistura de VALIDATE=true e VALIDATE=false
 - **Solução**: Usar apenas exclusões (VALIDATE=false)
 
 ### **JSCPD False Positives**
+
 - **Causa**: Threshold muito baixo ou padrões normais
 - **Solução**: Ajustar threshold e adicionar exclusões
 
 ### **Performance Issues**
+
 - **Causa**: VALIDATE_ALL_CODEBASE=true em repos grandes
 - **Solução**: Usar VALIDATE_ALL_CODEBASE=false
 
 ### **TypeScript Conflicts**
+
 - **Causa**: Super Linter ESLint vs Local ESLint
 - **Solução**: Desabilitar VALIDATE_TYPESCRIPT_* no Super Linter
 
 ## 🎉 **RESULTADO ESPERADO**
 
 Com essa configuração otimizada:
+
 - ✅ **Zero conflitos** de configuração
 - ✅ **Tempo de execução** reduzido
 - ✅ **False positives** minimizados  
 - ✅ **Qualidade de código** mantida
-- ✅ **Developer Experience** melhorada 
+- ✅ **Developer Experience** melhorada
 
 ---
 
@@ -197,4 +214,4 @@ Os seguintes scripts no `package.json` são a base do nosso workflow de qualidad
 - **`npm run lint`**: Executa o ESLint em todo o projeto para verificar erros.
 - **`npm run lint:fix`**: Tenta corrigir automaticamente os problemas encontrados pelo ESLint.
 - **`npm run format`**: Formata todo o código do projeto usando as regras do Prettier.
-- **`npm run marco-zero`**: Comando completo que verifica tipos (`tsc`), executa o lint e faz o build, garantindo que o projeto está 100% saudável. 
+- **`npm run marco-zero`**: Comando completo que verifica tipos (`tsc`), executa o lint e faz o build, garantindo que o projeto está 100% saudável.

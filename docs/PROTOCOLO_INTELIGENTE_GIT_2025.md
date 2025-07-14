@@ -1,7 +1,8 @@
 # 🧠 PROTOCOLO INTELIGENTE GIT 2025
+
 ## 🌟 Árvore de Decisão: PR vs Commit Direto
 
-*Baseado nas melhores práticas modernas de desenvolvimento de software*
+## Baseado nas melhores práticas de engenharia de software, aprendizado contínuo e cultura de excelência
 
 ---
 
@@ -71,6 +72,7 @@ graph TD
 ### **⚡ COMMIT DIRETO**
 
 #### **🔧 Manutenção & Correções**
+
 ```bash
 # ✅ Permitido
 git commit -m "fix: corrige typo no README"
@@ -80,6 +82,7 @@ git commit -m "hotfix: corrige crash crítico de login"
 ```
 
 #### **📋 Checklist Obrigatório:**
+
 - [x] **Testes locais**: `npm test` passou
 - [x] **Lint**: `npm run lint` limpo
 - [x] **Build**: `npm run build` sucesso
@@ -90,6 +93,7 @@ git commit -m "hotfix: corrige crash crítico de login"
 ### **📋 PULL REQUEST**
 
 #### **🏗️ Features & Arquitetura**
+
 ```bash
 # 🔄 Requer PR
 git checkout -b feature/dark-mode-toggle
@@ -99,6 +103,7 @@ git checkout -b performance/lazy-loading
 ```
 
 #### **📋 Checklist Obrigatório:**
+
 - [x] **Branch separada** criada
 - [x] **Testes passando** localmente
 - [x] **PR template** preenchido
@@ -111,6 +116,7 @@ git checkout -b performance/lazy-loading
 ## 🎯 **REGRAS ESPECÍFICAS POR CONTEXTO**
 
 ### **🚨 EMERGÊNCIAS**
+
 ```bash
 # Produção down - COMMIT DIRETO permitido
 if [ "$SEVERITY" = "CRITICAL" ] && [ "$TESTS" = "PASSING" ]; then
@@ -121,6 +127,7 @@ fi
 ```
 
 ### **🎨 MUDANÇAS UX/UI**
+
 ```bash
 # SEMPRE testar primeiro (protocolo existente)
 npm run dev  # Testar em localhost:8080
@@ -129,6 +136,7 @@ npm run dev  # Testar em localhost:8080
 ```
 
 ### **🐍 MIGRAÇÕES GRANDES**
+
 ```bash
 # Python Backend - SEMPRE PR
 git checkout -b migration/python-calculations
@@ -142,6 +150,7 @@ git checkout -b migration/python-calculations
 ## 📈 **MÉTRICAS DE QUALIDADE**
 
 ### **🎯 KPIs do Protocolo**
+
 - **⚡ Fast Track Rate**: % commits diretos vs total
 - **🔄 PR Review Time**: Tempo médio de revisão
 - **❌ Rollback Rate**: % de reversões necessárias
@@ -149,6 +158,7 @@ git checkout -b migration/python-calculations
 - **🚀 Deploy Frequency**: Frequência de deploys
 
 ### **🏆 Metas 2025**
+
 - **Fast Track**: 60-70% das mudanças
 - **PR Review**: <24h tempo médio
 - **Zero Rollbacks**: Por falhas de teste
@@ -159,12 +169,14 @@ git checkout -b migration/python-calculations
 ## 🔄 **PROCESSO ADAPTATIVO**
 
 ### **📊 Review Mensal**
+
 1. **Analisar métricas** do protocolo
 2. **Ajustar thresholds** conforme aprendizado
 3. **Atualizar critérios** baseado em resultados
 4. **Treinar equipe** em mudanças
 
 ### **🧪 Experimentação**
+
 - **A/B testing** em workflows diferentes
 - **Feedback loops** da equipe
 - **Benchmarking** com outras equipes
@@ -175,11 +187,11 @@ git checkout -b migration/python-calculations
 ## 🛡️ **SAFEGUARDS E VALIDAÇÕES**
 
 ### **🔒 Proteções Automáticas**
+
 ```yaml
 # GitHub Branch Protection
 main:
   required_status_checks:
-    - super-linter
     - tests-passing
     - build-success
   restrictions:
@@ -188,6 +200,7 @@ main:
 ```
 
 ### **🚨 Alertas Automáticos**
+
 - **Slack notification** para commits diretos grandes
 - **Email alert** para falhas de teste em main
 - **Dashboard metrics** em tempo real
@@ -221,18 +234,21 @@ main:
 ## 🎉 **BENEFÍCIOS ESPERADOS**
 
 ### **⚡ Para Desenvolvedor**
+
 - **Clareza** na decisão
 - **Menos burocracia** para mudanças simples
 - **Foco** em qualidade de código
 - **Autonomia** com responsabilidade
 
 ### **👥 Para Equipe**
+
 - **Consistência** no workflow
 - **Qualidade** mantida
 - **Colaboração** otimizada
 - **Conhecimento** compartilhado
 
 ### **🏢 Para Projeto**
+
 - **Velocidade** aumentada
 - **Qualidade** preservada
 - **Manutenibilidade** melhorada
@@ -240,8 +256,8 @@ main:
 
 ---
 
-*🤖 Este protocolo evolui com o aprendizado da equipe e métricas de qualidade*
+## 🤖 Este protocolo evolui com o tempo, sempre buscando excelência e adaptabilidade
 
 **Versão**: 1.0  
 **Data**: Janeiro 2025  
-**Próxima revisão**: Fevereiro 2025 
+**Próxima revisão**: Fevereiro 2025

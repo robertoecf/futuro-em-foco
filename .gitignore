@@ -29,3 +29,5 @@ coverage/
 tsconfig.*.tsbuildinfo
 flask_app/static/styles.css
 .cursor/mcp.json
+
+docs/SuperClaude/
