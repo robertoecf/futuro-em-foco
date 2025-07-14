@@ -38,14 +38,11 @@ export async function saveLeadToSupabase(lead: {
     });
 
     if (error) {
-      console.error('Supabase error:', error);
       return { success: false, error: error.message };
     }
 
-    console.log('Lead saved successfully');
     return { success: true };
   } catch (err) {
-    console.error('Unexpected error:', err);
     return { success: false, error: err instanceof Error ? err.message : 'Erro desconhecido' };
   }
 }
@@ -78,14 +75,11 @@ export async function saveLeadToSupabaseDirectly(lead: {
 
     if (!response.ok) {
       const errorData = await response.json();
-      console.error('Direct API error:', errorData);
       return { success: false, error: errorData.message || 'Erro ao salvar lead' };
     }
 
-    console.log('Lead saved successfully via direct API');
     return { success: true };
   } catch (err) {
-    console.error('Unexpected error in direct API:', err);
     return { success: false, error: err instanceof Error ? err.message : 'Erro desconhecido' };
   }
 }
@@ -118,15 +112,12 @@ export async function saveLeadViaEdgeFunction(lead: {
 
     if (!response.ok) {
       const errorData = await response.json();
-      console.error('Edge Function error:', errorData);
       return { success: false, error: errorData.error || 'Erro ao salvar lead' };
     }
 
     const result = await response.json();
-    console.log('Lead saved successfully via Edge Function:', result);
     return { success: true };
   } catch (err) {
-    console.error('Unexpected error calling Edge Function:', err);
     return { success: false, error: err instanceof Error ? err.message : 'Erro desconhecido' };
   }
 }

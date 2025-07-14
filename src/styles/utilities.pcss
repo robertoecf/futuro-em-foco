@@ -27,10 +27,19 @@
 }
 /* Cards Refinados - Base styles (Light mode) */
 .glass-card {
-  background: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, var(--glass-transparency)) !important;
   backdrop-filter: blur(2px);
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  -webkit-backdrop-filter: blur(2px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 50px;
+  font-weight: 500;
   transition: all 0.3s ease;
+  box-shadow: 
+    0 2px 8px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  white-space: nowrap;
+  min-width: fit-content;
+  font-size: 14px;
 }
 
 /* Dark mode styles for glass-card */
@@ -40,11 +49,26 @@
 }
 
 /* Insight Cards Especializado - Base styles (Light mode) */
-.insight-card {
-  background: rgba(255, 255, 255, 0.7);
+.insight-card,
+.recommendation-card,
+.chart-info-card,
+.investor-card,
+.monte-carlo-card,
+.results-card,
+.form-panel-card {
+  background: rgba(255, 255, 255, var(--glass-transparency)) !important;
   backdrop-filter: blur(2px);
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  -webkit-backdrop-filter: blur(2px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 50px;
+  font-weight: 500;
   transition: all 0.3s ease;
+  box-shadow: 
+    0 2px 8px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  white-space: nowrap;
+  min-width: fit-content;
+  font-size: 14px;
 }
 
 /* Dark mode styles for insight-card */
@@ -122,12 +146,19 @@
 
 /* Investor Profile Cards with Enhanced Hover Effects - Base styles (Light mode) */
 .investor-card {
-  background: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, var(--glass-transparency)) !important;
   backdrop-filter: blur(2px);
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  -webkit-backdrop-filter: blur(2px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 24px;
+  font-weight: 500;
   transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
+  box-shadow: 
+    0 2px 8px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  white-space: normal;
+  word-break: break-word;
+  width: 100%;
 }
 
 /* Dark mode styles for investor-card */
@@ -199,10 +230,19 @@
 
 /* Recommendation Cards - Base styles (Light mode) */
 .recommendation-card {
-  background: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, var(--glass-transparency)) !important;
   backdrop-filter: blur(2px);
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  -webkit-backdrop-filter: blur(2px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 50px;
+  font-weight: 500;
   transition: all 0.3s ease;
+  box-shadow: 
+    0 2px 8px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  white-space: normal;
+  word-break: break-word;
+  width: 100%;
 }
 
 /* Dark mode styles for recommendation-card */
@@ -730,26 +770,6 @@ html {
   background: linear-gradient(135deg, transparent, rgba(0, 0, 0, 0.02));
 }
 
-/* Light mode styles */
-.glass-input {
-  background: rgba(255, 255, 255, 0.5) !important;
-  border: 1px solid rgba(0, 0, 0, 0.1) !important;
-  color: #333 !important;
-}
-
-.glass-input:focus {
-  outline: none !important;
-  border-color: rgba(228, 130, 0, 0.5) !important;
-  box-shadow:
-    0 0 0 3px rgba(228, 130, 0, 0.1),
-    0 4px 12px rgba(228, 130, 0, 0.2) !important;
-  ring: none !important;
-}
-
-.glass-input::placeholder {
-  color: rgb(107, 114, 128) !important;
-}
-
 /* Sombras para cards específicos - Light mode */
 .investor-card {
   box-shadow:
@@ -841,4 +861,26 @@ html {
 
 .dark .glass-header {
   background: rgba(0,0,0,0.2) !important;
+}
+
+.glass-panel,
+.glass-input,
+.chart-container {
+  background: rgba(255, 255, 255, var(--glass-transparency)) !important;
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 50px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  box-shadow: 
+    0 2px 8px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  white-space: nowrap;
+  min-width: fit-content;
+  font-size: 14px;
+}
+
+.blend-difference {
+  mix-blend-mode: difference;
 }

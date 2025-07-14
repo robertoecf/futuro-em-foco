@@ -123,17 +123,6 @@ export const useFinalLinesAnimation = ({ isDrawingFinalLines }: FinalLineAnimati
         isVisible: true,
       };
 
-      console.log(
-        `🎬 Animation state for ${lineType} (time: ${animationTime.toFixed(0)}ms, progress: ${(lineProgress * 100).toFixed(1)}%):`,
-        {
-          startTime,
-          lineElapsed,
-          progress: lineProgress,
-          dashOffset,
-          opacity,
-        }
-      );
-
       return animationState;
     };
   }, [isDrawingFinalLines, animationTime]);

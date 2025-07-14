@@ -150,11 +150,9 @@ export const useCalculatorEffects = ({
             allPaths: gbmResults.allPaths, // Include all 1001 paths
           };
 
-          console.log('✅ MONTE CARLO FINALIZADO - dados prontos para animação');
           setMonteCarloResult(convertedResults);
           setIsCalculating(false);
         } catch (_error) {
-          console.error('❌ Optimized Monte Carlo calculation failed:', _error);
           setIsCalculating(false);
           setMonteCarloResult(null);
         }

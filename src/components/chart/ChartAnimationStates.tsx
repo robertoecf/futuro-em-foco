@@ -41,16 +41,9 @@ class MagicMomentDebugger {
     };
 
     this.checkpoints.push(checkpoint);
-    console.log(`🔍 MAGIC MOMENT CHECKPOINT [${step}]:`, {
-      phase,
-      dataReady,
-      linesVisible,
-      ...details,
-    });
   }
 
   getFlowReport() {
-    console.log('📋 MAGIC MOMENT FLOW REPORT:', this.checkpoints);
     return this.checkpoints;
   }
 

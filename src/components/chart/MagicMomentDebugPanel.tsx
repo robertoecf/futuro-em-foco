@@ -216,7 +216,7 @@ export const MagicMomentDebugPanel: React.FC<MagicMomentDebugPanelProps> = ({
         <button
           onClick={() => {
             if (getDebugReport) {
-              console.log('📋 RELATÓRIO COMPLETO MOMENTO MÁGICO:', getDebugReport());
+              // console.log('📋 RELATÓRIO COMPLETO MOMENTO MÁGICO:', getDebugReport());
             }
           }}
           className="w-full mt-3 bg-orange-600 hover:bg-orange-700 text-white py-2 px-3 rounded text-sm font-medium transition-colors"

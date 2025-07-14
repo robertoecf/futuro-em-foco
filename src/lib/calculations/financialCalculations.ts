@@ -427,8 +427,6 @@ export const calculateRetirementScenarios = memoize(
 export const benchmarkCalculations = (iterations: number = 1000): void => {
   if (process.env.NODE_ENV !== 'development') return;
 
-  console.log(`🔍 Benchmark de ${iterations} iterações:`);
-
   const start = performance.now();
 
   for (let i = 0; i < iterations; i++) {
@@ -438,8 +436,6 @@ export const benchmarkCalculations = (iterations: number = 1000): void => {
   }
 
   const end = performance.now();
-  console.log(`⚡ Tempo total: ${(end - start).toFixed(2)}ms`);
-  console.log(`📊 Cache hits: ${calculationCache.size} entradas`);
 };
 
 // Limpar cache periodicamente em produção

@@ -21,25 +21,19 @@ serve(async (req: Request) => {
   }
 
   try {
-    console.log('Function started.');
-
     const supabaseUrl = Deno.env.get('SUPABASE_URL');
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
 
     if (!supabaseUrl || !supabaseServiceKey) {
-      console.error('Missing Supabase environment variables.');
       return new Response(JSON.stringify({ error: 'Internal server configuration error.' }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 500,
       });
     }
-    console.log('Supabase environment variables loaded.');
 
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
-    console.log('Supabase client created.');
 
     const body = await req.json();
-    console.log('Request body parsed:', body);
 
     const leadData = {
       name: body.name,
@@ -49,19 +43,16 @@ serve(async (req: Request) => {
       patrimonio_range: body.patrimonio_range || null,
       simulation_url: body.simulation_url || null,
     };
-    console.log('Attempting to insert data:', JSON.stringify(leadData, null, 2));
 
     const { data, error } = await supabase.from('leads').insert(leadData).select();
 
     if (error) {
-      console.error('Supabase insert error:', JSON.stringify(error, null, 2));
       return new Response(JSON.stringify({ error: error.message }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 400,
       });
     }
 
-    console.log('Data saved successfully:', data);
     return new Response(JSON.stringify({ success: true, data }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 200,
@@ -71,7 +62,6 @@ serve(async (req: Request) => {
       message: error instanceof Error ? error.message : String(error),
       stack: error instanceof Error ? error.stack : undefined,
     };
-    console.error('Critical function error:', JSON.stringify(errorDetails, null, 2));
     return new Response(JSON.stringify({ error: 'Internal server error', details: errorDetails }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 500,

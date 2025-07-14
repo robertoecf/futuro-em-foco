@@ -13,9 +13,6 @@ declare const Deno: {
   };
 };
 
-// Force re-deploy
-console.log('Hello from Functions!');
-
 Deno.serve(async (req: Request) => {
   // This is needed if you're planning to invoke your function from a browser.
   if (req.method === 'OPTIONS') {
@@ -36,7 +33,6 @@ Deno.serve(async (req: Request) => {
     const SENDGRID_TO = Deno.env.get('SENDGRID_TO'); // ex: robertoecf@gmail.com
 
     if (!SENDGRID_API_KEY || !SENDGRID_FROM || !SENDGRID_TO) {
-      console.error('Environment variables not set');
       return new Response('Variáveis de ambiente não configuradas', { status: 500 });
     }
 
@@ -145,7 +141,6 @@ Deno.serve(async (req: Request) => {
     });
 
     if (!sendAdminEmail.ok) {
-      console.error('Falha ao enviar email para o admin:', await sendAdminEmail.text());
       // Decide whether to stop if admin email fails. For now, we'll continue.
     }
 
@@ -368,14 +363,12 @@ Deno.serve(async (req: Request) => {
       });
 
       if (!sendUserEmail.ok) {
-        console.error('Falha ao enviar email para o usuário:', await sendUserEmail.text());
         return new Response('Erro ao enviar email para o usuário', { status: 500 });
       }
     }
 
     return new Response('Processamento de email concluído', { status: 200 });
   } catch (err) {
-    console.error('Function error:', err);
     return new Response('Internal Server Error', { status: 500 });
   }
 });

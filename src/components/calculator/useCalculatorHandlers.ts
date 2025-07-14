@@ -49,14 +49,11 @@ export const useCalculatorHandlers = ({
 
   const handleMonteCarloToggle = useCallback(
     (enabled: boolean) => {
-      console.log('🎬 BOTÃO CALCULAR CLICADO:', { enabled, wasEnabled: !enabled });
-
       setIsMonteCarloEnabled(enabled);
       saveToStorage(STORAGE_KEYS.MONTE_CARLO_ENABLED, enabled);
 
       // If disabling, immediately clear results and stop calculating
       if (!enabled) {
-        console.log('🔄 DESATIVANDO Monte Carlo');
         setIsCalculating(false);
         setMonteCarloResult(null);
       } else {
@@ -111,25 +108,10 @@ export const useCalculatorHandlers = ({
   const handleRetirementAgeBlur = useCallback(
     (value: string) => {
       const numericValue = parseInt(value);
-      console.log('🎯 handleRetirementAgeBlur chamado:', {
-        inputValue: value,
-        numericValue,
-        currentAge,
-        isValid: !isNaN(numericValue) && numericValue > currentAge,
-        retirementAge,
-      });
       if (!isNaN(numericValue) && numericValue > currentAge) {
-        console.log('✅ Salvando idade aposentadoria:', numericValue);
         setRetirementAge(numericValue);
         saveToStorage(STORAGE_KEYS.RETIREMENT_AGE, numericValue);
         resetMonteCarloState(); // Reset Monte Carlo when variable changes
-      } else {
-        console.log('❌ Valor inválido para idade aposentadoria:', {
-          numericValue,
-          currentAge,
-          isNaN: isNaN(numericValue),
-          isGreaterThanCurrent: numericValue > currentAge,
-        });
       }
     },
     [setRetirementAge, currentAge, retirementAge, resetMonteCarloState]

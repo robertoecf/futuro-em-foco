@@ -1,14 +1,6 @@
 export const logger = {
-  log: (...args: unknown[]): void => {
-    if (import.meta.env.MODE !== 'production') {
-      console.log(...args);
-    }
-  },
-  error: (...args: unknown[]): void => {
-    if (import.meta.env.MODE !== 'production') {
-      console.error(...args);
-    }
-  },
+  log: (..._args: unknown[]): void => {},
+  error: (..._args: unknown[]): void => {},
 };
 
 export default logger;

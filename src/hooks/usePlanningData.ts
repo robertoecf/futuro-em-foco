@@ -80,7 +80,6 @@ export const usePlanningData = () => {
       secureStorage.set(`planning_${planId}`, planningData, 7 * 24 * 60 * 60 * 1000); // 7 days expiry
       return planId;
     } catch (error) {
-      console.error('Error saving planning data:', error);
       throw new Error('Erro ao salvar dados do planejamento: ' + (error as Error).message);
     }
   };
@@ -89,7 +88,6 @@ export const usePlanningData = () => {
     try {
       return secureStorage.get(`planning_${planId}`);
     } catch (_error) {
-      console.error('Error loading planning data:', _error);
       return null;
     }
   };
@@ -157,7 +155,6 @@ export const usePlanningData = () => {
       await navigator.clipboard.writeText(directUrl);
       return true;
     } catch (_error) {
-      console.error('Erro ao copiar link:', _error);
       return false;
     }
   };

@@ -66,23 +66,18 @@ var corsHeaders = {
                 _b.label = 1;
             case 1:
                 _b.trys.push([1, 4, , 5]);
-                console.log('Function started.');
                 supabaseUrl = Deno.env.get('SUPABASE_URL');
                 supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
                 if (!supabaseUrl || !supabaseServiceKey) {
-                    console.error('Missing Supabase environment variables.');
                     return [2 /*return*/, new Response(JSON.stringify({ error: 'Internal server configuration error.' }), {
                             headers: __assign(__assign({}, corsHeaders), { 'Content-Type': 'application/json' }),
                             status: 500,
                         })];
                 }
-                console.log('Supabase environment variables loaded.');
                 supabase = (0, supabase_js_2_1.createClient)(supabaseUrl, supabaseServiceKey);
-                console.log('Supabase client created.');
                 return [4 /*yield*/, req.json()];
             case 2:
                 body = _b.sent();
-                console.log('Request body parsed:', body);
                 leadData = {
                     name: body.name,
                     email: body.email,
@@ -91,18 +86,15 @@ var corsHeaders = {
                     patrimonio_range: body.patrimonio_range || null,
                     simulation_url: body.simulation_url || null,
                 };
-                console.log('Attempting to insert data:', JSON.stringify(leadData, null, 2));
                 return [4 /*yield*/, supabase.from('leads').insert(leadData).select()];
             case 3:
                 _a = _b.sent(), data = _a.data, error = _a.error;
                 if (error) {
-                    console.error('Supabase insert error:', JSON.stringify(error, null, 2));
                     return [2 /*return*/, new Response(JSON.stringify({ error: error.message }), {
                             headers: __assign(__assign({}, corsHeaders), { 'Content-Type': 'application/json' }),
                             status: 400,
                         })];
                 }
-                console.log('Data saved successfully:', data);
                 return [2 /*return*/, new Response(JSON.stringify({ success: true, data: data }), {
                         headers: __assign(__assign({}, corsHeaders), { 'Content-Type': 'application/json' }),
                         status: 200,
@@ -113,7 +105,6 @@ var corsHeaders = {
                     message: error_1 instanceof Error ? error_1.message : String(error_1),
                     stack: error_1 instanceof Error ? error_1.stack : undefined,
                 };
-                console.error('Critical function error:', JSON.stringify(errorDetails, null, 2));
                 return [2 /*return*/, new Response(JSON.stringify({ error: 'Internal server error', details: errorDetails }), {
                         headers: __assign(__assign({}, corsHeaders), { 'Content-Type': 'application/json' }),
                         status: 500,

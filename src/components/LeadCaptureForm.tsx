@@ -140,7 +140,6 @@ export const LeadCaptureForm = ({
       resetForm();
       onClose();
     } catch (error) {
-      console.error('Error submitting form:', error);
       toast({
         title: 'Erro ao processar',
         description:
