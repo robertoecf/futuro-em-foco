@@ -146,6 +146,7 @@
 
 /* Investor Profile Cards with Enhanced Hover Effects - Base styles (Light mode) */
 .investor-card {
+  position: relative;
   background: rgba(255, 255, 255, var(--glass-transparency)) !important;
   backdrop-filter: blur(2px);
   -webkit-backdrop-filter: blur(2px);
@@ -159,73 +160,76 @@
   white-space: normal;
   word-break: break-word;
   width: 100%;
+  overflow: hidden;
 }
 
-/* Dark mode styles for investor-card */
-.dark .investor-card {
-  background: rgba(255, 255, 255, var(--glass-transparency));
-  border: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.investor-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 165, 0, 0.1), transparent);
-  transition: left 0.6s ease;
-}
-
-.investor-card:hover {
+/* --- HOVER POR PERFIL --- */
+.investor-card-conservador:hover {
   transform: translateY(-8px) scale(1.02);
   box-shadow:
     0 20px 40px rgba(0, 0, 0, 0.3),
-    0 10px 20px rgba(255, 165, 0, 0.2),
-    0 0 30px rgba(255, 165, 0, 0.1);
-  border-color: rgba(255, 165, 0, 0.3);
+    0 10px 20px rgba(59, 130, 246, 0.2),
+    0 0 30px rgba(59, 130, 246, 0.1);
+  border-color: rgba(59, 130, 246, 0.3);
+  background: linear-gradient(145deg, rgba(59, 130, 246, 0.08), rgba(224, 224, 224, 0.05) 70%);
 }
-
-.investor-card:hover::before {
-  left: 100%;
-}
-
-.investor-card.active {
-  border-width: 2px;
+.investor-card-moderado:hover {
+  transform: translateY(-8px) scale(1.02);
   box-shadow:
-    0 12px 24px rgba(0, 0, 0, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    0 20px 40px rgba(0, 0, 0, 0.3),
+    0 10px 20px rgba(249, 115, 22, 0.2),
+    0 0 30px rgba(249, 115, 22, 0.1);
+  border-color: rgba(249, 115, 22, 0.3);
+  background: linear-gradient(145deg, rgba(249, 115, 22, 0.08), rgba(224, 224, 224, 0.05) 70%);
+}
+.investor-card-arrojado:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow:
+    0 20px 40px rgba(0, 0, 0, 0.3),
+    0 10px 20px rgba(239, 68, 68, 0.2),
+    0 0 30px rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.3);
+  background: linear-gradient(145deg, rgba(239, 68, 68, 0.08), rgba(224, 224, 224, 0.05) 70%);
 }
 
-/* --- CONSERVADOR --- */
+/* Remove gradiente laranja genérico do hover */
+.investor-card:hover::before {
+  display: none;
+}
+.investor-card::before {
+  display: none;
+}
+
+/* --- ACTIVE POR PERFIL (mantém como já está, só garante que não acumula) --- */
 .dark .investor-card-conservador.active {
-  background: linear-gradient(145deg, rgba(59, 130, 246, 0.15), rgba(17, 24, 39, 0.1) 70%);
-  border-color: rgba(59, 130, 246, 0.4);
+  background: linear-gradient(145deg, rgba(59, 130, 246, 0.15), rgba(17, 24, 39, 0.1) 70%) !important;
+  border-color: rgba(59, 130, 246, 0.4) !important;
 }
 :not(.dark) .investor-card-conservador.active {
-  background: linear-gradient(145deg, rgba(59, 130, 246, 0.1), rgba(224, 224, 224, 0.1) 70%);
-  border-color: rgba(59, 130, 246, 0.4);
+  background: linear-gradient(145deg, rgba(59, 130, 246, 0.1), rgba(224, 224, 224, 0.1) 70%) !important;
+  border-color: rgba(59, 130, 246, 0.4) !important;
 }
-
-/* --- MODERADO --- */
 .dark .investor-card-moderado.active {
-  background: linear-gradient(145deg, rgba(249, 115, 22, 0.15), rgba(17, 24, 39, 0.1) 70%);
-  border-color: rgba(249, 115, 22, 0.4);
+  background: linear-gradient(145deg, rgba(249, 115, 22, 0.15), rgba(17, 24, 39, 0.1) 70%) !important;
+  border-color: rgba(249, 115, 22, 0.4) !important;
 }
 :not(.dark) .investor-card-moderado.active {
-  background: linear-gradient(145deg, rgba(249, 115, 22, 0.1), rgba(224, 224, 224, 0.1) 70%);
-  border-color: rgba(249, 115, 22, 0.4);
+  background: linear-gradient(145deg, rgba(249, 115, 22, 0.1), rgba(224, 224, 224, 0.1) 70%) !important;
+  border-color: rgba(249, 115, 22, 0.4) !important;
 }
-
-/* --- ARROJADO --- */
 .dark .investor-card-arrojado.active {
-  background: linear-gradient(145deg, rgba(239, 68, 68, 0.15), rgba(17, 24, 39, 0.1) 70%);
-  border-color: rgba(239, 68, 68, 0.4);
+  background: linear-gradient(145deg, rgba(239, 68, 68, 0.15), rgba(17, 24, 39, 0.1) 70%) !important;
+  border-color: rgba(239, 68, 68, 0.4) !important;
 }
 :not(.dark) .investor-card-arrojado.active {
-  background: linear-gradient(145deg, rgba(239, 68, 68, 0.1), rgba(224, 224, 224, 0.1) 70%);
-  border-color: rgba(239, 68, 68, 0.4);
+  background: linear-gradient(145deg, rgba(239, 68, 68, 0.1), rgba(224, 224, 224, 0.1) 70%) !important;
+  border-color: rgba(239, 68, 68, 0.4) !important;
+}
+
+/* Garante que hover + active não acumulem gradientes */
+.investor-card.active:hover {
+  filter: brightness(1.04) saturate(1.1);
+  /* Não aplica novo gradiente, só realça */
 }
 
 /* Recommendation Cards - Base styles (Light mode) */
