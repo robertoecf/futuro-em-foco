@@ -220,7 +220,7 @@ export const ChartInfo = ({
         <div className="space-y-3">
           <ReferenceItem
             label="Idade da independência"
-            value={`${userRetirementAge || possibleRetirementAge} anos`}
+            value={`${possibleRetirementAge} anos`}
             reference="financialIndependence"
           />
           <ReferenceItem

@@ -25,7 +25,7 @@ interface ChartComponentProps {
   initialAmount?: number;
   monthlyAmount?: number;
   retirementAge?: number;
-
+  possibleRetirementAge?: number; // NOVO: valor sincronizado
   onAnimationComplete?: () => void;
   onMagicMomentStateChange?: (isActive: boolean) => void;
   lineDrawingDuration?: number;
@@ -52,6 +52,7 @@ export const ChartComponent = React.memo(
     initialAmount = 0,
     monthlyAmount = 0,
     retirementAge,
+    possibleRetirementAge, // NOVO: valor sincronizado
     onAnimationComplete,
     onMagicMomentStateChange,
     lineDrawingDuration = 2000,
@@ -112,8 +113,9 @@ export const ChartComponent = React.memo(
       isMonteCarloEnabled,
     });
 
-    // Use the retirement age calculated once in useCalculator - no duplicate calculation
-    const possibleRetirementAge = retirementAge || currentAge + accumulationYears;
+    // Use o valor sincronizado se fornecido, senão calcula fallback
+    const effectivePossibleRetirementAge =
+      typeof possibleRetirementAge === 'number' ? possibleRetirementAge : (retirementAge || currentAge + accumulationYears);
 
     // Calculate perpetuity wealth based on retirement return and desired income
     const perpetuityWealth = useMemo(
@@ -170,7 +172,7 @@ export const ChartComponent = React.memo(
             ) : (
               <ChartRenderer
                 chartData={chartData}
-                possibleRetirementAge={possibleRetirementAge}
+                possibleRetirementAge={effectivePossibleRetirementAge}
                 perpetuityWealth={perpetuityWealth}
                 monthlyIncomeTarget={monthlyIncomeTarget}
                 monteCarloData={finalMonteCarloData}
@@ -201,7 +203,7 @@ export const ChartComponent = React.memo(
           >
             <ChartControls
               lifeExpectancy={lifeExpectancy}
-              possibleRetirementAge={possibleRetirementAge}
+              possibleRetirementAge={effectivePossibleRetirementAge}
               isMonteCarloEnabled={isMonteCarloEnabled}
               onLifeExpectancyChange={onLifeExpectancyChange || (() => {})}
               onMonteCarloToggle={onMonteCarloToggle || (() => {})}
@@ -221,7 +223,7 @@ export const ChartComponent = React.memo(
             <ChartInfo
               monteCarloData={finalMonteCarloData}
               perpetuityWealth={perpetuityWealth}
-              possibleRetirementAge={possibleRetirementAge}
+              possibleRetirementAge={effectivePossibleRetirementAge}
               userRetirementAge={retirementAge}
               onVisibilityChange={setChartVisibility}
             />

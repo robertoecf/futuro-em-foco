@@ -4,6 +4,7 @@ import { OptimizedCalculatorForm } from './OptimizedCalculatorForm';
 import { ResultsCards } from './ResultsCards';
 import { InsightsCards } from './InsightsCards';
 import { InvestorProfiles } from '@/components/InvestorProfiles';
+import { getAccumulationAnnualReturn } from './insights/insightsCalculations';
 
 // Lazy load heavy components
 const ChartComponent = lazy(() =>
@@ -77,6 +78,26 @@ export function Calculator() {
     crisisMeanImpact,
     setCrisisMeanImpact,
   } = useCalculator();
+
+  // Cálculo correto da idade possível de independência financeira (igual ao useInsightsData)
+  const accumulationAnnualReturn = getAccumulationAnnualReturn(investorProfile);
+  const calculateCorrectPossibleRetirementAge = () => {
+    if (retirementIncome <= 0) return retirementAge;
+    const requiredWealth = (retirementIncome * 12) / (portfolioReturn / 100);
+    const monthlyReturn = Math.pow(1 + accumulationAnnualReturn, 1 / 12) - 1;
+    let balance = initialAmount;
+    let years = 0;
+    const maxYears = 50;
+    while (balance < requiredWealth && years < maxYears) {
+      for (let month = 0; month < 12; month++) {
+        balance += monthlyAmount;
+        balance *= 1 + monthlyReturn;
+      }
+      years++;
+    }
+    return currentAge + years;
+  };
+  const correctPossibleRetirementAge = calculateCorrectPossibleRetirementAge();
 
   return (
     <div className="w-full space-y-20 mb-32 px-10">
@@ -158,6 +179,7 @@ export function Calculator() {
               onCrisisFrequencyChange: setCrisisFrequency,
               crisisMeanImpact,
               onCrisisMeanImpactChange: setCrisisMeanImpact,
+              possibleRetirementAge: correctPossibleRetirementAge, // NOVO: valor sincronizado
             }}
           />
         </Suspense>
