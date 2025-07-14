@@ -138,7 +138,7 @@ const Index = () => {
       {/* Hero Section - Centralized */}
       <section className="min-h-screen flex items-center justify-center relative">
         <div className="flex justify-center">
-          <div className="w-full max-w-7xl px-4 sm:px-6 lg:px-4">
+          <div className="w-full">
             <HeroSection onReceivePlan={() => setIsLeadFormOpen(true)} />
           </div>
         </div>
@@ -185,21 +185,18 @@ const Index = () => {
       </section>
 
       {/* CTA Section - Centralized */}
-      <div className="flex justify-center mt-48">
-        <div className="w-full max-w-7xl px-4 sm:px-6 lg:px-4">
-          <section
-            id="cta-section"
-            className="min-h-screen flex items-center justify-center relative pb-24"
-          >
+      <section id="cta-section" className="min-h-screen flex items-center justify-center relative pb-24 mt-48">
+        <div className="flex justify-center">
+          <div className="w-full">
             <div
               id="cta-banner"
               className="aurora-banner text-white p-12 md:p-16 lg:p-20 rounded-3xl relative overflow-hidden"
               style={{
-                width: '100%',
+                width: 'auto',
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'center',
-                margin: 'clamp(24px, 8vh, 80px) 0',
+                margin: 'clamp(24px, 8vh, 80px)',
                 minHeight: '80vh',
               }}
             >
@@ -222,9 +219,9 @@ const Index = () => {
                 </Button>
               </div>
             </div>
-          </section>
+          </div>
         </div>
-      </div>
+      </section>
 
       {/* Dynamic Header - Visible at top and bottom */}
       {showHeader && (

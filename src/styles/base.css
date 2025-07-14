@@ -4,14 +4,14 @@
 
 @layer base {
   :root {
-    /* MODO CLARO - Background #E0E0E0 nas seções */
-    --background: 0 0% 88%; /* #E0E0E0 */
+    /* MODO CLARO - Background #D2D2D2 nas seções */
+    --background: 0 0% 82.4%; /* #D2D2D2 */
     --foreground: 222.2 84% 4.9%;
 
-    --card: 0 0% 88%; /* #E0E0E0 */
+    --card: 0 0% 82.4%; /* #D2D2D2 */
     --card-foreground: 222.2 84% 4.9%;
 
-    --popover: 0 0% 88%; /* #E0E0E0 */
+    --popover: 0 0% 82.4%; /* #D2D2D2 */
     --popover-foreground: 222.2 84% 4.9%;
 
     --primary: 210 40% 98%;
@@ -35,7 +35,7 @@
 
     --radius: 0.5rem;
 
-    --sidebar-background: 0 0% 88%; /* #E0E0E0 */
+    --sidebar-background: 0 0% 82.4%; /* #D2D2D2 */
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
     --sidebar-primary-foreground: 0 0% 100%;
@@ -54,9 +54,9 @@
     --palette-mix-white: #FEFFFB;
     
     /* Sistema de Theming Reativo - Modo Claro */
-    --theme-surface: #E0E0E0; /* Mudando apenas o background das seções */
-    --theme-surface-container-bg: #E0E0E0;
-    --theme-surface-glass: rgba(224, 224, 224, 0.9);
+    --theme-surface: #D2D2D2; /* Mudando apenas o background das seções */
+    --theme-surface-container-bg: #D2D2D2;
+    --theme-surface-glass: rgba(210, 210, 210, 0.9);
     --theme-primary: #E48200;
     --theme-on-primary: #FEFFFB;
     --theme-secondary: #2F3B29;
@@ -68,13 +68,13 @@
     
     /* Gradientes Técnicos - Modo Claro */
     --tech-gradient-primary: linear-gradient(135deg, rgba(228, 130, 0, 0.2), rgba(47, 59, 41, 0.1));
-    --tech-gradient-surface: linear-gradient(135deg, #E0E0E0, #E0E0E0);
+    --tech-gradient-surface: linear-gradient(135deg, #D2D2D2, #D2D2D2);
     --tech-gradient-glass: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
   }
 
   .dark {
-    /* MODO ESCURO - Cor de fundo de teste #141414 */
-    --background: 0 0% 8%; /* #141414 */
+    /* MODO ESCURO - Cor de fundo de teste #070707 */
+    --background: 0 0% 2.7%; /* #070707 */
     --foreground: 210 40% 98%;
 
     --card: 0 0% 8%; /* #141414 */
@@ -139,11 +139,11 @@
   html {
     /* Easter Egg Matrix - Overscroll preto com códigos verdes */
     overscroll-behavior: none;
-    background: #E0E0E0;
+    background: #D2D2D2;
   }
   
   .dark html {
-    background: #141414;
+    background: #070707;
   }
 
   body {
@@ -152,12 +152,12 @@
     position: relative;
     overflow-x: hidden;
     min-height: 100vh;
-    background: #E0E0E0;
+    background: #D2D2D2;
   }
   
   /* Background específico para modo escuro */
   .dark body {
-    background: #141414;
+    background: #070707;
   }
 
   /* Matrix Easter Egg - Códigos caindo nas áreas de overscroll */
