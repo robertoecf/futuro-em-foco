@@ -7,6 +7,8 @@ import { PostHogProvider } from '@/components/PostHogProvider';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import Index from './pages/Index';
 import NotFound from './pages/NotFound';
+import { SpeedInsights } from "@vercel/speed-insights/react";
+import { Analytics } from "@vercel/analytics/react";
 
 const queryClient = new QueryClient();
 
@@ -26,6 +28,8 @@ const App = () => (
         </PostHogProvider>
       </BrowserRouter>
     </TooltipProvider>
+    <SpeedInsights />
+    <Analytics />
   </QueryClientProvider>
 );
 
