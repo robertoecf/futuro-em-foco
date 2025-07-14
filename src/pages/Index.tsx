@@ -108,32 +108,24 @@ const Index = () => {
     };
   }, [handleScroll, updateScrollDimensions]);
 
-  // Optimized DOM manipulation with proper timing
-  useEffect(() => {
-    // Use requestAnimationFrame to prevent layout thrashing
-    const setupAuroraBackground = () => {
-      const heroBannerBackground = document.getElementById('aurora-banner-background');
-      const ctaBanner = document.getElementById('cta-banner');
-
-      if (heroBannerBackground && ctaBanner) {
-        // Check if already cloned to prevent duplicates
-        const existingClone = document.getElementById('aurora-cta-background-cloned');
-        if (!existingClone) {
-          const clonedBackground = heroBannerBackground.cloneNode(true) as HTMLElement;
-          clonedBackground.id = 'aurora-cta-background-cloned';
-          ctaBanner.prepend(clonedBackground);
-        }
-      }
-    };
-
-    // Defer DOM manipulation to next frame
-    requestAnimationFrame(setupAuroraBackground);
-  }, []);
-
   return (
     <div className="min-h-screen bg-background dark:text-white text-gray-900 relative">
       {/* Matrix Rain Easter Egg */}
-      <MatrixRain isActive={isOverscrolling} />
+      <MatrixRain isActive={isOverscrolling} mask="top" />
+      <div
+        style={{
+          transform: 'scaleY(-1)',
+          position: 'fixed',
+          left: 0,
+          bottom: 0,
+          width: '100vw',
+          height: '120px',
+          zIndex: -1,
+          pointerEvents: 'none',
+        }}
+      >
+        <MatrixRain isActive={isOverscrolling} mask="bottom" />
+      </div>
 
       {/* Hero Section - Centralized */}
       <section className="min-h-screen flex items-center justify-center relative">
@@ -185,43 +177,55 @@ const Index = () => {
       </section>
 
       {/* CTA Section - Centralized */}
-      <section id="cta-section" className="min-h-screen flex items-center justify-center relative pb-24 mt-48">
-        <div className="flex justify-center">
-          <div className="w-full">
-            <div
-              id="cta-banner"
-              className="aurora-banner text-white p-12 md:p-16 lg:p-20 rounded-3xl relative overflow-hidden"
-              style={{
-                width: 'auto',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-                margin: 'clamp(24px, 8vh, 80px)',
-                minHeight: '80vh',
-              }}
-            >
-              {/* Aurora Background will be prepended here by useEffect */}
+      <section id="cta-section" className="h-auto flex items-center justify-center relative">
+        <div className="w-full">
+          <div
+            id="cta-banner"
+            className="aurora-banner text-white p-8 sm:p-12 md:p-12 lg:p-12 xl:p-14 rounded-3xl relative overflow-hidden dark:shadow-none shadow-2xl"
+            style={{
+              width: '90%',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              margin: '0 auto 0 auto',
+              minHeight: '80vh',
+            }}
+          >
+            {/* Aurora Background CTA */}
+            <div id="aurora-cta-background" className="aurora-background-container">
+              <div id="cta-blob1" className="aurora-banner-blob"></div>
+              <div id="cta-blob2" className="aurora-banner-blob"></div>
+              <div id="cta-blob3" className="aurora-banner-blob"></div>
+              <div id="cta-blob4" className="aurora-banner-blob"></div>
+              <div id="cta-blob5" className="aurora-banner-blob"></div>
+              <div id="cta-blob6" className="aurora-banner-blob"></div>
+              <div id="cta-blob7" className="aurora-banner-blob mix-blob"></div>
+              <div id="cta-blob8" className="aurora-banner-blob mix-blob"></div>
+              <div id="cta-blob9" className="aurora-banner-blob mix-blob"></div>
+            </div>
 
-              {/* Content */}
-              <div className="relative z-10 text-center" style={{ marginTop: '60px' }}>
-                <h1 className="text-4xl md:text-5xl font-bold mb-4">
-                  Pronto para impulsionar sua jornada?
-                </h1>
-                <p className="text-lg mb-8 opacity-90">
-                  Transforme seus objetivos em realidade com um plano de gestão patrimonial sob
-                  medida.
-                </p>
-                <Button
-                  onClick={() => setIsLeadFormOpen(true)}
-                  className="tech-button-specialist-cta"
-                >
-                  Receber plano por email
-                </Button>
-              </div>
+            {/* Content */}
+            <div className="relative z-10 text-center" style={{ marginTop: '60px' }}>
+              <h1 className="text-3xl sm:text-4xl md:text-4xl xl:text-5xl font-bold mb-4 leading-tight lg:text-5xl">
+                Pronto para impulsionar sua jornada?
+              </h1>
+              <p className="text-lg mb-8 opacity-90">
+                Transforme seus objetivos em realidade com um plano de gestão patrimonial sob
+                medida.
+              </p>
+              <Button
+                onClick={() => setIsLeadFormOpen(true)}
+                className="tech-button-specialist-cta"
+              >
+                Receber plano por email
+              </Button>
             </div>
           </div>
         </div>
       </section>
+
+      {/* Divider antes do footer */}
+      <div className="section-divider w-24 ml-auto mt-0 !mt-0" />
 
       {/* Dynamic Header - Visible at top and bottom */}
       {showHeader && (
@@ -255,7 +259,7 @@ const Index = () => {
       <footer className="py-4 bg-background">
         <div className="flex justify-center">
           <div className="w-full max-w-7xl px-4 sm:px-6 lg:px-4">
-            <p className="text-center text-xs dark:text-gray-700 text-gray-500 opacity-30 leading-tight">
+            <p className="text-center text-xs leading-tight text-white dark:text-[#D2D2D2]">
               As informações contidas neste material são de caráter exclusivamente informativo e não
               devem ser entendidas como oferta, recomendação ou análise de investimento. O Futuro em
               Foco Planner não garante que os rendimentos futuros serão iguais aos apresentados

@@ -12,11 +12,11 @@ export const HeroSection = ({ onReceivePlan: _onReceivePlan }: HeroSectionProps)
       id="hero-banner"
       className="aurora-banner text-white p-8 sm:p-12 md:p-12 lg:p-12 xl:p-14 rounded-3xl relative overflow-hidden dark:shadow-none shadow-2xl"
       style={{
-        width: 'auto',
+        width: '90%',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
-        margin: 'clamp(24px, 8vh, 80px)',
+        margin: 'clamp(24px, 8vh, 80px) auto',
         minHeight: '80vh',
       }}
     >

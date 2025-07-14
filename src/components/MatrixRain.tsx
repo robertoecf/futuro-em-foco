@@ -3,9 +3,10 @@ import { performanceValidator } from '@/utils/performanceValidation';
 
 interface MatrixRainProps {
   isActive: boolean;
+  mask?: 'top' | 'bottom' | 'none';
 }
 
-export const MatrixRain: React.FC<MatrixRainProps> = ({ isActive }) => {
+export const MatrixRain: React.FC<MatrixRainProps> = ({ isActive, mask = 'none' }) => {
   const [columns, setColumns] = useState<string[]>([]);
   
   // Cache window dimensions to prevent reflows
@@ -61,7 +62,7 @@ export const MatrixRain: React.FC<MatrixRainProps> = ({ isActive }) => {
     generateColumns();
 
     // Reduced frequency for better performance (1.2s instead of 800ms)
-    const interval = setInterval(generateColumns, 1200);
+    const interval = setInterval(generateColumns, 2500);
 
     // Cleanup
     return () => clearInterval(interval);
@@ -92,7 +93,7 @@ export const MatrixRain: React.FC<MatrixRainProps> = ({ isActive }) => {
   if (!isActive) return null;
 
   return (
-    <div className="matrix-rain">
+    <div className={`matrix-rain${mask === 'top' ? ' matrix-rain-top' : ''}${mask === 'bottom' ? ' matrix-rain-bottom' : ''}`}>
       {columns.map((column, index) => (
         <div
           key={`${index}-${column.length}`} // Key que muda para forçar re-render
@@ -100,7 +101,7 @@ export const MatrixRain: React.FC<MatrixRainProps> = ({ isActive }) => {
           style={{
             left: `${index * 12}px`, // Ajustado para as colunas mais próximas
             animationDelay: `${Math.random() * 2}s`, // Delays menores
-            animationDuration: `${2 + Math.random() * 2}s`, // Animações mais rápidas
+            animationDuration: `${5 + Math.random() * 5}s`, // Animações mais lentas (5s a 10s)
           }}
         >
           {column}
