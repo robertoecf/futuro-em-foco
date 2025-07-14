@@ -71,7 +71,3 @@ jobs:
           #   !contains(github.event.pull_request.title, '[skip-review]') &&
           #   !contains(github.event.pull_request.title, '[WIP]')
 
-# As permissões abaixo seguem o princípio do menor privilégio recomendado pelo GitHub Actions.
-# O alerta CKV2_GHA_1 do CHECKOV é um falso positivo neste contexto.
-# checkov:skip=CKV2_GHA_1 Permissões já seguem o princípio do menor privilégio, falso positivo.
-
