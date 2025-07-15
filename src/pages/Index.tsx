@@ -111,7 +111,7 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background dark:text-white text-gray-900 relative">
       {/* Matrix Rain Easter Egg */}
-      <MatrixRain isActive={isOverscrolling} mask="top" />
+      {/* <MatrixRain isActive={isOverscrolling} mask="top" /> */}
       <div
         style={{
           transform: 'scaleY(-1)',
@@ -225,7 +225,7 @@ const Index = () => {
       </section>
 
       {/* Divider antes do footer */}
-      <div className="section-divider w-24 ml-auto mt-0 !mt-0" />
+      <div className="section-divider w-24 ml-auto !mt-0" />
 
       {/* Dynamic Header - Visible at top and bottom */}
       {showHeader && (

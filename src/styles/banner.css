@@ -4,17 +4,14 @@
   background-color: var(--palette-black);
   position: relative;
   overflow: hidden;
-  border: 0.5px solid rgba(255, 255, 255, 0.08);
+  border: 0.5px solid rgb(255 255 255 / 8%);
 }
 
 .aurora-banner::before {
   content: '';
   position: absolute;
-  top: -20px !important;
-  left: -20px !important;
-  right: -20px !important;
-  bottom: -20px !important;
-  background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.015) 0%, transparent 20%);
+  inset: -20px !important;
+  background: radial-gradient(ellipse at center, rgb(255 255 255 / 1.5%) 0%, transparent 20%);
   border-radius: inherit;
   z-index: -1;
   filter: blur(20px) !important;
@@ -24,11 +21,8 @@
 .aurora-banner::after {
   content: '';
   position: absolute;
-  top: -40px !important;
-  left: -40px !important;
-  right: -40px !important;
-  bottom: -40px !important;
-  background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.0075) 0%, transparent 20%);
+  inset: -40px !important;
+  background: radial-gradient(ellipse at center, rgb(255 255 255 / 0.75%) 0%, transparent 20%);
   border-radius: inherit;
   z-index: -2;
   filter: blur(40px) !important;
@@ -53,14 +47,15 @@
   opacity: 0.8;
   will-change: transform;
   contain: layout paint;
-  animation: moveBannerBlob 25s infinite alternate;
+  animation: move-banner-blob 25s infinite alternate;
   mix-blend-mode: screen;
 }
 
-@keyframes moveBannerBlob {
+@keyframes move-banner-blob {
   0% {
     transform: translate3d(var(--x-start, -20vw), var(--y-start, -30vh), 0) rotate(0deg) scale(1.1);
   }
+
   100% {
     transform: translate3d(var(--x-end, 20vw), var(--y-end, 30vh), 0) rotate(180deg) scale(1);
   }
@@ -72,6 +67,7 @@
   --y-start: 30vh;
   --x-end: 25vw;
   --y-end: 40vh;
+
   width: 35vw;
   height: 35vw;
   animation-duration: 25s;
@@ -83,6 +79,7 @@
   --y-start: 20vh;
   --x-end: 45vw;
   --y-end: -10vh;
+
   width: 30vw;
   height: 30vw;
   animation-duration: 20s;
@@ -94,6 +91,7 @@
   --y-start: 60vh;
   --x-end: 15vw;
   --y-end: 10vh;
+
   width: 28vw;
   height: 28vw;
   animation-duration: 30s;
@@ -105,6 +103,7 @@
   --y-start: 40vh;
   --x-end: 75vw;
   --y-end: 80vh;
+
   width: 38vw;
   height: 38vw;
   animation-duration: 22s;
@@ -116,6 +115,7 @@
   --y-start: 50vh;
   --x-end: 80vw;
   --y-end: -10vh;
+
   width: 32vw;
   height: 32vw;
   animation-duration: 27s;
@@ -127,6 +127,7 @@
   --y-start: 25vh;
   --x-end: -10vw;
   --y-end: 60vh;
+
   width: 25vw;
   height: 25vw;
   animation-duration: 32s;
@@ -138,6 +139,7 @@
   --y-start: 35vh;
   --x-end: 90vw;
   --y-end: 0vh;
+
   width: 30vw;
   height: 30vw;
   animation-duration: 24s;
@@ -149,6 +151,7 @@
   --y-start: 45vh;
   --x-end: 10vw;
   --y-end: 50vh;
+
   width: 25vw;
   height: 25vw;
   animation-duration: 28s;
@@ -160,6 +163,7 @@
   --y-start: 55vh;
   --x-end: 30vw;
   --y-end: 70vh;
+
   width: 28vw;
   height: 28vw;
   animation-duration: 26s;
@@ -169,16 +173,19 @@
 /* === AJUSTES PARA MODO CLARO === */
 
 :not(.dark) .aurora-banner {
-  box-shadow: 0 0 10px 2px rgba(0,0,0,0.2), 0 0 2px 0px rgba(0,0,0,0.2);
+  box-shadow: 0 0 10px 2px rgb(0 0 0 / 20%), 0 0 2px 0 rgb(0 0 0 / 20%);
 }
+
 .dark .aurora-banner {
-  box-shadow: 0 0 10px 2px rgba(255,255,255,0.2), 0 0 2px 0px rgba(255,255,255,0.2);
+  box-shadow: 0 0 10px 2px rgb(255 255 255 / 20%), 0 0 2px 0 rgb(255 255 255 / 20%);
 }
+
 .dark .aurora-banner::before {
-  background: radial-gradient(ellipse at center, rgba(255,255,255,0.028) 0%, transparent 70%);
+  background: radial-gradient(ellipse at center, rgb(255 255 255 / 2.8%) 0%, transparent 70%);
   filter: blur(22px);
 }
+
 .dark .aurora-banner::after {
-  background: radial-gradient(ellipse at center, rgba(255,255,255,0.012) 0%, transparent 80%);
+  background: radial-gradient(ellipse at center, rgb(255 255 255 / 1.2%) 0%, transparent 80%);
   filter: blur(44px);
 }
