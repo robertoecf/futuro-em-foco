@@ -13,7 +13,7 @@ import { MonteCarloResult } from '@/lib/utils';
 import type { ChartDataPoint } from '@/utils/csvExport';
 import { CustomTooltip } from './CustomTooltip';
 import { formatYAxis } from './utils/chartUtils';
-import { useFinalLinesAnimation } from './hooks/useFinalLinesAnimation';
+import { useFinalLinesAnimation } from './useFinalLinesAnimation';
 import { ChartVisibilityState } from './ChartInfo';
 
 // Monte Carlo configuration
@@ -68,7 +68,7 @@ export const ChartRenderer = React.memo(
       return () => observer.disconnect();
     }, []);
 
-    const { getFinalLineAnimationState, isAnimationComplete: _isAnimationComplete } =
+    const { getFinalLineAnimationState } =
       useFinalLinesAnimation({
         isDrawingFinalLines,
       });
@@ -299,9 +299,9 @@ export const ChartRenderer = React.memo(
                       name="Cenário Pessimista"
                       stroke="#DC2626"
                       strokeWidth={2}
-                      strokeDasharray={getFinalLineAnimationState('pessimistic').strokeDasharray}
-                      strokeDashoffset={getFinalLineAnimationState('pessimistic').strokeDashoffset}
-                      strokeOpacity={getFinalLineAnimationState('pessimistic').opacity}
+                      strokeDasharray={isDrawingFinalLines ? getFinalLineAnimationState().strokeDasharray : '5 5'}
+                      strokeDashoffset={getFinalLineAnimationState().strokeDashoffset}
+                      strokeOpacity={getFinalLineAnimationState().opacity}
                       dot={false}
                       activeDot={
                         shouldShowActiveDots
@@ -309,7 +309,7 @@ export const ChartRenderer = React.memo(
                           : false
                       }
                       isAnimationActive={false}
-                      style={getFinalLineAnimationState('pessimistic').drawingStyle}
+                      style={getFinalLineAnimationState().drawingStyle}
                     />
                   )}
 
@@ -321,9 +321,9 @@ export const ChartRenderer = React.memo(
                       name="Cenário Neutro"
                       stroke="#3B82F6"
                       strokeWidth={3}
-                      strokeDasharray={getFinalLineAnimationState('median').strokeDasharray}
-                      strokeDashoffset={getFinalLineAnimationState('median').strokeDashoffset}
-                      strokeOpacity={getFinalLineAnimationState('median').opacity}
+                      strokeDasharray={isDrawingFinalLines ? getFinalLineAnimationState().strokeDasharray : 'none'}
+                      strokeDashoffset={getFinalLineAnimationState().strokeDashoffset}
+                      strokeOpacity={getFinalLineAnimationState().opacity}
                       dot={false}
                       activeDot={
                         shouldShowActiveDots
@@ -331,7 +331,7 @@ export const ChartRenderer = React.memo(
                           : false
                       }
                       isAnimationActive={false}
-                      style={getFinalLineAnimationState('median').drawingStyle}
+                      style={getFinalLineAnimationState().drawingStyle}
                     />
                   )}
 
@@ -343,9 +343,9 @@ export const ChartRenderer = React.memo(
                       name="Cenário Otimista"
                       stroke="#10B981"
                       strokeWidth={2}
-                      strokeDasharray={getFinalLineAnimationState('optimistic').strokeDasharray}
-                      strokeDashoffset={getFinalLineAnimationState('optimistic').strokeDashoffset}
-                      strokeOpacity={getFinalLineAnimationState('optimistic').opacity}
+                      strokeDasharray={isDrawingFinalLines ? getFinalLineAnimationState().strokeDasharray : '5 5'}
+                      strokeDashoffset={getFinalLineAnimationState().strokeDashoffset}
+                      strokeOpacity={getFinalLineAnimationState().opacity}
                       dot={false}
                       activeDot={
                         shouldShowActiveDots
@@ -353,7 +353,7 @@ export const ChartRenderer = React.memo(
                           : false
                       }
                       isAnimationActive={false}
-                      style={getFinalLineAnimationState('optimistic').drawingStyle}
+                      style={getFinalLineAnimationState().drawingStyle}
                     />
                   )}
                 </>

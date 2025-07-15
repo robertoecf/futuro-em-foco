@@ -1,94 +1,97 @@
-import { useState, useEffect, useRef } from 'react';
-import { FINAL_LINES_ANIMATION } from '@/components/calculator/constants';
+import { useState, useEffect, useRef, useMemo } from 'react';
+import React from 'react';
+import { MAGIC_MOMENT_TIMERS } from '@/components/calculator/constants';
 
 interface UseFinalLinesAnimationProps {
   isDrawingFinalLines: boolean;
 }
 
+interface AnimationState {
+  strokeDasharray: string;
+  strokeDashoffset: string;
+  opacity: number;
+  drawingStyle: React.CSSProperties;
+  isVisible: boolean;
+}
+
 export const useFinalLinesAnimation = ({ isDrawingFinalLines }: UseFinalLinesAnimationProps) => {
-  const [animatedLines, setAnimatedLines] = useState<Set<string>>(new Set());
-  const [drawingLines, setDrawingLines] = useState<Set<string>>(new Set());
-  const timeoutsRef = useRef<ReturnType<typeof setTimeout>[]>([]);
+  const [animationTime, setAnimationTime] = useState(0);
+  const animationFrameRef = useRef<number>();
+  const startTimeRef = useRef<number>();
 
-  // Clear all timeouts when component unmounts or animation resets
-  const clearAllTimeouts = () => {
-    timeoutsRef.current.forEach((timeout) => clearTimeout(timeout));
-    timeoutsRef.current = [];
-  };
-
-  // Start final lines drawing animation
+  // Gerencia o timer da animação
   useEffect(() => {
-    if (isDrawingFinalLines) {
-      // Reset states
-      setAnimatedLines(new Set());
-      setDrawingLines(new Set());
-      clearAllTimeouts();
-
-      // Schedule each final line to start drawing (pessimistic → median → optimistic)
-      FINAL_LINES_ANIMATION.LINES.forEach((lineKey, index) => {
-        const startDrawingTimeout = setTimeout(() => {
-          setDrawingLines((prev) => new Set([...prev, lineKey]));
-
-          // After the drawing animation completes, mark as fully animated
-          const completeDrawingTimeout = setTimeout(() => {
-            setDrawingLines((prev) => {
-              const next = new Set(prev);
-              next.delete(lineKey);
-              return next;
-            });
-            setAnimatedLines((prev) => new Set([...prev, lineKey]));
-          }, FINAL_LINES_ANIMATION.STROKE_ANIMATION_DURATION);
-
-          timeoutsRef.current.push(completeDrawingTimeout);
-        }, index * FINAL_LINES_ANIMATION.DELAY_BETWEEN_LINES);
-
-        timeoutsRef.current.push(startDrawingTimeout);
-      });
-    } else {
-      clearAllTimeouts();
-      setAnimatedLines(new Set());
-      setDrawingLines(new Set());
+    if (!isDrawingFinalLines) {
+      setAnimationTime(0);
+      startTimeRef.current = undefined;
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
+      return;
     }
 
-    return clearAllTimeouts;
+    const updateAnimation = (timestamp: number) => {
+      if (!startTimeRef.current) {
+        startTimeRef.current = timestamp;
+      }
+
+      const elapsed = timestamp - startTimeRef.current;
+      setAnimationTime(elapsed);
+
+      if (elapsed < MAGIC_MOMENT_TIMERS.DRAWING_FINAL_DURATION) {
+        animationFrameRef.current = requestAnimationFrame(updateAnimation);
+      }
+    };
+
+    animationFrameRef.current = requestAnimationFrame(updateAnimation);
+
+    return () => {
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
+    };
   }, [isDrawingFinalLines]);
 
-  // Get animation state for a specific final line
-  const getFinalLineAnimationState = (lineKey: string) => {
-    const isDrawing = drawingLines.has(lineKey);
-    const isComplete = animatedLines.has(lineKey);
+  const getFinalLineAnimationState = useMemo(() => {
+    return (): AnimationState => {
+      if (!isDrawingFinalLines) {
+        // Estado final: todas as linhas completamente visíveis
+        return {
+          strokeDasharray: '1000',
+          strokeDashoffset: '0',
+          opacity: 1,
+          drawingStyle: {},
+          isVisible: true,
+        };
+      }
 
-    // Define if line should be dashed (pessimistic and optimistic are always dashed)
-    const shouldBeDashed = lineKey === 'pessimistic' || lineKey === 'optimistic';
+      // Todas as linhas começam juntas, sem delay
+      const lineElapsed = animationTime;
+      const lineProgress = Math.min(lineElapsed / MAGIC_MOMENT_TIMERS.DRAWING_FINAL_DURATION, 1);
 
-    return {
-      isDrawing,
-      isComplete,
-      isVisible: isDrawing || isComplete,
-      strokeDasharray: isDrawing
-        ? shouldBeDashed
-          ? '5 5 1000 1000'
-          : '1000 1000' // Combine dash pattern with draw effect
-        : shouldBeDashed
-          ? '5 5'
-          : 'none',
-      strokeDashoffset: isDrawing ? '1000' : '0',
-      opacity: isComplete ? 1 : isDrawing ? 0.8 : 0,
-      drawingStyle: isDrawing
-        ? {
-            animation: shouldBeDashed
-              ? `draw-dashed-line ${FINAL_LINES_ANIMATION.STROKE_ANIMATION_DURATION}ms ${FINAL_LINES_ANIMATION.ANIMATION_CURVE} forwards`
-              : `draw-line ${FINAL_LINES_ANIMATION.STROKE_ANIMATION_DURATION}ms ${FINAL_LINES_ANIMATION.ANIMATION_CURVE} forwards`,
-          }
-        : {},
+      // Se ainda não começou a desenhar
+      if (animationTime <= 0) {
+        return {
+          strokeDasharray: '1000',
+          strokeDashoffset: '1000',
+          opacity: 1,
+          drawingStyle: {},
+          isVisible: true,
+        };
+      }
+
+      // Animação de desenho literal usando dashoffset
+      const dashOffset = 1000 * (1 - lineProgress);
+
+      return {
+        strokeDasharray: '1000',
+        strokeDashoffset: `${dashOffset}`,
+        opacity: 1,
+        drawingStyle: {},
+        isVisible: true,
+      };
     };
-  };
+  }, [isDrawingFinalLines, animationTime]);
 
-  return {
-    getFinalLineAnimationState,
-    animatedLinesCount: animatedLines.size,
-    drawingLinesCount: drawingLines.size,
-    isAnimationComplete: animatedLines.size === FINAL_LINES_ANIMATION.LINES.length,
-    totalFinalLines: FINAL_LINES_ANIMATION.LINES.length,
-  };
+  return { getFinalLineAnimationState };
 };
