@@ -4,9 +4,9 @@ import type { Database } from './types';
 
 // 🎯 CORREÇÃO: Usar as variáveis com nomes corretos e valores de fallback
 const SUPABASE_URL =
-  process.env.VITE_SUPABASE_URL || 'https://hcmjavggiphoulwgcoej.supabase.co';
+  import.meta.env.VITE_SUPABASE_URL || 'https://hcmjavggiphoulwgcoej.supabase.co';
 const SUPABASE_PUBLISHABLE_KEY =
-  process.env.VITE_SUPABASE_ANON_KEY ||
+  import.meta.env.VITE_SUPABASE_ANON_KEY ||
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhjbWphdmdnaXBob3Vsd2djb2VqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAzNDUzMzMsImV4cCI6MjA2NTkyMTMzM30.rUBOj4-iEYQ77UaqaSfNFMSi84_Xsf6iTBmE7mWtjv4';
 
 // Environment variables loaded
@@ -118,5 +118,17 @@ export async function saveLeadViaEdgeFunction(lead: {
     return { success: true };
   } catch (err) {
     return { success: false, error: err instanceof Error ? err.message : 'Erro desconhecido' };
+  }
+}
+
+// Adicione este bloco em qualquer arquivo .ts do projeto (idealmente em src/vite-env.d.ts)
+declare global {
+  interface ImportMetaEnv {
+    readonly VITE_SUPABASE_URL: string;
+    readonly VITE_SUPABASE_ANON_KEY: string;
+    // outras variáveis VITE_*
+  }
+  interface ImportMeta {
+    readonly env: ImportMetaEnv;
   }
 }
