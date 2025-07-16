@@ -1,47 +1,23 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Calculator } from '@/components/calculator/Calculator';
 import { HeroSection } from '@/components/HeroSection';
 import { LeadCaptureForm } from '@/components/LeadCaptureForm';
 import { useCalculator } from '@/components/calculator/useCalculator';
 import { MatrixRain } from '@/components/MatrixRain';
-import { useOverscroll } from '@/hooks/useOverscroll';
 import { Button } from '@/components/ui/button';
-
-// Função throttle simples
-function throttle<T extends unknown[]>(fn: (...args: T) => void, wait: number) {
-  let lastTime = 0;
-  return function (...args: T) {
-    const now = Date.now();
-    if (now - lastTime >= wait) {
-      lastTime = now;
-      fn(...args);
-    }
-  };
-}
-
-// Função debounce simples
-function debounce<T extends unknown[]>(fn: (...args: T) => void, wait: number) {
-  let timeout: ReturnType<typeof setTimeout>;
-  const debounced = function (...args: T) {
-    clearTimeout(timeout);
-    timeout = setTimeout(() => fn(...args), wait);
-  };
-  debounced.cancel = () => clearTimeout(timeout);
-  return debounced;
-}
-
-// Tipagem explícita para o debounce com método cancel
-interface DebouncedFunction<T extends unknown[]> {
-  (...args: T): void;
-  cancel: () => void;
-}
 
 const Index = () => {
   const [isLeadFormOpen, setIsLeadFormOpen] = useState(false);
   const [showHeader, setShowHeader] = useState(true); // Header visível no início
 
-  // Easter egg Matrix rain effect
-  const isOverscrolling = useOverscroll();
+  // Refs para as seções-chave
+  const heroRef = useRef<HTMLElement | null>(null);
+  const calculatorRef = useRef<HTMLElement | null>(null);
+  const footerRef = useRef<HTMLElement | null>(null);
+  const bottomSentinelRef = useRef<HTMLDivElement | null>(null);
+
+  // Estado para MatrixRain
+  const [showMatrix, setShowMatrix] = useState(false);
 
   // Calculator data
   const calculatorData = useCalculator();
@@ -58,76 +34,95 @@ const Index = () => {
     investorProfile: calculatorData.investorProfile,
   };
 
-  // Otimizado: cache de dimensões atualizado apenas em resize, não em todo scroll
-  const lastScrollTopRef = useRef(0);
-  const ticking = useRef(false);
-  const scrollDimensionsRef = useRef({
-    scrollHeight: 0,
-    clientHeight: 0,
-  });
-
-  // Atualiza cache de dimensões (só em resize)
-  const updateScrollDimensions = useCallback(() => {
-    scrollDimensionsRef.current = {
-      scrollHeight: document.documentElement.scrollHeight,
-      clientHeight: document.documentElement.clientHeight,
-    };
-  }, []);
-
-  // Debounced setter para o header
-  const debouncedSetShowHeader = useRef<DebouncedFunction<[boolean]> | null>(null);
-  if (!debouncedSetShowHeader.current) {
-    debouncedSetShowHeader.current = debounce(setShowHeader, 200) as DebouncedFunction<[boolean]>;
-  }
-
-  const BOTTOM_ACTIVE_ZONE = 150;
-
-  // Handler otimizado: só lê layout uma vez por frame, sem forced reflow
-  const handleScroll = useCallback(() => {
-    if (!ticking.current) {
-      ticking.current = true;
-      requestAnimationFrame(() => {
-        // Só lê layout aqui, fora de loops/eventos
-        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        const { scrollHeight, clientHeight } = scrollDimensionsRef.current;
-        const isAtTop = scrollTop <= 900;
-        const isAtBottomZone = scrollTop + clientHeight >= scrollHeight - BOTTOM_ACTIVE_ZONE;
-        if (isAtTop || isAtBottomZone) {
-          if (debouncedSetShowHeader.current && typeof debouncedSetShowHeader.current.cancel === 'function') {
-            debouncedSetShowHeader.current.cancel();
-          }
-          setShowHeader(true); // Mostra imediatamente ao voltar ao topo ou chegar na zona ativa do fim
-        } else {
-          // Esconde com delay se não está no topo/fim
-          if (debouncedSetShowHeader.current) {
-            debouncedSetShowHeader.current(false);
-          }
-        }
-        lastScrollTopRef.current = scrollTop;
-        ticking.current = false;
-      });
-    }
-  }, []);
-
-  // Setup listeners: resize atualiza dimensões, scroll só lê cache
+  // NOVA LÓGICA: IntersectionObserver para header
   useEffect(() => {
-    updateScrollDimensions();
-    const handleResize = () => {
-      updateScrollDimensions();
+    const hero = heroRef.current;
+    const footer = footerRef.current;
+    if (!hero || !footer) return;
+
+    let heroVisible = false;
+    let footerVisible = false;
+
+    const updateHeader = () => {
+      // Header aparece se hero OU footer visíveis
+      setShowHeader(heroVisible || footerVisible);
     };
-    window.addEventListener('resize', handleResize, { passive: true });
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll(); // Estado inicial
+
+    const observer = new window.IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.target === hero) {
+            heroVisible = entry.isIntersecting;
+          } else if (entry.target === footer) {
+            footerVisible = entry.isIntersecting;
+          }
+        });
+        updateHeader();
+      },
+      {
+        threshold: 0.1, // Considera visível se pelo menos 10% da seção está na viewport
+      }
+    );
+
+    observer.observe(hero);
+    observer.observe(footer);
+
     return () => {
-      window.removeEventListener('resize', handleResize);
-      window.removeEventListener('scroll', handleScroll);
+      observer.disconnect();
     };
-  }, [handleScroll, updateScrollDimensions]);
+  }, []);
+
+  // NOVA LÓGICA: MatrixRain só ativa no fim da página e modo escuro
+  useEffect(() => {
+    const sentinel = bottomSentinelRef.current;
+    if (!sentinel) return;
+
+    let isSentinelVisible = false;
+    let isDark = document.documentElement.classList.contains('dark');
+
+    const updateMatrix = () => {
+      setShowMatrix(isSentinelVisible && isDark);
+    };
+
+    const observer = new window.IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.target === sentinel) {
+            isSentinelVisible = entry.isIntersecting;
+          }
+        });
+        isDark = document.documentElement.classList.contains('dark');
+        updateMatrix();
+      },
+      { threshold: 0.1 }
+    );
+    observer.observe(sentinel);
+
+    // Listener para mudança de tema
+    const themeListener = () => {
+      isDark = document.documentElement.classList.contains('dark');
+      updateMatrix();
+    };
+    const mq = window.matchMedia('(prefers-color-scheme: dark)');
+    mq.addEventListener('change', themeListener);
+
+    // Também escuta mudanças manuais de classe
+    const mutationObserver = new MutationObserver(() => {
+      isDark = document.documentElement.classList.contains('dark');
+      updateMatrix();
+    });
+    mutationObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+
+    return () => {
+      observer.disconnect();
+      mq.removeEventListener('change', themeListener);
+      mutationObserver.disconnect();
+    };
+  }, []);
 
   return (
     <div className="min-h-screen bg-background dark:text-white text-gray-900 relative">
-      {/* Matrix Rain Easter Egg */}
-      {/* <MatrixRain isActive={isOverscrolling} mask="top" /> */}
+      {/* Matrix Rain Easter Egg - só ativa no fim da página e modo escuro */}
       <div
         style={{
           transform: 'scaleY(-1)',
@@ -140,11 +135,11 @@ const Index = () => {
           pointerEvents: 'none',
         }}
       >
-        <MatrixRain isActive={isOverscrolling} mask="bottom" />
+        {showMatrix && <MatrixRain isActive={true} mask="bottom" />}
       </div>
 
       {/* Hero Section - Centralized */}
-      <section className="min-h-screen flex items-center justify-center relative">
+      <section ref={heroRef} className="min-h-screen flex items-center justify-center relative">
         <div className="flex justify-center">
           <div className="w-full">
             <HeroSection onReceivePlan={() => setIsLeadFormOpen(true)} />
@@ -170,6 +165,7 @@ const Index = () => {
 
       {/* Analysis Section - Centralized */}
       <section
+        ref={calculatorRef}
         id="calculator-section"
         className="min-h-screen flex items-center justify-center relative"
       >
@@ -255,6 +251,9 @@ const Index = () => {
       {/* Divider antes do footer */}
       <div className="section-divider w-24 ml-auto !mt-0" />
 
+      {/* Sentinela para MatrixRain no fim da página */}
+      <div ref={bottomSentinelRef} style={{ height: 1 }} />
+
       {/* Dynamic Header - Visible at top and bottom */}
       {showHeader && (
         <header
@@ -284,7 +283,7 @@ const Index = () => {
       )}
 
       {/* Footer */}
-      <footer className="py-4 bg-background">
+      <footer ref={footerRef} className="py-4 bg-background">
         <div className="flex justify-center">
           <div className="w-full max-w-7xl px-4 sm:px-6 lg:px-4">
             <p className="text-center text-xs leading-tight text-white dark:text-[#D2D2D2]">
