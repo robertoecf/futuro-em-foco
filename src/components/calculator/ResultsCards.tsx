@@ -98,7 +98,7 @@ export const ResultsCards: React.FC<ResultsCardsProps> = ({
                   </div>
                   <p className="text-xs font-medium text-white">{scenario.subtitle}</p>
                   {/* Explicação científica */}
-                  <p className="text-xs text-white/80 leading-relaxed break-words max-w-xs mx-auto text-center">
+                  <p className="text-xs text-gray-700 dark:text-white/80 leading-relaxed break-words max-w-xs mx-auto text-center">
                     {index === 0 && 'Apenas 5% dos cenários simulados apresentam resultado pior'}
                     {index === 1 && 'Resultado típico esperado - mediana das simulações'}
                     {index === 2 && 'Apenas 5% dos cenários simulados apresentam resultado melhor'}

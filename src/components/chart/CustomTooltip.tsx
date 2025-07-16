@@ -20,7 +20,7 @@ export const CustomTooltip = ({ active, payload, label, monteCarloData }: Custom
   const phase = data.fase;
 
   return (
-    <Card className="p-0 bg-black/50 backdrop-filter backdrop-blur-3xl border border-white/20 rounded-lg shadow-lg">
+    <Card className="p-0 bg-white/50 dark:bg-black/80 backdrop-filter backdrop-blur-3xl border border-white/20 rounded-lg shadow-lg">
       <CardContent className="p-3">
         <p className="text-sm font-bold text-foreground">{`Idade: ${label} anos`}</p>
 

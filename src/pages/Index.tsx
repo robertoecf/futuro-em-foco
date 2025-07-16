@@ -6,7 +6,18 @@ import { useCalculator } from '@/components/calculator/useCalculator';
 import { MatrixRain } from '@/components/MatrixRain';
 import { useOverscroll } from '@/hooks/useOverscroll';
 import { Button } from '@/components/ui/button';
-import { performanceValidator } from '@/utils/performanceValidation';
+
+// Função throttle simples
+function throttle<T extends unknown[]>(fn: (...args: T) => void, wait: number) {
+  let lastTime = 0;
+  return function (...args: T) {
+    const now = Date.now();
+    if (now - lastTime >= wait) {
+      lastTime = now;
+      fn(...args);
+    }
+  };
+}
 
 const Index = () => {
   const [isLeadFormOpen, setIsLeadFormOpen] = useState(false);
@@ -49,8 +60,6 @@ const Index = () => {
   const handleScroll = useCallback(() => {
     if (!ticking.current) {
       requestAnimationFrame(() => {
-        performanceValidator.startMeasuring('Index-scrollHandler');
-        
         // Only get current scroll position, use cached dimensions
         const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
         const { scrollHeight, clientHeight } = scrollDimensionsRef.current;
@@ -81,8 +90,6 @@ const Index = () => {
 
         lastScrollTopRef.current = scrollTop;
         ticking.current = false;
-        
-        performanceValidator.endMeasuring('Index-scrollHandler');
       });
       ticking.current = true;
     }
@@ -98,12 +105,13 @@ const Index = () => {
       updateScrollDimensions();
     };
 
-    window.addEventListener('scroll', handleScroll, { passive: true });
+    const throttledScroll = throttle(handleScroll, 50);
+    window.addEventListener('scroll', throttledScroll, { passive: true });
     window.addEventListener('resize', handleResize, { passive: true });
     handleScroll(); // Check initial state
 
     return () => {
-      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('scroll', throttledScroll);
       window.removeEventListener('resize', handleResize);
     };
   }, [handleScroll, updateScrollDimensions]);
@@ -192,16 +200,28 @@ const Index = () => {
             }}
           >
             {/* Aurora Background CTA */}
-            <div id="aurora-cta-background" className="aurora-background-container">
-              <div id="cta-blob1" className="aurora-banner-blob"></div>
-              <div id="cta-blob2" className="aurora-banner-blob"></div>
-              <div id="cta-blob3" className="aurora-banner-blob"></div>
-              <div id="cta-blob4" className="aurora-banner-blob"></div>
-              <div id="cta-blob5" className="aurora-banner-blob"></div>
-              <div id="cta-blob6" className="aurora-banner-blob"></div>
-              <div id="cta-blob7" className="aurora-banner-blob mix-blob"></div>
-              <div id="cta-blob8" className="aurora-banner-blob mix-blob"></div>
-              <div id="cta-blob9" className="aurora-banner-blob mix-blob"></div>
+            <div id="aurora-cta-background" className="absolute inset-0 w-full h-full pointer-events-none select-none">
+              <svg viewBox="0 0 1200 800" width="100%" height="100%" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" style={{ position: 'absolute', width: '100%', height: '100%' }}>
+                <ellipse cx="240" cy="240" rx="210" ry="210" fill="#E48200" opacity="0.8" /> {/* banner-blob1 */}
+                <ellipse cx="600" cy="160" rx="180" ry="180" fill="#00b4d8" opacity="0.8" /> {/* banner-blob2 */}
+                <ellipse cx="120" cy="480" rx="160" ry="160" fill="#a7c957" opacity="0.8" /> {/* banner-blob3 */}
+                <ellipse cx="720" cy="320" rx="230" ry="230" fill="#E48200" opacity="0.8" /> {/* banner-blob4 */}
+                <ellipse cx="360" cy="400" rx="170" ry="170" fill="#0077b6" opacity="0.8" /> {/* banner-blob5 */}
+                <ellipse cx="840" cy="200" rx="130" ry="130" fill="#2F3B29" opacity="0.8" /> {/* banner-blob6 */}
+                <ellipse cx="480" cy="280" rx="150" ry="150" fill="url(#grad1)" opacity="0.8" /> {/* banner-blob7 */}
+                <ellipse cx="180" cy="360" rx="125" ry="125" fill="url(#grad2)" opacity="0.8" /> {/* banner-blob8 */}
+                <ellipse cx="660" cy="440" rx="140" ry="140" fill="#455a3e" opacity="0.8" /> {/* banner-blob9 */}
+                <defs>
+                  <linearGradient id="grad1" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stopColor="#E48200" />
+                    <stop offset="100%" stopColor="#b30000" />
+                  </linearGradient>
+                  <linearGradient id="grad2" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stopColor="#E48200" />
+                    <stop offset="100%" stopColor="#b30000" />
+                  </linearGradient>
+                </defs>
+              </svg>
             </div>
 
             {/* Content */}
@@ -230,21 +250,21 @@ const Index = () => {
       {/* Dynamic Header - Visible at top and bottom */}
       {showHeader && (
         <header
-          className="fixed top-0 left-0 right-0 z-50 border-b dark:border-white/10 border-gray-300/30 transition-all duration-300 glass-header"
+          className="fixed top-0 left-0 right-0 z-50 border-b dark:border-white/10 border-gray-300/30 transition-all duration-300 glass-header bg-background/80 backdrop-blur-md"
         >
           <div className="flex justify-center">
-            <div className="w-full max-w-7xl px-4 sm:px-6 lg:px-4">
-              <div className="flex items-center justify-between h-16">
+            <div className="w-full max-w-7xl px-2 sm:px-4 lg:px-4">
+              <div className="flex flex-wrap items-center justify-between h-16 gap-y-2">
                 <div
-                  className="tech-logo-header dark:text-white text-gray-900 text-xl cursor-pointer"
+                  className="tech-logo-header dark:text-white text-gray-900 text-lg sm:text-xl cursor-pointer"
                   onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
                 >
                   futuro em foco
                 </div>
-                <div className="flex items-center space-x-8">
+                <div className="flex items-center space-x-2 sm:space-x-4 md:space-x-8">
                   <button
                     onClick={() => setIsLeadFormOpen(true)}
-                    className="tech-button-header dark:text-white text-gray-900"
+                    className="tech-button-header dark:text-white text-gray-900 px-2 py-1 text-sm sm:text-base"
                   >
                     Converse conosco
                   </button>
@@ -270,12 +290,14 @@ const Index = () => {
       </footer>
 
       {/* Lead Capture Form Modal */}
-      <LeadCaptureForm
-        isOpen={isLeadFormOpen}
-        onClose={() => setIsLeadFormOpen(false)}
-        planningInputs={planningInputs}
-        calculationResult={calculatorData.calculationResult}
-      />
+      {isLeadFormOpen && (
+        <LeadCaptureForm
+          isOpen={isLeadFormOpen}
+          onClose={() => setIsLeadFormOpen(false)}
+          planningInputs={planningInputs}
+          calculationResult={calculatorData.calculationResult}
+        />
+      )}
     </div>
   );
 };

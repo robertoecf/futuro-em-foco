@@ -17,7 +17,17 @@ import { useFinalLinesAnimation } from './useFinalLinesAnimation';
 import { ChartVisibilityState } from './ChartInfo';
 
 // Monte Carlo configuration
-const MONTE_CARLO_EXHIBITION_LINES = 1001; // Show ALL calculated lines in Scene 2
+const MONTE_CARLO_EXHIBITION_LINES = 101; // Show 101 random lines in Scene 2
+
+// Função para amostrar índices aleatórios únicos
+function getRandomSampleIndices(total: number, sampleSize: number): number[] {
+  const indices = Array.from({ length: total }, (_, i) => i);
+  for (let i = indices.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [indices[i], indices[j]] = [indices[j], indices[i]];
+  }
+  return indices.slice(0, sampleSize);
+}
 
 interface ChartRendererProps {
   chartData: ChartDataPoint[];
@@ -75,6 +85,40 @@ export const ChartRenderer = React.memo(
 
     // Estado para controlar se as bolinhas devem estar visíveis
     const shouldShowActiveDots = animationPhase === 'final' && !isDrawingFinalLines;
+
+    // Estado para linhas Monte Carlo progressivas
+    const [sampleIndices, setSampleIndices] = React.useState<number[]>([]);
+    const [linesToShow, setLinesToShow] = React.useState(0);
+
+    // Atualiza amostra de linhas e reseta progressão ao ativar isShowingLines
+    React.useEffect(() => {
+      if (monteCarloData && isShowingLines) {
+        const totalLines = monteCarloData.allPaths ? monteCarloData.allPaths.length : 1001;
+        setSampleIndices(getRandomSampleIndices(totalLines, MONTE_CARLO_EXHIBITION_LINES));
+        setLinesToShow(0);
+      }
+    }, [monteCarloData, isShowingLines]);
+
+    // Progressão animada das linhas
+    React.useEffect(() => {
+      if (!isShowingLines || sampleIndices.length === 0) return;
+      let running = true;
+      const interval = setInterval(() => {
+        setLinesToShow((prev) => {
+          if (!running) return prev;
+          if (prev < sampleIndices.length) {
+            return prev + 1;
+          } else {
+            clearInterval(interval);
+            return prev;
+          }
+        });
+      }, 18); // ~1.8s para 101 linhas
+      return () => {
+        running = false;
+        clearInterval(interval);
+      };
+    }, [isShowingLines, sampleIndices]);
 
     // 🎯 ABORDAGEM DIRETA: Garantir idades importantes nos ticks
     const allTicks = (() => {
@@ -248,45 +292,60 @@ export const ChartRenderer = React.memo(
 
               {/* Savings line - controlled by visibility */}
               {visibility?.scenarios.totalSaved !== false && (
-                <Line
-                  type="monotone"
-                  dataKey="poupanca"
-                  name="Total Poupado"
-                  stroke="#6B7280"
-                  strokeWidth={2}
-                  strokeDasharray="8 4"
-                  dot={false}
-                  activeDot={
-                    shouldShowActiveDots
-                      ? { r: 6, stroke: '#6B7280', strokeWidth: 2, fill: '#fff' }
-                      : false
-                  }
-                  isAnimationActive={false}
-                  animationDuration={0}
-                />
-              )}
-
-              {/* Monte Carlo Animation Lines - Scene 2: Show ALL 1001 lines */}
-              {monteCarloData &&
-                isShowingLines &&
-                Array.from({ length: MONTE_CARLO_EXHIBITION_LINES }, (_, lineIndex) => (
+                isShowingLines ? (
                   <Line
-                    key={`monte-carlo-exhibition-line-${lineIndex}`}
                     type="monotone"
-                    dataKey={`line${lineIndex}`}
-                    stroke={generateLineColor(lineIndex)}
-                    strokeWidth={1}
-                    strokeOpacity={0.3}
+                    dataKey="poupanca"
+                    name="Total Poupado"
+                    stroke="#6B7280"
+                    strokeWidth={2}
+                    strokeDasharray="8 4"
                     dot={false}
                     activeDot={false}
-                    connectNulls={false}
-                    isAnimationActive={true}
-                    animationBegin={lineIndex * 2} // Simple staggered animation
-                    animationDuration={600}
-                    animationEasing="ease-out"
-                    style={{ pointerEvents: 'none' }} // DESABILITA TOOLTIPS PARA PERFORMANCE
+                    isAnimationActive={false}
+                    data={chartData.slice(0, linesToShow > 0 ? linesToShow : 1)}
                   />
-                ))}
+                ) : (
+                  <Line
+                    type="monotone"
+                    dataKey="poupanca"
+                    name="Total Poupado"
+                    stroke="#6B7280"
+                    strokeWidth={2}
+                    strokeDasharray={isDrawingFinalLines ? getFinalLineAnimationState().strokeDasharray : '8 4'}
+                    strokeDashoffset={isDrawingFinalLines ? getFinalLineAnimationState().strokeDashoffset : undefined}
+                    strokeOpacity={isDrawingFinalLines ? getFinalLineAnimationState().opacity : 1}
+                    dot={false}
+                    activeDot={
+                      shouldShowActiveDots
+                        ? { r: 6, stroke: '#6B7280', strokeWidth: 2, fill: '#fff' }
+                        : false
+                    }
+                    isAnimationActive={false}
+                    style={isDrawingFinalLines ? getFinalLineAnimationState().drawingStyle : {}}
+                  />
+                )
+              )}
+
+              {/* Monte Carlo Animation Lines - Scene 2: Show 101 random lines, progressive */}
+              {monteCarloData && isShowingLines && sampleIndices.slice(0, linesToShow).map((lineIndex, i) => (
+                <Line
+                  key={`monte-carlo-exhibition-line-${lineIndex}`}
+                  type="monotone"
+                  dataKey={`line${lineIndex}`}
+                  stroke={generateLineColor(lineIndex)}
+                  strokeWidth={1}
+                  strokeOpacity={0.3}
+                  dot={false}
+                  activeDot={false}
+                  connectNulls={false}
+                  isAnimationActive={true}
+                  animationBegin={i * 2}
+                  animationDuration={600}
+                  animationEasing="ease-out"
+                  style={{ pointerEvents: 'none' }}
+                />
+              ))}
 
               {/* 🎯 CORREÇÃO: Linhas SEMPRE renderizadas - escala fixa, só animação visual */}
               {monteCarloData && !isShowingLines && (
