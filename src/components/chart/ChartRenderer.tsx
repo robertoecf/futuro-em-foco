@@ -90,6 +90,31 @@ export const ChartRenderer = React.memo(
     const [sampleIndices, setSampleIndices] = React.useState<number[]>([]);
     const [linesToShow, setLinesToShow] = React.useState(0);
 
+    // --- NOVO: Estado para animar "draw" da linha de poupanca na cena 2 ---
+    const [savingsLineDrawProgress, setSavingsLineDrawProgress] = React.useState(1); // 1 = completa
+    useEffect(() => {
+      if (animationPhase === 'paths') {
+        setSavingsLineDrawProgress(0);
+        let start: number | null = null;
+        const duration = 1800; // ms, duração total do draw
+        let raf: number;
+        const step = (timestamp: number) => {
+          if (!start) start = timestamp;
+          const elapsed = timestamp - start;
+          const progress = Math.min(elapsed / duration, 1);
+          setSavingsLineDrawProgress(progress);
+          if (progress < 1) {
+            raf = requestAnimationFrame(step);
+          }
+        };
+        raf = requestAnimationFrame(step);
+        return () => cancelAnimationFrame(raf);
+      } else {
+        setSavingsLineDrawProgress(1); // sempre completa fora da cena 2
+      }
+    }, [animationPhase]);
+    // --- FIM NOVO ---
+
     // Atualiza amostra de linhas e reseta progressão ao ativar isShowingLines
     React.useEffect(() => {
       if (monteCarloData && isShowingLines) {
@@ -291,21 +316,8 @@ export const ChartRenderer = React.memo(
               )}
 
               {/* Savings line - controlled by visibility */}
-              {visibility?.scenarios.totalSaved !== false && (
-                isShowingLines ? (
-                  <Line
-                    type="monotone"
-                    dataKey="poupanca"
-                    name="Total Poupado"
-                    stroke="#6B7280"
-                    strokeWidth={2}
-                    strokeDasharray="8 4"
-                    dot={false}
-                    activeDot={false}
-                    isAnimationActive={false}
-                    data={chartData.slice(0, linesToShow > 0 ? linesToShow : 1)}
-                  />
-                ) : (
+              {visibility?.scenarios.totalSaved !== false &&
+                animationPhase !== 'paths' && (
                   <Line
                     type="monotone"
                     dataKey="poupanca"
@@ -324,8 +336,7 @@ export const ChartRenderer = React.memo(
                     isAnimationActive={false}
                     style={isDrawingFinalLines ? getFinalLineAnimationState().drawingStyle : {}}
                   />
-                )
-              )}
+                )}
 
               {/* Monte Carlo Animation Lines - Scene 2: Show 101 random lines, progressive */}
               {monteCarloData && isShowingLines && sampleIndices.slice(0, linesToShow).map((lineIndex, i) => (
