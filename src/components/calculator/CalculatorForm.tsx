@@ -159,7 +159,6 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({
             <Input
               id="current-age"
               name="currentAge"
-              autoComplete="bday"
               type="number"
               value={currentAgeInput}
               onChange={(e) => {
