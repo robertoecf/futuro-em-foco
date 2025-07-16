@@ -19,6 +19,23 @@ function throttle<T extends unknown[]>(fn: (...args: T) => void, wait: number) {
   };
 }
 
+// Função debounce simples
+function debounce<T extends unknown[]>(fn: (...args: T) => void, wait: number) {
+  let timeout: ReturnType<typeof setTimeout>;
+  const debounced = function (...args: T) {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => fn(...args), wait);
+  };
+  debounced.cancel = () => clearTimeout(timeout);
+  return debounced;
+}
+
+// Tipagem explícita para o debounce com método cancel
+interface DebouncedFunction<T extends unknown[]> {
+  (...args: T): void;
+  cancel: () => void;
+}
+
 const Index = () => {
   const [isLeadFormOpen, setIsLeadFormOpen] = useState(false);
   const [showHeader, setShowHeader] = useState(true); // Header visível no início
@@ -57,37 +74,32 @@ const Index = () => {
     };
   }, []);
 
+  // Debounced setter para o header
+  const debouncedSetShowHeader = useRef<DebouncedFunction<[boolean]> | null>(null);
+  if (!debouncedSetShowHeader.current) {
+    debouncedSetShowHeader.current = debounce(setShowHeader, 200) as DebouncedFunction<[boolean]>;
+  }
+
+  const BOTTOM_ACTIVE_ZONE = 150;
+
   const handleScroll = useCallback(() => {
     if (!ticking.current) {
       requestAnimationFrame(() => {
-        // Only get current scroll position, use cached dimensions
         const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
         const { scrollHeight, clientHeight } = scrollDimensionsRef.current;
-
-        // Detect if at top (first 900px)
         const isAtTop = scrollTop <= 900;
-
-        // Detect if near bottom (last 50px)
-        const isNearBottom = scrollTop + clientHeight >= scrollHeight - 50;
-
-        // Header visibility logic:
-        // 1. Always visible at top
-        // 2. Appears when reaching bottom
-        // 3. Hides when scrolling up from bottom
-        // 4. Only appears again when returning to top
-
-        if (isAtTop) {
-          setShowHeader(true);
-        } else if (isNearBottom) {
-          setShowHeader(true);
-        } else if (lastScrollTopRef.current > scrollTop && !isAtTop) {
-          // Scrolling up and not at top, hide
-          setShowHeader(false);
-        } else if (lastScrollTopRef.current < scrollTop && !isNearBottom) {
-          // Scrolling down and not at bottom, hide
-          setShowHeader(false);
+        const isAtBottomZone = scrollTop + clientHeight >= scrollHeight - BOTTOM_ACTIVE_ZONE;
+        if (isAtTop || isAtBottomZone) {
+          if (debouncedSetShowHeader.current && typeof debouncedSetShowHeader.current.cancel === 'function') {
+            debouncedSetShowHeader.current.cancel();
+          }
+          setShowHeader(true); // Mostra imediatamente ao voltar ao topo ou chegar na zona ativa do fim
+        } else {
+          // Esconde com delay se não está no topo/fim
+          if (debouncedSetShowHeader.current) {
+            debouncedSetShowHeader.current(false);
+          }
         }
-
         lastScrollTopRef.current = scrollTop;
         ticking.current = false;
       });
