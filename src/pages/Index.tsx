@@ -58,7 +58,7 @@ const Index = () => {
     investorProfile: calculatorData.investorProfile,
   };
 
-  // Optimized scroll handler with throttling and cached dimensions
+  // Otimizado: cache de dimensões atualizado apenas em resize, não em todo scroll
   const lastScrollTopRef = useRef(0);
   const ticking = useRef(false);
   const scrollDimensionsRef = useRef({
@@ -66,7 +66,7 @@ const Index = () => {
     clientHeight: 0,
   });
 
-  // Update cached scroll dimensions
+  // Atualiza cache de dimensões (só em resize)
   const updateScrollDimensions = useCallback(() => {
     scrollDimensionsRef.current = {
       scrollHeight: document.documentElement.scrollHeight,
@@ -82,9 +82,12 @@ const Index = () => {
 
   const BOTTOM_ACTIVE_ZONE = 150;
 
+  // Handler otimizado: só lê layout uma vez por frame, sem forced reflow
   const handleScroll = useCallback(() => {
     if (!ticking.current) {
+      ticking.current = true;
       requestAnimationFrame(() => {
+        // Só lê layout aqui, fora de loops/eventos
         const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
         const { scrollHeight, clientHeight } = scrollDimensionsRef.current;
         const isAtTop = scrollTop <= 900;
@@ -103,28 +106,21 @@ const Index = () => {
         lastScrollTopRef.current = scrollTop;
         ticking.current = false;
       });
-      ticking.current = true;
     }
   }, []);
 
-  // Set up scroll listener with cached dimensions and resize handling
+  // Setup listeners: resize atualiza dimensões, scroll só lê cache
   useEffect(() => {
-    // Initialize cached dimensions
     updateScrollDimensions();
-    
-    // Handle resize events to update cached dimensions
     const handleResize = () => {
       updateScrollDimensions();
     };
-
-    const throttledScroll = throttle(handleScroll, 50);
-    window.addEventListener('scroll', throttledScroll, { passive: true });
     window.addEventListener('resize', handleResize, { passive: true });
-    handleScroll(); // Check initial state
-
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll(); // Estado inicial
     return () => {
-      window.removeEventListener('scroll', throttledScroll);
       window.removeEventListener('resize', handleResize);
+      window.removeEventListener('scroll', handleScroll);
     };
   }, [handleScroll, updateScrollDimensions]);
 
