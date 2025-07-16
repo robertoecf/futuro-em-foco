@@ -158,6 +158,8 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({
             <Label htmlFor="current-age">Idade Atual</Label>
             <Input
               id="current-age"
+              name="currentAge"
+              autoComplete="bday"
               type="number"
               value={currentAgeInput}
               onChange={(e) => {
@@ -173,6 +175,8 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({
             <Label htmlFor="initial-amount">Investimento Inicial (R$)</Label>
             <Input
               id="initial-amount"
+              name="initialAmount"
+              autoComplete="off"
               type="text"
               value={initialAmountInput}
               onChange={(e) => handleCurrencyChange(e, setInitialAmountInput)}
@@ -186,6 +190,8 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({
             <Label htmlFor="monthly-amount">Aporte Mensal (R$)</Label>
             <Input
               id="monthly-amount"
+              name="monthlyAmount"
+              autoComplete="off"
               type="text"
               value={monthlyAmountInput}
               onChange={(e) => handleCurrencyChange(e, setMonthlyAmountInput)}
@@ -206,6 +212,8 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({
             <Label htmlFor="retirement-age">Idade de Aposentadoria</Label>
             <Input
               id="retirement-age"
+              name="retirementAge"
+              autoComplete="off"
               type="number"
               value={retirementAgeInput}
               onChange={(e) => {
@@ -221,6 +229,8 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({
             <Label htmlFor="retirement-income">Renda Mensal Desejada na Aposentadoria (R$)</Label>
             <Input
               id="retirement-income"
+              name="retirementIncome"
+              autoComplete="off"
               type="text"
               value={retirementIncomeInput}
               onChange={(e) => handleCurrencyChange(e, setRetirementIncomeInput)}
@@ -239,6 +249,8 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({
             <Label htmlFor="portfolio-return">Retorno do Portfólio na Aposentadoria (%)</Label>
             <Input
               id="portfolio-return"
+              name="portfolioReturn"
+              autoComplete="off"
               type="number"
               step="0.1"
               value={portfolioReturnInput}

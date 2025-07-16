@@ -52,6 +52,7 @@ export const LeadFormFields = ({ formData, formErrors, onFormDataChange }: LeadF
         </Label>
         <Input
           id="name"
+          name="name"
           type="text"
           value={formData.name}
           onChange={(e) => onFormDataChange({ name: e.target.value })}
@@ -59,6 +60,7 @@ export const LeadFormFields = ({ formData, formErrors, onFormDataChange }: LeadF
           maxLength={100}
           required
           className="themed-input"
+          autoComplete="name"
         />
         {formErrors.name && <p className="text-sm text-red-400 mt-1">{formErrors.name}</p>}
       </div>
@@ -69,6 +71,7 @@ export const LeadFormFields = ({ formData, formErrors, onFormDataChange }: LeadF
         </Label>
         <Input
           id="email"
+          name="email"
           type="email"
           value={formData.email}
           onChange={(e) => onFormDataChange({ email: e.target.value })}
@@ -76,6 +79,7 @@ export const LeadFormFields = ({ formData, formErrors, onFormDataChange }: LeadF
           maxLength={100}
           required
           className="themed-input"
+          autoComplete="email"
         />
         {formErrors.email && <p className="text-sm text-red-400 mt-1">{formErrors.email}</p>}
       </div>
@@ -86,12 +90,14 @@ export const LeadFormFields = ({ formData, formErrors, onFormDataChange }: LeadF
         </Label>
         <Input
           id="phone"
+          name="phone"
           type="tel"
           value={formData.phone}
           onChange={handlePhoneChange}
           placeholder="(11) 99999-9999"
           maxLength={15}
           className="themed-input"
+          autoComplete="tel"
         />
         {formErrors.phone && <p className="text-sm text-red-400 mt-1">{formErrors.phone}</p>}
       </div>
@@ -101,8 +107,10 @@ export const LeadFormFields = ({ formData, formErrors, onFormDataChange }: LeadF
           Faixa de patrimônio
         </Label>
         <Select
+          name="patrimonioRange"
           value={formData.patrimonioRange}
           onValueChange={(value) => onFormDataChange({ patrimonioRange: value })}
+          autoComplete="off"
         >
           <SelectTrigger className="themed-input">
             <SelectValue placeholder="Selecione sua faixa de patrimônio" />
@@ -130,6 +138,7 @@ export const LeadFormFields = ({ formData, formErrors, onFormDataChange }: LeadF
       <div className="flex items-center space-x-2">
         <Checkbox
           id="expert"
+          name="wantsExpertEvaluation"
           checked={formData.wantsExpertEvaluation}
           onCheckedChange={(checked) =>
             onFormDataChange({ wantsExpertEvaluation: checked as boolean })
