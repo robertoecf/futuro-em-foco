@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { LINE_ANIMATION } from '@/components/calculator/constants';
+import { LINE_ANIMATION } from '@/features/planning/components/calculator/constants';
 
 interface UseLineAnimationProps {
   isShowingLines: boolean;

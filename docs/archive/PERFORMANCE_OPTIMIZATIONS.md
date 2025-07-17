@@ -3,41 +3,48 @@
 ## 🚀 Otimizações Implementadas
 
 ### 1. **Web Workers para Cálculos Paralelos**
+
 - Criado `ultraOptimizedSimulation.ts` que usa Web Workers
 - Distribui cálculos entre múltiplos cores da CPU
 - Reduz tempo de cálculo em até 75%
 - Workers criados dinamicamente baseado em `navigator.hardwareConcurrency`
 
 ### 2. **Canvas Rendering para Visualização**
+
 - Criado `OptimizedMonteCarloLines.tsx` usando Canvas 2D
 - Substitui 500 elementos SVG por um único canvas
 - Renderização em lotes de 50 linhas
 - Usa `requestAnimationFrame` para animações suaves
 
 ### 3. **Memoização e React.memo**
+
 - `ChartRenderer` envolvido com `React.memo`
 - `ChartComponent` usa `useMemo` extensivamente
 - `ChartDataProcessor` otimizado com `useMemo`
 - Previne re-renders desnecessários
 
 ### 4. **Otimizações de Memória**
+
 - Uso de `Float32Array` em vez de arrays normais
 - Reduz uso de memória em ~50%
 - Garbage collection mais eficiente
 
 ### 5. **Algoritmos Otimizados**
+
 - Interpolação sofisticada para 500 linhas
 - Distribuição que agrupa linhas ao redor da mediana
 - Noise controlado para melhor visualização
 
 ## 📊 Resultados Esperados
 
-### Antes (50 linhas):
+### Antes (50 linhas)
+
 - Tempo de cálculo: ~500ms
 - Renderização: Possível flickering
 - Memória: ~50MB
 
-### Depois (500 linhas):
+### Depois (500 linhas)
+
 - Tempo de cálculo: ~200-300ms (com Web Workers)
 - Renderização: Suave sem flickering
 - Memória: ~100MB (otimizado com Float32Array)
@@ -78,4 +85,4 @@ export const LINE_ANIMATION = {
 
 - **Se houver lag**: Reduzir `BATCH_SIZE`
 - **Se faltar memória**: Reduzir `TOTAL_LINES`
-- **Se Workers falharem**: Fallback automático para single-thread 
+- **Se Workers falharem**: Fallback automático para single-thread

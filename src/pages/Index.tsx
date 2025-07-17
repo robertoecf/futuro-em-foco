@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
-import { Calculator } from '@/components/calculator/Calculator';
+import { Calculator } from '@/features/planning/components/calculator/Calculator';
 import { HeroSection } from '@/components/HeroSection';
 import { LeadCaptureForm } from '@/components/LeadCaptureForm';
-import { useCalculator } from '@/components/calculator/useCalculator';
+import { useCalculator } from '@/features/planning/components/calculator/useCalculator';
 import { MatrixRain } from '@/components/MatrixRain';
 import { Button } from '@/components/ui/button';
 

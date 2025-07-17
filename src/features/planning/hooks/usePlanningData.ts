@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { InvestorProfile, CalculationResult } from '@/components/calculator/useCalculator';
+import { InvestorProfile, CalculationResult } from '@/features/planning/components/calculator/useCalculator';
 import { secureStorage } from '@/lib/secureStorage';
 import { validateAndSanitize } from '@/lib/validation';
 

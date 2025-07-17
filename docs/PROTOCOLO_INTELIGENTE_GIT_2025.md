@@ -54,7 +54,9 @@ graph TD
 | **👤 Escopo** | Individual | Médio |
 | **🧠 Complexidade** | Baixa | Médio |
 
-### **📋 PULL REQUEST (Review Track)**
+### **📋 PULL REQUEST - Processo**
+
+## 📋 PULL REQUEST - Checklist Obrigatório
 
 | Critério | Condição | Peso |
 |----------|----------|------|
@@ -81,7 +83,7 @@ git commit -m "chore: atualiza versão do package.json"
 git commit -m "hotfix: corrige crash crítico de login"
 ```
 
-#### **📋 Checklist Obrigatório:**
+#### **📋 Checklist Obrigatório 1:**
 
 - [x] **Testes locais**: `npm test` passou
 - [x] **Lint**: `npm run lint` limpo
@@ -102,7 +104,7 @@ git checkout -b migration/python-backend
 git checkout -b performance/lazy-loading
 ```
 
-#### **📋 Checklist Obrigatório:**
+#### **📋 Checklist Obrigatório 2:**
 
 - [x] **Branch separada** criada
 - [x] **Testes passando** localmente

@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
 import React from 'react';
-import { MAGIC_MOMENT_TIMERS } from '@/components/calculator/constants';
+import { MAGIC_MOMENT_TIMERS } from '@/features/planning/components/calculator/constants';
 
 interface UseFinalLinesAnimationProps {
   isDrawingFinalLines: boolean;

@@ -13,7 +13,7 @@ export const saveToStorage = <T>(key: string, value: T): void => {
 };
 
 // Function to load data from a shared plan - SISTEMA DINÂMICO
-import type { PlanningData as _PlanningData } from '@/hooks/usePlanningData';
+import type { PlanningData as _PlanningData } from '@/features/planning/hooks/usePlanningData';
 
 const keyMapping: Record<string, keyof SharedPlanData> = {
   ia: 'initialAmount',

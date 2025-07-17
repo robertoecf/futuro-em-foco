@@ -8,7 +8,7 @@ import {
 // import { runUltraOptimizedMonteCarloSimulation } from '@/lib/gbm/ultraOptimizedSimulation';
 import { runCombinedMonteCarloSimulation } from '@/lib/gbm/combinedModel';
 import { useDebounce } from '@/hooks/useDebounce';
-import type { PlanningData } from '@/hooks/usePlanningData';
+import type { PlanningData } from '@/features/planning/hooks/usePlanningData';
 import type { InvestorProfile, CalculationResult } from './types';
 import { getAccumulationAnnualReturn } from './insights/insightsCalculations';
 

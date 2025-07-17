@@ -38,6 +38,9 @@ export default defineConfig(({ mode }) => {
         '@': path.resolve(__dirname, './src'),
       },
     },
+    css: {
+      postcss: './.config/postcss.config.js',
+    },
     optimizeDeps: {
       exclude: ['lucide-react'],
     },

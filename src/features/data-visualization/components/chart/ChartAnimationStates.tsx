@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { MonteCarloResult } from '@/lib/utils';
-import { MAGIC_MOMENT_TIMERS } from '@/components/calculator/constants';
+import { MAGIC_MOMENT_TIMERS } from '@/features/planning/components/calculator/constants';
 
 interface UseChartAnimationProps {
   isCalculating: boolean;

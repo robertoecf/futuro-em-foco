@@ -48,6 +48,7 @@
    - ✅ Arquivos antigos marcados como deprecated
 
 6. **Reorganizar estrutura de pastas** ✅
+
    ```
    src/
    ├── components/
@@ -93,18 +94,21 @@
 ## Problemas Identificados
 
 ### Flickering no Gráfico
+
 - **Causa**: Re-renders desnecessários durante animações
 - **Solução Parcial**: Implementada memoização nos componentes principais
-- **Próximos Passos**: 
+- **Próximos Passos**:
   - Otimizar o sistema de animação das 50 linhas
   - Implementar throttling/debouncing nas atualizações
   - Considerar usar React.Suspense para carregamento assíncrono
 
 ### Complexidade dos Hooks da Calculadora
+
 - **Problema**: Lógica distribuída em múltiplos hooks interdependentes
 - **Solução Proposta**: Criar um único hook `useCalculator` com sub-módulos internos
 
 ### Duplicação de Código
+
 - **Problema**: Funções utilitárias duplicadas
 - **Solução**: Criar módulos centralizados por domínio
 
@@ -125,4 +129,4 @@ git add . && git commit -m "test"
 
 - Node.js v18.2.0 está abaixo da versão recomendada (>=18.18.0)
 - Considerar atualizar Node.js para evitar warnings de compatibilidade
-- Super Linter no GitHub Actions está configurado e funcionando 
+- Super Linter no GitHub Actions está configurado e funcionando

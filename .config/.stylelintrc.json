@@ -4,6 +4,8 @@
     "stylelint-config-tailwindcss"
   ],
   "rules": {
-    "at-rule-no-deprecated": null
+    "at-rule-no-deprecated": null,
+    "selector-class-pattern": null,
+    "selector-attribute-quotes": null
   }
 } 

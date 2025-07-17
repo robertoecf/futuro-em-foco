@@ -1,12 +1,12 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { ChartControls } from './chart/ChartControls';
-import { ChartRenderer } from './chart/ChartRenderer';
-import { ChartInfo } from './chart/ChartInfo';
-import { useChartDataProcessor } from './chart/ChartDataProcessor';
-import { useChartAnimation } from './chart/ChartAnimationStates';
+import { ChartControls } from '@/features/data-visualization/components/chart/ChartControls';
+import { ChartRenderer } from '@/features/data-visualization/components/chart/ChartRenderer';
+import { ChartInfo } from '@/features/data-visualization/components/chart/ChartInfo';
+import { useChartDataProcessor } from '@/features/data-visualization/components/chart/ChartDataProcessor';
+import { useChartAnimation } from '@/features/data-visualization/components/chart/ChartAnimationStates';
 import type { MonteCarloResult } from '@/lib/utils';
 
-import type { ChartVisibilityState } from './chart/ChartInfo';
+import type { ChartVisibilityState } from '@/features/data-visualization/components/chart/ChartInfo';
 import AuroraLoader from '@/components/ui/AuroraLoader';
 
 interface ChartComponentProps {
@@ -224,7 +224,6 @@ export const ChartComponent = React.memo(
               monteCarloData={finalMonteCarloData}
               perpetuityWealth={perpetuityWealth}
               possibleRetirementAge={effectivePossibleRetirementAge}
-              userRetirementAge={retirementAge}
               onVisibilityChange={setChartVisibility}
             />
           </div>

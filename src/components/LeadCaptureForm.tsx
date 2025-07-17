@@ -8,11 +8,11 @@ import {
   DialogDescription,
 } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
-import { usePlanningData } from '@/hooks/usePlanningData';
+import { usePlanningData } from '@/features/planning/hooks/usePlanningData';
 import { useLeadFormValidation } from '@/hooks/useLeadFormValidation';
 import { LeadFormFields } from '@/components/forms/LeadFormFields';
 import { generateSecureExcelFile, type ChartDataPoint } from '@/utils/csvExport';
-import { InvestorProfile, CalculationResult } from '@/components/calculator/useCalculator';
+import { InvestorProfile, CalculationResult } from '@/features/planning/components/calculator/useCalculator';
 import { saveLeadViaEdgeFunction } from '@/integrations/supabase/client';
 
 interface LeadCaptureFormProps {

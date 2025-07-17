@@ -31,3 +31,9 @@ flask_app/static/styles.css
 .cursor/mcp.json
 
 docs/SuperClaude/
+.ruff_cache/
+super-linter.log
+.next/
+.DS_Store
+.claude/
+.cursor/

@@ -1,19 +1,23 @@
 # 🚀 DEVELOPMENT BEST PRACTICES & ROUTINES GUIDE
-*Atualizado Janeiro 2025 - Baseado em Context7 e protocolos estabelecidos*
 
-## 📋 FUNDAMENTOS DO DESENVOLVIMENTO MODERNO
+Atualizado Janeiro 2025 - Baseado em Context7 e protocolos estabelecidos
+
+## FUNDAMENTOS DO DESENVOLVIMENTO MODERNO
 
 Este documento estabelece **práticas obrigatórias** para desenvolvimento de alta qualidade, baseado em research de Context7 das principais bibliotecas e frameworks modernos.
 
-### 🧠 **MINDSET CIENTÍFICO OBRIGATÓRIO**
+### MINDSET CIENTÍFICO OBRIGATÓRIO
+>
 > **PROTOCOLO CRÍTICO**: Todas as afirmações devem ser formuladas como **hipóteses**, nunca como certezas absolutas.
 
 **✅ Comunicação Correta:**
+
 - "Esta mudança **deveria resolver** o problema"
 - "**Espero que** a otimização melhore a performance"
 - "**Tem potencial para** corrigir o bug"
 
 **❌ Comunicação Proibida:**
+
 - "Problema resolvido" (sem evidência factual)
 - "Agora está funcionando" (afirmação absoluta)
 - "Bug corrigido" (sem validação do usuário)
@@ -23,13 +27,15 @@ Este documento estabelece **práticas obrigatórias** para desenvolvimento de al
 ## 🏗️ **STACK TECNOLÓGICO 2025 (Baseado Context7)**
 
 ### **🎯 Core Technologies (Trust Score > 8.0)**
+
 - **React 18.3+** (Trust Score: 9.0, 2791+ snippets)
-- **TypeScript 5.8+** (Trust Score: 9.9, 26981+ snippets) 
+- **TypeScript 5.8+** (Trust Score: 9.9, 26981+ snippets)
 - **Vite 5.4+** (Trust Score: 8.3, 629+ snippets)
 - **Tailwind CSS 3.4+** (Trust Score: 8.0, 2026+ snippets)
 - **Shadcn/UI** (Trust Score: 7.7, 1132+ snippets)
 
 ### **🔧 Supporting Libraries (High Quality)**
+
 - **Radix UI** (Trust Score: 8.7, 1055+ snippets) - Accessibility primeiro
 - **Recharts** (Trust Score: 8.2, 62+ snippets) - Visualização de dados  
 - **Supabase** (Trust Score: 9.5, 5156+ snippets) - Backend-as-a-Service
@@ -39,6 +45,7 @@ Este documento estabelece **práticas obrigatórias** para desenvolvimento de al
 ---
 
 ## 🔒 PROTOCOLO INTELIGENTE GIT 2025
+
 *Baseado nas melhores práticas modernas de desenvolvimento de software*
 
 ### 🤖 Árvore de Decisão: PR vs Commit Direto
@@ -87,6 +94,7 @@ Ideal para mudanças pequenas, de baixo risco e que não necessitam de revisão.
 | **👤 Escopo** | Individual |
 
 **Checklist Obrigatório para Commit Direto:**
+
 - [x] **Testes locais**: `npm run marco-zero` passou.
 - [x] **Localhost**: Mudança de UX foi validada visualmente.
 - [x] **Escopo**: A mudança é pequena e focada.
@@ -105,17 +113,18 @@ Necessário para mudanças que se beneficiam de revisão, discussão ou que poss
 
 ### 🚨 PROTOCOLO CRÍTICO - VIOLAÇÃO = PERDA DE ACESSO
 
-1.  **🚨 JAMAIS** fazer `git commit/push` sem confirmação explícita do Roberto.
-2.  **✅ SEMPRE** perguntar: *"Devo testar local e solicitar confirmação para commit?"*
-3.  **📋 MUDANÇAS UI/UX**: SEMPRE testar em localhost primeiro E pedir confirmação.
-4.  **📝 CONTEXTO COMPLETO**: Fornecer sempre antes de pedir confirmação.
-5.  **🎯 CONFIRMAÇÃO EXPLÍCITA**: Roberto deve escrever "CONFIRMAR" explicitamente.
+1. **🚨 JAMAIS** fazer `git commit/push` sem confirmação explícita do Roberto.
+2. **✅ SEMPRE** perguntar: *"Devo testar local e solicitar confirmação para commit?"*
+3. **📋 MUDANÇAS UI/UX**: SEMPRE testar em localhost primeiro E pedir confirmação.
+4. **📝 CONTEXTO COMPLETO**: Fornecer sempre antes de pedir confirmação.
+5. **🎯 CONFIRMAÇÃO EXPLÍCITA**: Roberto deve escrever "CONFIRMAR" explicitamente.
 
 ---
 
 ## 🎨 **PADRÕES DE CÓDIGO MODERNOS (Context7 Based)**
 
 ### **1. Estrutura de Componentes React (2025)**
+
 ```typescript
 // ✅ Ordem otimizada de imports (baseado em 2791+ snippets React)
 import React from 'react'
@@ -171,6 +180,7 @@ ModernComponent.displayName = 'ModernComponent';
 ```
 
 ### **2. TypeScript Patterns (Trust Score 9.9)**
+
 ```typescript
 // ✅ Type-first development
 export interface ApiResponse<T> {
@@ -196,6 +206,7 @@ export type LoadingState =
 ```
 
 ### **3. Tailwind CSS Best Practices (Trust Score 8.0)**
+
 ```typescript
 // ✅ Component variants with cva (class-variance-authority)
 import { cva, type VariantProps } from 'class-variance-authority';
@@ -236,6 +247,7 @@ export interface ButtonProps
 ```
 
 ### **4. Vite Optimization (Trust Score 8.3)**
+
 ```typescript
 // vite.config.ts - Configuração otimizada
 import { defineConfig } from 'vite';
@@ -296,6 +308,7 @@ export default defineConfig({
 ## 📊 **PERFORMANCE PATTERNS (Context7 Insights)**
 
 ### **1. React Performance (2791+ snippets)**
+
 ```typescript
 // ✅ Memoização estratégica
 export const ExpensiveChart = React.memo(({ data, config }: Props) => {
@@ -327,6 +340,7 @@ export const useOptimizedData = (rawData: RawData[]) => {
 ```
 
 ### **2. Supabase Integration (Trust Score 9.5)**
+
 ```typescript
 // ✅ Client otimizado com singleton
 import { createClient } from '@supabase/supabase-js';
@@ -371,6 +385,7 @@ export const useOptimizedQuery = <T>(
 ```
 
 ### **3. PostHog Analytics (Trust Score 10.0)**
+
 ```typescript
 // ✅ Provider otimizado
 import posthog from 'posthog-js';
@@ -419,24 +434,26 @@ export const useTracking = () => {
 
 Para lidar com a alta carga de renderização das simulações, foram implementadas as seguintes otimizações:
 
--   **Web Workers para Cálculos Paralelos**:
-    -   `ultraOptimizedSimulation.ts` distribui os cálculos entre múltiplos cores da CPU, reduzindo o tempo de processamento em até 75%.
--   **Canvas Rendering para Visualização**:
-    -   `OptimizedMonteCarloLines.tsx` substitui 500+ elementos SVG por um único `<canvas>`, renderizando em lotes para uma animação fluida com `requestAnimationFrame`.
--   **Otimizações de Memória**:
-    -   Uso de `Float32Array` em vez de arrays padrão para reduzir o consumo de memória em aproximadamente 50%.
--   **Algoritmos Otimizados**:
-    -   Interpolação e distribuição inteligente das linhas para uma visualização mais clara e agrupada em torno da mediana.
+- **Web Workers para Cálculos Paralelos**:
+  - `ultraOptimizedSimulation.ts` distribui os cálculos entre múltiplos cores da CPU, reduzindo o tempo de processamento em até 75%.
+- **Canvas Rendering para Visualização**:
+  - `OptimizedMonteCarloLines.tsx` substitui 500+ elementos SVG por um único `<canvas>`, renderizando em lotes para uma animação fluida com `requestAnimationFrame`.
+- **Otimizações de Memória**:
+  - Uso de `Float32Array` em vez de arrays padrão para reduzir o consumo de memória em aproximadamente 50%.
+- **Algoritmos Otimizados**:
+  - Interpolação e distribuição inteligente das linhas para uma visualização mais clara e agrupada em torno da mediana.
 
 **Configurações e Troubleshooting:**
--   **Ajustes**: As constantes `TOTAL_LINES` e `BATCH_SIZE` em `constants.ts` podem ser ajustadas para balancear performance e visual.
--   **Fallback**: O sistema automaticamente reverte para uma simulação single-thread caso os Web Workers falhem.
+
+- **Ajustes**: As constantes `TOTAL_LINES` e `BATCH_SIZE` em `constants.ts` podem ser ajustadas para balancear performance e visual.
+- **Fallback**: O sistema automaticamente reverte para uma simulação single-thread caso os Web Workers falhem.
 
 ---
 
 ## 🔧 **FERRAMENTAS E AUTOMAÇÃO MODERNAS**
 
 ### **1. ESLint 9.x Configuration (Trust Score 9.1)**
+
 ```javascript
 // eslint.config.js - Flat config (ESLint 9+)
 import js from '@eslint/js';
@@ -501,6 +518,7 @@ export default [
 ```
 
 ### **2. Scripts Package.json Otimizados**
+
 ```json
 {
   "scripts": {
@@ -535,6 +553,7 @@ export default [
 ## 📊 **MONITORING E MÉTRICAS AVANÇADAS**
 
 ### **Performance Tracking (PostHog)**
+
 ```typescript
 // ✅ Performance monitoring automático
 export const usePerformanceTracking = () => {
@@ -568,6 +587,7 @@ export const useBundleMonitoring = () => {
 ```
 
 ### **Metas 2025 (Baseadas em Context7)**
+
 - **📈 Performance**: Core Web Vitals > 90 score
 - **🧪 Quality**: ESLint 0 errors, TypeScript strict mode
 - **♿ Accessibility**: Radix UI + ARIA compliant
@@ -582,38 +602,50 @@ export const useBundleMonitoring = () => {
 Para manter a disciplina e a qualidade, siga este workflow.
 
 ### 🌅 INÍCIO DO DIA (5 minutos)
+
 **Comandos:**
+
 ```bash
 git status
 git pull origin main
 npm run marco-zero
 ```
+
 **Checklist:**
+
 - [ ] Working tree limpo e sem mudanças pendentes.
 - [ ] Branch `main` local atualizada com a remota.
 - [ ] `marco-zero` confirma que o projeto está saudável (0 erros, build OK).
 
 ### 🔥 DURANTE O DESENVOLVIMENTO (Ciclos de 30 min)
-1.  **Desenvolver (25 min)**: Foco na tarefa.
-2.  **Verificar (3 min)**:
+
+1. **Desenvolver (25 min)**: Foco na tarefa.
+2. **Verificar (3 min)**:
+
     ```bash
     npm run lint:fix
     npm run build
     ```
-3.  **Commit (2 min)**: Se a verificação passar, faça um commit incremental.
+
+3. **Commit (2 min)**: Se a verificação passar, faça um commit incremental.
+
     ```bash
     git add .
     git commit -m "style: [descrição da tarefa]"
     ```
 
 ### 🎯 FIM DO DIA (10 minutos)
+
 **Comandos:**
+
 ```bash
 npm run marco-zero
 git status
 git log --oneline -3
 ```
+
 **Checklist Final:**
+
 - [ ] "Marco Zero" mantido.
 - [ ] Commits do dia são claros e descritivos.
 - [ ] Working tree limpo, pronto para o dia seguinte.
@@ -658,6 +690,7 @@ describe('ChartComponent Performance', () => {
 ## 🚨 **PROTOCOLOS DE SEGURANÇA ATUALIZADOS**
 
 ### **Environment Variables (Supabase + PostHog)**
+
 ```bash
 # .env.local
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
@@ -684,6 +717,7 @@ export const env = envSchema.parse(process.env);
 Este guia estabelece **práticas baseadas em dados** do Context7:
 
 ### **🏆 Stack de Excelência (Trust Score > 8.0)**
+
 1. **React + TypeScript** - Base sólida para desenvolvimento
 2. **Vite + Tailwind** - Performance e produtividade  
 3. **Shadcn/UI + Radix** - Componentes acessíveis
@@ -691,6 +725,7 @@ Este guia estabelece **práticas baseadas em dados** do Context7:
 5. **ESLint 9 + Vitest** - Qualidade de código garantida
 
 ### **🚀 Benefícios Esperados**
+
 - **3x faster** desenvolvimento com Vite HMR
 - **90%+ accessibility** score com Radix UI
 - **Zero runtime errors** com TypeScript strict
@@ -698,6 +733,7 @@ Este guia estabelece **práticas baseadas em dados** do Context7:
 - **Real-time insights** com PostHog analytics
 
 ### **Comando de Verificação Diário:**
+
 ```bash
 npm run quality-check && echo "🏆 Excellence achieved with Context7!"
 ```
@@ -706,4 +742,4 @@ npm run quality-check && echo "🏆 Excellence achieved with Context7!"
 
 ---
 
-*Baseado em Context7 research (50+ bibliotecas analisadas) e protocolos validados. Atualizado Janeiro 2025.* 
+*Baseado em Context7 research (50+ bibliotecas analisadas) e protocolos validados. Atualizado Janeiro 2025.*

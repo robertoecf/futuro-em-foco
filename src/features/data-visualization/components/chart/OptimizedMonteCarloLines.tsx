@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useMemo } from 'react';
 import { ChartDataPoint } from '@/utils/csvExport';
-import { LINE_ANIMATION } from '@/components/calculator/constants';
+import { LINE_ANIMATION } from '@/features/planning/components/calculator/constants';
 
 interface OptimizedMonteCarloLinesProps {
   chartData: ChartDataPoint[];
