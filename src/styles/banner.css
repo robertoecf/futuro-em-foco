@@ -4,14 +4,19 @@
   background-color: var(--palette-black);
   position: relative;
   overflow: hidden;
-  border: 0.5px solid rgb(255 255 255 / 8%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 
+    0 4px 16px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 .aurora-banner::before {
   content: '';
   position: absolute;
   inset: -20px !important;
-  background: radial-gradient(ellipse at center, rgb(255 255 255 / 1.5%) 0%, transparent 20%);
+  background: radial-gradient(ellipse at center, rgb(255 255 255 / 0%) 0%, transparent 20%);
   border-radius: inherit;
   z-index: -1;
   filter: blur(20px) !important;
@@ -22,7 +27,7 @@
   content: '';
   position: absolute;
   inset: -40px !important;
-  background: radial-gradient(ellipse at center, rgb(255 255 255 / 0.75%) 0%, transparent 20%);
+  background: radial-gradient(ellipse at center, rgb(255 255 255 / 0%) 0%, transparent 20%);
   border-radius: inherit;
   z-index: -2;
   filter: blur(40px) !important;
@@ -172,20 +177,14 @@
 
 /* === AJUSTES PARA MODO CLARO === */
 
-:not(.dark) .aurora-banner {
-  box-shadow: 0 0 10px 2px rgb(0 0 0 / 20%), 0 0 2px 0 rgb(0 0 0 / 20%);
-}
 
-.dark .aurora-banner {
-  box-shadow: 0 0 10px 2px rgb(255 255 255 / 20%), 0 0 2px 0 rgb(255 255 255 / 20%);
-}
 
 .dark .aurora-banner::before {
-  background: radial-gradient(ellipse at center, rgb(255 255 255 / 2.8%) 0%, transparent 70%);
+  background: radial-gradient(ellipse at center, rgb(255 255 255 / 0%) 0%, transparent 70%);
   filter: blur(22px);
 }
 
 .dark .aurora-banner::after {
-  background: radial-gradient(ellipse at center, rgb(255 255 255 / 1.2%) 0%, transparent 80%);
+  background: radial-gradient(ellipse at center, rgb(255 255 255 / 0%) 0%, transparent 80%);
   filter: blur(44px);
 }

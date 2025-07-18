@@ -70,11 +70,34 @@
 }
 
 .premium-button {
-  @apply tech-button-primary;
+  background: var(--tech-gradient-glass);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgb(228 130 0 / 30%);
+  border-radius: 12px;
+  color: var(--theme-text-primary);
+  font-weight: 600;
+  padding: 12px 24px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 
+    0 4px 16px rgb(228 130 0 / 10%),
+    inset 0 1px 0 rgb(255 255 255 / 10%);
 }
 
 .monte-carlo-button {
-  @apply tech-button-monte-carlo;
+  background: linear-gradient(135deg, 
+    rgb(228 130 0 / 90%) 0%,
+    rgb(228 130 0 / 70%) 100%);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgb(228 130 0 / 40%);
+  border-radius: 12px;
+  color: var(--palette-mix-white);
+  font-weight: 600;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 
+    0 3px 10px rgb(228 130 0 / 10%),
+    inset 0 1px 0 rgb(255 255 255 / 5%);
 }
 
 /* Botão Secondary - Estilo Tecno-Etéreo */
@@ -121,9 +144,10 @@
 
 /* Botão CTA Premium - Estilo badge com cantos bem arredondados */
 .tech-button-specialist-cta {
-  background: rgb(255 255 255 / var(--glass-transparency)) !important;
-  backdrop-filter: blur(2px);
-  border: 1px solid rgb(255 255 255 / 8%);
+  background: rgba(255, 255, 255, 0.05) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 50px;
   color: white;
   font-weight: 600;
@@ -135,6 +159,9 @@
   min-width: fit-content;
   text-align: center;
   overflow: hidden;
+  box-shadow: 
+    0 4px 16px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 /* Responsive adjustments for mobile */
@@ -207,10 +234,7 @@
     transparent
   );
   will-change: transform;
-}
-
-.tech-button-specialist-cta:hover::before {
-  animation: shimmer-once 1.2s ease-out;
+  animation: shimmer-continuous 2.5s ease-in-out infinite;
 }
 
 @keyframes shimmer-once {
@@ -219,10 +243,19 @@
   100% { left: -100%; }
 }
 
+@keyframes shimmer-continuous {
+  0% { left: -100%; }
+  50% { left: 100%; }
+  100% { left: -100%; }
+}
+
 .tech-button-specialist-cta:hover {
   transform: translateY(-2px) scale(1.02);
-  border-color: rgb(255 255 255 / 20%);
-  background: rgb(255 255 255 / var(--glass-transparency)) !important;
+  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
 }
 
 /* Botão Header - Estilo badge com cantos bem arredondados */
@@ -241,6 +274,11 @@
   white-space: nowrap;
   min-width: fit-content;
   font-size: 14px;
+  color: rgba(0, 0, 0, 0.8);
+}
+
+.dark .tech-button-header {
+  color: rgba(255, 255, 255, 0.8);
 }
 
 /* Responsive adjustments for mobile */

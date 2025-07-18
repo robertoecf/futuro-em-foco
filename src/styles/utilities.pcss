@@ -44,6 +44,19 @@
   font-size: 14px;
 }
 
+/* Header Glass com borda 3D */
+.glass-header-3d {
+  background: rgba(255, 255, 255, 0.05) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50px;
+  transition: all 0.3s ease;
+  box-shadow: 
+    0 4px 16px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
 /* Dark mode styles for glass-card */
 .dark .glass-card {
   background: rgba(255, 255, 255, var(--glass-transparency));
@@ -646,7 +659,7 @@ html {
   @apply dark:bg-black/20 bg-white/50 
          border dark:border-white/30 border-gray-300 
          dark:text-white text-gray-900 
-         dark:placeholder:text-white/60 placeholder:text-gray-500 
+         dark:placeholder:text-white/60 placeholder:text-gray-700 
          dark:focus:bg-black/20 focus:bg-white/70 
          dark:focus:border-white/30 focus:border-gray-400 
          dark:focus:text-white focus:text-gray-900 
@@ -663,6 +676,71 @@ html {
 
 .themed-select-item {
   @apply dark:text-white text-gray-900 dark:hover:bg-white/15 hover:bg-gray-100;
+}
+
+/* ===== FORMULÁRIO - CORES ESPECÍFICAS ===== */
+
+/* Textos do formulário - Modo Claro */
+:not(.dark) .form-text-white {
+  color: white !important;
+}
+
+/* Placeholders do formulário - Modo Claro */
+:not(.dark) .form-placeholder-dark {
+  color: #374151 !important; /* gray-700 */
+}
+
+/* Texto dentro dos inputs - Modo Claro */
+:not(.dark) .form-input-text {
+  color: #374151 !important; /* gray-700 */
+}
+
+/* Override para garantir que as cores específicas do formulário tenham prioridade */
+:not(.dark) .themed-input.form-placeholder-dark {
+  color: #374151 !important; /* gray-700 */
+}
+
+:not(.dark) .themed-input.form-input-text {
+  color: #374151 !important; /* gray-700 */
+}
+
+:not(.dark) .themed-input.form-placeholder-dark::placeholder {
+  color: #374151 !important; /* gray-700 */
+}
+
+/* Override mais específico para garantir que as cores do formulário tenham prioridade sobre Tailwind */
+:not(.dark) input.themed-input.form-placeholder-dark.form-input-text {
+  color: #374151 !important; /* gray-700 */
+}
+
+:not(.dark) input.themed-input.form-placeholder-dark.form-input-text::placeholder {
+  color: #374151 !important; /* gray-700 */
+}
+
+:not(.dark) select.themed-input.form-placeholder-dark.form-input-text {
+  color: #374151 !important; /* gray-700 */
+}
+
+/* Override para SelectTrigger do shadcn/ui */
+:not(.dark) .themed-input.form-placeholder-dark.form-input-text[data-radix-select-trigger] {
+  color: #374151 !important; /* gray-700 */
+}
+
+:not(.dark) [data-radix-select-trigger].themed-input.form-placeholder-dark.form-input-text {
+  color: #374151 !important; /* gray-700 */
+}
+
+/* Override final com máxima especificidade para garantir as cores do formulário */
+:not(.dark) input[type="text"].themed-input.form-placeholder-dark.form-input-text,
+:not(.dark) input[type="email"].themed-input.form-placeholder-dark.form-input-text,
+:not(.dark) input[type="tel"].themed-input.form-placeholder-dark.form-input-text {
+  color: #374151 !important; /* gray-700 */
+}
+
+:not(.dark) input[type="text"].themed-input.form-placeholder-dark.form-input-text::placeholder,
+:not(.dark) input[type="email"].themed-input.form-placeholder-dark.form-input-text::placeholder,
+:not(.dark) input[type="tel"].themed-input.form-placeholder-dark.form-input-text::placeholder {
+  color: #374151 !important; /* gray-700 */
 }
 
 /* ===== LIGHT MODE SHADOWS ===== */
@@ -877,9 +955,7 @@ html {
   /* background: var(--card); */ /* Removido para dar lugar aos gradientes por perfil */
 }
 
-.dark .glass-header {
-  background: rgba(0,0,0,0.2) !important;
-}
+
 
 .glass-panel,
 .glass-input,
@@ -901,4 +977,18 @@ html {
 
 .blend-difference {
   mix-blend-mode: difference;
+}
+
+/* ===== OVERRIDE FINAL PARA FORMULÁRIO - MÁXIMA PRIORIDADE ===== */
+/* Garante que as cores específicas do formulário tenham prioridade absoluta */
+:not(.dark) .form-placeholder-dark::placeholder {
+  color: #374151 !important; /* gray-700 */
+}
+
+:not(.dark) .form-input-text {
+  color: #374151 !important; /* gray-700 */
+}
+
+:not(.dark) .form-text-white {
+  color: white !important;
 }

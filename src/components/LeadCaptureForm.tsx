@@ -161,10 +161,10 @@ export const LeadCaptureForm = ({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-md glass-card border border-white/10">
         <DialogHeader>
-          <DialogTitle className="dark:text-white text-gray-900">
+          <DialogTitle className="form-text-white dark:text-white">
             {isExportMode ? 'Download dos dados' : 'Dados para contato'}
           </DialogTitle>
-          <DialogDescription className="dark:text-white/70 text-gray-500">
+          <DialogDescription className="form-text-white dark:text-white/70 opacity-70">
             {isExportMode
               ? 'Preencha seus dados para receber o relatório detalhado da simulação'
               : 'Seus dados serão utilizados para contato e envio de material personalizado'}
@@ -183,14 +183,14 @@ export const LeadCaptureForm = ({
               type="button"
               variant="outline"
               onClick={onClose}
-              className="flex-1 bg-transparent border border-white/10 text-white hover:bg-white/5 hover:scale-105 transition-all"
+              className="flex-1 bg-transparent border border-white/10 form-text-white dark:text-white hover:bg-white/5 hover:scale-105 transition-all"
             >
               Desistir
             </Button>
             <Button
               type="submit"
               disabled={isSubmitting}
-              className="flex-1 bg-orange-500 hover:bg-orange-600 text-white hover:scale-105 transition-all disabled:opacity-50"
+              className="flex-1 bg-orange-500 hover:bg-orange-600 form-text-white dark:text-white hover:scale-105 transition-all disabled:opacity-50"
             >
               {isSubmitting ? 'Processando...' : isExportMode ? 'Baixar Excel' : 'Confirmar'}
             </Button>
