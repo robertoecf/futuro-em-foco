@@ -47,7 +47,7 @@ export const LeadFormFields = ({ formData, formErrors, onFormDataChange }: LeadF
   return (
     <>
       <div>
-        <Label htmlFor="name" className="themed-label">
+        <Label htmlFor="name" className="form-text-white dark:text-white">
           Nome *
         </Label>
         <Input
@@ -59,14 +59,14 @@ export const LeadFormFields = ({ formData, formErrors, onFormDataChange }: LeadF
           placeholder="Seu nome completo"
           maxLength={100}
           required
-          className="themed-input"
+          className="form-placeholder-dark form-input-text themed-input"
           autoComplete="name"
         />
         {formErrors.name && <p className="text-sm text-red-400 mt-1">{formErrors.name}</p>}
       </div>
 
       <div>
-        <Label htmlFor="email" className="themed-label">
+        <Label htmlFor="email" className="form-text-white dark:text-white">
           Email *
         </Label>
         <Input
@@ -78,14 +78,14 @@ export const LeadFormFields = ({ formData, formErrors, onFormDataChange }: LeadF
           placeholder="seu@email.com"
           maxLength={100}
           required
-          className="themed-input"
+          className="form-placeholder-dark form-input-text themed-input"
           autoComplete="email"
         />
         {formErrors.email && <p className="text-sm text-red-400 mt-1">{formErrors.email}</p>}
       </div>
 
       <div>
-        <Label htmlFor="phone" className="themed-label">
+        <Label htmlFor="phone" className="form-text-white dark:text-white">
           Telefone
         </Label>
         <Input
@@ -96,14 +96,14 @@ export const LeadFormFields = ({ formData, formErrors, onFormDataChange }: LeadF
           onChange={handlePhoneChange}
           placeholder="(11) 99999-9999"
           maxLength={15}
-          className="themed-input"
+          className="form-placeholder-dark form-input-text themed-input"
           autoComplete="tel"
         />
         {formErrors.phone && <p className="text-sm text-red-400 mt-1">{formErrors.phone}</p>}
       </div>
 
       <div>
-        <Label htmlFor="patrimonio-range" className="themed-label">
+        <Label htmlFor="patrimonio-range" className="form-text-white dark:text-white">
           Faixa de patrimônio
         </Label>
         <Select
@@ -112,7 +112,7 @@ export const LeadFormFields = ({ formData, formErrors, onFormDataChange }: LeadF
           onValueChange={(value) => onFormDataChange({ patrimonioRange: value })}
           autoComplete="off"
         >
-          <SelectTrigger className="themed-input">
+          <SelectTrigger className="form-placeholder-dark form-input-text themed-input">
             <SelectValue placeholder="Selecione sua faixa de patrimônio" />
           </SelectTrigger>
           <SelectContent className="themed-select-content">
@@ -145,7 +145,7 @@ export const LeadFormFields = ({ formData, formErrors, onFormDataChange }: LeadF
           }
           className="border-white/10 data-[state=checked]:bg-orange-500 data-[state=checked]:border-orange-500"
         />
-        <Label htmlFor="expert" className="text-sm themed-label">
+        <Label htmlFor="expert" className="text-sm form-text-white dark:text-white">
           Quero ajuda de um especialista
         </Label>
       </div>

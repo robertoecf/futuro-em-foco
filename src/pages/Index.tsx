@@ -193,7 +193,7 @@ const Index = () => {
         <div className="w-full">
           <div
             id="cta-banner"
-            className="aurora-banner text-white p-8 sm:p-12 md:p-12 lg:p-12 xl:p-14 rounded-3xl relative overflow-hidden dark:shadow-none shadow-2xl"
+            className="aurora-banner text-white p-8 sm:p-12 md:p-12 lg:p-12 xl:p-14 rounded-3xl relative overflow-hidden"
             style={{
               width: '90%',
               display: 'flex',
@@ -256,29 +256,23 @@ const Index = () => {
 
       {/* Dynamic Header - Visible at top and bottom */}
       {showHeader && (
-        <header
-          className="fixed top-0 left-0 right-0 z-50 border-b dark:border-white/10 border-gray-300/30 transition-all duration-300 glass-header bg-background/80 backdrop-blur-md"
-        >
-          <div className="flex justify-center">
-            <div className="w-full max-w-7xl px-2 sm:px-4 lg:px-4">
-              <div className="flex flex-wrap items-center justify-between h-16 gap-y-2">
-                <div
-                  className="tech-logo-header dark:text-white text-gray-900 text-lg sm:text-xl cursor-pointer"
-                  onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-                >
-                  futuro em foco
-                </div>
-                <div className="flex items-center space-x-2 sm:space-x-4 md:space-x-8">
-                  <button
-                    onClick={() => setIsLeadFormOpen(true)}
-                    className="tech-button-header dark:text-white text-gray-900 px-2 py-1 text-sm sm:text-base"
-                  >
-                    Converse conosco
-                  </button>
-                </div>
-              </div>
+        <header className="fixed inset-x-0 top-4 z-50 flex justify-center px-4 sm:px-6 lg:px-4">
+          <nav className="relative flex w-full max-w-[74rem] items-center justify-between gap-6 rounded-full transition-all duration-300 glass-header-3d px-6 py-3">
+            <div
+              className="tech-logo-header dark:text-white text-gray-900 text-lg sm:text-xl cursor-pointer"
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            >
+              futuro em foco
             </div>
-          </div>
+            <div className="flex items-center space-x-2 sm:space-x-4 md:space-x-8">
+              <button
+                onClick={() => setIsLeadFormOpen(true)}
+                className="tech-button-header dark:text-white text-gray-900 px-2 py-1 text-sm sm:text-base"
+              >
+                Converse conosco
+              </button>
+            </div>
+          </nav>
         </header>
       )}
 
