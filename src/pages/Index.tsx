@@ -256,18 +256,18 @@ const Index = () => {
 
       {/* Dynamic Header - Visible at top and bottom */}
       {showHeader && (
-        <header className="fixed inset-x-0 top-4 z-50 flex justify-center px-4 sm:px-6 lg:px-4">
-          <nav className="relative flex w-full max-w-[74rem] items-center justify-between gap-6 rounded-full transition-all duration-300 glass-header-3d px-6 py-3">
+        <header className="fixed inset-x-0 top-4 z-50 flex justify-center px-2 sm:px-4 lg:px-6">
+          <nav className="relative flex w-full max-w-4xl items-center justify-between gap-2 sm:gap-4 lg:gap-6 rounded-full transition-all duration-300 glass-header-3d glass-header px-3 py-2 sm:px-4 sm:py-3 lg:px-6 lg:py-3">
             <div
-              className="tech-logo-header dark:text-white text-gray-900 text-lg sm:text-xl cursor-pointer"
+              className="tech-logo-header dark:text-white text-gray-900 text-sm sm:text-lg lg:text-xl cursor-pointer"
               onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
             >
               futuro em foco
             </div>
-            <div className="flex items-center space-x-2 sm:space-x-4 md:space-x-8">
+            <div className="flex items-center">
               <button
                 onClick={() => setIsLeadFormOpen(true)}
-                className="tech-button-header dark:text-white text-gray-900 px-2 py-1 text-sm sm:text-base"
+                className="tech-button-header dark:text-white text-gray-900 px-2 py-1 text-xs sm:text-sm lg:text-base"
               >
                 Converse conosco
               </button>

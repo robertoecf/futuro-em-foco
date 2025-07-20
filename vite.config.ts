@@ -40,6 +40,8 @@ export default defineConfig(({ mode }) => {
     },
     css: {
       postcss: './.config/postcss.config.js',
+      // Garantir que o CSS seja processado corretamente em produção
+      devSourcemap: mode === 'development',
     },
     optimizeDeps: {
       exclude: ['lucide-react'],
@@ -47,6 +49,8 @@ export default defineConfig(({ mode }) => {
     build: {
       // Remove console logs in production
       minify: mode === 'production',
+      // Garantir que o CSS seja preservado corretamente
+      cssMinify: mode === 'production',
       rollupOptions: {
         output: {
           manualChunks: {

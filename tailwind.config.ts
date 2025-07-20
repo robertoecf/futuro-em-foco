@@ -93,4 +93,10 @@ export default {
     },
   },
   plugins: [require('tailwindcss-animate')],
+  safelist: [
+    'glass-header',
+    'glass-header-3d',
+    'tech-button-header',
+    'tech-logo-header'
+  ],
 } satisfies Config;
