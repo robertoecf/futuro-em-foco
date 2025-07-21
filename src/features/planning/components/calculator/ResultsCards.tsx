@@ -30,7 +30,7 @@ export const ResultsCards: React.FC<ResultsCardsProps> = ({
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         {[1, 2, 3, 4].map((i) => (
-          <Card key={i} className="p-4 glass-card animate-pulse">
+          <Card key={i} className="p-3 sm:p-4 glass-card animate-pulse">
             <div className="h-4 bg-gray-300 rounded mb-2"></div>
             <div className="h-8 bg-gray-300 rounded"></div>
           </Card>
@@ -85,16 +85,16 @@ export const ResultsCards: React.FC<ResultsCardsProps> = ({
 
     return (
       <div className="mb-4 w-full mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 [grid-auto-rows:1fr]">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 [grid-auto-rows:1fr]">
           {scenarios.map((scenario, index) => {
             const IconComponent = scenario.icon;
             return (
-              <Card key={index} className="p-4 glass-card flex flex-col h-full justify-between">
-                <div className="space-y-2 text-center">
+              <Card key={index} className="p-3 sm:p-4 glass-card flex flex-col h-full justify-between">
+                <div className="space-y-2 text-center ml-2.5">
                   {/* Header com ícone (sem emoji) */}
                   <div className="flex items-center justify-center space-x-2 mb-1 text-center">
-                    <IconComponent className={`w-5 h-5 ${scenario.iconColor}`} />
-                    <h4 className="text-base font-bold text-white">{scenario.title}</h4>
+                    <IconComponent className={`w-4 h-4 sm:w-5 sm:h-5 ${scenario.iconColor}`} />
+                    <h4 className="text-sm sm:text-base font-bold text-white">{scenario.title}</h4>
                   </div>
                   <p className="text-xs font-medium text-white">{scenario.subtitle}</p>
                   {/* Explicação científica */}
@@ -108,7 +108,7 @@ export const ResultsCards: React.FC<ResultsCardsProps> = ({
                     <p className="text-xs text-white uppercase tracking-wide">
                       Patrimônio aos {retirementAge} anos
                     </p>
-                    <p className="text-xl font-bold text-white">
+                    <p className="text-lg sm:text-xl font-bold text-white">
                       {formatCurrency(scenario.wealth)}
                     </p>
                   </div>
@@ -117,7 +117,7 @@ export const ResultsCards: React.FC<ResultsCardsProps> = ({
                     <p className="text-xs text-white uppercase tracking-wide">
                       Renda mensal sustentável
                     </p>
-                    <p className="text-base font-semibold text-white">
+                    <p className="text-sm sm:text-base font-semibold text-white">
                       {formatCurrency(scenario.income)}
                     </p>
                   </div>
@@ -128,27 +128,27 @@ export const ResultsCards: React.FC<ResultsCardsProps> = ({
         </div>
 
         {/* Métricas Adicionais */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6 [grid-auto-rows:1fr]">
-          <Card className="p-4 glass-card flex flex-col h-full justify-between">
-            <div className="text-center">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 mt-6 [grid-auto-rows:1fr]">
+          <Card className="p-3 sm:p-4 glass-card flex flex-col h-full justify-between">
+            <div className="text-center ml-2.5">
               <p className="text-sm text-white font-medium">Investimento inicial</p>
-              <p className="text-xl font-bold text-white">{formatCurrency(initialAmount)}</p>
+              <p className="text-lg sm:text-xl font-bold text-white">{formatCurrency(initialAmount)}</p>
             </div>
           </Card>
 
-          <Card className="p-4 glass-card flex flex-col h-full justify-between">
-            <div className="text-center">
+          <Card className="p-3 sm:p-4 glass-card flex flex-col h-full justify-between">
+            <div className="text-center ml-2.5">
               <p className="text-sm text-white font-medium">Probabilidade de sucesso</p>
-              <p className="text-xl font-bold text-white">
+              <p className="text-lg sm:text-xl font-bold text-white">
                 {(monteCarloResult.statistics.successProbability * 100).toFixed(1)}%
               </p>
             </div>
           </Card>
 
-          <Card className="p-4 glass-card flex flex-col h-full justify-between">
-            <div className="text-center">
+          <Card className="p-3 sm:p-4 glass-card flex flex-col h-full justify-between">
+            <div className="text-center ml-2.5">
               <p className="text-sm text-white font-medium">Duração da renda</p>
-              <p className="text-xl font-bold text-white">{lifeExpectancy - retirementAge} anos</p>
+              <p className="text-lg sm:text-xl font-bold text-white">{lifeExpectancy - retirementAge} anos</p>
             </div>
           </Card>
         </div>
@@ -158,29 +158,37 @@ export const ResultsCards: React.FC<ResultsCardsProps> = ({
 
   // Layout original para cálculo determinístico
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-      <Card className="p-4 glass-card">
-        <p className="text-sm text-white">Investimento inicial</p>
-        <p className="text-2xl font-bold text-white">{formatCurrency(initialAmount)}</p>
+    <div className="w-[90%] mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      <Card className="p-3 sm:p-4 glass-card">
+        <div className="ml-2.5">
+          <p className="text-sm text-white">Investimento inicial</p>
+          <p className="text-lg sm:text-2xl font-bold text-white">{formatCurrency(initialAmount)}</p>
+        </div>
       </Card>
 
-      <Card className="p-4 glass-card">
-        <p className="text-sm text-white">Patrimônio aos {retirementAge} anos</p>
-        <p className="text-2xl font-bold text-white">
-          {formatCurrency(calculationResult.finalAmount)}
-        </p>
+      <Card className="p-3 sm:p-4 glass-card">
+        <div className="ml-2.5">
+          <p className="text-sm text-white">Patrimônio aos {retirementAge} anos</p>
+          <p className="text-lg sm:text-2xl font-bold text-white">
+            {formatCurrency(calculationResult.finalAmount)}
+          </p>
+        </div>
       </Card>
 
-      <Card className="p-4 glass-card">
-        <p className="text-sm text-white">Renda mensal na aposentadoria</p>
-        <p className="text-2xl font-bold text-white">
-          {formatCurrency(calculationResult.monthlyIncome)}
-        </p>
+      <Card className="p-3 sm:p-4 glass-card">
+        <div className="ml-2.5">
+          <p className="text-sm text-white">Renda mensal na aposentadoria</p>
+          <p className="text-lg sm:text-2xl font-bold text-white">
+            {formatCurrency(calculationResult.monthlyIncome)}
+          </p>
+        </div>
       </Card>
 
-      <Card className="p-4 glass-card">
-        <p className="text-sm text-white">Duração da renda</p>
-        <p className="text-2xl font-bold text-white">{lifeExpectancy - retirementAge} anos</p>
+      <Card className="p-3 sm:p-4 glass-card">
+        <div className="ml-2.5">
+          <p className="text-sm text-white">Duração da renda</p>
+          <p className="text-lg sm:text-2xl font-bold text-white">{lifeExpectancy - retirementAge} anos</p>
+        </div>
       </Card>
     </div>
   );

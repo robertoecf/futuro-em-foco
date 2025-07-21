@@ -82,7 +82,7 @@ export const Recommendations = ({ investorProfile }: RecommendationsProps) => {
   const recommendations = getRecommendationsByProfile();
 
   return (
-    <div className="mt-16">
+    <div className="w-[90%] mx-auto mt-16">
       <h2 className="text-2xl font-bold mb-6 text-white">Recomendações para otimizar seu plano</h2>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

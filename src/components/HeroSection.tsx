@@ -10,7 +10,7 @@ export const HeroSection = ({ onReceivePlan: _onReceivePlan }: HeroSectionProps)
   return (
     <div
       id="hero-banner"
-      className="aurora-banner text-white p-8 sm:p-12 md:p-12 lg:p-12 xl:p-14 rounded-3xl relative overflow-hidden dark:shadow-none shadow-2xl"
+      className="aurora-banner text-white p-6 sm:p-8 md:p-12 lg:p-12 xl:p-14 rounded-3xl relative overflow-hidden dark:shadow-none shadow-2xl"
       style={{
         width: '90%',
         display: 'flex',
@@ -35,16 +35,16 @@ export const HeroSection = ({ onReceivePlan: _onReceivePlan }: HeroSectionProps)
 
       {/* Content */}
       <div className="relative z-10 text-center" style={{ marginTop: '60px' }}>
-        <h1 className="text-3xl sm:text-4xl md:text-4xl xl:text-5xl font-bold mb-4 leading-tight lg:text-5xl">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl xl:text-5xl font-bold mb-4 leading-tight lg:text-5xl">
           Quer garantir sua aposentadoria tranquila?
         </h1>
-        <p className="text-lg mb-8 opacity-90">
+        <p className="text-base sm:text-lg mb-6 sm:mb-8 opacity-90">
           O patrimônio acumulado terá um impacto direto nos recursos disponíveis ao se aposentar. A
           boa notícia é que definindo metas claras e investindo regularmente, você pode assegurar
           sua tranquilidade financeira por muitos anos. Vamos entender o seu objetivo e checar a
           necessidade de ajustes no seu planejamento.
         </p>
-        <Button className="tech-button-specialist-cta" onClick={handleClick}>
+        <Button className="tech-button-specialist-cta min-h-[44px] px-6 py-3" onClick={handleClick}>
           Calcular projeção patrimonial
         </Button>
       </div>

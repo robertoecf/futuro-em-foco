@@ -169,8 +169,8 @@ const Index = () => {
         id="calculator-section"
         className="min-h-screen flex items-center justify-center relative"
       >
-        <div className="flex justify-center">
-          <div className="w-full max-w-7xl px-4 sm:px-6 lg:px-4">
+        <div className="flex justify-center w-full">
+          <div className="w-[90%] max-w-7xl">
             <Calculator />
           </div>
         </div>
@@ -230,16 +230,16 @@ const Index = () => {
 
             {/* Content */}
             <div className="relative z-10 text-center" style={{ marginTop: '60px' }}>
-              <h1 className="text-3xl sm:text-4xl md:text-4xl xl:text-5xl font-bold mb-4 leading-tight lg:text-5xl">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl xl:text-5xl font-bold mb-4 leading-tight lg:text-5xl">
                 Pronto para impulsionar sua jornada?
               </h1>
-              <p className="text-lg mb-8 opacity-90">
+              <p className="text-base sm:text-lg mb-6 sm:mb-8 opacity-90">
                 Transforme seus objetivos em realidade com um plano de gestão patrimonial sob
                 medida.
               </p>
               <Button
                 onClick={() => setIsLeadFormOpen(true)}
-                className="tech-button-specialist-cta"
+                className="tech-button-specialist-cta min-h-[44px] px-6 py-3"
               >
                 Receber plano por email
               </Button>
@@ -256,8 +256,13 @@ const Index = () => {
 
       {/* Dynamic Header - Visible at top and bottom */}
       {showHeader && (
-        <header className="fixed inset-x-0 top-4 z-50 flex justify-center px-2 sm:px-4 lg:px-6">
-          <nav className="relative flex w-full max-w-4xl items-center justify-between gap-2 sm:gap-4 lg:gap-6 rounded-full transition-all duration-300 glass-header-3d glass-header px-3 py-2 sm:px-4 sm:py-3 lg:px-6 lg:py-3">
+        <header className="fixed inset-x-0 top-4 z-50 flex justify-center">
+          <nav 
+            className="relative flex w-[90%] max-w-4xl items-center justify-between gap-2 sm:gap-4 lg:gap-6 rounded-full transition-all duration-300 glass-header-3d glass-header px-3 py-3 sm:px-4 sm:py-3 lg:px-6 lg:py-3"
+            style={{
+              margin: '0 auto',
+            }}
+          >
             <div
               className="tech-logo-header dark:text-white text-gray-900 text-sm sm:text-lg lg:text-xl cursor-pointer"
               onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
@@ -267,7 +272,7 @@ const Index = () => {
             <div className="flex items-center">
               <button
                 onClick={() => setIsLeadFormOpen(true)}
-                className="tech-button-header dark:text-white text-gray-900 px-2 py-1 text-xs sm:text-sm lg:text-base"
+                className="tech-button-header dark:text-white text-gray-900 px-3 py-2 text-sm sm:text-sm lg:text-base min-h-[44px] flex items-center justify-center"
               >
                 Converse conosco
               </button>
@@ -279,7 +284,7 @@ const Index = () => {
       {/* Footer */}
       <footer ref={footerRef} className="py-4 bg-background">
         <div className="flex justify-center">
-          <div className="w-full max-w-7xl px-4 sm:px-6 lg:px-4">
+          <div className="w-[90%] max-w-7xl">
             <p className="text-center text-xs leading-tight text-white dark:text-[#D2D2D2]">
               As informações contidas neste material são de caráter exclusivamente informativo e não
               devem ser entendidas como oferta, recomendação ou análise de investimento. O Futuro em

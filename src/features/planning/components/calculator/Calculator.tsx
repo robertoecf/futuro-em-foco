@@ -100,7 +100,7 @@ export function Calculator() {
   const correctPossibleRetirementAge = calculateCorrectPossibleRetirementAge();
 
   return (
-    <div className="w-full space-y-20 mb-32 px-10">
+    <div className="w-[90%] mx-auto space-y-12 sm:space-y-20 mb-16 sm:mb-32">
       <div
         className={`transition-all duration-300 ${isMagicMomentActive ? 'invisible pointer-events-none' : 'visible'} mt-7`}
       >

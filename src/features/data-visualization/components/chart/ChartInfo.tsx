@@ -142,13 +142,13 @@ export const ChartInfo = ({
     <div className="mt-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
       {/* Legenda dos Cenários */}
       <Card className="p-4 chart-info-card">
-        <div className="flex items-center gap-2 mb-3">
+        <div className="flex items-center gap-2 mb-3 ml-2.5">
           <BarChart3 className="h-4 w-4 dark:text-white text-gray-900" />
           <h4 className="text-sm font-semibold dark:text-white text-gray-900">Cenários</h4>
         </div>
 
         {monteCarloData ? (
-          <div className="space-y-2">
+          <div className="space-y-2 ml-2.5">
             <ScenarioItem
               color="bg-green-500"
               label="Otimista (95º percentil)"
@@ -170,7 +170,7 @@ export const ChartInfo = ({
             />
           </div>
         ) : (
-          <div className="space-y-2">
+          <div className="space-y-2 ml-2.5">
             <ScenarioItem color="bg-orange-500" label="Patrimônio Projetado" scenario="patrimony" />
             <ScenarioItem
               color="bg-gray-500"
@@ -184,12 +184,12 @@ export const ChartInfo = ({
 
       {/* Métricas Chave */}
       <Card className="p-4 chart-info-card">
-        <div className="flex items-center gap-2 mb-3">
+        <div className="flex items-center gap-2 mb-3 ml-2.5">
           <TrendingUp className="h-4 w-4 text-green-600" />
           <h4 className="text-sm font-semibold dark:text-white text-gray-900">Métricas Chave</h4>
         </div>
 
-        <div className="space-y-3">
+        <div className="space-y-3 ml-2.5">
           {monteCarloData?.statistics.successProbability && (
             <div>
               <p className="text-xs dark:text-white/80 text-gray-600">Probabilidade de sucesso</p>
@@ -210,12 +210,12 @@ export const ChartInfo = ({
 
       {/* Referências */}
       <Card className="p-4 chart-info-card">
-        <div className="flex items-center gap-2 mb-3">
+        <div className="flex items-center gap-2 mb-3 ml-2.5">
           <Target className="h-4 w-4 text-blue-500" />
           <h4 className="text-sm font-semibold dark:text-white text-gray-900">Referências</h4>
         </div>
 
-        <div className="space-y-3">
+        <div className="space-y-3 ml-2.5">
           <ReferenceItem
             label="Idade da independência"
             value={`${possibleRetirementAge} anos`}

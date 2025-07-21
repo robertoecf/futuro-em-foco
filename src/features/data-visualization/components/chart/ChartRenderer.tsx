@@ -200,8 +200,8 @@ export const ChartRenderer = React.memo(
               data={chartData}
               margin={
                 typeof window !== 'undefined' && window.innerWidth < 640
-                  ? { top: 10, right: 10, left: 10, bottom: 10 }
-                  : { top: 20, right: 30, left: 30, bottom: 20 }
+                  ? { top: 0, right: 10, left: 0, bottom: 0 }
+                  : { top: 0, right: 10, left: 0, bottom: 0 }
               }
               style={{
                 cursor: shouldShowActiveDots ? 'crosshair' : 'none',
@@ -212,11 +212,7 @@ export const ChartRenderer = React.memo(
 
               <XAxis
                 dataKey="age"
-                label={
-                  typeof window !== 'undefined' && window.innerWidth < 640
-                    ? undefined
-                    : { value: 'Idade', position: 'insideBottom', offset: -10, fill: labelColor }
-                }
+                label={undefined}
                 tickFormatter={(value) => `${value}`}
                 tick={{
                   fill: labelColor,

@@ -39,21 +39,21 @@ export const ProjectingMessage = ({
       {/* Controls Section */}
       {showLifeExpectancyControl && (
         <div className="glass-card p-4 rounded-lg mb-6">
-          <div className="flex items-center justify-between flex-wrap gap-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             {/* Monte Carlo Toggle */}
-            <div className="flex items-center space-x-3">
-              <div>
-                <h3 className="text-sm font-medium text-white">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-3 flex-1 min-w-0">
+              <div className="chart-controls-text overflow-hidden pl-2.5">
+                <h3 className="text-sm font-medium text-white leading-tight hyphens-auto break-words overflow-hidden">
                   Simulação Probabilística | Método de Monte Carlo
                 </h3>
-                <p className="text-xs text-white">
+                <p className="text-xs text-white leading-tight hyphens-auto break-words mt-0.5 overflow-hidden">
                   {phase === 'projecting'
                     ? 'Calculando mil cenários aleatórios...'
                     : 'Otimizando visualização...'}
                 </p>
               </div>
               <button
-                className="px-4 py-2 rounded text-sm font-medium bg-orange-500 text-white cursor-not-allowed opacity-50"
+                className="px-4 py-2 rounded text-sm font-medium bg-orange-500 text-white cursor-not-allowed opacity-50 chart-controls-button-primary flex-shrink-0 -mr-2.5"
                 disabled
               >
                 {phase === 'projecting' ? 'Calculando...' : 'Otimizando...'}
@@ -61,8 +61,8 @@ export const ProjectingMessage = ({
             </div>
 
             {/* Life Expectancy Control */}
-            <div className="flex items-center space-x-3">
-              <label htmlFor="life-expectancy" className="text-sm font-medium text-white">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-3 flex-shrink-0">
+              <label htmlFor="life-expectancy" className="text-sm font-medium text-white whitespace-nowrap">
                 Expectativa de vida:
               </label>
               <div className="flex items-center space-x-2">

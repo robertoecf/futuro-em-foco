@@ -1078,9 +1078,10 @@ html {
   box-shadow: 
     0 2px 8px rgba(0, 0, 0, 0.1),
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
-  white-space: nowrap;
-  min-width: fit-content;
+  /* Removido white-space: nowrap para permitir quebra de texto */
+  /* Removido min-width: fit-content para não forçar largura mínima */
   font-size: 14px;
+  overflow: hidden; /* Garante que o conteúdo não estoure */
 }
 
 /* Dark mode styles for glass-panel, glass-input, chart-container */
@@ -1106,6 +1107,141 @@ html {
 
 :not(.dark) .form-text-white {
   color: white !important;
+}
+
+/* Estilos específicos para ChartControls - responsividade melhorada */
+.chart-controls-text {
+  word-break: break-word;
+  hyphens: auto;
+  overflow-wrap: break-word;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden; /* Garante que não estoure */
+}
+
+.chart-controls-text h3 {
+  line-height: 1.3;
+  word-break: break-word;
+  hyphens: auto;
+  margin-bottom: 0.25rem;
+  /* Permite quebra natural como documento */
+  white-space: normal;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  overflow: hidden; /* Garante que não estoure */
+  text-overflow: ellipsis; /* Adiciona ... se necessário */
+}
+
+.chart-controls-text p {
+  line-height: 1.4;
+  word-break: break-word;
+  hyphens: auto;
+  margin: 0;
+  /* Permite quebra natural como documento */
+  white-space: normal;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  overflow: hidden; /* Garante que não estoure */
+  text-overflow: ellipsis; /* Adiciona ... se necessário */
+}
+
+/* Botões com tamanho fixo para ChartControls */
+.chart-controls-button-primary {
+  min-width: 80px !important;
+  max-width: 120px !important;
+  flex-shrink: 0 !important;
+  white-space: nowrap !important;
+}
+
+.chart-controls-button-secondary {
+  min-width: 32px !important;
+  max-width: 36px !important;
+  flex-shrink: 0 !important;
+  width: 32px !important;
+}
+
+@media (min-width: 640px) {
+  .chart-controls-button-secondary {
+    width: 36px !important;
+    max-width: 36px !important;
+  }
+}
+
+/* Responsividade específica para texto do ChartControls */
+@media (max-width: 640px) {
+  .chart-controls-text h3 {
+    font-size: 0.75rem;
+    line-height: 1.2;
+    text-align: left; /* Em mobile, alinhamento à esquerda para melhor legibilidade */
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .chart-controls-text p {
+    font-size: 0.625rem;
+    line-height: 1.3;
+    text-align: left; /* Em mobile, alinhamento à esquerda para melhor legibilidade */
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+/* Quebra condicional para texto de insights */
+.conditional-break-text {
+  white-space: nowrap; /* Mantém em uma linha para detectar overflow */
+  overflow: hidden;
+  display: inline-block;
+  max-width: 100%;
+  word-break: keep-all;
+  hyphens: none;
+}
+
+/* Em telas menores, força quebra em pontos específicos */
+@media (max-width: 480px) {
+  .conditional-break-text {
+    /* Quebra forçada em pontos específicos para mobile */
+    white-space: pre-line;
+  }
+}
+
+/* Quebra inteligente baseada no espaço disponível */
+@media (max-width: 640px) {
+  .conditional-break-text {
+    /* Em telas pequenas, quebra após valores monetários */
+    word-break: break-all;
+  }
+}
+
+@media (min-width: 640px) and (max-width: 1024px) {
+  .chart-controls-text h3 {
+    font-size: 0.875rem;
+    line-height: 1.25;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .chart-controls-text p {
+    font-size: 0.75rem;
+    line-height: 1.35;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+@media (min-width: 1024px) {
+  .chart-controls-text h3 {
+    font-size: 0.875rem;
+    line-height: 1.3;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .chart-controls-text p {
+    font-size: 0.75rem;
+    line-height: 1.4;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 }
 
 /* Viewport mobile - garantir fundo consistente */

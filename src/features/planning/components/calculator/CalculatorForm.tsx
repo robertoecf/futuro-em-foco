@@ -148,14 +148,14 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 mb-8">
       {/* Left Panel - Dados Atuais */}
-      <div className="glass-card p-6 rounded-lg">
-        <h3 className="text-xl font-semibold mb-6 text-white">Dados Atuais</h3>
+      <div className="glass-card p-4 sm:p-6 rounded-lg">
+        <h3 className="text-lg sm:text-xl font-semibold mb-4 sm:mb-6 text-white">Dados Atuais</h3>
 
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6">
           <div className="space-y-2">
-            <Label htmlFor="current-age">Idade Atual</Label>
+            <Label htmlFor="current-age" className="text-sm sm:text-base">Idade Atual</Label>
             <Input
               id="current-age"
               name="currentAge"
@@ -166,12 +166,12 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({
               }}
               onBlur={(e) => handleCurrentAgeBlur(e.target.value)}
               min={1}
-              className="glass-input"
+              className="glass-input h-11 sm:h-10"
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="initial-amount">Investimento Inicial (R$)</Label>
+            <Label htmlFor="initial-amount" className="text-sm sm:text-base">Investimento Inicial (R$)</Label>
             <Input
               id="initial-amount"
               name="initialAmount"
@@ -180,13 +180,13 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({
               value={initialAmountInput}
               onChange={(e) => handleCurrencyChange(e, setInitialAmountInput)}
               onBlur={handleInitialAmountBlurWithFormat}
-              className="glass-input"
+              className="glass-input h-11 sm:h-10"
               placeholder="0,00"
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="monthly-amount">Aporte Mensal (R$)</Label>
+            <Label htmlFor="monthly-amount" className="text-sm sm:text-base">Aporte Mensal (R$)</Label>
             <Input
               id="monthly-amount"
               name="monthlyAmount"
@@ -195,7 +195,7 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({
               value={monthlyAmountInput}
               onChange={(e) => handleCurrencyChange(e, setMonthlyAmountInput)}
               onBlur={handleMonthlyAmountBlurWithFormat}
-              className="glass-input"
+              className="glass-input h-11 sm:h-10"
               placeholder="0,00"
             />
           </div>
@@ -203,12 +203,12 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({
       </div>
 
       {/* Right Panel - Configurações de Aposentadoria */}
-      <div className="glass-card p-6 rounded-lg">
-        <h3 className="text-xl font-semibold mb-6 text-white">Configurações de Aposentadoria</h3>
+      <div className="glass-card p-4 sm:p-6 rounded-lg">
+        <h3 className="text-lg sm:text-xl font-semibold mb-4 sm:mb-6 text-white">Configurações de Aposentadoria</h3>
 
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6">
           <div className="space-y-2">
-            <Label htmlFor="retirement-age">Idade de Aposentadoria</Label>
+            <Label htmlFor="retirement-age" className="text-sm sm:text-base">Idade de Aposentadoria</Label>
             <Input
               id="retirement-age"
               name="retirementAge"
@@ -220,12 +220,12 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({
               }}
               onBlur={(e) => handleRetirementAgeBlur(e.target.value)}
               min={currentAge + 1}
-              className="glass-input"
+              className="glass-input h-11 sm:h-10"
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="retirement-income">Renda Mensal Desejada na Aposentadoria (R$)</Label>
+            <Label htmlFor="retirement-income" className="text-sm sm:text-base">Renda Mensal Desejada na Aposentadoria (R$)</Label>
             <Input
               id="retirement-income"
               name="retirementIncome"
@@ -235,7 +235,7 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({
               onChange={(e) => handleCurrencyChange(e, setRetirementIncomeInput)}
               onBlur={handleRetirementIncomeBlurWithFormat}
               placeholder="Deixe 0 para cálculo automático"
-              className="glass-input"
+              className="glass-input h-11 sm:h-10"
             />
             {retirementIncome === 0 && (
               <p className="text-xs text-gray-300 mt-1">
@@ -245,7 +245,7 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="portfolio-return">Retorno do Portfólio na Aposentadoria (%)</Label>
+            <Label htmlFor="portfolio-return" className="text-sm sm:text-base">Retorno do Portfólio na Aposentadoria (%)</Label>
             <Input
               id="portfolio-return"
               name="portfolioReturn"
@@ -258,7 +258,7 @@ export const CalculatorForm: React.FC<CalculatorFormProps> = ({
               }}
               onBlur={(e) => handlePortfolioReturnBlur(e.target.value)}
               placeholder="Ex: 4.0"
-              className="glass-input"
+              className="glass-input h-11 sm:h-10"
             />
             <p className="text-xs text-gray-300 mt-1">
               Taxa de retorno anual esperada durante a aposentadoria

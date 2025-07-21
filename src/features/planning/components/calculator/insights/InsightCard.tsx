@@ -19,26 +19,54 @@ export const InsightCard: React.FC<InsightCardProps> = ({
   suffix = '',
   showValueAsDescription = false,
 }) => {
+  const renderDescription = () => {
+    if (!showValueAsDescription) {
+      return description;
+    }
+
+    // Sempre quebra em linhas separadas
+    const lines = description.split('\n');
+    return lines.map((line, idx) => {
+      // Extrai o valor monetário e a descrição
+      const match = line.match(/^(R\$\s*[\d.,]+)\s*(.+)$/);
+      
+      if (match) {
+        const [, value, description] = match;
+        return (
+          <div key={idx} className="mb-2 text-center">
+            <div className="text-base sm:text-lg font-semibold text-orange-600 tech-number">
+              {value}
+            </div>
+            <div className="text-sm text-white">
+              {description}
+            </div>
+          </div>
+        );
+      }
+      
+      // Fallback se não conseguir extrair
+      return (
+        <div key={idx} className="mb-2 text-center">
+          <div className="text-base sm:text-lg font-semibold text-orange-600 tech-number">
+            {line}
+          </div>
+        </div>
+      );
+    });
+  };
+
   return (
-    <Card className="p-6 insight-card">
+    <Card className="p-4 sm:p-6 insight-card">
       <div className="text-center">
-        <h3 className="text-lg font-semibold mb-2 text-white">{title}</h3>
+        <h3 className="text-base sm:text-lg font-semibold mb-2 text-white">{title}</h3>
         {!showValueAsDescription && (
-          <p className="text-2xl font-bold text-orange-600 mb-2 tech-number">
+          <p className="text-xl sm:text-2xl font-bold text-orange-600 mb-2 tech-number">
             {isCurrency ? formatCurrency(value) : Math.round(value) + suffix}
           </p>
         )}
-        <p
-          className={`text-sm text-white ${showValueAsDescription ? 'text-lg font-semibold text-orange-600 tech-number' : ''}`}
-        >
-          {showValueAsDescription
-            ? description.split('\n').map((line, idx) => (
-                <span key={idx} className="block" style={{ color: '#E48200' }}>
-                  {line}
-                </span>
-              ))
-            : description}
-        </p>
+        <div className="text-center">
+          {renderDescription()}
+        </div>
       </div>
     </Card>
   );

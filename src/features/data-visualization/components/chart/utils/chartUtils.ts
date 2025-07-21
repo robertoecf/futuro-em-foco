@@ -41,11 +41,11 @@ export const formatYAxis = (value: number): string => {
   if (isMobile) {
     // Mobile: Ultra compact format
     if (absValue >= 1_000_000_000_000) {
-      return `${(value / 1_000_000_000_000).toFixed(1)}t`;
+      return `${(value / 1_000_000_000_000).toFixed(0)}t`;
     } else if (absValue >= 1_000_000_000) {
-      return `${(value / 1_000_000_000).toFixed(1)}b`;
+      return `${(value / 1_000_000_000).toFixed(0)}b`;
     } else if (absValue >= 1_000_000) {
-      return `${(value / 1_000_000).toFixed(1)}mm`;
+      return `${(value / 1_000_000).toFixed(0)}mm`;
     } else if (absValue >= 1_000) {
       return `${(value / 1_000).toFixed(0)}k`;
     }
@@ -53,11 +53,11 @@ export const formatYAxis = (value: number): string => {
   } else {
     // Desktop: More readable format
     if (absValue >= 1_000_000_000_000) {
-      return `${(value / 1_000_000_000_000).toFixed(1)} trilhão`;
+      return `${(value / 1_000_000_000_000).toFixed(0)} trilhão`;
     } else if (absValue >= 1_000_000_000) {
-      return `${(value / 1_000_000_000).toFixed(1)} bilhão`;
+      return `${(value / 1_000_000_000).toFixed(0)} bilhão`;
     } else if (absValue >= 1_000_000) {
-      return `${(value / 1_000_000).toFixed(1)} milhão`;
+      return `${(value / 1_000_000).toFixed(0)} milhão`;
     } else if (absValue >= 100_000) {
       return `${(value / 1_000).toFixed(0)} mil`;
     }
