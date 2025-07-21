@@ -33,7 +33,7 @@ export const InsightCard: React.FC<InsightCardProps> = ({
       if (match) {
         const [, value, description] = match;
         return (
-          <div key={idx} className="mb-2 text-center">
+          <div key={idx} className="mb-2 text-center flex flex-col items-center">
             <div className="text-base sm:text-lg font-semibold text-orange-600 tech-number">
               {value}
             </div>
@@ -46,7 +46,7 @@ export const InsightCard: React.FC<InsightCardProps> = ({
       
       // Fallback se não conseguir extrair
       return (
-        <div key={idx} className="mb-2 text-center">
+        <div key={idx} className="mb-2 text-center flex flex-col items-center">
           <div className="text-base sm:text-lg font-semibold text-orange-600 tech-number">
             {line}
           </div>
@@ -57,14 +57,14 @@ export const InsightCard: React.FC<InsightCardProps> = ({
 
   return (
     <Card className="p-4 sm:p-6 insight-card">
-      <div className="text-center">
+      <div className="text-center flex flex-col items-center justify-center h-full">
         <h3 className="text-base sm:text-lg font-semibold mb-2 text-white">{title}</h3>
         {!showValueAsDescription && (
           <p className="text-xl sm:text-2xl font-bold text-orange-600 mb-2 tech-number">
             {isCurrency ? formatCurrency(value) : Math.round(value) + suffix}
           </p>
         )}
-        <div className="text-center">
+        <div className="text-center flex flex-col items-center">
           {renderDescription()}
         </div>
       </div>
