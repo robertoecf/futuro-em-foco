@@ -139,7 +139,7 @@ const Index = () => {
       </div>
 
       {/* Hero Section - Centralized */}
-      <section ref={heroRef} className="min-h-screen flex items-center justify-center relative">
+      <section ref={heroRef} className="min-h-screen flex justify-center relative" style={{ paddingTop: '20px' }}>
         <div className="flex justify-center">
           <div className="w-full">
             <HeroSection onReceivePlan={() => setIsLeadFormOpen(true)} />
@@ -152,7 +152,7 @@ const Index = () => {
           style={{
             position: 'absolute',
             left: '50%',
-            transform: 'translate(-50%, calc(50% + 40px))',
+            transform: 'translate(-50%, calc(50% + 55px))',
             bottom: '10%',
           }}
           onClick={() =>
@@ -199,7 +199,7 @@ const Index = () => {
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'center',
-              margin: '0 auto 0 auto',
+              margin: '50px auto 0 auto',
               minHeight: '80vh',
             }}
           >
@@ -229,7 +229,7 @@ const Index = () => {
             </div>
 
             {/* Content */}
-            <div className="relative z-10 text-center" style={{ marginTop: '60px' }}>
+            <div className="relative z-10 text-center" style={{ marginTop: '80px' }}>
               <h1 className="text-2xl sm:text-3xl md:text-4xl xl:text-5xl font-bold mb-4 leading-tight lg:text-5xl">
                 Pronto para impulsionar sua jornada?
               </h1>

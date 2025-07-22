@@ -16,7 +16,7 @@ export const HeroSection = ({ onReceivePlan: _onReceivePlan }: HeroSectionProps)
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
-        margin: 'clamp(24px, 8vh, 80px) auto',
+        margin: 'clamp(95px, 8vh, 80px) auto',
         minHeight: '80vh',
       }}
     >
