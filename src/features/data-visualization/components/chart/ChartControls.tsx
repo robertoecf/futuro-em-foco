@@ -47,7 +47,7 @@ export const ChartControls = ({
           </p>
         </div>
         {/* Botões com tamanho fixo e responsividade melhorada */}
-        <div className="flex flex-row gap-1.5 sm:gap-2 w-full sm:w-auto justify-end sm:justify-start flex-shrink-0 -mr-6">
+        <div className="flex flex-row gap-1.5 sm:gap-2 w-auto justify-end flex-shrink-0 -mr-[-10px]">
           <Button
             variant="default"
             size="sm"
